@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Detalle Cliente | MisMary</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+
+        /* CUERPO */
+
+        body {
+
+            background: #d8c3a5;
+
+            min-height: 100vh;
+
+            color: #5c4033;
+        }
+
+
+        /* BARRA SUPERIOR */
+
+        .navbar {
+
+            width: 100%;
+
+            background: #5c4033;
+
+            padding: 18px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
+        }
+
+
+        /* LOGO */
+
+        .logo {
+
+            color: #f5ead7;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* USUARIO */
+
+        .usuario {
+
+            color: #f5ead7;
+
+            font-size: 14px;
+        }
+
+
+        /* CONTENIDO */
+
+        .contenido {
+
+            max-width: 700px;
+
+            margin: 50px auto;
+
+            padding: 0 25px;
+        }
+
+
+        /* TITULO */
+
+        .titulo {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+
+        .titulo h1 {
+
+            color: #5c4033;
+
+            font-size: 32px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .titulo p {
+
+            color: #806b55;
+
+            font-size: 16px;
+        }
+
+
+        /* TARJETA */
+
+        .tarjeta {
+
+            background: #f5ead7;
+
+            border: 2px solid #8b6f47;
+
+            border-radius: 10px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+        }
+
+
+        /* ICONO */
+
+        .icono {
+
+            text-align: center;
+
+            font-size: 50px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* INFORMACION */
+
+        .informacion {
+
+            margin-bottom: 20px;
+
+            padding-bottom: 15px;
+
+            border-bottom: 1px solid #c5ae8d;
+        }
+
+
+        .informacion:last-child {
+
+            border-bottom: none;
+
+            margin-bottom: 0;
+        }
+
+
+        .informacion strong {
+
+            display: block;
+
+            color: #5c4033;
+
+            font-size: 15px;
+
+            margin-bottom: 6px;
+        }
+
+
+        .informacion span {
+
+            color: #806b55;
+
+            font-size: 16px;
+        }
+
+
+        /* COMPRAS PENDIENTES */
+
+        .pendientes {
+
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background: #e6d3b8;
+
+            border: 1px solid #8b6f47;
+
+            border-radius: 5px;
+
+            text-align: center;
+
+            color: #5c4033;
+
+            font-size: 15px;
+        }
+
+
+        /* BOTONES */
+
+        .acciones {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-top: 30px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .boton {
+
+            display: inline-block;
+
+            padding: 11px 20px;
+
+            background: #7b5e3b;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+
+            border: none;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+
+        .boton:hover {
+
+            background: #60472d;
+        }
+
+
+        /* BOTON ELIMINAR */
+
+        .eliminar {
+
+            background: #8b4a3b;
+        }
+
+
+        .eliminar:hover {
+
+            background: #70382d;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+
+                padding: 15px 20px;
+
+                flex-direction: column;
+
+                gap: 8px;
+            }
+
+
+            .contenido {
+
+                margin-top: 30px;
+            }
+
+
+            .titulo h1 {
+
+                font-size: 26px;
+            }
+
+
+            .tarjeta {
+
+                padding: 25px;
+            }
+
+
+            .acciones {
+
+                flex-direction: column;
+            }
+
+
+            .boton {
+
+                width: 100%;
+
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- BARRA SUPERIOR -->
+
+    <header class="navbar">
+
+        <div class="logo">
+
+            MisMary
+
+        </div>
+
+
+        <div class="usuario">
+
+            Usuario:
+            <strong>{{ user.username }}</strong>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- CONTENIDO -->
+
+    <main class="contenido">
+
+
+        <!-- TITULO -->
+
+        <section class="titulo">
+
+            <h1>
+                Detalle del Cliente
+            </h1>
+
+            <p>
+                Información del cliente registrado
+            </p>
+
+        </section>
+
+
+
+        <!-- TARJETA DEL CLIENTE -->
+
+        <section class="tarjeta">
+
+            <div class="informacion">
+
+                <strong>
+                    ID del cliente
+                </strong>
+
+                <span>
+                    {{ cliente.id }}
+                </span>
+
+            </div>
+
+
+
+            <div class="informacion">
+
+                <strong>
+                    Nombre
+                </strong>
+
+                <span>
+                    {{ cliente.nombre }}
+                </span>
+
+            </div>
+
+
+
+            <div class="informacion">
+
+                <strong>
+                    Teléfono
+                </strong>
+
+                <span>
+                    {{ cliente.telefono }}
+                </span>
+
+            </div>
+
+
+
+            <div class="informacion">
+
+                <strong>
+                    Dirección
+                </strong>
+
+                <span>
+                    {{ cliente.direccion }}
+                </span>
+
+            </div>
+
+
+
+            <div class="pendientes">
+
+                <strong>
+                    Compras pendientes:
+                </strong>
+
+                No disponible por ahora
+
+            </div>
+
+
+
+            <!-- BOTONES -->
+
+            <div class="acciones">
+
+
+                <a href="{% url 'list_cliente' %}"
+                   class="boton">
+
+                    Volver
+
+                </a>
+
+
+                <a href="{% url 'cliente_update' cliente.id %}"
+                   class="boton">
+
+                    Actualizar
+
+                </a>
+
+
+                <a href="{% url 'cliente_delete' cliente.id %}"
+                   class="boton eliminar"
+                   onclick="return confirmarEliminacion()">
+
+                    Eliminar
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- CONFIRMACION ELIMINAR -->
+
+    <script>
+
+        function confirmarEliminacion() {
+
+            if (!confirm(
+                "¿Está seguro de que desea eliminar este cliente?"
+            )) {
+
+                return false;
+            }
+
+
+            if (!confirm(
+                "¿El cliente tiene algo pendiente?"
+            )) {
+
+                return false;
+            }
+
+
+            return true;
+        }
+
+    </script>
+
+
+</body>
+
+</html>
