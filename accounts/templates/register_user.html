@@ -1,0 +1,168 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Crear Usuario | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .formulario-contenido {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .titulo {
+        margin-bottom: 30px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+    }
+
+    .formulario {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(70, 50, 30, 0.2);
+    }
+
+    .campo {
+        margin-bottom: 20px;
+    }
+
+    .campo label {
+        display: block;
+        color: #5c4033;
+        margin-bottom: 7px;
+    }
+
+    .campo input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #8b6f47;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .boton {
+        padding: 10px 20px;
+        background: #7b5e3b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+</style>
+
+
+<div class="formulario-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Crear Usuario
+        </h1>
+
+        <p>
+            Registra un nuevo usuario en el sistema.
+        </p>
+
+    </section>
+
+
+    <form method="POST" class="formulario">
+
+        {% csrf_token %}
+
+        <div class="campo">
+
+            <label>
+                Usuario
+            </label>
+
+            <input
+                type="text"
+                name="username"
+                required
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label>
+                Nombre
+            </label>
+
+            <input
+                type="text"
+                name="first_name"
+                required
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label>
+                Apellido
+            </label>
+
+            <input
+                type="text"
+                name="last_name"
+                required
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label>
+                Correo
+            </label>
+
+            <input
+                type="email"
+                name="email"
+                required
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label>
+                Contraseña
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                required
+            >
+
+        </div>
+
+
+        <button type="submit" class="boton">
+            Crear usuario
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
