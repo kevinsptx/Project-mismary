@@ -1,564 +1,277 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Clientes | MisMary</title>
-
-
-    <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-
-        /* CUERPO */
-
-        body {
-
-            background: #d8c3a5;
-
-            min-height: 100vh;
-
-            color: #5c4033;
-        }
-
-
-        /* BARRA SUPERIOR */
-
-        .navbar {
-
-            width: 100%;
-
-            background: #5c4033;
-
-            padding: 18px 40px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
-        }
-
-
-        /* LOGO */
-
-        .logo {
-
-            color: #f5ead7;
-
-            font-size: 24px;
-
-            font-weight: bold;
-
-            letter-spacing: 1px;
-        }
-
-
-        /* USUARIO */
-
-        .usuario {
-
-            color: #f5ead7;
-
-            font-size: 14px;
-        }
-
-
-        /* CONTENIDO */
-
-        .contenido {
-
-            max-width: 1100px;
-
-            margin: 50px auto;
-
-            padding: 0 25px;
-        }
-
-
-        /* TITULO */
-
-        .titulo {
-
-            text-align: center;
-
-            margin-bottom: 30px;
-        }
-
-
-        .titulo h1 {
-
-            color: #5c4033;
-
-            font-size: 32px;
-
-            margin-bottom: 8px;
-        }
-
-
-        .titulo p {
-
-            color: #806b55;
-
-            font-size: 16px;
-        }
-
-
-        /* BUSCADOR */
-
-        .buscador {
-
-            background: #f5ead7;
-
-            border: 2px solid #8b6f47;
-
-            border-radius: 10px;
-
-            padding: 20px;
-
-            margin-bottom: 30px;
-
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
-        }
-
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Clientes | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .clientes-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .buscador {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .buscador form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .buscador input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+        background: white;
+        color: #5c4033;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .buscador input:focus {
+        border-color: #60472d;
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .buscador button {
+        padding: 12px 25px;
+        background: #7b5e3b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .buscador button:hover {
+        background: #60472d;
+    }
+
+    .acciones {
+        margin-bottom: 30px;
+        text-align: right;
+    }
+
+    .boton {
+        display: inline-block;
+        padding: 12px 20px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .subtitulo {
+        color: #5c4033;
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    .lista-clientes {
+        display: grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .cliente {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+        transition: 0.3s;
+    }
+
+    .cliente:hover {
+        transform: translateY(-5px);
+        box-shadow:
+            0 8px 20px
+            rgba(70, 50, 30, 0.3);
+    }
+
+    .cliente h3 {
+        color: #5c4033;
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .cliente p {
+        color: #806b55;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .cliente strong {
+        color: #5c4033;
+    }
+
+    .informacion {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 18px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .informacion:hover {
+        background: #60472d;
+    }
+
+    .sin-clientes {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        color: #806b55;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    @media (max-width: 600px) {
 
         .buscador form {
-
-            display: flex;
-
-            gap: 10px;
+            flex-direction: column;
         }
-
-
-        .buscador input {
-
-            flex: 1;
-
-            padding: 12px;
-
-            border: 2px solid #8b6f47;
-
-            border-radius: 5px;
-
-            background: white;
-
-            color: #5c4033;
-
-            font-size: 15px;
-
-            outline: none;
-        }
-
-
-        .buscador input:focus {
-
-            border-color: #60472d;
-
-            box-shadow:
-                0 0 5px
-                rgba(96, 71, 45, 0.3);
-        }
-
 
         .buscador button {
-
-            padding: 12px 25px;
-
-            background: #7b5e3b;
-
-            color: white;
-
-            border: none;
-
-            border-radius: 5px;
-
-            font-size: 15px;
-
-            cursor: pointer;
-
-            transition: 0.3s;
+            width: 100%;
         }
-
-
-        .buscador button:hover {
-
-            background: #60472d;
-        }
-
-
-        /* BOTON REGISTRAR */
 
         .acciones {
-
-            margin-bottom: 30px;
-
-            text-align: right;
-        }
-
-
-        .boton {
-
-            display: inline-block;
-
-            padding: 12px 20px;
-
-            background: #7b5e3b;
-
-            color: white;
-
-            text-decoration: none;
-
-            border-radius: 5px;
-
-            font-size: 15px;
-
-            transition: 0.3s;
-        }
-
-
-        .boton:hover {
-
-            background: #60472d;
-        }
-
-
-        /* TITULO CLIENTES */
-
-        .subtitulo {
-
-            color: #5c4033;
-
-            font-size: 22px;
-
-            margin-bottom: 20px;
-        }
-
-
-        /* LISTA */
-
-        .lista-clientes {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(auto-fit, minmax(280px, 1fr));
-
-            gap: 25px;
-        }
-
-
-        /* TARJETA CLIENTE */
-
-        .cliente {
-
-            background: #f5ead7;
-
-            border: 2px solid #8b6f47;
-
-            border-radius: 10px;
-
-            padding: 25px;
-
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
-
-            transition: 0.3s;
-        }
-
-
-        .cliente:hover {
-
-            transform: translateY(-5px);
-
-            box-shadow:
-                0 8px 20px
-                rgba(70, 50, 30, 0.3);
-        }
-
-
-        .cliente h3 {
-
-            color: #5c4033;
-
-            font-size: 20px;
-
-            margin-bottom: 15px;
-        }
-
-
-        .cliente p {
-
-            color: #806b55;
-
-            font-size: 15px;
-
-            margin-bottom: 10px;
-        }
-
-
-        .cliente strong {
-
-            color: #5c4033;
-        }
-
-
-        /* BOTON INFORMACION */
-
-        .informacion {
-
-            display: inline-block;
-
-            margin-top: 10px;
-
-            padding: 10px 18px;
-
-            background: #7b5e3b;
-
-            color: white;
-
-            text-decoration: none;
-
-            border-radius: 5px;
-
-            font-size: 14px;
-
-            transition: 0.3s;
-        }
-
-
-        .informacion:hover {
-
-            background: #60472d;
-        }
-
-
-        /* SIN CLIENTES */
-
-        .sin-clientes {
-
-            background: #f5ead7;
-
-            border: 2px solid #8b6f47;
-
-            border-radius: 10px;
-
-            padding: 30px;
-
             text-align: center;
-
-            color: #806b55;
-
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
         }
 
+    }
 
-        /* RESPONSIVE */
-
-        @media (max-width: 600px) {
-
-            .navbar {
-
-                padding: 15px 20px;
-
-                flex-direction: column;
-
-                gap: 8px;
-            }
+</style>
 
 
-            .titulo h1 {
+<div class="clientes-contenido">
 
-                font-size: 26px;
-            }
+    <section class="titulo">
 
+        <h1>
+            Lista de Clientes
+        </h1>
 
-            .buscador form {
+        <p>
+            Consulta y administra los clientes registrados
+        </p>
 
-                flex-direction: column;
-            }
-
-
-            .buscador button {
-
-                width: 100%;
-            }
+    </section>
 
 
-            .acciones {
+    <section class="buscador">
 
-                text-align: center;
-            }
+        <form method="GET">
 
-        }
+            <input
+                type="text"
+                name="buscar"
+                placeholder="Buscar por nombre o teléfono"
+                value="{{ buscar|default:'' }}"
+            >
 
-    </style>
+            <button type="submit">
+                Buscar
+            </button>
 
-</head>
+        </form>
 
-
-<body>
-
-
-    <!-- BARRA SUPERIOR -->
-
-    <header class="navbar">
-
-        <div class="logo">
-
-            MisMary
-
-        </div>
+    </section>
 
 
-        <div class="usuario">
+    <div class="acciones">
 
-            Usuario:
-            <strong>{{ user.username }}</strong>
+        <a
+            href="{% url 'register_cliente' %}"
+            class="boton"
+        >
+            + Registrar cliente
+        </a>
 
-        </div>
-
-    </header>
-
-
-
-    <!-- CONTENIDO -->
-
-    <main class="contenido">
+    </div>
 
 
-        <!-- TITULO -->
-
-        <section class="titulo">
-
-            <h1>
-                Lista de Clientes
-            </h1>
-
-            <p>
-                Consulta y administra los clientes registrados
-            </p>
-
-        </section>
+    <h2 class="subtitulo">
+        Clientes
+    </h2>
 
 
+    <section class="lista-clientes">
 
-        <!-- BUSCADOR -->
+        {% for cliente in clientes %}
 
-        <section class="buscador">
+            <div class="cliente">
 
-            <form method="GET">
+                <h3>
+                    {{ cliente.nombre }}
+                </h3>
 
-                <input
-                    type="text"
-                    name="buscar"
-                    placeholder="Buscar por nombre o teléfono"
-                    value="{{ buscar|default:'' }}"
+                <p>
+                    <strong>Teléfono:</strong>
+                    {{ cliente.telefono }}
+                </p>
+
+                <p>
+                    <strong>Dirección:</strong>
+                    {{ cliente.direccion }}
+                </p>
+
+                <a
+                    href="{% url 'details_cliente' cliente.id %}"
+                    class="informacion"
                 >
+                    Ver información
+                </a>
 
-                <button type="submit">
-                    Buscar
-                </button>
-
-            </form>
-
-        </section>
+            </div>
 
 
+        {% empty %}
 
-        <!-- BOTON REGISTRAR -->
+            <div class="sin-clientes">
 
-        <div class="acciones">
+                <p>
+                    No se encontraron clientes.
+                </p>
 
-            <a href="{% url 'register_cliente' %}"
-               class="boton">
+            </div>
 
-                + Registrar cliente
+        {% endfor %}
 
-            </a>
+    </section>
 
-        </div>
+</div>
 
-
-
-        <!-- CLIENTES -->
-
-        <h2 class="subtitulo">
-            Clientes
-        </h2>
-
-
-        <section class="lista-clientes">
-
-
-            {% for cliente in clientes %}
-
-                <div class="cliente">
-
-                    <h3>
-                        {{ cliente.nombre }}
-                    </h3>
-
-
-                    <p>
-                        <strong>Teléfono:</strong>
-                        {{ cliente.telefono }}
-                    </p>
-
-
-                    <p>
-                        <strong>Dirección:</strong>
-                        {{ cliente.direccion }}
-                    </p>
-
-
-                    <a href="{% url 'details_cliente' cliente.id %}"
-                       class="informacion">
-
-                        Ver información
-
-                    </a>
-
-                </div>
-
-
-            {% empty %}
-
-                <div class="sin-clientes">
-
-                    <p>
-                        No se encontraron clientes.
-                    </p>
-
-                </div>
-
-            {% endfor %}
-
-
-        </section>
-
-
-    </main>
-
-
-</body>
-
-</html>
+{% endblock %}

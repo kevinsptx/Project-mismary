@@ -1,6 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Cliente
 
+
+@login_required
+def home(request):
+    return render(request, 'home.html')
+
+@login_required
 def list_cliente(request):
     buscar = request.GET.get('buscar')
 
@@ -17,7 +24,7 @@ def list_cliente(request):
         'clientes': clientes,
         'buscar': buscar
     })
-
+@login_required
 def register_cliente(request):
     if request.method == 'POST':
         nombre = request.POST['nombre']
@@ -27,11 +34,11 @@ def register_cliente(request):
         Cliente.objects.create(nombre= nombre, telefono=telefono, direccion=direccion)
         return redirect('list_cliente')
     return render(request,'register_cliente.html')
-
+@login_required
 def cliente_details(request,id):
     cliente=get_object_or_404(Cliente,id=id)
     return render(request,'cliente_details.html',{'cliente':cliente})
-
+@login_required
 def cliente_update(request,id):
     cliente= get_object_or_404(Cliente,id=id)
 
@@ -43,7 +50,7 @@ def cliente_update(request,id):
     
         return redirect('list_cliente')
     return render(request,'cliente_update.html',{'cliente':cliente})
-
+@login_required
 def cliente_delete(request,id):
     cliente=get_object_or_404(Cliente,id=id)
     cliente.delete()
