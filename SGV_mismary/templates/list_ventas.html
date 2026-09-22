@@ -1,14 +1,14 @@
 {% extends 'layout/base.html' %}
 
 {% block title %}
-Clientes | MisMary
+Ventas | MisMary
 {% endblock %}
 
 {% block content %}
 
 <style>
 
-    .clientes-contenido {
+    .ventas-contenido {
         max-width: 1100px;
         margin: 0 auto;
     }
@@ -88,14 +88,14 @@ Clientes | MisMary
         margin-bottom: 20px;
     }
 
-    .lista-clientes {
+    .lista-ventas {
         display: grid;
         grid-template-columns:
             repeat(auto-fit, minmax(280px, 1fr));
         gap: 25px;
     }
 
-    .cliente {
+    .venta {
         background: #f5ead7;
         border: 2px solid #8b6f47;
         border-radius: 10px;
@@ -106,46 +106,30 @@ Clientes | MisMary
         transition: 0.3s;
     }
 
-    .cliente:hover {
+    .venta:hover {
         transform: translateY(-5px);
         box-shadow:
             0 8px 20px
             rgba(70, 50, 30, 0.3);
     }
 
-    .cliente h3 {
+    .venta h3 {
         color: #5c4033;
         font-size: 20px;
         margin-bottom: 15px;
     }
 
-    .cliente p {
+    .venta p {
         color: #806b55;
         font-size: 15px;
         margin-bottom: 10px;
     }
 
-    .cliente strong {
+    .venta strong {
         color: #5c4033;
     }
 
-    .informacion {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 10px 18px;
-        background: #7b5e3b;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        font-size: 14px;
-        transition: 0.3s;
-    }
-
-    .informacion:hover {
-        background: #60472d;
-    }
-
-    .sin-clientes {
+    .sin-ventas {
         background: #f5ead7;
         border: 2px solid #8b6f47;
         border-radius: 10px;
@@ -176,16 +160,16 @@ Clientes | MisMary
 </style>
 
 
-<div class="clientes-contenido">
+<div class="ventas-contenido">
 
     <section class="titulo">
 
         <h1>
-            Lista de Clientes
+            Lista de Ventas
         </h1>
 
         <p>
-            Consulta y administra los clientes registrados
+            Consulta las ventas registradas
         </p>
 
     </section>
@@ -198,7 +182,7 @@ Clientes | MisMary
             <input
                 type="text"
                 name="buscar"
-                placeholder="Buscar por nombre o teléfono"
+                placeholder="Buscar por nombre del cliente"
                 value="{{ buscar|default:'' }}"
             >
 
@@ -214,56 +198,61 @@ Clientes | MisMary
     <div class="acciones">
 
         <a
-            href="{% url 'register_cliente' %}"
+            href="{% url 'register_venta' %}"
             class="boton"
         >
-            + Registrar cliente
+            + Registrar venta
         </a>
 
     </div>
 
 
     <h2 class="subtitulo">
-        Clientes
+        Ventas
     </h2>
 
 
-    <section class="lista-clientes">
+    <section class="lista-ventas">
 
-        {% for cliente in clientes %}
+        {% for venta in ventas %}
 
-            <div class="cliente">
+            <div class="venta">
 
                 <h3>
-                    {{ cliente.nombre }}
+                    Venta #{{ venta.id }}
                 </h3>
 
                 <p>
-                    <strong>Teléfono:</strong>
-                    {{ cliente.telefono }}
+                    <strong>Cliente:</strong>
+                    {{ venta.cliente.nombre }}
                 </p>
 
                 <p>
-                    <strong>Dirección:</strong>
-                    {{ cliente.direccion }}
+                    <strong>Valor total:</strong>
+                    ${{ venta.valor_total }}
+                </p>
+
+                <p>
+                    <strong>Fecha:</strong>
+                    {{ venta.fecha }}
                 </p>
 
                 <a
-                    href="{% url 'details_cliente' cliente.id %}"
+                    href="{% url 'details_venta' venta.id %}"
                     class="informacion"
                 >
-                    Ver información
-                </a>
+    Ver información
+</a>
 
             </div>
 
 
         {% empty %}
 
-            <div class="sin-clientes">
+            <div class="sin-ventas">
 
                 <p>
-                    No se encontraron clientes.
+                    No se encontraron ventas.
                 </p>
 
             </div>
@@ -275,3 +264,19 @@ Clientes | MisMary
 </div>
 
 {% endblock %}
+```
+
+Con tu `view` anterior funciona directamente porque el HTML espera:
+
+```python
+'ventas': ventas,
+'buscar': buscar
+```
+
+Y como la venta tiene una relación con `Cliente`, esta parte:
+
+```html
+{{ venta.cliente.nombre }}
+```
+
+muestra el nombre del cliente asociado a cada venta.

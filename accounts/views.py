@@ -7,8 +7,4 @@ class UserLoginView(LoginView):
     template_name = 'login.html'
 
 
-@login_required
-def home(request):
-    return render(request, 'home.html')
-
 
