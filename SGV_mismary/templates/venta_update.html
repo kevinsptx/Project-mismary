@@ -1,0 +1,245 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Actualizar Venta | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .venta-contenido {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .formulario {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 12px;
+        padding: 35px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .formulario h2 {
+        color: #5c4033;
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .formulario .descripcion {
+        color: #806b55;
+        margin-bottom: 30px;
+        font-size: 15px;
+    }
+
+    .campo {
+        margin-bottom: 22px;
+    }
+
+    .campo label {
+        display: block;
+        color: #5c4033;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    .campo input,
+    .campo select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        border: 2px solid #8b6f47;
+        border-radius: 6px;
+        background: white;
+        color: #5c4033;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .campo input:focus,
+    .campo select:focus {
+        border-color: #60472d;
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .botones {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .boton {
+        flex: 1;
+        padding: 13px;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .guardar {
+        background: #7b5e3b;
+        color: white;
+    }
+
+    .guardar:hover {
+        background: #60472d;
+    }
+
+    .cancelar {
+        background: #d8c5a9;
+        color: #5c4033;
+    }
+
+    .cancelar:hover {
+        background: #c5ad8c;
+    }
+
+    @media (max-width: 600px) {
+
+        .formulario {
+            padding: 25px;
+        }
+
+        .botones {
+            flex-direction: column;
+        }
+
+    }
+
+</style>
+
+
+<div class="venta-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Actualizar Venta
+        </h1>
+
+        <p>
+            Modifica la información de la venta registrada
+        </p>
+
+    </section>
+
+
+    <div class="formulario">
+
+        <h2>
+            Venta #{{ venta.id }}
+        </h2>
+
+        <p class="descripcion">
+            Actualiza los datos necesarios y guarda los cambios.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="campo">
+
+                <label for="cliente">
+                    Cliente
+                </label>
+
+                <select
+                    name="cliente"
+                    id="cliente"
+                    required
+                >
+
+                    {% for cliente in clientes %}
+
+                        <option
+                            value="{{ cliente.id }}"
+                            {% if cliente.id == venta.cliente.id %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ cliente.nombre }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="valor_total">
+                    Valor total
+                </label>
+
+                <input
+                    type="number"
+                    name="valor_total"
+                    id="valor_total"
+                    value="{{ venta.valor_total }}"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="fecha">
+                    Fecha
+                </label>
+
+                <input
+                    type="date"
+                    name="fecha"
+                    id="fecha"
+                    value="{{ venta.fecha|date:'Y-m-d' }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="botones">
+
+                <a
+                    href="{% url 'details_venta' venta.id %}"
+                    class="boton cancelar"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="boton guardar"
+                >
+                    Guardar cambios
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```
+
+Este ya queda más acorde con los otros HTML: **beige, café, bordes redondeados, campos separados y botones de cancelar/guardar**.

@@ -1,0 +1,282 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Ventas | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .ventas-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .buscador {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .buscador form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .buscador input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+        background: white;
+        color: #5c4033;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .buscador input:focus {
+        border-color: #60472d;
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .buscador button {
+        padding: 12px 25px;
+        background: #7b5e3b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .buscador button:hover {
+        background: #60472d;
+    }
+
+    .acciones {
+        margin-bottom: 30px;
+        text-align: right;
+    }
+
+    .boton {
+        display: inline-block;
+        padding: 12px 20px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .subtitulo {
+        color: #5c4033;
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    .lista-ventas {
+        display: grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .venta {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+        transition: 0.3s;
+    }
+
+    .venta:hover {
+        transform: translateY(-5px);
+        box-shadow:
+            0 8px 20px
+            rgba(70, 50, 30, 0.3);
+    }
+
+    .venta h3 {
+        color: #5c4033;
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .venta p {
+        color: #806b55;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .venta strong {
+        color: #5c4033;
+    }
+
+    .sin-ventas {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        color: #806b55;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    @media (max-width: 600px) {
+
+        .buscador form {
+            flex-direction: column;
+        }
+
+        .buscador button {
+            width: 100%;
+        }
+
+        .acciones {
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="ventas-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Lista de Ventas
+        </h1>
+
+        <p>
+            Consulta las ventas registradas
+        </p>
+
+    </section>
+
+
+    <section class="buscador">
+
+        <form method="GET">
+
+            <input
+                type="text"
+                name="buscar"
+                placeholder="Buscar por nombre del cliente"
+                value="{{ buscar|default:'' }}"
+            >
+
+            <button type="submit">
+                Buscar
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <div class="acciones">
+
+        <a
+            href="{% url 'register_venta' %}"
+            class="boton"
+        >
+            + Registrar venta
+        </a>
+
+    </div>
+
+
+    <h2 class="subtitulo">
+        Ventas
+    </h2>
+
+
+    <section class="lista-ventas">
+
+        {% for venta in ventas %}
+
+            <div class="venta">
+
+                <h3>
+                    Venta #{{ venta.id }}
+                </h3>
+
+                <p>
+                    <strong>Cliente:</strong>
+                    {{ venta.cliente.nombre }}
+                </p>
+
+                <p>
+                    <strong>Valor total:</strong>
+                    ${{ venta.valor_total }}
+                </p>
+
+                <p>
+                    <strong>Fecha:</strong>
+                    {{ venta.fecha }}
+                </p>
+
+                <a
+                    href="{% url 'details_venta' venta.id %}"
+                    class="informacion"
+                >
+    Ver información
+</a>
+
+            </div>
+
+
+        {% empty %}
+
+            <div class="sin-ventas">
+
+                <p>
+                    No se encontraron ventas.
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}
+```
+
+Con tu `view` anterior funciona directamente porque el HTML espera:
+
+```python
+'ventas': ventas,
+'buscar': buscar
+```
+
+Y como la venta tiene una relación con `Cliente`, esta parte:
+
+```html
+{{ venta.cliente.nombre }}
+```
+
+muestra el nombre del cliente asociado a cada venta.
