@@ -243,26 +243,24 @@ Menú Principal | MisMary
 
     <!-- USUARIOS -->
 
-    <div class="tarjeta">
+{% if user.is_superuser %}
 
-        <div class="icono">
+<div class="tarjeta">
+    <h2>Usuarios</h2>
+
+    <div class="icono">
             👤
-        </div>
-
-        <h2>
-            Usuarios
-        </h2>
-
-        <p>
-            Gestiona los usuarios
-            del sistema.
-        </p>
-
-        <a href="#" class="boton">
-            Ver usuarios
-        </a>
-
     </div>
+    <p>
+        Administra los usuarios del sistema.
+    </p>
+
+    <a href="{% url 'list_user' %}" class="boton">
+        Ver usuarios
+    </a>
+</div>
+
+{% endif %}
 
 
 </section>
