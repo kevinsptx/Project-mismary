@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Sistema de Gestión de Ventas</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+
+        body {
+            background: #d8c3a5;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            height: 100vh;
+        }
+
+
+        /* TARJETA DEL LOGIN */
+
+        .login {
+            width: 380px;
+
+            background: #f5ead7;
+
+            padding: 35px;
+
+            border-radius: 8px;
+
+            border: 2px solid #8b6f47;
+
+            box-shadow: 0 8px 20px rgba(70, 50, 30, 0.35);
+        }
+
+
+        /* TITULO */
+
+        h2 {
+            text-align: center;
+
+            color: #5c4033;
+
+            margin-bottom: 8px;
+
+            font-size: 25px;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* SUBTITULO */
+
+        .subtitulo {
+            text-align: center;
+
+            color: #806b55;
+
+            margin-bottom: 25px;
+
+            font-size: 14px;
+
+            font-style: italic;
+        }
+
+
+        /* ETIQUETAS */
+
+        label {
+            display: block;
+
+            margin-top: 10px;
+
+            margin-bottom: 6px;
+
+            font-weight: bold;
+
+            color: #5c4033;
+
+            font-size: 15px;
+        }
+
+
+        /* CAMPOS */
+
+        input {
+            width: 100%;
+
+            padding: 12px;
+
+            background: #fffaf0;
+
+            border: 1px solid #a58a68;
+
+            border-radius: 5px;
+
+            margin-bottom: 15px;
+
+            outline: none;
+
+            color: #4b382a;
+
+            font-size: 14px;
+        }
+
+
+        input::placeholder {
+            color: #a79580;
+        }
+
+
+        input:focus {
+            border-color: #7b5e3b;
+
+            box-shadow: 0 0 0 2px rgba(123, 94, 59, 0.15);
+        }
+
+
+        /* BOTÓN */
+
+        button {
+            width: 100%;
+
+            padding: 13px;
+
+            background: #7b5e3b;
+
+            color: #fdf6e9;
+
+            border: none;
+
+            border-radius: 5px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            letter-spacing: 0.5px;
+
+            margin-top: 5px;
+        }
+
+
+        button:hover {
+            background: #60472d;
+        }
+
+
+        /* MENSAJE DE ERROR */
+
+        .error {
+            color: #8b2e2e;
+
+            background: #ead1c1;
+
+            border: 1px solid #b77b6a;
+
+            text-align: center;
+
+            padding: 9px;
+
+            margin-bottom: 12px;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="login">
+
+        <h2>
+            Sistema de Gestión de Ventas
+        </h2>
+
+        <p class="subtitulo">
+            Ventas por Catálogo
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <label for="username">
+                Usuario
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Ingrese su usuario"
+                required
+            >
+
+
+            <label for="password">
+                Contraseña
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Ingrese su contraseña"
+                required
+            >
+
+
+            {% if form.errors %}
+
+                <p class="error">
+                    Usuario o contraseña incorrectos.
+                </p>
+
+            {% endif %}
+
+
+            <button type="submit">
+                Iniciar Sesión
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
