@@ -256,6 +256,24 @@ Menú Principal | MisMary
             </a>
 
         </div>
+{% if user.is_superuser %}
+
+<div class="tarjeta">
+    <h2>Usuarios</h2>
+
+    <div class="icono">
+            👤
+    </div>
+    <p>
+        Administra los usuarios del sistema.
+    </p>
+
+    <a href="{% url 'list_user' %}" class="boton">
+        Ver usuarios
+    </a>
+</div>
+
+{% endif %}
 
 
     </section>
