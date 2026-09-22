@@ -1,513 +1,336 @@
-<!DOCTYPE html>
-<html lang="es">
 
-<head>
+{% extends 'layout/base.html' %}
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Detalle Cliente | MisMary</title>
+{% block title %}
+Detalle Cliente | MisMary
+{% endblock %}
 
 
-    <style>
+{% block content %}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+<style>
 
-            font-family: Arial, Helvetica, sans-serif;
+    .detalle-contenido {
+
+        max-width: 700px;
+
+        margin: 0 auto;
+    }
+
+
+    .detalle-tarjeta {
+
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        padding: 35px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+
+    .informacion {
+
+        margin-bottom: 20px;
+
+        padding-bottom: 15px;
+
+        border-bottom: 1px solid #c5ae8d;
+    }
+
+
+    .informacion:last-child {
+
+        border-bottom: none;
+
+        margin-bottom: 0;
+    }
+
+
+    .informacion strong {
+
+        display: block;
+
+        color: #5c4033;
+
+        font-size: 15px;
+
+        margin-bottom: 6px;
+    }
+
+
+    .informacion span {
+
+        color: #806b55;
+
+        font-size: 16px;
+    }
+
+
+    .pendientes {
+
+        margin-top: 25px;
+
+        padding: 15px;
+
+        background: #e6d3b8;
+
+        border: 1px solid #8b6f47;
+
+        border-radius: 5px;
+
+        text-align: center;
+
+        color: #5c4033;
+
+        font-size: 15px;
+    }
+
+
+    .acciones {
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: 12px;
+
+        margin-top: 30px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .boton {
+
+        display: inline-block;
+
+        padding: 11px 20px;
+
+        background: #7b5e3b;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+        border: none;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+    }
+
+
+    .boton:hover {
+
+        background: #60472d;
+    }
+
+
+    .eliminar {
+
+        background: #8b4a3b;
+    }
+
+
+    .eliminar:hover {
+
+        background: #70382d;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .detalle-tarjeta {
+
+            padding: 25px;
         }
 
-
-        /* CUERPO */
-
-        body {
-
-            background: #d8c3a5;
-
-            min-height: 100vh;
-
-            color: #5c4033;
-        }
-
-
-        /* BARRA SUPERIOR */
-
-        .navbar {
-
-            width: 100%;
-
-            background: #5c4033;
-
-            padding: 18px 40px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
-        }
-
-
-        /* LOGO */
-
-        .logo {
-
-            color: #f5ead7;
-
-            font-size: 24px;
-
-            font-weight: bold;
-
-            letter-spacing: 1px;
-        }
-
-
-        /* USUARIO */
-
-        .usuario {
-
-            color: #f5ead7;
-
-            font-size: 14px;
-        }
-
-
-        /* CONTENIDO */
-
-        .contenido {
-
-            max-width: 700px;
-
-            margin: 50px auto;
-
-            padding: 0 25px;
-        }
-
-
-        /* TITULO */
-
-        .titulo {
-
-            text-align: center;
-
-            margin-bottom: 30px;
-        }
-
-
-        .titulo h1 {
-
-            color: #5c4033;
-
-            font-size: 32px;
-
-            margin-bottom: 8px;
-        }
-
-
-        .titulo p {
-
-            color: #806b55;
-
-            font-size: 16px;
-        }
-
-
-        /* TARJETA */
-
-        .tarjeta {
-
-            background: #f5ead7;
-
-            border: 2px solid #8b6f47;
-
-            border-radius: 10px;
-
-            padding: 35px;
-
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
-        }
-
-
-        /* ICONO */
-
-        .icono {
-
-            text-align: center;
-
-            font-size: 50px;
-
-            margin-bottom: 20px;
-        }
-
-
-        /* INFORMACION */
-
-        .informacion {
-
-            margin-bottom: 20px;
-
-            padding-bottom: 15px;
-
-            border-bottom: 1px solid #c5ae8d;
-        }
-
-
-        .informacion:last-child {
-
-            border-bottom: none;
-
-            margin-bottom: 0;
-        }
-
-
-        .informacion strong {
-
-            display: block;
-
-            color: #5c4033;
-
-            font-size: 15px;
-
-            margin-bottom: 6px;
-        }
-
-
-        .informacion span {
-
-            color: #806b55;
-
-            font-size: 16px;
-        }
-
-
-        /* COMPRAS PENDIENTES */
-
-        .pendientes {
-
-            margin-top: 25px;
-
-            padding: 15px;
-
-            background: #e6d3b8;
-
-            border: 1px solid #8b6f47;
-
-            border-radius: 5px;
-
-            text-align: center;
-
-            color: #5c4033;
-
-            font-size: 15px;
-        }
-
-
-        /* BOTONES */
 
         .acciones {
 
-            display: flex;
-
-            justify-content: center;
-
-            gap: 12px;
-
-            margin-top: 30px;
-
-            flex-wrap: wrap;
+            flex-direction: column;
         }
 
 
         .boton {
 
-            display: inline-block;
+            width: 100%;
 
-            padding: 11px 20px;
-
-            background: #7b5e3b;
-
-            color: white;
-
-            text-decoration: none;
-
-            border-radius: 5px;
-
-            font-size: 14px;
-
-            border: none;
-
-            cursor: pointer;
-
-            transition: 0.3s;
+            text-align: center;
         }
 
+    }
 
-        .boton:hover {
-
-            background: #60472d;
-        }
+</style>
 
 
-        /* BOTON ELIMINAR */
-
-        .eliminar {
-
-            background: #8b4a3b;
-        }
+<div class="detalle-contenido">
 
 
-        .eliminar:hover {
+    <!-- TITULO -->
 
-            background: #70382d;
-        }
+    <section class="titulo">
 
+        <h1>
+            Detalle del Cliente
+        </h1>
 
-        /* RESPONSIVE */
+        <p>
+            Información del cliente registrado
+        </p>
 
-        @media (max-width: 600px) {
-
-            .navbar {
-
-                padding: 15px 20px;
-
-                flex-direction: column;
-
-                gap: 8px;
-            }
+    </section>
 
 
-            .contenido {
 
-                margin-top: 30px;
-            }
+    <!-- TARJETA DEL CLIENTE -->
 
-
-            .titulo h1 {
-
-                font-size: 26px;
-            }
+    <section class="detalle-tarjeta">
 
 
-            .tarjeta {
+        <div class="informacion">
 
-                padding: 25px;
-            }
+            <strong>
+                ID del cliente
+            </strong>
 
-
-            .acciones {
-
-                flex-direction: column;
-            }
-
-
-            .boton {
-
-                width: 100%;
-
-                text-align: center;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-    <!-- BARRA SUPERIOR -->
-
-    <header class="navbar">
-
-        <div class="logo">
-
-            MisMary
+            <span>
+                {{ cliente.id }}
+            </span>
 
         </div>
 
 
-        <div class="usuario">
 
-            Usuario:
-            <strong>{{ user.username }}</strong>
+        <div class="informacion">
+
+            <strong>
+                Nombre
+            </strong>
+
+            <span>
+                {{ cliente.nombre }}
+            </span>
 
         </div>
 
-    </header>
 
 
+        <div class="informacion">
 
-    <!-- CONTENIDO -->
+            <strong>
+                Teléfono
+            </strong>
 
-    <main class="contenido">
+            <span>
+                {{ cliente.telefono }}
+            </span>
 
+        </div>
 
-        <!-- TITULO -->
 
-        <section class="titulo">
 
-            <h1>
-                Detalle del Cliente
-            </h1>
+        <div class="informacion">
 
-            <p>
-                Información del cliente registrado
-            </p>
+            <strong>
+                Dirección
+            </strong>
 
-        </section>
+            <span>
+                {{ cliente.direccion }}
+            </span>
 
+        </div>
 
 
-        <!-- TARJETA DEL CLIENTE -->
 
-        <section class="tarjeta">
+        <div class="pendientes">
 
-            <div class="informacion">
+            <strong>
+                Compras pendientes:
+            </strong>
 
-                <strong>
-                    ID del cliente
-                </strong>
+            No disponible por ahora
 
-                <span>
-                    {{ cliente.id }}
-                </span>
+        </div>
 
-            </div>
 
 
+        <!-- BOTONES -->
 
-            <div class="informacion">
+        <div class="acciones">
 
-                <strong>
-                    Nombre
-                </strong>
 
-                <span>
-                    {{ cliente.nombre }}
-                </span>
+            <a href="{% url 'list_cliente' %}"
+               class="boton">
 
-            </div>
+                Volver
 
+            </a>
 
 
-            <div class="informacion">
+            <a href="{% url 'cliente_update' cliente.id %}"
+               class="boton">
 
-                <strong>
-                    Teléfono
-                </strong>
+                Actualizar
 
-                <span>
-                    {{ cliente.telefono }}
-                </span>
+            </a>
 
-            </div>
 
+            <a href="{% url 'cliente_delete' cliente.id %}"
+               class="boton eliminar"
+               onclick="return confirmarEliminacion()">
 
+                Eliminar
 
-            <div class="informacion">
+            </a>
 
-                <strong>
-                    Dirección
-                </strong>
 
-                <span>
-                    {{ cliente.direccion }}
-                </span>
+        </div>
 
-            </div>
 
+    </section>
 
 
-            <div class="pendientes">
+</div>
 
-                <strong>
-                    Compras pendientes:
-                </strong>
 
-                No disponible por ahora
 
-            </div>
+<!-- CONFIRMACION ELIMINAR -->
 
+<script>
 
+    function confirmarEliminacion() {
 
-            <!-- BOTONES -->
+        if (!confirm(
+            "¿Está seguro de que desea eliminar este cliente?"
+        )) {
 
-            <div class="acciones">
-
-
-                <a href="{% url 'list_cliente' %}"
-                   class="boton">
-
-                    Volver
-
-                </a>
-
-
-                <a href="{% url 'cliente_update' cliente.id %}"
-                   class="boton">
-
-                    Actualizar
-
-                </a>
-
-
-                <a href="{% url 'cliente_delete' cliente.id %}"
-                   class="boton eliminar"
-                   onclick="return confirmarEliminacion()">
-
-                    Eliminar
-
-                </a>
-
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-
-
-    <!-- CONFIRMACION ELIMINAR -->
-
-    <script>
-
-        function confirmarEliminacion() {
-
-            if (!confirm(
-                "¿Está seguro de que desea eliminar este cliente?"
-            )) {
-
-                return false;
-            }
-
-
-            if (!confirm(
-                "¿El cliente tiene algo pendiente?"
-            )) {
-
-                return false;
-            }
-
-
-            return true;
+            return false;
         }
 
-    </script>
+
+        if (!confirm(
+            "¿El cliente tiene algo pendiente?"
+        )) {
+
+            return false;
+        }
 
 
-</body>
+        return true;
+    }
 
-</html>
+</script>
+
+{% endblock %}
