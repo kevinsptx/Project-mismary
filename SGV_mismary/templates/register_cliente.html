@@ -1,426 +1,203 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'layout/base.html' %}
 
-<head>
+{% block title %}
+Registrar Cliente | MisMary
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<style>
 
-    <title>Registrar Cliente | MisMary</title>
+    .registro-contenido {
+        max-width: 600px;
+        margin: 0 auto;
+    }
 
+    .formulario {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 35px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
 
-    <style>
+    .campo {
+        margin-bottom: 22px;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    .campo label {
+        display: block;
+        color: #5c4033;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
 
-            font-family: Arial, Helvetica, sans-serif;
-        }
+    .campo input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+        background: white;
+        color: #5c4033;
+        font-size: 15px;
+        outline: none;
+    }
 
+    .campo input:focus {
+        border-color: #60472d;
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
 
-        /* CUERPO */
+    .boton {
+        width: 100%;
+        padding: 12px;
+        background: #7b5e3b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
 
-        body {
+    .boton:hover {
+        background: #60472d;
+    }
 
-            background: #d8c3a5;
+    .volver {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #7b5e3b;
+        text-decoration: none;
+        font-size: 14px;
+    }
 
-            min-height: 100vh;
+    .volver:hover {
+        text-decoration: underline;
+    }
 
-            color: #5c4033;
-        }
-
-
-        /* BARRA SUPERIOR */
-
-        .navbar {
-
-            width: 100%;
-
-            background: #5c4033;
-
-            padding: 18px 40px;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
-        }
-
-
-        /* LOGO */
-
-        .logo {
-
-            color: #f5ead7;
-
-            font-size: 24px;
-
-            font-weight: bold;
-
-            letter-spacing: 1px;
-        }
-
-
-        /* USUARIO */
-
-        .usuario {
-
-            color: #f5ead7;
-
-            font-size: 14px;
-        }
-
-
-        /* CONTENIDO */
-
-        .contenido {
-
-            max-width: 600px;
-
-            margin: 50px auto;
-
-            padding: 0 25px;
-        }
-
-
-        /* TITULO */
-
-        .titulo {
-
-            text-align: center;
-
-            margin-bottom: 30px;
-        }
-
-
-        .titulo h1 {
-
-            color: #5c4033;
-
-            font-size: 32px;
-
-            margin-bottom: 8px;
-        }
-
-
-        .titulo p {
-
-            color: #806b55;
-
-            font-size: 16px;
-        }
-
-
-        /* FORMULARIO */
+    @media (max-width: 600px) {
 
         .formulario {
-
-            background: #f5ead7;
-
-            border: 2px solid #8b6f47;
-
-            border-radius: 10px;
-
-            padding: 35px;
-
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
+            padding: 25px;
         }
 
+    }
 
-        /* CAMPOS */
+</style>
 
-        .campo {
+<div class="registro-contenido">
 
-            margin-bottom: 22px;
-        }
 
+<section class="titulo">
 
-        .campo label {
+    <h1>
+        Registrar Cliente
+    </h1>
 
-            display: block;
+    <p>
+        Agrega un nuevo cliente al sistema
+    </p>
 
-            color: #5c4033;
+</section>
 
-            font-weight: bold;
 
-            margin-bottom: 8px;
+<form
+    method="POST"
+    class="formulario"
+>
 
-            font-size: 15px;
-        }
+    {% csrf_token %}
 
 
-        .campo input {
+    <!-- NOMBRE -->
 
-            width: 100%;
+    <div class="campo">
 
-            padding: 12px;
+        <label for="nombre">
+            Nombre
+        </label>
 
-            border: 2px solid #8b6f47;
+        <input
+            type="text"
+            required
+            maxlength="100"
+            id="nombre"
+            name="nombre"
+            placeholder="Ingrese el nombre del cliente"
+        >
 
-            border-radius: 5px;
+    </div>
 
-            background: white;
 
-            color: #5c4033;
+    <!-- TELEFONO -->
 
-            font-size: 15px;
+    <div class="campo">
 
-            outline: none;
-        }
+        <label for="telefono">
+            Teléfono
+        </label>
 
+        <input
+            type="text"
+            required
+            maxlength="10"
+            id="telefono"
+            name="telefono"
+            placeholder="Ingrese el teléfono"
+        >
 
-        .campo input:focus {
+    </div>
 
-            border-color: #60472d;
 
-            box-shadow:
-                0 0 5px
-                rgba(96, 71, 45, 0.3);
-        }
+    <!-- DIRECCION -->
 
+    <div class="campo">
 
-        /* BOTON REGISTRAR */
+        <label for="direccion">
+            Dirección
+        </label>
 
-        .boton {
+        <input
+            type="text"
+            required
+            maxlength="150"
+            id="direccion"
+            name="direccion"
+            placeholder="Ingrese la dirección"
+        >
 
-            width: 100%;
+    </div>
 
-            padding: 12px;
 
-            background: #7b5e3b;
+    <!-- BOTON -->
 
-            color: white;
+    <button
+        type="submit"
+        class="boton"
+    >
+        Registrar Cliente
+    </button>
 
-            border: none;
 
-            border-radius: 5px;
+    <!-- VOLVER -->
 
-            font-size: 15px;
+    <a
+        href="{% url 'list_cliente' %}"
+        class="volver"
+    >
+        Volver a la lista de clientes
+    </a>
 
-            cursor: pointer;
+</form>
 
-            transition: 0.3s;
-        }
 
+</div>
 
-        .boton:hover {
-
-            background: #60472d;
-        }
-
-
-        /* BOTON VOLVER */
-
-        .volver {
-
-            display: block;
-
-            text-align: center;
-
-            margin-top: 20px;
-
-            color: #7b5e3b;
-
-            text-decoration: none;
-
-            font-size: 14px;
-        }
-
-
-        .volver:hover {
-
-            text-decoration: underline;
-        }
-
-
-        /* RESPONSIVE */
-
-        @media (max-width: 600px) {
-
-            .navbar {
-
-                padding: 15px 20px;
-
-                flex-direction: column;
-
-                gap: 8px;
-            }
-
-
-            .contenido {
-
-                margin-top: 30px;
-            }
-
-
-            .titulo h1 {
-
-                font-size: 26px;
-            }
-
-
-            .formulario {
-
-                padding: 25px;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-    <!-- BARRA SUPERIOR -->
-
-    <header class="navbar">
-
-        <div class="logo">
-
-            MisMary
-
-        </div>
-
-
-        <div class="usuario">
-
-            Usuario:
-            <strong>{{ user.username }}</strong>
-
-        </div>
-
-    </header>
-
-
-
-    <!-- CONTENIDO -->
-
-    <main class="contenido">
-
-
-        <section class="titulo">
-
-            <h1>
-                Registrar Cliente
-            </h1>
-
-            <p>
-                Agrega un nuevo cliente al sistema
-            </p>
-
-        </section>
-
-
-
-        <!-- FORMULARIO -->
-
-        <form method="POST"
-              class="formulario">
-
-            {% csrf_token %}
-
-
-            <!-- NOMBRE -->
-
-            <div class="campo">
-
-                <label for="nombre">
-                    Nombre
-                </label>
-
-                <input
-                    type="text"
-                    required
-                    maxlength="100"
-                    id="nombre"
-                    name="nombre"
-                    placeholder="Ingrese el nombre del cliente"
-                >
-
-            </div>
-
-
-
-            <!-- TELEFONO -->
-
-            <div class="campo">
-
-                <label for="telefono">
-                    Teléfono
-                </label>
-
-                <input
-                    type="text"
-                    required
-                    maxlength="10"
-                    id="telefono"
-                    name="telefono"
-                    placeholder="Ingrese el teléfono"
-                >
-
-            </div>
-
-
-
-            <!-- DIRECCION -->
-
-            <div class="campo">
-
-                <label for="direccion">
-                    Dirección
-                </label>
-
-                <input
-                    type="text"
-                    required
-                    maxlength="150"
-                    id="direccion"
-                    name="direccion"
-                    placeholder="Ingrese la dirección"
-                >
-
-            </div>
-
-
-
-            <!-- BOTON -->
-
-            <button type="submit"
-                    class="boton">
-
-                Registrar Cliente
-
-            </button>
-
-
-            <!-- VOLVER -->
-
-            <a href="{% url 'list_cliente' %}"
-               class="volver">
-
-                Volver a la lista de clientes
-
-            </a>
-
-
-        </form>
-
-
-    </main>
-
-
-</body>
-
-</html>
+{% endblock %}
