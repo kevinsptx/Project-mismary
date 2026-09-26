@@ -10,6 +10,9 @@
 
     <title>{% block title %}MisMary{% endblock %}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
 
@@ -18,150 +21,363 @@
             padding: 0;
             box-sizing: border-box;
 
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        :root {
+            --crema: #fffaf2;
+            --crema-borde: #f1e6d3;
+            --cafe-oscuro: #4a2c17;
+            --cafe-texto: #5c3a21;
+            --texto-suave: #a06a3f;
+            --naranja: #ff8a4c;
+            --naranja-oscuro: #d9622f;
+
+            --ancho-sidebar: 230px;
+            --ancho-sidebar-colapsado: 76px;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
         }
 
 
         body {
 
-            background: #d8c3a5;
+            /* Fondo café animado con blobs (queda igual, es el "ambiente") */
+            background: linear-gradient(160deg, #4a2c17 0%, #3a2010 45%, #2b160b 75%, #4a2c17 100%);
+            background-size: 300% 300%;
+            animation: gradientMove 14s ease-in-out infinite;
 
             min-height: 100vh;
 
-            color: #5c4033;
+            color: var(--cafe-texto);
+
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 30%; }
+            50% { background-position: 100% 70%; }
+            100% { background-position: 0% 30%; }
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::before {
+            width: 450px;
+            height: 450px;
+            background: var(--naranja);
+            opacity: 0.4;
+            top: -140px;
+            left: -110px;
+            animation: float1 9s ease-in-out infinite;
+        }
+
+        body::after {
+            width: 400px;
+            height: 400px;
+            background: #ffb877;
+            opacity: 0.25;
+            bottom: -160px;
+            right: -90px;
+            animation: float2 11s ease-in-out infinite;
+        }
+
+        .blob-extra-layout {
+            position: fixed;
+            width: 320px;
+            height: 320px;
+            background: var(--naranja-oscuro);
+            opacity: 0.3;
+            border-radius: 50%;
+            filter: blur(90px);
+            top: 55%;
+            right: 20%;
+            z-index: 0;
+            pointer-events: none;
+            animation: float3 13s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, 30px) scale(1.08); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-35px, -25px) scale(1.05); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-25px, 35px) scale(1.1); }
         }
 
 
-        /* BARRA SUPERIOR */
+        /* ===== SIDEBAR IZQUIERDO ===== */
 
-        .navbar {
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--ancho-sidebar);
 
-            width: 100%;
-
-            background: #5c4033;
-
-            padding: 16px 40px;
+            background: var(--crema);
+            border-right: 1px solid var(--crema-borde);
 
             display: flex;
+            flex-direction: column;
 
+            z-index: 10;
+
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
+
+            transition: width 0.3s ease;
+
+            overflow: hidden;
+        }
+
+        .sidebar.colapsado {
+            width: var(--ancho-sidebar-colapsado);
+        }
+
+
+        /* CABECERA DEL SIDEBAR */
+
+        .sidebar-top {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
 
-            align-items: center;
+            padding: 22px 18px;
 
-            box-shadow:
-                0 3px 10px
-                rgba(70, 50, 30, 0.3);
+            border-bottom: 1px solid var(--crema-borde);
         }
 
+        .logo-sidebar {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 21px;
+            color: var(--naranja-oscuro);
 
-        /* LOGO */
+            white-space: nowrap;
+            overflow: hidden;
 
-        .logo {
-
-            color: #f5ead7;
-
-            font-size: 24px;
-
-            font-weight: bold;
-
-            letter-spacing: 1px;
+            transition: opacity 0.2s ease;
         }
 
+        .sidebar.colapsado .logo-sidebar {
+            opacity: 0;
+            width: 0;
+        }
 
-        /* OPCIONES */
+        .toggle-btn {
+            flex-shrink: 0;
 
-        .nav-opciones {
+            width: 34px;
+            height: 34px;
 
             display: flex;
-
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            gap: 4px;
 
-            gap: 15px;
-        }
-
-
-        .nav-opciones a {
-
-            color: #f5ead7;
-
-            text-decoration: none;
-
-            font-size: 14px;
-
-            padding: 9px 15px;
-
-            border-radius: 5px;
-
-            transition: 0.3s;
-        }
-
-
-        .nav-opciones a:hover {
-
-            background: #7b5e3b;
-        }
-
-
-        /* USUARIO */
-
-        .usuario {
-
-            color: #f5ead7;
-
-            font-size: 14px;
-
-            padding-left: 10px;
-        }
-
-
-        .usuario strong {
-
-            color: white;
-        }
-
-
-        /* BOTON CERRAR SESION */
-
-        .logout-form {
-
-            margin: 0;
-        }
-
-
-        .logout-btn {
-
-            padding: 9px 15px;
-
-            background: #8b4a3b;
-
-            color: white;
-
+            background: transparent;
             border: none;
-
-            border-radius: 5px;
-
-            font-size: 14px;
+            border-radius: 8px;
 
             cursor: pointer;
 
-            transition: 0.3s;
+            transition: background 0.2s ease;
         }
 
+        .toggle-btn:hover {
+            background: rgba(217, 98, 47, 0.12);
+        }
+
+        .toggle-btn span {
+            display: block;
+            width: 18px;
+            height: 2px;
+            background: var(--cafe-texto);
+            border-radius: 2px;
+            transition: transform 0.25s ease;
+        }
+
+
+        /* NAVEGACIÓN */
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 18px 12px;
+
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            padding: 11px 12px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+            color: var(--cafe-texto);
+            font-size: 14px;
+            font-weight: 600;
+
+            white-space: nowrap;
+            overflow: hidden;
+
+            border-left: 3px solid transparent;
+
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 138, 76, 0.14);
+            border-left-color: var(--naranja-oscuro);
+            color: var(--naranja-oscuro);
+        }
+
+        .nav-icono {
+            font-size: 18px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-texto {
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar.colapsado .nav-texto {
+            opacity: 0;
+            width: 0;
+        }
+
+        .sidebar.colapsado .nav-item {
+            justify-content: center;
+            padding: 11px 0;
+        }
+
+
+        /* PIE DEL SIDEBAR: USUARIO + LOGOUT */
+
+        .sidebar-bottom {
+            padding: 16px 12px 22px;
+            border-top: 1px solid var(--crema-borde);
+        }
+
+        .usuario-sidebar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 8px 12px;
+            margin-bottom: 10px;
+
+            font-size: 13px;
+            color: var(--texto-suave);
+
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .usuario-sidebar strong {
+            color: var(--cafe-texto);
+        }
+
+        .sidebar.colapsado .usuario-sidebar .nav-texto {
+            display: none;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .logout-btn {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            padding: 10px 12px;
+
+            background: linear-gradient(135deg, var(--naranja) 0%, var(--naranja-oscuro) 100%);
+
+            color: #fff8f0;
+
+            border: none;
+            border-radius: 10px;
+
+            font-family: 'Quicksand', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+            overflow: hidden;
+
+            box-shadow: 0 4px 12px rgba(217, 98, 47, 0.35);
+
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s;
+        }
 
         .logout-btn:hover {
+            background: linear-gradient(135deg, #ff9a5e 0%, #b8511f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(217, 98, 47, 0.45);
+        }
 
-            background: #70382d;
+        .logout-btn:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .sidebar.colapsado .logout-btn .nav-texto {
+            display: none;
         }
 
 
-        /* CONTENIDO */
+        /* ===== CONTENIDO PRINCIPAL ===== */
+
+        .contenido-wrap {
+            margin-left: var(--ancho-sidebar);
+            transition: margin-left 0.3s ease;
+
+            position: relative;
+            z-index: 1;
+
+            min-height: 100vh;
+        }
+
+        .contenido-wrap.expandido {
+            margin-left: var(--ancho-sidebar-colapsado);
+        }
 
         .contenido {
-
             max-width: 1100px;
-
             margin: 40px auto;
-
             padding: 0 25px;
         }
 
@@ -169,46 +385,37 @@
         /* TITULOS */
 
         .titulo {
-
             text-align: center;
-
             margin-bottom: 30px;
         }
 
-
         .titulo h1 {
-
-            color: #5c4033;
-
+            color: #fff8f0;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
             font-size: 30px;
-
             margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
-
 
         .titulo p {
-
-            color: #806b55;
-
+            color: #ffd9b0;
             font-size: 15px;
+            font-weight: 600;
         }
 
 
-        /* TARJETA GENERAL */
+        /* TARJETA GENERAL (crema, no café) */
 
         .contenedor {
-
-            background: #f5ead7;
-
-            border: 2px solid #8b6f47;
-
-            border-radius: 10px;
-
+            background: var(--crema);
+            border: 1px solid var(--crema-borde);
+            border-radius: 18px;
             padding: 25px;
 
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+
+            color: var(--cafe-texto);
         }
 
 
@@ -216,28 +423,30 @@
 
         @media (max-width: 700px) {
 
-            .navbar {
-
-                padding: 15px 20px;
-
-                flex-direction: column;
-
-                gap: 12px;
+            .sidebar {
+                width: var(--ancho-sidebar-colapsado);
             }
 
-
-            .nav-opciones {
-
-                flex-wrap: wrap;
-
-                justify-content: center;
+            .sidebar .logo-sidebar,
+            .sidebar .nav-texto {
+                display: none;
             }
 
+            .sidebar.colapsado {
+                width: 0;
+                border-right: none;
+            }
+
+            .contenido-wrap {
+                margin-left: var(--ancho-sidebar-colapsado);
+            }
+
+            .contenido-wrap.expandido {
+                margin-left: 0;
+            }
 
             .contenido {
-
                 margin: 25px auto;
-
             }
 
         }
@@ -249,42 +458,46 @@
 
 <body>
 
-
-    <!-- BARRA SUPERIOR -->
-
-    <header class="navbar">
+    <div class="blob-extra-layout"></div>
 
 
-        <div class="logo">
+    <!-- SIDEBAR IZQUIERDO (inicia colapsado) -->
 
-            MisMary
+    <aside class="sidebar colapsado" id="sidebar">
+
+        <div class="sidebar-top">
+
+            <div class="logo-sidebar">
+                MisMary
+            </div>
+
+            <button class="toggle-btn" id="toggleBtn" aria-label="Alternar menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
         </div>
 
 
-        <nav class="nav-opciones">
+        <nav class="sidebar-nav">
 
-
-            <!-- VOLVER AL HOME -->
-
-            <a href="{% url 'home' %}">
-
-                🏠 Home
-
+            <a href="{% url 'home' %}" class="nav-item">
+                <span class="nav-icono">🏠</span>
+                <span class="nav-texto">Home</span>
             </a>
 
+        </nav>
 
-            <!-- USUARIO -->
 
-            <div class="usuario">
+        <div class="sidebar-bottom">
 
-                👤
-                <strong>{{ user.username }}</strong>
-
+            <div class="usuario-sidebar">
+                <span class="nav-icono">👤</span>
+                <span class="nav-texto">
+                    <strong>{{ user.username }}</strong>
+                </span>
             </div>
-
-
-            <!-- CERRAR SESION -->
 
             <form method="POST"
                   action="{% url 'logout' %}"
@@ -292,36 +505,44 @@
 
                 {% csrf_token %}
 
-                <button type="submit"
-                        class="logout-btn">
-
-                    Cerrar sesión
-
+                <button type="submit" class="logout-btn">
+                    <span class="nav-icono">🚪</span>
+                    <span class="nav-texto">Cerrar sesión</span>
                 </button>
 
             </form>
 
+        </div>
 
-        </nav>
-
-    </header>
-
+    </aside>
 
 
-    <!-- CONTENIDO DE CADA PAGINA -->
+    <!-- CONTENIDO DE CADA PÁGINA -->
 
-    <main class="contenido">
+    <div class="contenido-wrap expandido" id="contenidoWrap">
+
+        <main class="contenido">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </main>
+
+    </div>
 
 
-        {% block content %}
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const contenidoWrap = document.getElementById('contenidoWrap');
+        const toggleBtn = document.getElementById('toggleBtn');
 
-        {% endblock %}
-
-
-    </main>
-
+        toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('colapsado');
+            contenidoWrap.classList.toggle('expandido');
+        });
+    </script>
 
 </body>
 
 </html>
-```
