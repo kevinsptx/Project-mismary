@@ -1,768 +1,440 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'layout/base.html' %}
 
-<head>
+{% block title %}
+Deudas | MisMary
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<style>
+    .deudas-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
 
-    <title>Deudas | MisMary</title>
+    .titulo {
+        margin-bottom: 25px;
+    }
 
-    <style>
+    .titulo h1 {
+        color: #5c4033;
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
+    .titulo p {
+        color: #777;
+        margin: 0;
+    }
+
+    .seccion-abonos {
+        background: #fffaf5;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(92, 64, 51, 0.08);
+    }
+
+    .seccion-abonos h2 {
+        color: #5c4033;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .deudas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .deuda-card {
+        background: #f8eee5;
+        border-radius: 12px;
+        padding: 20px;
+        border-left: 5px solid #d97732;
+    }
+
+    .deuda-card h3 {
+        color: #5c4033;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .deuda-card p {
+        color: #555;
+        margin: 7px 0;
+    }
+
+    .saldo {
+        color: #c45b20;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .boton {
+        display: inline-block;
+        background: #d97732;
+        color: white;
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .boton:hover {
+        background: #b95d1d;
+    }
+
+    .filtro-fechas {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 15px;
+        align-items: end;
+    }
+
+    .campo-fecha {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .campo-fecha label {
+        color: #5c4033;
+        font-weight: bold;
+    }
+
+    .campo-fecha input {
+        padding: 11px;
+        border: 1px solid #d8c2b0;
+        border-radius: 8px;
+        background: white;
+        font-size: 15px;
+    }
+
+    .boton-consultar {
+        height: 42px;
+        background: #d97732;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0 20px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .boton-consultar:hover {
+        background: #b95d1d;
+    }
+
+    .tabla-contenedor {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #5c4033;
+        color: white;
+        padding: 13px;
+        text-align: left;
+    }
+
+    td {
+        padding: 13px;
+        border-bottom: 1px solid #eadbd0;
+        color: #555;
+    }
+
+    tr:hover td {
+        background: #fff8f2;
+    }
+
+    .mensaje-vacio {
+        color: #777;
+        background: #f8eee5;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 0;
+    }
+
+    .form-abono {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .form-abono input {
+        padding: 10px;
+        border: 1px solid #d8c2b0;
+        border-radius: 8px;
+        width: 150px;
+    }
+
+    .acciones {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .boton-secundario {
+        background: #8c6b5a;
+    }
+
+    .boton-secundario:hover {
+        background: #6f5142;
+    }
+
+    .boton-eliminar {
+        background: #b94a48;
+    }
+
+    .boton-eliminar:hover {
+        background: #963b39;
+    }
+
+    @media (max-width: 700px) {
+        .filtro-fechas {
+            grid-template-columns: 1fr;
         }
-
-        body {
-            background: #d8c3a5;
-            min-height: 100vh;
-            color: #5c4033;
-        }
-
-        /* ========================================= */
-        /* NAVBAR */
-        /* ========================================= */
-
-        .navbar {
-            width: 100%;
-            background: #5c4033;
-            padding: 18px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
-        }
-
-        .logo {
-            color: #f5ead7;
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .usuario {
-            color: #f5ead7;
-            font-size: 14px;
-        }
-
-        /* ========================================= */
-        /* CONTENIDO */
-        /* ========================================= */
-
-        .contenido {
-            max-width: 1100px;
-            margin: 50px auto;
-            padding: 0 25px;
-        }
-
-        .titulo {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .titulo h1 {
-            color: #5c4033;
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .titulo p {
-            color: #806b55;
-            font-size: 16px;
-        }
-
-        /* ========================================= */
-        /* MENSAJES */
-        /* ========================================= */
-
-        .mensajes {
-            margin-bottom: 25px;
-        }
-
-        .mensaje {
-            padding: 14px 18px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            background: #eadbc3;
-            border: 1px solid #8b6f47;
-            color: #5c4033;
-            font-weight: bold;
-        }
-
-        /* ========================================= */
-        /* TARJETAS DE DEUDAS */
-        /* ========================================= */
-
-        .tarjetas {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .tarjeta {
-            background: #f5ead7;
-            border: 2px solid #8b6f47;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
-
-            transition: 0.3s;
-        }
-
-        .tarjeta:hover {
-            transform: translateY(-5px);
-        }
-
-        .icono {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .tarjeta h2 {
-            color: #5c4033;
-            margin-bottom: 10px;
-            font-size: 20px;
-        }
-
-        .tarjeta p {
-            color: #806b55;
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        .saldo {
-            font-size: 22px;
-            font-weight: bold;
-            color: #7b5e3b;
-            margin: 15px 0;
-        }
-
-        /* ========================================= */
-        /* BOTONES */
-        /* ========================================= */
-
-        .boton {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #7b5e3b;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .boton:hover {
-            background: #60472d;
-        }
-
-        /* ========================================= */
-        /* FORMULARIO DE ABONO */
-        /* ========================================= */
 
         .form-abono {
-            margin-top: 20px;
-            padding-top: 18px;
-            border-top: 1px solid #c5aa83;
-        }
-
-        .form-abono label {
-            display: block;
-            color: #5c4033;
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 14px;
+            flex-direction: column;
+            align-items: stretch;
         }
 
         .form-abono input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #8b6f47;
-            border-radius: 5px;
-            background: white;
-            font-size: 14px;
-            margin-bottom: 10px;
+            width: auto;
         }
+    }
+</style>
 
-        .form-abono input:focus {
-            outline: none;
-            border: 2px solid #7b5e3b;
-        }
+<div class="deudas-contenido">
 
-        .boton-abono {
-            width: 100%;
-            padding: 10px;
-            background: #7b5e3b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.3s;
-        }
+```
+<div class="titulo">
+    <h1>💰 Deudas de Clientes</h1>
+    <p>Consulta los saldos pendientes y administra los abonos.</p>
+</div>
 
-        .boton-abono:hover {
-            background: #60472d;
-        }
+<section class="seccion-abonos">
+    <h2>📋 Saldos pendientes</h2>
 
-        /* ========================================= */
-        /* SIN DEUDAS */
-        /* ========================================= */
+    {% if deudas %}
+    <div class="deudas-grid">
 
-        .sin-deudas {
-            background: #f5ead7;
-            border: 2px solid #8b6f47;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-        }
+        {% for deuda in deudas %}
+        <div class="deuda-card">
 
-        .volver {
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        /* ========================================= */
-        /* SECCIÓN DE ABONOS REALIZADOS */
-        /* ========================================= */
-
-        .seccion-abonos {
-            margin-top: 45px;
-            background: #f5ead7;
-            border: 2px solid #8b6f47;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
-        }
-
-        .titulo-abonos {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .titulo-abonos h2 {
-            color: #5c4033;
-            font-size: 25px;
-            margin-bottom: 8px;
-        }
-
-        .titulo-abonos p {
-            color: #806b55;
-            font-size: 14px;
-        }
-
-        .tabla-contenedor {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #7b5e3b;
-            color: white;
-        }
-
-        th {
-            padding: 14px;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        td {
-            padding: 14px;
-            border-bottom: 1px solid #c5aa83;
-            color: #5c4033;
-            background: #f5ead7;
-        }
-
-        tbody tr:hover td {
-            background: #eadbc3;
-        }
-
-        .valor {
-            font-weight: bold;
-            color: #7b5e3b;
-            font-size: 16px;
-        }
-
-        .sin-abonos {
-            text-align: center;
-            padding: 25px;
-        }
-
-        .sin-abonos h3 {
-            color: #5c4033;
-            margin-bottom: 8px;
-        }
-
-        .sin-abonos p {
-            color: #806b55;
-        }
-
-        /* ========================================= */
-        /* BOTÓN EDITAR */
-        /* ========================================= */
-
-        .boton-editar {
-            display: inline-block;
-            padding: 8px 14px;
-            background: #7b5e3b;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 13px;
-            transition: 0.3s;
-        }
-
-        .boton-editar:hover {
-            background: #60472d;
-        }
-
-        /* ========================================= */
-        /* BOTÓN ELIMINAR */
-        /* ========================================= */
-
-        .boton-eliminar {
-            display: inline-block;
-            padding: 8px 14px;
-            background: #8b3a2f;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 13px;
-            transition: 0.3s;
-            margin-left: 5px;
-        }
-
-        .boton-eliminar:hover {
-            background: #6f2d25;
-        }
-
-        /* ========================================= */
-        /* RESPONSIVE */
-        /* ========================================= */
-
-        @media (max-width: 600px) {
-
-            .navbar {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .titulo h1 {
-                font-size: 26px;
-            }
-
-            .contenido {
-                margin-top: 30px;
-            }
-
-            .seccion-abonos {
-                padding: 15px;
-            }
-
-            .boton-editar,
-            .boton-eliminar {
-                display: block;
-                margin: 5px 0;
-                text-align: center;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-    <!-- ========================================= -->
-    <!-- NAVBAR -->
-    <!-- ========================================= -->
-
-    <header class="navbar">
-
-        <div class="logo">
-            MisMary
-        </div>
-
-        <div class="usuario">
-
-            Usuario:
-            <strong>{{ user.username }}</strong>
-
-        </div>
-
-    </header>
-
-
-    <main class="contenido">
-
-
-        <!-- ========================================= -->
-        <!-- MENSAJES -->
-        <!-- ========================================= -->
-
-        {% if messages %}
-
-        <div class="mensajes">
-
-            {% for message in messages %}
-
-            <div class="mensaje">
-
-                {{ message }}
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-        {% endif %}
-
-
-        <!-- ========================================= -->
-        <!-- TÍTULO -->
-        <!-- ========================================= -->
-
-        <section class="titulo">
-
-            <h1>
-                Deudas de Clientes
-            </h1>
+            <h3>{{ deuda.cliente.nombre }}</h3>
 
             <p>
-                Consulta los saldos pendientes y registra abonos.
+                <strong>Total:</strong>
+                ${{ deuda.valor_total }}
             </p>
 
-        </section>
+            <p>
+                <strong>Saldo pendiente:</strong>
+            </p>
 
+            <p class="saldo">
+                ${{ deuda.saldo }}
+            </p>
 
-        <!-- ========================================= -->
-        <!-- DEUDAS -->
-        <!-- ========================================= -->
+            <p>
+                <strong>Estado:</strong>
+                {{ deuda.estado }}
+            </p>
 
-        {% if deudas %}
-
-        <section class="tarjetas">
-
-
-            {% for deuda in deudas %}
-
-            <div class="tarjeta">
-
-
-                <div class="icono">
-                    👤
-                </div>
-
-
-                <h2>
-
-                    {{ deuda.cliente.nombre }}
-
-                </h2>
-
-
-                <p>
-
-                    Deuda total:
-                    ${{ deuda.valor_total }}
-
-                </p>
-
-
-                <p>
-
-                    Saldo pendiente:
-
-                </p>
-
-
-                <div class="saldo">
-
-                    ${{ deuda.saldo }}
-
-                </div>
-
-
-                <!-- ================================= -->
-                <!-- VER DEUDA -->
-                <!-- ================================= -->
-
-                <a
-                    href="{% url 'detalle_deuda' deuda.id %}"
-                    class="boton">
-
-                    Ver deuda
-
+            <div class="acciones">
+                <a href="{% url 'detalle_deuda' deuda.id %}" class="boton boton-secundario">
+                    Ver detalles
                 </a>
 
-
-                <!-- ================================= -->
-                <!-- REGISTRAR ABONO -->
-                <!-- ================================= -->
-
-                <form
-                    method="POST"
-                    class="form-abono">
-
-                    {% csrf_token %}
-
-                    <input
-                        type="hidden"
-                        name="deuda_id"
-                        value="{{ deuda.id }}">
-
-
-                    <label>
-                        Registrar abono
-                    </label>
-
-
-                    <input
-                        type="number"
-                        name="valor"
-                        placeholder="Ingrese el valor"
-                        min="0.01"
-                        step="0.01"
-                        required>
-
-
-                    <button
-                        type="submit"
-                        class="boton-abono">
-
-                        💰 Registrar abono
-
-                    </button>
-
-                </form>
-
-
+                <a href="{% url 'registrar_abono' deuda.id %}" class="boton">
+                    Registrar abono
+                </a>
             </div>
 
-            {% endfor %}
+        </div>
+        {% endfor %}
 
+    </div>
+    {% else %}
+    <p class="mensaje-vacio">
+        No hay deudas registradas.
+    </p>
+    {% endif %}
+</section>
 
-        </section>
+<section class="seccion-abonos">
+    <h2>📅 Consultar ventas por fecha</h2>
 
+    <form method="GET" action="{% url 'inicio' %}">
 
-        {% else %}
+        <div class="filtro-fechas">
 
-
-        <!-- ========================================= -->
-        <!-- SIN DEUDAS -->
-        <!-- ========================================= -->
-
-        <div class="sin-deudas">
-
-            <div class="icono">
-                📋
+            <div class="campo-fecha">
+                <label for="fecha_inicio">Fecha inicial</label>
+                <input
+                    type="date"
+                    id="fecha_inicio"
+                    name="fecha_inicio"
+                    value="{{ fecha_inicio|default:'' }}"
+                    required
+                >
             </div>
 
-            <h2>
-                No hay deudas registradas
-            </h2>
+            <div class="campo-fecha">
+                <label for="fecha_fin">Fecha final</label>
+                <input
+                    type="date"
+                    id="fecha_fin"
+                    name="fecha_fin"
+                    value="{{ fecha_fin|default:'' }}"
+                    required
+                >
+            </div>
 
-            <p>
-                Actualmente no existen deudas pendientes.
-            </p>
+            <button type="submit" class="boton-consultar">
+                🔎 Consultar ventas
+            </button>
 
         </div>
 
+    </form>
+</section>
 
-        {% endif %}
+{% if ventas_filtradas %}
+<section class="seccion-abonos">
 
+    <h2>🛒 Ventas encontradas</h2>
 
+    <div class="tabla-contenedor">
 
-        <!-- ========================================= -->
-        <!-- ABONOS REALIZADOS -->
-        <!-- ========================================= -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
 
-        <section class="seccion-abonos">
+            <tbody>
+                {% for venta in ventas_filtradas %}
+                <tr>
+                    <td>{{ venta.cliente.nombre }}</td>
+                    <td>{{ venta.fecha|date:"d/m/Y" }}</td>
+                    <td>${{ venta.valor_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
+    </div>
 
-            <div class="titulo-abonos">
+</section>
 
-                <h2>
-                    💰 Abonos realizados
-                </h2>
+{% elif fecha_inicio and fecha_fin %}
 
-                <p>
-                    Consulta los pagos registrados.
-                </p>
+<section class="seccion-abonos">
 
-            </div>
+    <h2>🛒 Ventas encontradas</h2>
 
+    <p class="mensaje-vacio">
+        No se encontraron ventas en este rango de fechas.
+    </p>
 
-            {% if abonos %}
+</section>
 
+{% endif %}
 
-            <div class="tabla-contenedor">
+<section class="seccion-abonos">
 
+    <h2>💵 Abonos realizados</h2>
 
-                <table>
+    {% if abonos %}
 
+    <div class="tabla-contenedor">
 
-                    <thead>
+        <table>
 
-                        <tr>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Valor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
 
-                            <th>
-                                Cliente
-                            </th>
+            <tbody>
 
-                            <th>
-                                Fecha
-                            </th>
+                {% for abono in abonos %}
 
-                            <th>
-                                Valor
-                            </th>
+                <tr>
 
-                            <th>
-                                Acción
-                            </th>
+                    <td>
+                        {{ abono.deuda.cliente.nombre }}
+                    </td>
 
-                        </tr>
+                    <td>
+                        {{ abono.fecha|date:"d/m/Y" }}
+                    </td>
 
-                    </thead>
+                    <td>
+                        ${{ abono.valor }}
+                    </td>
 
+                    <td>
 
-                    <tbody>
+                        <div class="acciones">
 
+                            <a
+                                href="{% url 'editar_abono' abono.id %}"
+                                class="boton boton-secundario"
+                            >
+                                Editar
+                            </a>
 
-                        {% for abono in abonos %}
+                            <a
+                                href="{% url 'eliminar_abono' abono.id %}"
+                                class="boton boton-eliminar"
+                            >
+                                Eliminar
+                            </a>
 
+                        </div>
 
-                        <tr>
+                    </td>
 
+                </tr>
 
-                            <!-- CLIENTE -->
+                {% endfor %}
 
-                            <td>
+            </tbody>
 
-                                👤
-                                {{ abono.deuda.cliente.nombre }}
+        </table>
 
-                            </td>
+    </div>
 
+    {% else %}
 
-                            <!-- FECHA -->
+    <p class="mensaje-vacio">
+        No hay abonos registrados.
+    </p>
 
-                            <td>
+    {% endif %}
 
-                                {{ abono.fecha|date:"d/m/Y H:i" }}
+</section>
+```
 
-                            </td>
+</div>
 
-
-                            <!-- VALOR -->
-
-                            <td class="valor">
-
-                                ${{ abono.valor }}
-
-                            </td>
-
-
-                            <!-- ACCIONES -->
-
-                            <td>
-
-
-                                <!-- EDITAR -->
-
-                                <a
-                                    href="{% url 'editar_abono' abono.id %}"
-                                    class="boton-editar">
-
-                                    ✏️ Editar
-
-                                </a>
-
-
-                                <!-- ELIMINAR -->
-
-                                <a
-                                    href="{% url 'eliminar_abono' abono.id %}"
-                                    class="boton-eliminar">
-
-                                    🗑️ Eliminar
-
-                                </a>
-
-
-                            </td>
-
-
-                        </tr>
-
-
-                        {% endfor %}
-
-
-                    </tbody>
-
-
-                </table>
-
-
-            </div>
-
-
-            {% else %}
-
-
-            <!-- ========================================= -->
-            <!-- SIN ABONOS -->
-            <!-- ========================================= -->
-
-            <div class="sin-abonos">
-
-                <div class="icono">
-                    💰
-                </div>
-
-                <h3>
-                    No hay abonos registrados
-                </h3>
-
-                <p>
-                    Todavía no se han registrado pagos.
-                </p>
-
-            </div>
-
-
-            {% endif %}
-
-
-        </section>
-
-
-    </main>
-
-
-</body>
-
-</html>
+{% endblock %}

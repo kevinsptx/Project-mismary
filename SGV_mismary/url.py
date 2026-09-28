@@ -14,32 +14,9 @@ urlpatterns = [
     path('details_venta/<int:id>', views.venta_details, name='details_venta'),
     path('venta_update/<int:id>', views.venta_update, name='venta_update'),
     path('venta_delete/<int:id>', views.venta_delete, name='venta_delete'),
-        path(
-        "",
-        views.inicio,
-        name="inicio"
-    ),
-
-    path(
-        "deuda/<int:deuda_id>/abono/",
-        views.registrar_abono,
-        name="registrar_abono"
-    ),
-
-    path(
-        "deuda/<int:deuda_id>/",
-        views.detalle_deuda,
-        name="detalle_deuda"
-    ),
-
-    path(
-        "abono/<int:abono_id>/editar/",
-        views.editar_abono,
-        name="editar_abono"
-    ),
-
-    path(
-    "abono/<int:abono_id>/eliminar/",
-    views.eliminar_abono,
-    name="eliminar_abono")
+    path("inicio_abono/", views.inicio, name="inicio"),
+    path("deuda/<int:deuda_id>/abono/", views.registrar_abono, name="registrar_abono"),
+    path("deuda/<int:deuda_id>/", views.detalle_deuda, name="detalle_deuda"),
+    path("abono/<int:abono_id>/editar/", views.editar_abono, name="editar_abono"),
+    path("abono/<int:abono_id>/eliminar/", views.eliminar_abono, name="eliminar_abono"),
 ]

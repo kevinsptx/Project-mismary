@@ -1,279 +1,235 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'layout/base.html' %}
 
-<head>
+{% block title %}
+Editar Abono | MisMary
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<style>
 
-    <title>Editar Abono | MisMary</title>
+    .editar-contenido {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
 
-    <style>
+    .tarjeta {
+        background: #fffdf9;
+        border-radius: 18px;
+        padding: 32px;
+        border: 1px solid #f2e4d8;
+        box-shadow: 0 4px 18px rgba(190, 140, 110, 0.10);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+    .titulo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-        body {
-            background: #d8c3a5;
-            min-height: 100vh;
-            color: #5c4033;
-        }
+    .titulo h1 {
+        color: #d98c70;
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
 
-        .navbar {
-            width: 100%;
-            background: #5c4033;
-            padding: 18px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
-        }
+    .titulo p {
+        color: #8b817a;
+        font-size: 15px;
+    }
 
-        .logo {
-            color: #f5ead7;
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
+    .informacion {
+        margin-bottom: 25px;
+        padding: 18px;
+        background: #fff3eb;
+        border-radius: 12px;
+        border: 1px solid #f4ddd0;
+    }
 
-        .usuario {
-            color: #f5ead7;
-            font-size: 14px;
-        }
+    .informacion p {
+        margin-bottom: 8px;
+        color: #6f6863;
+        font-size: 15px;
+    }
 
-        .contenido {
-            max-width: 600px;
-            margin: 60px auto;
-            padding: 0 25px;
+    .informacion p:last-child {
+        margin-bottom: 0;
+    }
+
+    .informacion strong {
+        color: #cf8065;
+    }
+
+    .formulario label {
+        display: block;
+        color: #625c58;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    .formulario input {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #e7d8ce;
+        border-radius: 9px;
+        margin-bottom: 10px;
+        font-size: 15px;
+        color: #625c58;
+        background: #ffffff;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .formulario input:focus {
+        border-color: #dda08a;
+        box-shadow: 0 0 0 3px rgba(221, 160, 138, 0.12);
+    }
+
+    .error {
+        color: #b86d61;
+        margin-bottom: 15px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .botones {
+        display: flex;
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    .boton {
+        flex: 1;
+        padding: 13px 20px;
+        border: none;
+        border-radius: 9px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .guardar {
+        background: #dda08a;
+        color: #ffffff;
+    }
+
+    .guardar:hover {
+        background: #cf8d75;
+    }
+
+    .cancelar {
+        background: #f5e8df;
+        color: #9b7565;
+    }
+
+    .cancelar:hover {
+        background: #edddd2;
+    }
+
+    @media (max-width: 600px) {
+
+        .editar-contenido {
+            margin-top: 25px;
+            padding: 0 15px;
         }
 
         .tarjeta {
-            background: #f5ead7;
-            border: 2px solid #8b6f47;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow:
-                0 5px 15px
-                rgba(70, 50, 30, 0.2);
-        }
-
-        .titulo {
-            text-align: center;
-            margin-bottom: 30px;
+            padding: 22px;
         }
 
         .titulo h1 {
-            color: #5c4033;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .titulo p {
-            color: #806b55;
-        }
-
-        .informacion {
-            margin-bottom: 25px;
-            padding: 15px;
-            background: #eadbc3;
-            border-radius: 6px;
-        }
-
-        .informacion p {
-            margin-bottom: 8px;
-            color: #5c4033;
-        }
-
-        .formulario label {
-            display: block;
-            color: #5c4033;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .formulario input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #8b6f47;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .error {
-            color: #8b3a2f;
-            margin-bottom: 15px;
-            font-weight: bold;
+            font-size: 24px;
         }
 
         .botones {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            flex-direction: column;
         }
 
-        .boton {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            text-align: center;
-            font-size: 14px;
-            cursor: pointer;
-        }
+    }
 
-        .guardar {
-            background: #7b5e3b;
-            color: white;
-        }
+</style>
 
-        .guardar:hover {
-            background: #60472d;
-        }
+<div class="editar-contenido">
 
-        .cancelar {
-            background: #8b6f47;
-            color: white;
-        }
+```
+<div class="tarjeta">
 
-        .cancelar:hover {
-            background: #60472d;
-        }
+    <div class="titulo">
 
-        @media (max-width: 600px) {
+        <h1>
+            ✏️ Editar abono
+        </h1>
 
-            .navbar {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 8px;
-            }
+        <p>
+            Corrige el valor del abono registrado.
+        </p>
 
-            .contenido {
-                margin-top: 30px;
-            }
+    </div>
 
-            .botones {
-                flex-direction: column;
-            }
+    <div class="informacion">
 
-        }
+        <p>
+            <strong>Cliente:</strong>
+            {{ abono.deuda.cliente.nombre }}
+        </p>
 
-    </style>
+        <p>
+            <strong>Valor actual:</strong>
+            ${{ abono.valor }}
+        </p>
 
-</head>
+    </div>
 
+    <form method="POST" class="formulario">
 
-<body>
+        {% csrf_token %}
 
-    <header class="navbar">
+        {{ form.non_field_errors }}
 
-        <div class="logo">
-            MisMary
-        </div>
+        <label for="{{ form.valor.id_for_label }}">
+            Nuevo valor del abono
+        </label>
 
-        <div class="usuario">
+        {{ form.valor }}
 
-            Usuario:
-            <strong>{{ user.username }}</strong>
+        {% if form.valor.errors %}
 
-        </div>
-
-    </header>
-
-
-    <main class="contenido">
-
-        <div class="tarjeta">
-
-            <div class="titulo">
-
-                <h1>
-                    ✏️ Editar abono
-                </h1>
-
-                <p>
-                    Corrige el valor del abono registrado.
-                </p>
-
+            <div class="error">
+                {{ form.valor.errors }}
             </div>
 
+        {% endif %}
 
-            <div class="informacion">
+        <div class="botones">
 
-                <p>
-                    <strong>Cliente:</strong>
-                    {{ abono.deuda.cliente.nombre }}
-                </p>
+            <button
+                type="submit"
+                class="boton guardar">
 
-                <p>
-                    <strong>Valor actual:</strong>
-                    ${{ abono.valor }}
-                </p>
+                💾 Guardar cambios
 
-            </div>
+            </button>
 
+            <a
+                href="{% url 'inicio' %}"
+                class="boton cancelar">
 
-            <form method="POST"
-                  class="formulario">
+                Cancelar
 
-                {% csrf_token %}
-
-
-                {{ form.non_field_errors }}
-
-
-                <label for="{{ form.valor.id_for_label }}">
-                    Nuevo valor del abono
-                </label>
-
-                {{ form.valor }}
-
-
-                {% if form.valor.errors %}
-
-                    <div class="error">
-
-                        {{ form.valor.errors }}
-
-                    </div>
-
-                {% endif %}
-
-
-                <div class="botones">
-
-                    <button
-                        type="submit"
-                        class="boton guardar">
-
-                        💾 Guardar cambios
-
-                    </button>
-
-
-                    <a
-                        href="{% url 'inicio' %}"
-                        class="boton cancelar">
-
-                        Cancelar
-
-                    </a>
-
-                </div>
-
-            </form>
+            </a>
 
         </div>
 
-    </main>
+    </form>
 
-</body>
+</div>
+```
 
-</html>
+</div>
+
+{% endblock %}
