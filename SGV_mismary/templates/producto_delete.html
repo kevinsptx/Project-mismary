@@ -1,0 +1,216 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Eliminar Producto | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .eliminar-contenido {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+
+    .titulo {
+        margin-bottom: 30px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .titulo p {
+        color: #806b55;
+        font-size: 16px;
+    }
+
+
+    .confirmacion {
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        padding: 30px;
+
+        text-align: center;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+
+    .confirmacion h2 {
+        color: #5c4033;
+
+        font-size: 22px;
+
+        margin-bottom: 20px;
+    }
+
+
+    .confirmacion p {
+        color: #806b55;
+
+        font-size: 16px;
+
+        margin-bottom: 25px;
+    }
+
+
+    .nombre-producto {
+        color: #5c4033;
+
+        font-weight: bold;
+    }
+
+
+    .botones {
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+    }
+
+
+    .boton {
+        padding: 12px 20px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        font-size: 15px;
+
+        text-decoration: none;
+
+        cursor: pointer;
+    }
+
+
+    .boton-eliminar {
+        background: #a94442;
+
+        color: white;
+    }
+
+
+    .boton-eliminar:hover {
+        background: #843534;
+    }
+
+
+    .boton-cancelar {
+        background: #806b55;
+
+        color: white;
+    }
+
+
+    .boton-cancelar:hover {
+        background: #5c4033;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .eliminar-contenido {
+            width: 95%;
+        }
+
+        .botones {
+            flex-direction: column;
+        }
+
+        .boton {
+            width: 100%;
+
+            box-sizing: border-box;
+        }
+
+    }
+
+</style>
+
+
+<div class="eliminar-contenido">
+
+
+    <section class="titulo">
+
+        <h1>
+            Eliminar producto
+        </h1>
+
+        <p>
+            Confirma la eliminación del producto seleccionado.
+        </p>
+
+    </section>
+
+
+    <div class="confirmacion">
+
+        <h2>
+            ¿Está seguro de eliminar este producto?
+        </h2>
+
+
+        <p>
+
+            Producto:
+
+            <span class="nombre-producto">
+                {{ producto.nombre }}
+            </span>
+
+        </p>
+
+
+        <p>
+            Esta acción no se puede deshacer.
+        </p>
+
+
+        <div class="botones">
+
+            <form
+                method="POST"
+                style="display: inline;"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="boton boton-eliminar"
+                >
+                    Sí, eliminar
+                </button>
+
+            </form>
+
+
+            <a
+                href="{% url 'list_producto' %}"
+                class="boton boton-cancelar"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

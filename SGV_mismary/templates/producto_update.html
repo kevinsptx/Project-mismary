@@ -1,0 +1,280 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Editar Producto | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .producto-contenido {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+
+    /* TÍTULO */
+
+    .titulo {
+        margin-bottom: 30px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .titulo p {
+        color: #806b55;
+        font-size: 16px;
+    }
+
+
+    /* FORMULARIO */
+
+    .formulario {
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        padding: 30px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+
+    .campo {
+        margin-bottom: 20px;
+    }
+
+
+    .campo label {
+        display: block;
+
+        color: #5c4033;
+
+        font-weight: bold;
+
+        margin-bottom: 8px;
+    }
+
+
+    .campo input,
+    .campo select {
+        width: 100%;
+
+        padding: 12px;
+
+        border: 1px solid #8b6f47;
+
+        border-radius: 5px;
+
+        box-sizing: border-box;
+
+        font-size: 15px;
+    }
+
+
+    .campo input:focus,
+    .campo select:focus {
+        outline: none;
+
+        border-color: #7b5e3b;
+    }
+
+
+    /* BOTONES */
+
+    .botones {
+        display: flex;
+
+        gap: 10px;
+
+        margin-top: 25px;
+    }
+
+
+    .boton {
+        padding: 12px 20px;
+
+        background: #7b5e3b;
+
+        color: white;
+
+        text-decoration: none;
+
+        border: none;
+
+        border-radius: 5px;
+
+        font-size: 15px;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+    }
+
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+
+    .boton-cancelar {
+        background: #806b55;
+    }
+
+
+    .boton-cancelar:hover {
+        background: #5c4033;
+    }
+
+
+    /* ERRORES */
+
+    .errores {
+        color: #a94442;
+
+        margin-bottom: 15px;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .producto-contenido {
+            width: 95%;
+        }
+
+        .botones {
+            flex-direction: column;
+        }
+
+        .boton {
+            text-align: center;
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<div class="producto-contenido">
+
+
+    <!-- TÍTULO -->
+
+    <section class="titulo">
+
+        <h1>
+            Editar producto
+        </h1>
+
+        <p>
+            Modifica la información del producto seleccionado.
+        </p>
+
+    </section>
+
+
+    <!-- FORMULARIO -->
+
+    <form method="POST" class="formulario">
+
+        {% csrf_token %}
+
+
+        {% if form.errors %}
+
+            <div class="errores">
+                Por favor, corrige los errores del formulario.
+            </div>
+
+        {% endif %}
+
+
+        <!-- NOMBRE -->
+
+        <div class="campo">
+
+            {{ form.nombre.label_tag }}
+
+            {{ form.nombre }}
+
+            {{ form.nombre.errors }}
+
+        </div>
+
+
+        <!-- PRECIO -->
+
+        <div class="campo">
+
+            {{ form.precio_venta.label_tag }}
+
+            {{ form.precio_venta }}
+
+            {{ form.precio_venta.errors }}
+
+        </div>
+
+
+        <!-- CANTIDAD DISPONIBLE -->
+
+        <div class="campo">
+
+            {{ form.cantidad_disponible.label_tag }}
+
+            {{ form.cantidad_disponible }}
+
+            {{ form.cantidad_disponible.errors }}
+
+        </div>
+
+
+        <!-- CATEGORÍA -->
+
+        <div class="campo">
+
+            {{ form.categoria.label_tag }}
+
+            {{ form.categoria }}
+
+            {{ form.categoria.errors }}
+
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <div class="botones">
+
+            <button
+                type="submit"
+                class="boton"
+            >
+                Guardar cambios
+            </button>
+
+
+            <a
+                href="{% url 'list_producto' %}"
+                class="boton boton-cancelar"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,332 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Registrar Producto | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .producto-contenido {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .titulo {
+        margin-bottom: 30px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .titulo p {
+        color: #806b55;
+        font-size: 16px;
+    }
+
+    .formulario-producto {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 30px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .campo {
+        margin-bottom: 22px;
+    }
+
+    .campo label {
+        display: block;
+        color: #5c4033;
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .campo input,
+    .campo select {
+        width: 100%;
+        padding: 12px;
+
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+
+        background: white;
+        color: #5c4033;
+
+        font-size: 15px;
+        outline: none;
+
+        transition: 0.3s;
+    }
+
+    .campo input:focus,
+    .campo select:focus {
+        border-color: #60472d;
+
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .campo input::placeholder {
+        color: #a08b75;
+    }
+
+    .errores {
+        color: #a94442;
+        font-size: 14px;
+        margin-top: 6px;
+    }
+
+    .errores ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .error-general {
+        background: #f2dede;
+        border: 1px solid #c9a6a6;
+        border-radius: 5px;
+        padding: 12px;
+        margin-bottom: 20px;
+        color: #8a4b4b;
+    }
+
+    .acciones {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .boton {
+        display: inline-block;
+
+        padding: 12px 20px;
+
+        border-radius: 5px;
+
+        font-size: 15px;
+
+        text-decoration: none;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+    }
+
+    .guardar {
+        background: #7b5e3b;
+        color: white;
+        border: none;
+    }
+
+    .guardar:hover {
+        background: #60472d;
+    }
+
+    .cancelar {
+        background: white;
+        color: #5c4033;
+        border: 2px solid #8b6f47;
+    }
+
+    .cancelar:hover {
+        background: #e8dcc9;
+    }
+
+    .obligatorio {
+        color: #8b6f47;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .producto-contenido {
+            width: 95%;
+        }
+
+        .formulario-producto {
+            padding: 20px;
+        }
+
+        .acciones {
+            flex-direction: column;
+        }
+
+        .boton {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="producto-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Registrar Producto
+        </h1>
+
+        <p>
+            Registra un nuevo producto de cosmética en el catálogo
+        </p>
+
+    </section>
+
+
+    <section class="formulario-producto">
+
+        {% if form.non_field_errors %}
+
+            <div class="error-general">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- NOMBRE DEL PRODUCTO -->
+
+            <div class="campo">
+
+                <label for="{{ form.nombre.id_for_label }}">
+
+                    Nombre del producto
+                    <span class="obligatorio">*</span>
+
+                </label>
+
+                {{ form.nombre }}
+
+                {% if form.nombre.errors %}
+
+                    <div class="errores">
+                        {{ form.nombre.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- PRECIO DE VENTA -->
+
+            <div class="campo">
+
+                <label for="{{ form.precio_venta.id_for_label }}">
+
+                    Precio de venta
+                    <span class="obligatorio">*</span>
+
+                </label>
+
+                {{ form.precio_venta }}
+
+                {% if form.precio_venta.errors %}
+
+                    <div class="errores">
+                        {{ form.precio_venta.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- CANTIDAD DISPONIBLE -->
+
+            <div class="campo">
+
+                <label for="{{ form.cantidad_disponible.id_for_label }}">
+
+                    Cantidad disponible
+                    <span class="obligatorio">*</span>
+
+                </label>
+
+                {{ form.cantidad_disponible }}
+
+                {% if form.cantidad_disponible.errors %}
+
+                    <div class="errores">
+                        {{ form.cantidad_disponible.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- CATEGORÍA -->
+
+            <div class="campo">
+
+                <label for="{{ form.categoria.id_for_label }}">
+
+                    Categoría
+                    <span class="obligatorio">*</span>
+
+                </label>
+
+                {{ form.categoria }}
+
+                {% if form.categoria.errors %}
+
+                    <div class="errores">
+                        {{ form.categoria.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- BOTONES -->
+
+            <div class="acciones">
+
+                <a
+                    href="{% url 'list_producto' %}"
+                    class="boton cancelar"
+                >
+                    Cancelar
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="boton guardar"
+                >
+                    Guardar producto
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+{% endblock %}
