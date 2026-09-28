@@ -287,32 +287,78 @@ def productos_mas_vendidos(request):
             'fecha_fin': fecha_fin
         }
     )
+@login_required
 def register_venta(request):
-    if request.method == 'POST':
-        cliente_id = request.POST['cliente']
-        valor_total = Decimal(request.POST['valor_total'])
-        valor_pagado = Decimal(request.POST.get('valor_pagado') or 0)
-        fecha = request.POST['fecha']
 
-        # Lo pagado no puede ser mayor que el total
+    if request.method == 'POST':
+
+        cliente_id = request.POST.get('cliente')
+        valor_total = Decimal(request.POST.get('valor_total') or 0)
+        valor_pagado = Decimal(request.POST.get('valor_pagado') or 0)
+        fecha = request.POST.get('fecha')
+
+        # Producto seleccionado
+        producto_id = request.POST.get('producto')
+        cantidad = int(request.POST.get('cantidad') or 1)
+
+        # Validaciones
         if valor_pagado > valor_total:
-            messages.error(request, "Lo pagado no puede ser mayor que el valor total.")
+            messages.error(
+                request,
+                "Lo pagado no puede ser mayor que el valor total."
+            )
             return redirect('register_venta')
 
-        cliente = get_object_or_404(Cliente, id=cliente_id)
+        if cantidad <= 0:
+            messages.error(
+                request,
+                "La cantidad debe ser mayor que cero."
+            )
+            return redirect('register_venta')
+
+        cliente = get_object_or_404(
+            Cliente,
+            id=cliente_id
+        )
+
+        producto = get_object_or_404(
+            Producto,
+            id=producto_id
+        )
+
+        # Verificar existencia
+        if cantidad > producto.cantidad_disponible:
+            messages.error(
+                request,
+                f"No hay suficientes unidades de {producto.nombre}."
+            )
+            return redirect('register_venta')
 
         with transaction.atomic():
-            Venta.objects.create(
+
+            # Crear venta
+            venta = Venta.objects.create(
                 cliente=cliente,
                 valor_total=valor_total,
                 fecha=fecha
             )
 
-            # Cuánto falta por pagar
+            # Crear detalle de venta
+            DetalleVenta.objects.create(
+                venta=venta,
+                producto=producto,
+                cantidad=cantidad
+            )
+
+            # Descontar inventario
+            producto.cantidad_disponible -= cantidad
+            producto.save()
+
+            # Calcular deuda
             saldo = valor_total - valor_pagado
 
-            # Si falta plata, se crea la deuda pendiente
             if saldo > 0:
+
                 Deuda.objects.create(
                     cliente=cliente,
                     valor_total=valor_total,
@@ -320,11 +366,24 @@ def register_venta(request):
                     estado="Pendiente"
                 )
 
+        messages.success(
+            request,
+            "Venta registrada correctamente."
+        )
+
         return redirect('list_venta')
 
     clientes = Cliente.objects.all()
+    productos = Producto.objects.all()
 
-    return render(request, 'register_venta.html', {'clientes': clientes})
+    return render(
+        request,
+        'register_venta.html',
+        {
+            'clientes': clientes,
+            'productos': productos
+        }
+    )
 
 
 @login_required

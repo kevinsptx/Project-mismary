@@ -6,278 +6,225 @@ Registrar Venta | MisMary
 
 {% block content %}
 
-<style>
+<style> .registro-contenido { max-width: 600px; margin: 40px auto; padding: 0 20px; } .titulo { text-align: center; margin-bottom: 25px; } .titulo h1 { color: #5c4033; font-size: 32px; margin-bottom: 8px; } .titulo p { color: #7b5e3b; font-size: 16px; } .formulario { background: #f5ead7; border: 2px solid #8b6f47; border-radius: 10px; padding: 35px; box-shadow: 0 5px 15px rgba(70, 50, 30, 0.2); } .campo { margin-bottom: 22px; } .campo label { display: block; color: #5c4033; font-weight: bold; margin-bottom: 8px; font-size: 15px; } .campo input, .campo select { width: 100%; box-sizing: border-box; padding: 12px; border: 2px solid #8b6f47; border-radius: 5px; background: white; color: #5c4033; font-size: 15px; outline: none; } .campo input:focus, .campo select:focus { border-color: #60472d; box-shadow: 0 0 5px rgba(96, 71, 45, 0.3); } .falta { background: white; border: 2px dashed #8b6f47; border-radius: 5px; padding: 12px; margin-bottom: 22px; color: #5c4033; font-size: 16px; text-align: center; } .boton { width: 100%; padding: 12px; background: #7b5e3b; color: white; border: none; border-radius: 5px; font-size: 15px; cursor: pointer; transition: 0.3s; } .boton:hover { background: #60472d; } .volver { display: block; text-align: center; margin-top: 20px; color: #7b5e3b; text-decoration: none; font-size: 14px; } .volver:hover { text-decoration: underline; } .informacion-producto { background: white; border: 1px solid #c9b28e; border-radius: 5px; padding: 10px; margin-top: 8px; color: #7b5e3b; font-size: 14px; } .sin-stock { color: #a94442; font-weight: bold; } @media (max-width: 600px) { .formulario { padding: 25px; } } </style> <div class="registro-contenido">
+<!-- TITULO -->
 
-    .registro-contenido {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 0 20px;
-    }
+<section class="titulo">
 
-    .titulo {
-        text-align: center;
-        margin-bottom: 25px;
-    }
+    <h1>
+        Registrar Venta
+    </h1>
 
-    .titulo h1 {
-        color: #5c4033;
-        font-size: 32px;
-        margin-bottom: 8px;
-    }
+    <p>
+        Registra una nueva venta por catálogo
+    </p>
 
-    .titulo p {
-        color: #7b5e3b;
-        font-size: 16px;
-    }
-
-    .formulario {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 35px;
-        box-shadow: 0 5px 15px rgba(70, 50, 30, 0.2);
-    }
-
-    .campo {
-        margin-bottom: 22px;
-    }
-
-    .campo label {
-        display: block;
-        color: #5c4033;
-        font-weight: bold;
-        margin-bottom: 8px;
-        font-size: 15px;
-    }
-
-    .campo input,
-    .campo select {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 12px;
-        border: 2px solid #8b6f47;
-        border-radius: 5px;
-        background: white;
-        color: #5c4033;
-        font-size: 15px;
-        outline: none;
-    }
-
-    .campo input:focus,
-    .campo select:focus {
-        border-color: #60472d;
-        box-shadow: 0 0 5px rgba(96, 71, 45, 0.3);
-    }
-
-    .falta {
-        background: white;
-        border: 2px dashed #8b6f47;
-        border-radius: 5px;
-        padding: 12px;
-        margin-bottom: 22px;
-        color: #5c4033;
-        font-size: 16px;
-        text-align: center;
-    }
-
-    .boton {
-        width: 100%;
-        padding: 12px;
-        background: #7b5e3b;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .boton:hover {
-        background: #60472d;
-    }
-
-    .volver {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-        color: #7b5e3b;
-        text-decoration: none;
-        font-size: 14px;
-    }
-
-    .volver:hover {
-        text-decoration: underline;
-    }
-
-    @media (max-width: 600px) {
-
-        .formulario {
-            padding: 25px;
-        }
-
-    }
-
-</style>
-
-<div class="registro-contenido">
-
-    <section class="titulo">
-
-        <h1>
-            Registrar Venta
-        </h1>
-
-        <p>
-            Registra una nueva venta por catálogo
-        </p>
-
-    </section>
+</section>
 
 
-    <form method="POST" class="formulario">
+<!-- FORMULARIO -->
 
-        {% csrf_token %}
+<form method="POST" class="formulario">
+
+    {% csrf_token %}
 
 
-        <!-- CLIENTE -->
+    <!-- CLIENTE -->
 
-        <div class="campo">
+    <div class="campo">
 
-            <label for="cliente">
-                Cliente
-            </label>
+        <label for="cliente">
+            Cliente
+        </label>
 
-            <select
-                required
-                id="cliente"
-                name="cliente"
-            >
+        <select
+            required
+            id="cliente"
+            name="cliente"
+        >
 
-                <option value="">
-                    Seleccione un cliente
+            <option value="">
+                Seleccione un cliente
+            </option>
+
+            {% for cliente in clientes %}
+
+                <option value="{{ cliente.id }}">
+                    {{ cliente.nombre }}
                 </option>
 
-                {% for cliente in clientes %}
+            {% endfor %}
 
-                    <option value="{{ cliente.id }}">
-                        {{ cliente.nombre }}
-                    </option>
+        </select>
 
-                {% endfor %}
-
-            </select>
-
-        </div>
+    </div>
 
 
-        <!-- VALOR TOTAL -->
+    <!-- PRODUCTO -->
 
-        <div class="campo">
+    <div class="campo">
 
-            <label for="valor_total">
-                Valor Total
-            </label>
+        <label for="producto">
+            Producto
+        </label>
 
-            <input
-                type="number"
-                required
-                min="0"
-                step="0.01"
-                id="valor_total"
-                name="valor_total"
-                placeholder="Ingrese el valor total de la venta"
-            >
-
-        </div>
-
-
-        <!-- VALOR PAGADO -->
-
-        <div class="campo">
-
-            <label for="valor_pagado">
-                Valor pagado (0 si no ha pagado nada)
-            </label>
-
-            <input
-                type="number"
-                min="0"
-                step="0.01"
-                value="0"
-                id="valor_pagado"
-                name="valor_pagado"
-                placeholder="¿Cuánto ha pagado el cliente?"
-            >
-
-        </div>
-
-
-        <!-- CUANTO FALTA -->
-
-        <div class="falta">
-            Falta por pagar:
-            <strong id="falta">$0.00</strong>
-        </div>
-
-
-        <!-- FECHA -->
-
-        <div class="campo">
-
-            <label for="fecha">
-                Fecha
-            </label>
-
-            <input
-                type="date"
-                required
-                id="fecha"
-                name="fecha"
-            >
-
-        </div>
-
-
-        <!-- BOTON -->
-
-        <button
-            type="submit"
-            class="boton"
+        <select
+            required
+            id="producto"
+            name="producto"
+            onchange="mostrarStock()"
         >
-            Registrar Venta
-        </button>
+
+            <option value="">
+                Seleccione un producto
+            </option>
+
+            {% for producto in productos %}
+
+                <option
+                    value="{{ producto.id }}"
+                    data-stock="{{ producto.cantidad_disponible }}"
+                >
+                    ID {{ producto.id }} - {{ producto.nombre }}
+                </option>
+
+            {% endfor %}
+
+        </select>
 
 
-        <!-- VOLVER -->
+        <!-- INFORMACION DEL PRODUCTO -->
 
-        <a
-            href="{% url 'list_venta' %}"
-            class="volver"
+        <div
+            id="informacion-producto"
+            class="informacion-producto"
+            style="display: none;"
         >
-            ← Volver a ventas
-        </a>
 
-    </form>
+            Stock disponible:
+            <strong id="stock-producto">
+                0
+            </strong>
 
-</div>
+        </div>
+
+    </div>
 
 
-<script>
+    <!-- CANTIDAD -->
 
-    const total = document.getElementById('valor_total');
-    const pagado = document.getElementById('valor_pagado');
-    const falta = document.getElementById('falta');
+    <div class="campo">
 
-    function calcular() {
-        const t = parseFloat(total.value) || 0;
-        const p = parseFloat(pagado.value) || 0;
+        <label for="cantidad">
+            Cantidad
+        </label>
 
-        falta.textContent = '$' + (t - p).toFixed(2);
-    }
+        <input
+            type="number"
+            required
+            min="1"
+            value="1"
+            id="cantidad"
+            name="cantidad"
+        >
 
-    total.addEventListener('input', calcular);
-    pagado.addEventListener('input', calcular);
+    </div>
 
-</script>
+
+    <!-- VALOR TOTAL -->
+
+    <div class="campo">
+
+        <label for="valor_total">
+            Valor Total
+        </label>
+
+        <input
+            type="number"
+            required
+            min="0"
+            step="0.01"
+            id="valor_total"
+            name="valor_total"
+            placeholder="Ingrese el valor total de la venta"
+        >
+
+    </div>
+
+
+    <!-- VALOR PAGADO -->
+
+    <div class="campo">
+
+        <label for="valor_pagado">
+            Valor pagado (0 si no ha pagado nada)
+        </label>
+
+        <input
+            type="number"
+            min="0"
+            step="0.01"
+            value="0"
+            id="valor_pagado"
+            name="valor_pagado"
+            placeholder="¿Cuánto ha pagado el cliente?"
+        >
+
+    </div>
+
+
+    <!-- CUANTO FALTA -->
+
+    <div class="falta">
+
+        Falta por pagar:
+
+        <strong id="falta">
+            $0.00
+        </strong>
+
+    </div>
+
+
+    <!-- FECHA -->
+
+    <div class="campo">
+
+        <label for="fecha">
+            Fecha
+        </label>
+
+        <input
+            type="date"
+            required
+            id="fecha"
+            name="fecha"
+        >
+
+    </div>
+
+
+    <!-- BOTON -->
+
+    <button
+        type="submit"
+        class="boton"
+    >
+        Registrar Venta
+    </button>
+
+
+    <!-- VOLVER -->
+
+    <a
+        href="{% url 'list_venta' %}"
+        class="volver"
+    >
+        ← Volver a ventas
+    </a>
+
+</form>
+
+</div> <script> // ========================================== // CALCULAR CUANTO FALTA POR PAGAR // ========================================== const total = document.getElementById('valor_total'); const pagado = document.getElementById('valor_pagado'); const falta = document.getElementById('falta'); function calcular() { const t = parseFloat(total.value) || 0; const p = parseFloat(pagado.value) || 0; const resultado = t - p; if (resultado < 0) { falta.textContent = '$0.00'; } else { falta.textContent = '$' + resultado.toFixed(2); } } total.addEventListener( 'input', calcular ); pagado.addEventListener( 'input', calcular ); // ========================================== // MOSTRAR STOCK DEL PRODUCTO // ========================================== const producto = document.getElementById('producto'); const informacionProducto = document.getElementById('informacion-producto'); const stockProducto = document.getElementById('stock-producto'); const cantidad = document.getElementById('cantidad'); function mostrarStock() { const opcion = producto.options[producto.selectedIndex]; if (!opcion.value) { informacionProducto.style.display = 'none'; return; } const stock = parseInt(opcion.dataset.stock) || 0; informacionProducto.style.display = 'block'; stockProducto.textContent = stock; // Ajustar cantidad máxima cantidad.max = stock; if (stock <= 0) { stockProducto.classList.add('sin-stock'); cantidad.value = 1; } else { stockProducto.classList.remove('sin-stock'); cantidad.value = 1; } } // ========================================== // EVITAR SELECCIONAR UNA CANTIDAD MAYOR // AL STOCK // ========================================== cantidad.addEventListener( 'input', function () { const opcion = producto.options[producto.selectedIndex]; if (!opcion.value) { return; } const stock = parseInt(opcion.dataset.stock) || 0; const cantidadIngresada = parseInt(cantidad.value) || 0; if (cantidadIngresada > stock) { cantidad.value = stock; } if (cantidadIngresada < 1) { cantidad.value = 1; } } ); // ========================================== // FECHA ACTUAL // ========================================== const fecha = document.getElementById('fecha'); if (!fecha.value) { const hoy = new Date(); const año = hoy.getFullYear(); const mes = String( hoy.getMonth() + 1 ).padStart(2, '0'); const dia = String( hoy.getDate() ).padStart(2, '0'); fecha.value = `${año}-${mes}-${dia}`; } </script>
 
 {% endblock %}
