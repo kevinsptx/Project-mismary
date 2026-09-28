@@ -1,0 +1,873 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Productos | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .productos-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+
+    /* TÍTULO */
+
+    .titulo {
+        margin-bottom: 30px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .titulo p {
+        color: #806b55;
+        font-size: 16px;
+    }
+
+
+    /* ACCIONES */
+
+    .acciones {
+        margin-bottom: 30px;
+        text-align: right;
+    }
+
+    .boton {
+        display: inline-block;
+
+        padding: 12px 20px;
+
+        background: #7b5e3b;
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 5px;
+
+        font-size: 15px;
+
+        transition: 0.3s;
+    }
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+
+    /* MENSAJES */
+
+    .mensaje-exito {
+        background: #e8f5e9;
+
+        border: 1px solid #81c784;
+
+        color: #2e7d32;
+
+        padding: 15px 20px;
+
+        border-radius: 5px;
+
+        margin-bottom: 25px;
+
+        text-align: center;
+
+        font-size: 15px;
+    }
+
+
+    /* BUSCADOR */
+
+    .buscador {
+        display: flex;
+
+        gap: 10px;
+
+        margin-bottom: 30px;
+    }
+
+    .buscador input {
+        flex: 1;
+
+        padding: 12px 15px;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 5px;
+
+        font-size: 15px;
+
+        color: #5c4033;
+
+        background: white;
+    }
+
+    .buscador input:focus {
+        outline: none;
+
+        border-color: #7b5e3b;
+    }
+
+    .boton-buscar {
+        padding: 12px 20px;
+
+        background: #7b5e3b;
+
+        color: white;
+
+        border: none;
+
+        border-radius: 5px;
+
+        font-size: 15px;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+    }
+
+    .boton-buscar:hover {
+        background: #60472d;
+    }
+
+
+    /* FILTRO POR CATEGORÍAS */
+
+    .filtro-categorias {
+        margin-bottom: 40px;
+
+        padding: 25px 30px;
+
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.15);
+    }
+
+
+    .filtro-categorias .subtitulo {
+        text-align: center;
+
+        margin-bottom: 25px;
+
+        font-size: 24px;
+    }
+
+
+    .categorias {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        align-items: center;
+
+        gap: 15px;
+
+        width: 100%;
+
+        margin-top: 15px;
+    }
+
+
+    .categoria-boton {
+        display: inline-block;
+
+        padding: 12px 25px;
+
+        background: #e8dcc9;
+
+        border: 1px solid #8b6f47;
+
+        border-radius: 20px;
+
+        color: #5c4033;
+
+        text-decoration: none;
+
+        font-size: 15px;
+
+        transition: 0.3s;
+
+        text-align: center;
+    }
+
+    .categoria-boton:hover {
+        background: #d8c8b0;
+    }
+
+
+    .categoria-activa {
+        background: #7b5e3b;
+
+        color: white;
+
+        border-color: #7b5e3b;
+    }
+
+    .categoria-activa:hover {
+        background: #60472d;
+    }
+
+
+    /* SUBTÍTULO */
+
+    .subtitulo {
+        color: #5c4033;
+
+        font-size: 22px;
+
+        margin-bottom: 20px;
+    }
+
+
+    /* RESULTADOS */
+
+    .resultados-titulo {
+        text-align: center;
+
+        margin-bottom: 30px;
+    }
+
+
+    /* LISTA DE PRODUCTOS */
+
+    .lista-productos {
+        display: grid;
+
+        grid-template-columns:
+            repeat(auto-fit, minmax(280px, 1fr));
+
+        gap: 25px;
+    }
+
+
+    /* TARJETA DEL PRODUCTO */
+
+    .producto {
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        padding: 25px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+
+        transition: 0.3s;
+    }
+
+    .producto:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+            0 8px 20px
+            rgba(70, 50, 30, 0.3);
+    }
+
+
+    /* NOMBRE DEL PRODUCTO */
+
+    .producto h3 {
+        color: #5c4033;
+
+        font-size: 20px;
+
+        margin-bottom: 15px;
+    }
+
+
+    /* INFORMACIÓN */
+
+    .producto p {
+        color: #806b55;
+
+        font-size: 15px;
+
+        margin-bottom: 10px;
+    }
+
+    .producto strong {
+        color: #5c4033;
+    }
+
+
+    /* PRECIO */
+
+    .precio {
+        color: #7b5e3b !important;
+
+        font-size: 19px !important;
+
+        font-weight: bold;
+
+        margin-top: 15px;
+    }
+
+
+    /* CATEGORÍA DEL PRODUCTO */
+
+    .categoria {
+        display: inline-block;
+
+        margin-top: 5px;
+
+        padding: 6px 12px;
+
+        background: #e8dcc9;
+
+        border: 1px solid #8b6f47;
+
+        border-radius: 20px;
+
+        color: #5c4033 !important;
+
+        font-size: 13px !important;
+    }
+
+
+    /* CANTIDAD DISPONIBLE */
+
+    .cantidad {
+        color: #5c4033 !important;
+
+        font-size: 16px !important;
+
+        font-weight: bold;
+
+        margin-top: 15px;
+
+        margin-bottom: 5px !important;
+    }
+
+
+    /* ESTADO DISPONIBLE */
+
+    .disponible {
+        color: #2e7d32 !important;
+
+        font-size: 15px !important;
+
+        font-weight: bold;
+
+        margin-top: 5px;
+
+        margin-bottom: 10px !important;
+    }
+
+
+    /* ESTADO AGOTADO */
+
+    .agotado {
+        color: #a94442 !important;
+
+        font-size: 15px !important;
+
+        font-weight: bold;
+
+        margin-top: 5px;
+
+        margin-bottom: 10px !important;
+    }
+
+
+    /* BOTÓN EDITAR */
+
+    .boton-editar {
+        display: inline-block;
+
+        margin-top: 15px;
+
+        padding: 10px 18px;
+
+        background: #7b5e3b;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+        transition: 0.3s;
+    }
+
+    .boton-editar:hover {
+        background: #60472d;
+    }
+
+
+    /* BOTÓN ELIMINAR */
+
+    .boton-eliminar {
+        display: inline-block;
+
+        margin-top: 15px;
+
+        margin-left: 5px;
+
+        padding: 10px 18px;
+
+        background: #a94442;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+        transition: 0.3s;
+    }
+
+    .boton-eliminar:hover {
+        background: #843534;
+    }
+
+
+    /* SIN PRODUCTOS */
+
+    .sin-productos {
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        padding: 30px;
+
+        text-align: center;
+
+        color: #806b55;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+
+        grid-column: 1 / -1;
+    }
+
+    .sin-productos p {
+        margin: 0;
+    }
+
+
+    /* RESPONSIVE */
+
+    @media (max-width: 600px) {
+
+        .productos-contenido {
+            width: 95%;
+        }
+
+
+        .acciones {
+            text-align: center;
+        }
+
+
+        .boton {
+            width: 100%;
+
+            text-align: center;
+
+            margin-bottom: 10px;
+        }
+
+
+        .buscador {
+            flex-direction: column;
+        }
+
+
+        .boton-buscar {
+            width: 100%;
+        }
+
+
+        .filtro-categorias {
+            padding: 20px 15px;
+        }
+
+
+        .categorias {
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+        .categoria-boton {
+            width: 80%;
+
+            box-sizing: border-box;
+        }
+
+
+        .boton-editar,
+        .boton-eliminar {
+            display: block;
+
+            margin-left: 0;
+
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="productos-contenido">
+
+
+    <!-- TÍTULO -->
+
+    <section class="titulo">
+
+        <h1>
+            Catálogo de Productos
+        </h1>
+
+        <p>
+            Consulta los productos de cosmética disponibles para realizar ventas
+        </p>
+
+    </section>
+
+
+    <!-- MENSAJES -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="mensaje-exito">
+
+                {{ message }}
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- BOTONES DE ACCIONES -->
+
+    <div class="acciones">
+
+        <a
+            href="{% url 'register_producto' %}"
+            class="boton"
+        >
+            + Registrar producto
+        </a>
+
+
+        <a
+            href="{% url 'productos_mas_vendidos' %}"
+            class="boton"
+        >
+            📊 Productos más vendidos
+        </a>
+
+    </div>
+
+
+    <!-- BUSCADOR -->
+
+    <form
+        method="GET"
+        class="buscador"
+    >
+
+        <input
+            type="text"
+            name="buscar"
+            placeholder="Buscar producto por nombre..."
+            value="{{ buscar|default:'' }}"
+        >
+
+
+        <button
+            type="submit"
+            class="boton-buscar"
+        >
+            Buscar
+        </button>
+
+    </form>
+
+
+    <!-- FILTRO POR CATEGORÍA -->
+
+    <div class="filtro-categorias">
+
+        <h2 class="subtitulo">
+
+            Filtrar por categoría
+
+        </h2>
+
+
+        <div class="categorias">
+
+
+            <!-- TODAS LAS CATEGORÍAS -->
+
+            <a
+                href="{% url 'list_producto' %}"
+                class="categoria-boton
+                {% if not categoria_id %}
+                    categoria-activa
+                {% endif %}"
+            >
+
+                Todas
+
+            </a>
+
+
+            <!-- CATEGORÍAS DISPONIBLES -->
+
+            {% for categoria in categorias %}
+
+                <a
+                    href="?categoria={{ categoria.id }}{% if buscar %}&buscar={{ buscar }}{% endif %}"
+                    class="categoria-boton
+                    {% if categoria_id == categoria.id|stringformat:'s' %}
+                        categoria-activa
+                    {% endif %}"
+                >
+
+                    {{ categoria.nombre }}
+
+                </a>
+
+            {% endfor %}
+
+
+        </div>
+
+    </div>
+
+
+    <!-- SUBTÍTULO DE RESULTADOS -->
+
+    <h2 class="subtitulo resultados-titulo">
+
+
+        {% if buscar and categoria_id %}
+
+            Resultados para:
+            "{{ buscar }}"
+            en la categoría seleccionada
+
+
+        {% elif buscar %}
+
+            Resultados para:
+            "{{ buscar }}"
+
+
+        {% elif categoria_id %}
+
+            Productos de la categoría seleccionada
+
+
+        {% else %}
+
+            Todos los productos
+
+        {% endif %}
+
+
+    </h2>
+
+
+    <!-- LISTA DE PRODUCTOS -->
+
+    <section class="lista-productos">
+
+
+        {% for producto in productos %}
+
+
+            <div class="producto">
+
+
+                <!-- NOMBRE -->
+
+                <h3>
+
+                    {{ producto.nombre }}
+
+                </h3>
+
+
+                <!-- PRECIO -->
+
+                <p class="precio">
+
+                    ${{ producto.precio_venta }}
+
+                </p>
+
+
+                <!-- CATEGORÍA -->
+
+                <p>
+
+                    <strong>
+                        Categoría:
+                    </strong>
+
+                </p>
+
+
+                <p class="categoria">
+
+                    {{ producto.categoria.nombre }}
+
+                </p>
+
+
+                <!-- CANTIDAD DISPONIBLE -->
+
+                <p class="cantidad">
+
+                    Cantidad disponible:
+                    {{ producto.cantidad_disponible }}
+
+                </p>
+
+
+                <!-- ESTADO DEL PRODUCTO -->
+
+                {% if producto.cantidad_disponible > 0 %}
+
+                    <p class="disponible">
+
+                        Estado:
+                        Disponible
+
+                    </p>
+
+                {% else %}
+
+                    <p class="agotado">
+
+                        Estado:
+                        Agotado
+
+                    </p>
+
+                {% endif %}
+
+
+                <!-- BOTÓN EDITAR -->
+
+                <a
+                    href="{% url 'producto_update' producto.id %}"
+                    class="boton-editar"
+                >
+
+                    Editar
+
+                </a>
+
+
+                <!-- BOTÓN ELIMINAR -->
+
+                <a
+                    href="{% url 'producto_delete' producto.id %}"
+                    class="boton-eliminar"
+                >
+
+                    Eliminar
+
+                </a>
+
+
+            </div>
+
+
+        {% empty %}
+
+
+            <!-- SIN PRODUCTOS -->
+
+            <div class="sin-productos">
+
+
+                {% if buscar and categoria_id %}
+
+                    <p>
+
+                        No se encontraron productos que coincidan con
+                        "{{ buscar }}"
+                        en la categoría seleccionada.
+
+                    </p>
+
+
+                {% elif buscar %}
+
+                    <p>
+
+                        No se encontraron productos que coincidan con
+                        "{{ buscar }}".
+
+                    </p>
+
+
+                {% elif categoria_id %}
+
+                    <p>
+
+                        No hay productos registrados en la categoría seleccionada.
+
+                    </p>
+
+
+                {% else %}
+
+                    <p>
+
+                        No hay productos registrados en el catálogo.
+
+                    </p>
+
+                {% endif %}
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </section>
+
+
+</div>
+
+{% endblock %}
