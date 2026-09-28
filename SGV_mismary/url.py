@@ -19,4 +19,7 @@ urlpatterns = [
     path("deuda/<int:deuda_id>/", views.detalle_deuda, name="detalle_deuda"),
     path("abono/<int:abono_id>/editar/", views.editar_abono, name="editar_abono"),
     path("abono/<int:abono_id>/eliminar/", views.eliminar_abono, name="eliminar_abono"),
+    path('ventas/pendientes/', views.ventas_pendientes, name='ventas_pendientes'),
+    path('ventas/pendientes/<int:deuda_id>/', views.detalle_pendiente, name='detalle_pendiente'),
+    path('ventas/pendientes/<int:deuda_id>/pagar/', views.marcar_pagada, name='marcar_pagada'),
 ]

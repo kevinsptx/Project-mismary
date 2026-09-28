@@ -172,73 +172,73 @@ def venta_delete(request, id):
 @login_required
 def inicio(request):
     deudas = Deuda.objects.all()
-    
+
     abonos = Abono.objects.select_related(
         "deuda__cliente"
     ).order_by("-fecha")
-    
+
     ventas_filtradas = None
     fecha_inicio = request.GET.get("fecha_inicio")
     fecha_fin = request.GET.get("fecha_fin")
-    
+
     if fecha_inicio and fecha_fin:
         ventas_filtradas = Venta.objects.filter(
             fecha__gte=fecha_inicio,
             fecha__lte=fecha_fin
         ).select_related("cliente").order_by("-fecha")
-    
+
     if request.method == "POST":
         deuda_id = request.POST.get("deuda_id")
-    
+
         deuda = get_object_or_404(Deuda, id=deuda_id)
-    
+
         form = AbonoForm(request.POST)
-    
+
         if form.is_valid():
             valor_abono = form.cleaned_data["valor"]
-    
+
             if valor_abono <= 0:
                 messages.error(
                     request,
                     "El valor del abono debe ser mayor que cero."
                 )
                 return redirect("inicio")
-    
+
             if valor_abono > deuda.saldo:
                 messages.error(
                     request,
                     "El abono no puede ser mayor que el saldo pendiente."
                 )
                 return redirect("inicio")
-    
+
             with transaction.atomic():
                 abono = form.save(commit=False)
                 abono.deuda = deuda
                 abono.save()
-    
+
                 deuda.saldo = deuda.saldo - valor_abono
-    
+
                 if deuda.saldo == 0:
                     deuda.estado = "Pagada"
                 else:
                     deuda.estado = "Pendiente"
-    
+
                 deuda.save()
-    
+
             messages.success(
                 request,
                 f"Abono de ${valor_abono} registrado correctamente."
             )
-    
+
             return redirect("inicio")
-    
+
         else:
             messages.error(
                 request,
                 "Por favor, ingresa un valor válido."
             )
             return redirect("inicio")
-    
+
     return render(
         request,
         "inicio.html",
@@ -250,7 +250,6 @@ def inicio(request):
             "fecha_fin": fecha_fin
         }
     )
-
 
 def registrar_abono(request, deuda_id):
     deuda = get_object_or_404(Deuda, id=deuda_id)
@@ -397,3 +396,35 @@ def eliminar_abono(request, abono_id):
         return redirect("inicio")
 
     return render(request, "eliminar_abono.html", {"abono": abono})
+
+
+@login_required
+def ventas_pendientes(request):
+    deudas = Deuda.objects.filter(estado="Pendiente").select_related("cliente")
+
+    return render(request, "ventas_pendientes.html", {"deudas": deudas})
+
+
+@login_required
+def detalle_pendiente(request, deuda_id):
+    deuda = get_object_or_404(Deuda.objects.select_related("cliente"), id=deuda_id)
+
+    abonos = deuda.abonos.all().order_by("-fecha")
+
+    return render(request, "detalle_pendiente.html", {"deuda": deuda,"abonos": abonos})
+
+
+@login_required
+def marcar_pagada(request, deuda_id):
+    deuda = get_object_or_404(Deuda, id=deuda_id)
+
+    if request.method == "POST":
+        deuda.saldo = 0
+        deuda.estado = "Pagada"
+        deuda.save()
+
+        messages.success(request, "La venta fue marcada como pagada.")
+
+        return redirect("ventas_pendientes")
+
+    return redirect("detalle_pendiente", deuda_id=deuda.id)
