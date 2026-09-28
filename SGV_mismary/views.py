@@ -1,20 +1,12 @@
-<<<<<<< HEAD
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.db.models import Sum
-
-from .models import Cliente, Categoria, Producto, DetalleVenta
 from .forms import ProductoForm
-=======
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
-from .models import Cliente, Venta, Abono, Deuda
+from .models import Cliente, Venta, Abono, Deuda,Categoria,Producto,DetalleVenta
 from .forms import AbonoForm
->>>>>>> revision
 
 
 @login_required
@@ -44,7 +36,6 @@ def list_cliente(request):
 
         clientes = Cliente.objects.all()
 
-<<<<<<< HEAD
     return render(
         request,
         'list_cliente.html',
@@ -53,9 +44,7 @@ def list_cliente(request):
             'buscar': buscar
         }
     )
-=======
     return render(request, 'list_cliente.html', {'clientes': clientes,'buscar': buscar})
->>>>>>> revision
 
 
 @login_required
@@ -75,55 +64,22 @@ def register_cliente(request):
 
         return redirect('list_cliente')
 
-<<<<<<< HEAD
-    return render(
-        request,
-        'register_cliente.html'
-    )
-=======
     return render(request, 'register_cliente.html')
->>>>>>> revision
 
 
 @login_required
 def cliente_details(request, id):
-<<<<<<< HEAD
-
-    cliente = get_object_or_404(
-        Cliente,
-        id=id
-    )
-
-    return render(
-        request,
-        'cliente_details.html',
-        {
-            'cliente': cliente
-        }
-    )
-=======
     cliente = get_object_or_404(Cliente, id=id)
 
     return render(request, 'cliente_details.html', {'cliente': cliente})
->>>>>>> revision
 
 
 @login_required
 def cliente_update(request, id):
-<<<<<<< HEAD
 
-    cliente = get_object_or_404(
-        Cliente,
-        id=id
-    )
-
-    if request.method == 'POST':
-
-=======
     cliente = get_object_or_404(Cliente, id=id)
 
     if request.method == 'POST':
->>>>>>> revision
         cliente.nombre = request.POST['nombre']
         cliente.telefono = request.POST['telefono']
         cliente.direccion = request.POST['direccion']
@@ -132,7 +88,6 @@ def cliente_update(request, id):
 
         return redirect('list_cliente')
 
-<<<<<<< HEAD
     return render(
         request,
         'cliente_update.html',
@@ -140,30 +95,19 @@ def cliente_update(request, id):
             'cliente': cliente
         }
     )
-=======
     return render(request, 'cliente_update.html', {'cliente': cliente})
->>>>>>> revision
 
 
 @login_required
 def cliente_delete(request, id):
-<<<<<<< HEAD
 
-    cliente = get_object_or_404(
-        Cliente,
-        id=id
-    )
-
-=======
     cliente = get_object_or_404(Cliente, id=id)
->>>>>>> revision
     cliente.delete()
 
     return redirect('list_cliente')
 
 
 @login_required
-<<<<<<< HEAD
 def register_producto(request):
 
     if request.method == 'POST':
@@ -343,7 +287,6 @@ def productos_mas_vendidos(request):
             'fecha_fin': fecha_fin
         }
     )
-=======
 def register_venta(request):
     if request.method == 'POST':
         cliente_id = request.POST['cliente']
@@ -695,4 +638,3 @@ def marcar_pagada(request, deuda_id):
         return redirect("ventas_pendientes")
 
     return redirect("detalle_pendiente", deuda_id=deuda.id)
->>>>>>> revision

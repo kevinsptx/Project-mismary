@@ -6,7 +6,6 @@ class Cliente(models.Model):
     direccion = models.CharField(max_length=150, default='')
     telefono = models.CharField(max_length=10, default='')
 
-
     def __str__(self):
         return self.nombre
 
@@ -21,22 +20,7 @@ class Categoria(models.Model):
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
 
-    precio_venta = models.DecimalField()
-
-class Deuda(models.Model):
-
-    ESTADOS = [
-        ("Pendiente", "Pendiente"),
-        ("Pagada", "Pagada"),
-    ]
-
-    cliente = models.ForeignKey(
-        Cliente,
-        on_delete=models.CASCADE,
-        related_name="deudas"
-    )
-
-    valor_total = models.DecimalField(
+    precio_venta = models.DecimalField(
         max_digits=10,
         decimal_places=2
     )
@@ -61,6 +45,35 @@ class Venta(models.Model):
         on_delete=models.PROTECT,
         related_name='ventas'
     )
+
+    valor_total = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    fecha = models.DateField()
+
+    def __str__(self):
+        return f"Venta de {self.cliente} - ${self.valor_total}"
+
+
+class Deuda(models.Model):
+    ESTADOS = [
+        ("Pendiente", "Pendiente"),
+        ("Pagada", "Pagada"),
+    ]
+
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete=models.CASCADE,
+        related_name="deudas"
+    )
+
+    valor_total = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
     saldo = models.DecimalField(
         max_digits=10,
         decimal_places=2
@@ -73,7 +86,6 @@ class Venta(models.Model):
     )
 
     def __str__(self):
-
         return (
             f"{self.cliente.nombre} - "
             f"Saldo: ${self.saldo} - "
@@ -82,7 +94,6 @@ class Venta(models.Model):
 
 
 class Abono(models.Model):
-
     deuda = models.ForeignKey(
         Deuda,
         on_delete=models.CASCADE,
@@ -99,7 +110,10 @@ class Abono(models.Model):
     )
 
     def __str__(self):
-        return f'Venta #{self.id} - {self.fecha.strftime("%d/%m/%Y")}'
+        return (
+            f"Abono ${self.valor} - "
+            f"{self.fecha.strftime('%d/%m/%Y')}"
+        )
 
 
 class DetalleVenta(models.Model):
@@ -124,12 +138,3 @@ class DetalleVenta(models.Model):
 
     def __str__(self):
         return f'{self.producto.nombre} - {self.cantidad} unidades'
-
-        return f"Abono ${self.valor}"
-class Venta(models.Model):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    valor_total = models.DecimalField(max_digits=10, decimal_places=2)
-    fecha = models.DateField()
-
-    def __str__(self):
-        return f"Venta de {self.cliente} - ${self.valor_total}"
