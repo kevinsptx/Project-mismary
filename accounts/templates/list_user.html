@@ -1,0 +1,260 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Usuarios | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .usuarios-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .titulo {
+        margin-bottom: 25px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        margin-bottom: 8px;
+    }
+
+    .titulo p {
+        color: #806b55;
+    }
+
+    .boton-crear {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .boton-crear:hover {
+        background: #60472d;
+    }
+
+    .tabla-contenedor {
+        overflow-x: auto;
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(70, 50, 30, 0.15);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #7b5e3b;
+        color: white;
+        padding: 15px;
+        text-align: left;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #d2b48c;
+        color: #5c4033;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    tr:hover {
+        background: #fffaf2;
+    }
+
+    .acciones {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .boton-detalle {
+        background: #8b6f47;
+        padding: 7px 12px;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .boton-detalle:hover {
+        background: #6f5638;
+    }
+
+    .boton-editar {
+        background: #806b55;
+        padding: 7px 12px;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .boton-editar:hover {
+        background: #665442;
+    }
+
+    .boton-eliminar {
+        background: #a0522d;
+        padding: 7px 12px;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .boton-eliminar:hover {
+        background: #813d21;
+    }
+
+    .sin-usuarios {
+        text-align: center;
+        padding: 30px;
+        color: #806b55;
+    }
+
+</style>
+
+
+<div class="usuarios-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Gestión de Usuarios
+        </h1>
+
+        <p>
+            Administra los usuarios del sistema.
+        </p>
+
+    </section>
+
+
+    <a
+        href="{% url 'register_user' %}"
+        class="boton-crear"
+    >
+        + Crear usuario
+    </a>
+
+
+    <div class="tabla-contenedor">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Usuario
+                    </th>
+
+                    <th>
+                        Nombre
+                    </th>
+
+                    <th>
+                        Apellido
+                    </th>
+
+                    <th>
+                        Correo
+                    </th>
+
+                    <th>
+                        Acciones
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for usuario in usuarios %}
+
+                <tr>
+
+                    <td>
+                        {{ usuario.username }}
+                    </td>
+
+                    <td>
+                        {{ usuario.first_name }}
+                    </td>
+
+                    <td>
+                        {{ usuario.last_name }}
+                    </td>
+
+                    <td>
+                        {{ usuario.email }}
+                    </td>
+
+                    <td>
+
+                        <div class="acciones">
+
+                            <a
+                                href="{% url 'user_details' usuario.id %}"
+                                class="boton-detalle"
+                            >
+                                Detalle
+                            </a>
+
+                            <a
+                                href="{% url 'user_update' usuario.id %}"
+                                class="boton-editar"
+                            >
+                                Editar
+                            </a>
+
+                            <a
+                                href="{% url 'user_delete' usuario.id %}"
+                                class="boton-eliminar"
+                            >
+                                Eliminar
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="sin-usuarios"
+                    >
+                        No hay usuarios registrados.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

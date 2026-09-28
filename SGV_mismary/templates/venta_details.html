@@ -1,0 +1,138 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Detalle de Venta | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .venta-detalle {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .tarjeta {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .tarjeta h2 {
+        color: #5c4033;
+        margin-bottom: 25px;
+    }
+
+    .tarjeta p {
+        color: #806b55;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .tarjeta strong {
+        color: #5c4033;
+    }
+
+    .acciones {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .boton {
+        padding: 12px 20px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .eliminar {
+        background: #a94442;
+    }
+
+    .eliminar:hover {
+        background: #842f2d;
+    }
+
+</style>
+
+
+<div class="venta-detalle">
+
+    <section class="titulo">
+
+        <h1>
+            Detalle de Venta
+        </h1>
+
+        <p>
+            Información de la venta registrada
+        </p>
+
+    </section>
+
+
+    <div class="tarjeta">
+
+        <h2>
+            Venta #{{ venta.id }}
+        </h2>
+
+        <p>
+            <strong>Cliente:</strong>
+            {{ venta.cliente.nombre }}
+        </p>
+
+        <p>
+            <strong>Teléfono:</strong>
+            {{ venta.cliente.telefono }}
+        </p>
+
+        <p>
+            <strong>Valor total:</strong>
+            ${{ venta.valor_total }}
+        </p>
+
+        <p>
+            <strong>Fecha:</strong>
+            {{ venta.fecha }}
+        </p>
+
+
+        <div class="acciones">
+
+            <a
+                href="{% url 'venta_update' venta.id %}"
+                class="boton"
+            >
+                Actualizar
+            </a>
+
+            <a
+                href="{% url 'venta_delete' venta.id %}"
+                class="boton eliminar"
+                onclick="return confirm('¿Está seguro de eliminar esta venta?')"
+            >
+                Eliminar
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

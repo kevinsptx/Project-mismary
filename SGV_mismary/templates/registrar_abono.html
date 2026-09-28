@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Registrar abono | MisMary</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #d8c3a5;
+            min-height: 100vh;
+            color: #5c4033;
+        }
+
+        .navbar {
+            width: 100%;
+            background: #5c4033;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px
+                rgba(70, 50, 30, 0.3);
+        }
+
+        .logo {
+            color: #f5ead7;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .usuario {
+            color: #f5ead7;
+            font-size: 14px;
+        }
+
+        .contenido {
+            max-width: 650px;
+            margin: 50px auto;
+            padding: 0 25px;
+        }
+
+        .titulo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .titulo h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .titulo p {
+            color: #806b55;
+        }
+
+        .tarjeta {
+            background: #f5ead7;
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+            padding: 35px;
+            box-shadow: 0 5px 15px
+                rgba(70, 50, 30, 0.2);
+        }
+
+        .cliente {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .cliente .icono {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .cliente h2 {
+            color: #5c4033;
+        }
+
+        .saldo {
+            text-align: center;
+            background: #d8c3a5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .saldo p {
+            color: #806b55;
+            margin-bottom: 8px;
+        }
+
+        .saldo strong {
+            font-size: 28px;
+            color: #7b5e3b;
+        }
+
+        .formulario p {
+            margin-bottom: 20px;
+        }
+
+        .formulario label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #5c4033;
+        }
+
+        .formulario input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #8b6f47;
+            border-radius: 5px;
+            background: white;
+            font-size: 16px;
+        }
+
+        .formulario input:focus {
+            outline: none;
+            border-color: #7b5e3b;
+        }
+
+        .errorlist {
+            color: #8b4a3b;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+
+        .acciones {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .boton {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #7b5e3b;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .boton:hover {
+            background: #60472d;
+        }
+
+        .boton-cancelar {
+            background: #8b4a3b;
+        }
+
+        .boton-cancelar:hover {
+            background: #70382d;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <header class="navbar">
+
+        <div class="logo">
+            MisMary
+        </div>
+
+        <div class="usuario">
+
+            Usuario:
+            <strong>{{ user.username }}</strong>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenido">
+
+
+        <section class="titulo">
+
+            <h1>
+                Registrar abono
+            </h1>
+
+            <p>
+                Registra el pago realizado por el cliente.
+            </p>
+
+        </section>
+
+
+        <section class="tarjeta">
+
+
+            <div class="cliente">
+
+                <div class="icono">
+                    👤
+                </div>
+
+                <h2>
+                    {{ deuda.cliente.nombre }}
+                </h2>
+
+            </div>
+
+
+            <div class="saldo">
+
+                <p>
+                    Saldo pendiente actual
+                </p>
+
+                <strong>
+                    ${{ deuda.saldo }}
+                </strong>
+
+            </div>
+
+
+            <form method="POST"
+                  class="formulario">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+
+                <div class="acciones">
+
+                    <button type="submit"
+                            class="boton">
+
+                        💰 Registrar abono
+
+                    </button>
+
+
+                    <a href="{% url 'detalle_deuda' deuda.id %}"
+                       class="boton boton-cancelar">
+
+                        Cancelar
+
+                    </a>
+
+                </div>
+
+            </form>
+
+
+        </section>
+
+
+    </main>
+
+</body>
+
+</html>

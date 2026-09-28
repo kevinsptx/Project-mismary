@@ -1,0 +1,440 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Deudas | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .deudas-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .titulo {
+        margin-bottom: 25px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .titulo p {
+        color: #777;
+        margin: 0;
+    }
+
+    .seccion-abonos {
+        background: #fffaf5;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(92, 64, 51, 0.08);
+    }
+
+    .seccion-abonos h2 {
+        color: #5c4033;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .deudas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .deuda-card {
+        background: #f8eee5;
+        border-radius: 12px;
+        padding: 20px;
+        border-left: 5px solid #d97732;
+    }
+
+    .deuda-card h3 {
+        color: #5c4033;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .deuda-card p {
+        color: #555;
+        margin: 7px 0;
+    }
+
+    .saldo {
+        color: #c45b20;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .boton {
+        display: inline-block;
+        background: #d97732;
+        color: white;
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .boton:hover {
+        background: #b95d1d;
+    }
+
+    .filtro-fechas {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 15px;
+        align-items: end;
+    }
+
+    .campo-fecha {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .campo-fecha label {
+        color: #5c4033;
+        font-weight: bold;
+    }
+
+    .campo-fecha input {
+        padding: 11px;
+        border: 1px solid #d8c2b0;
+        border-radius: 8px;
+        background: white;
+        font-size: 15px;
+    }
+
+    .boton-consultar {
+        height: 42px;
+        background: #d97732;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0 20px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .boton-consultar:hover {
+        background: #b95d1d;
+    }
+
+    .tabla-contenedor {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #5c4033;
+        color: white;
+        padding: 13px;
+        text-align: left;
+    }
+
+    td {
+        padding: 13px;
+        border-bottom: 1px solid #eadbd0;
+        color: #555;
+    }
+
+    tr:hover td {
+        background: #fff8f2;
+    }
+
+    .mensaje-vacio {
+        color: #777;
+        background: #f8eee5;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 0;
+    }
+
+    .form-abono {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .form-abono input {
+        padding: 10px;
+        border: 1px solid #d8c2b0;
+        border-radius: 8px;
+        width: 150px;
+    }
+
+    .acciones {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .boton-secundario {
+        background: #8c6b5a;
+    }
+
+    .boton-secundario:hover {
+        background: #6f5142;
+    }
+
+    .boton-eliminar {
+        background: #b94a48;
+    }
+
+    .boton-eliminar:hover {
+        background: #963b39;
+    }
+
+    @media (max-width: 700px) {
+        .filtro-fechas {
+            grid-template-columns: 1fr;
+        }
+
+        .form-abono {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .form-abono input {
+            width: auto;
+        }
+    }
+</style>
+
+<div class="deudas-contenido">
+
+```
+<div class="titulo">
+    <h1>💰 Deudas de Clientes</h1>
+    <p>Consulta los saldos pendientes y administra los abonos.</p>
+</div>
+
+<section class="seccion-abonos">
+    <h2>📋 Saldos pendientes</h2>
+
+    {% if deudas %}
+    <div class="deudas-grid">
+
+        {% for deuda in deudas %}
+        <div class="deuda-card">
+
+            <h3>{{ deuda.cliente.nombre }}</h3>
+
+            <p>
+                <strong>Total:</strong>
+                ${{ deuda.valor_total }}
+            </p>
+
+            <p>
+                <strong>Saldo pendiente:</strong>
+            </p>
+
+            <p class="saldo">
+                ${{ deuda.saldo }}
+            </p>
+
+            <p>
+                <strong>Estado:</strong>
+                {{ deuda.estado }}
+            </p>
+
+            <div class="acciones">
+                <a href="{% url 'detalle_deuda' deuda.id %}" class="boton boton-secundario">
+                    Ver detalles
+                </a>
+
+                <a href="{% url 'registrar_abono' deuda.id %}" class="boton">
+                    Registrar abono
+                </a>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+    {% else %}
+    <p class="mensaje-vacio">
+        No hay deudas registradas.
+    </p>
+    {% endif %}
+</section>
+
+<section class="seccion-abonos">
+    <h2>📅 Consultar ventas por fecha</h2>
+
+    <form method="GET" action="{% url 'inicio' %}">
+
+        <div class="filtro-fechas">
+
+            <div class="campo-fecha">
+                <label for="fecha_inicio">Fecha inicial</label>
+                <input
+                    type="date"
+                    id="fecha_inicio"
+                    name="fecha_inicio"
+                    value="{{ fecha_inicio|default:'' }}"
+                    required
+                >
+            </div>
+
+            <div class="campo-fecha">
+                <label for="fecha_fin">Fecha final</label>
+                <input
+                    type="date"
+                    id="fecha_fin"
+                    name="fecha_fin"
+                    value="{{ fecha_fin|default:'' }}"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="boton-consultar">
+                🔎 Consultar ventas
+            </button>
+
+        </div>
+
+    </form>
+</section>
+
+{% if ventas_filtradas %}
+<section class="seccion-abonos">
+
+    <h2>🛒 Ventas encontradas</h2>
+
+    <div class="tabla-contenedor">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for venta in ventas_filtradas %}
+                <tr>
+                    <td>{{ venta.cliente.nombre }}</td>
+                    <td>{{ venta.fecha|date:"d/m/Y" }}</td>
+                    <td>${{ venta.valor_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
+{% elif fecha_inicio and fecha_fin %}
+
+<section class="seccion-abonos">
+
+    <h2>🛒 Ventas encontradas</h2>
+
+    <p class="mensaje-vacio">
+        No se encontraron ventas en este rango de fechas.
+    </p>
+
+</section>
+
+{% endif %}
+
+<section class="seccion-abonos">
+
+    <h2>💵 Abonos realizados</h2>
+
+    {% if abonos %}
+
+    <div class="tabla-contenedor">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Valor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for abono in abonos %}
+
+                <tr>
+
+                    <td>
+                        {{ abono.deuda.cliente.nombre }}
+                    </td>
+
+                    <td>
+                        {{ abono.fecha|date:"d/m/Y" }}
+                    </td>
+
+                    <td>
+                        ${{ abono.valor }}
+                    </td>
+
+                    <td>
+
+                        <div class="acciones">
+
+                            <a
+                                href="{% url 'editar_abono' abono.id %}"
+                                class="boton boton-secundario"
+                            >
+                                Editar
+                            </a>
+
+                            <a
+                                href="{% url 'eliminar_abono' abono.id %}"
+                                class="boton boton-eliminar"
+                            >
+                                Eliminar
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <p class="mensaje-vacio">
+        No hay abonos registrados.
+    </p>
+
+    {% endif %}
+
+</section>
+```
+
+</div>
+
+{% endblock %}
