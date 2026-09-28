@@ -9,9 +9,12 @@ Registrar Producto | MisMary
 <style>
 
     .producto-contenido {
-        max-width: 700px;
+        max-width: 850px;
         margin: 0 auto;
     }
+
+
+    /* TÍTULO */
 
     .titulo {
         margin-bottom: 30px;
@@ -28,10 +31,16 @@ Registrar Producto | MisMary
         font-size: 16px;
     }
 
+
+    /* FORMULARIO */
+
     .formulario-producto {
         background: #f5ead7;
+
         border: 2px solid #8b6f47;
+
         border-radius: 10px;
+
         padding: 30px;
 
         box-shadow:
@@ -39,34 +48,69 @@ Registrar Producto | MisMary
             rgba(70, 50, 30, 0.2);
     }
 
+
+    /* INFORMACIÓN */
+
+    .informacion {
+        background: #e8dcc9;
+
+        border: 1px solid #8b6f47;
+
+        border-radius: 5px;
+
+        padding: 12px 15px;
+
+        margin-bottom: 25px;
+
+        color: #806b55;
+
+        font-size: 14px;
+    }
+
+
+    /* CAMPOS */
+
     .campo {
         margin-bottom: 22px;
     }
 
+
     .campo label {
         display: block;
+
         color: #5c4033;
+
         font-weight: bold;
+
         font-size: 15px;
+
         margin-bottom: 8px;
     }
+
 
     .campo input,
     .campo select {
         width: 100%;
+
         padding: 12px;
 
         border: 2px solid #8b6f47;
+
         border-radius: 5px;
 
         background: white;
+
         color: #5c4033;
 
         font-size: 15px;
+
         outline: none;
+
+        box-sizing: border-box;
 
         transition: 0.3s;
     }
+
 
     .campo input:focus,
     .campo select:focus {
@@ -77,36 +121,111 @@ Registrar Producto | MisMary
             rgba(96, 71, 45, 0.3);
     }
 
+
     .campo input::placeholder {
         color: #a08b75;
     }
 
+
+    /* CAMPOS EN DOS COLUMNAS */
+
+    .campos-fila {
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 20px;
+    }
+
+
+    /* CANTIDAD DISPONIBLE */
+
+    .campo-cantidad {
+        background: #e8dcc9;
+
+        border: 1px solid #8b6f47;
+
+        border-radius: 5px;
+
+        padding: 15px;
+
+        box-sizing: border-box;
+    }
+
+
+    .campo-cantidad label {
+        margin-bottom: 8px;
+    }
+
+
+    .ayuda-cantidad {
+        color: #806b55;
+
+        font-size: 13px;
+
+        margin-top: 7px;
+
+        margin-bottom: 0;
+    }
+
+
+    /* ERRORES */
+
     .errores {
         color: #a94442;
+
         font-size: 14px;
+
         margin-top: 6px;
     }
 
+
     .errores ul {
         margin: 0;
+
         padding-left: 20px;
     }
 
+
     .error-general {
         background: #f2dede;
+
         border: 1px solid #c9a6a6;
+
         border-radius: 5px;
+
         padding: 12px;
+
         margin-bottom: 20px;
+
         color: #8a4b4b;
     }
 
+
+    /* OBLIGATORIO */
+
+    .obligatorio {
+        color: #8b6f47;
+    }
+
+
+    /* ACCIONES */
+
     .acciones {
         display: flex;
+
         justify-content: flex-end;
+
         gap: 10px;
+
         margin-top: 30px;
+
+        padding-top: 20px;
+
+        border-top: 1px solid #c8b89f;
     }
+
 
     .boton {
         display: inline-block;
@@ -124,48 +243,69 @@ Registrar Producto | MisMary
         transition: 0.3s;
     }
 
+
+    /* GUARDAR */
+
     .guardar {
         background: #7b5e3b;
+
         color: white;
+
         border: none;
     }
+
 
     .guardar:hover {
         background: #60472d;
     }
 
+
+    /* CANCELAR */
+
     .cancelar {
         background: white;
+
         color: #5c4033;
+
         border: 2px solid #8b6f47;
     }
+
 
     .cancelar:hover {
         background: #e8dcc9;
     }
 
-    .obligatorio {
-        color: #8b6f47;
-    }
 
+    /* RESPONSIVE */
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
 
         .producto-contenido {
             width: 95%;
         }
 
+
         .formulario-producto {
             padding: 20px;
         }
+
+
+        .campos-fila {
+            grid-template-columns: 1fr;
+        }
+
 
         .acciones {
             flex-direction: column;
         }
 
+
         .boton {
             width: 100%;
+
             text-align: center;
+
+            box-sizing: border-box;
         }
 
     }
@@ -175,20 +315,29 @@ Registrar Producto | MisMary
 
 <div class="producto-contenido">
 
+
+    <!-- TÍTULO -->
+
     <section class="titulo">
 
         <h1>
             Registrar Producto
         </h1>
 
+
         <p>
-            Registra un nuevo producto de cosmética en el catálogo
+            Registra un nuevo producto de cosmética en el catálogo.
         </p>
 
     </section>
 
 
+    <!-- FORMULARIO -->
+
     <section class="formulario-producto">
+
+
+        <!-- ERRORES GENERALES -->
 
         {% if form.non_field_errors %}
 
@@ -201,28 +350,51 @@ Registrar Producto | MisMary
         {% endif %}
 
 
+        <!-- INFORMACIÓN -->
+
+        <div class="informacion">
+
+            Los campos marcados con
+
+            <span class="obligatorio">
+                *
+            </span>
+
+            son obligatorios.
+
+
+        </div>
+
+
         <form method="POST">
 
             {% csrf_token %}
 
 
-            <!-- NOMBRE DEL PRODUCTO -->
+            <!-- NOMBRE -->
 
             <div class="campo">
 
                 <label for="{{ form.nombre.id_for_label }}">
 
                     Nombre del producto
-                    <span class="obligatorio">*</span>
+
+                    <span class="obligatorio">
+                        *
+                    </span>
 
                 </label>
 
+
                 {{ form.nombre }}
+
 
                 {% if form.nombre.errors %}
 
                     <div class="errores">
+
                         {{ form.nombre.errors }}
+
                     </div>
 
                 {% endif %}
@@ -230,50 +402,79 @@ Registrar Producto | MisMary
             </div>
 
 
-            <!-- PRECIO DE VENTA -->
+            <!-- PRECIO Y CANTIDAD -->
 
-            <div class="campo">
-
-                <label for="{{ form.precio_venta.id_for_label }}">
-
-                    Precio de venta
-                    <span class="obligatorio">*</span>
-
-                </label>
-
-                {{ form.precio_venta }}
-
-                {% if form.precio_venta.errors %}
-
-                    <div class="errores">
-                        {{ form.precio_venta.errors }}
-                    </div>
-
-                {% endif %}
-
-            </div>
+            <div class="campos-fila">
 
 
-            <!-- CANTIDAD DISPONIBLE -->
+                <!-- PRECIO -->
 
-            <div class="campo">
+                <div class="campo">
 
-                <label for="{{ form.cantidad_disponible.id_for_label }}">
+                    <label for="{{ form.precio_venta.id_for_label }}">
 
-                    Cantidad disponible
-                    <span class="obligatorio">*</span>
+                        Precio de venta
 
-                </label>
+                        <span class="obligatorio">
+                            *
+                        </span>
 
-                {{ form.cantidad_disponible }}
+                    </label>
 
-                {% if form.cantidad_disponible.errors %}
 
-                    <div class="errores">
-                        {{ form.cantidad_disponible.errors }}
-                    </div>
+                    {{ form.precio_venta }}
 
-                {% endif %}
+
+                    {% if form.precio_venta.errors %}
+
+                        <div class="errores">
+
+                            {{ form.precio_venta.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- CANTIDAD DISPONIBLE -->
+
+                <div class="campo campo-cantidad">
+
+                    <label for="{{ form.cantidad_disponible.id_for_label }}">
+
+                        Cantidad disponible
+
+                        <span class="obligatorio">
+                            *
+                        </span>
+
+                    </label>
+
+
+                    {{ form.cantidad_disponible }}
+
+
+                    <p class="ayuda-cantidad">
+
+                        Indica cuántas unidades hay disponibles para la venta.
+
+                    </p>
+
+
+                    {% if form.cantidad_disponible.errors %}
+
+                        <div class="errores">
+
+                            {{ form.cantidad_disponible.errors }}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
 
             </div>
 
@@ -285,16 +486,23 @@ Registrar Producto | MisMary
                 <label for="{{ form.categoria.id_for_label }}">
 
                     Categoría
-                    <span class="obligatorio">*</span>
+
+                    <span class="obligatorio">
+                        *
+                    </span>
 
                 </label>
 
+
                 {{ form.categoria }}
+
 
                 {% if form.categoria.errors %}
 
                     <div class="errores">
+
                         {{ form.categoria.errors }}
+
                     </div>
 
                 {% endif %}
@@ -306,11 +514,14 @@ Registrar Producto | MisMary
 
             <div class="acciones">
 
+
                 <a
                     href="{% url 'list_producto' %}"
                     class="boton cancelar"
                 >
+
                     Cancelar
+
                 </a>
 
 
@@ -318,14 +529,20 @@ Registrar Producto | MisMary
                     type="submit"
                     class="boton guardar"
                 >
+
                     Guardar producto
+
                 </button>
+
 
             </div>
 
+
         </form>
 
+
     </section>
+
 
 </div>
 

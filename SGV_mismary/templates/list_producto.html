@@ -41,12 +41,14 @@ Productos | MisMary
 
     .boton {
         display: inline-block;
+
         padding: 12px 20px;
 
         background: #7b5e3b;
         color: white;
 
         text-decoration: none;
+
         border-radius: 5px;
 
         font-size: 15px;
@@ -84,7 +86,9 @@ Productos | MisMary
 
     .buscador {
         display: flex;
+
         gap: 10px;
+
         margin-bottom: 30px;
     }
 
@@ -94,6 +98,7 @@ Productos | MisMary
         padding: 12px 15px;
 
         border: 2px solid #8b6f47;
+
         border-radius: 5px;
 
         font-size: 15px;
@@ -105,6 +110,7 @@ Productos | MisMary
 
     .buscador input:focus {
         outline: none;
+
         border-color: #7b5e3b;
     }
 
@@ -112,9 +118,11 @@ Productos | MisMary
         padding: 12px 20px;
 
         background: #7b5e3b;
+
         color: white;
 
         border: none;
+
         border-radius: 5px;
 
         font-size: 15px;
@@ -132,21 +140,52 @@ Productos | MisMary
     /* FILTRO POR CATEGORÍAS */
 
     .filtro-categorias {
-        margin-bottom: 30px;
+        margin-bottom: 40px;
+
+        padding: 25px 30px;
+
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.15);
     }
+
+
+    .filtro-categorias .subtitulo {
+        text-align: center;
+
+        margin-bottom: 25px;
+
+        font-size: 24px;
+    }
+
 
     .categorias {
         display: flex;
 
         flex-wrap: wrap;
 
-        gap: 10px;
+        justify-content: center;
+
+        align-items: center;
+
+        gap: 15px;
+
+        width: 100%;
+
+        margin-top: 15px;
     }
+
 
     .categoria-boton {
         display: inline-block;
 
-        padding: 10px 18px;
+        padding: 12px 25px;
 
         background: #e8dcc9;
 
@@ -158,14 +197,17 @@ Productos | MisMary
 
         text-decoration: none;
 
-        font-size: 14px;
+        font-size: 15px;
 
         transition: 0.3s;
+
+        text-align: center;
     }
 
     .categoria-boton:hover {
         background: #d8c8b0;
     }
+
 
     .categoria-activa {
         background: #7b5e3b;
@@ -184,8 +226,19 @@ Productos | MisMary
 
     .subtitulo {
         color: #5c4033;
+
         font-size: 22px;
+
         margin-bottom: 20px;
+    }
+
+
+    /* RESULTADOS */
+
+    .resultados-titulo {
+        text-align: center;
+
+        margin-bottom: 30px;
     }
 
 
@@ -298,6 +351,38 @@ Productos | MisMary
         font-weight: bold;
 
         margin-top: 15px;
+
+        margin-bottom: 5px !important;
+    }
+
+
+    /* ESTADO DISPONIBLE */
+
+    .disponible {
+        color: #2e7d32 !important;
+
+        font-size: 15px !important;
+
+        font-weight: bold;
+
+        margin-top: 5px;
+
+        margin-bottom: 10px !important;
+    }
+
+
+    /* ESTADO AGOTADO */
+
+    .agotado {
+        color: #a94442 !important;
+
+        font-size: 15px !important;
+
+        font-weight: bold;
+
+        margin-top: 5px;
+
+        margin-bottom: 10px !important;
     }
 
 
@@ -392,22 +477,49 @@ Productos | MisMary
             width: 95%;
         }
 
+
         .acciones {
             text-align: center;
         }
 
+
         .boton {
             width: 100%;
+
             text-align: center;
+
+            margin-bottom: 10px;
         }
+
 
         .buscador {
             flex-direction: column;
         }
 
+
         .boton-buscar {
             width: 100%;
         }
+
+
+        .filtro-categorias {
+            padding: 20px 15px;
+        }
+
+
+        .categorias {
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+        .categoria-boton {
+            width: 80%;
+
+            box-sizing: border-box;
+        }
+
 
         .boton-editar,
         .boton-eliminar {
@@ -441,14 +553,16 @@ Productos | MisMary
     </section>
 
 
-    <!-- MENSAJE DE ACTUALIZACIÓN O ELIMINACIÓN -->
+    <!-- MENSAJES -->
 
     {% if messages %}
 
         {% for message in messages %}
 
             <div class="mensaje-exito">
+
                 {{ message }}
+
             </div>
 
         {% endfor %}
@@ -456,7 +570,7 @@ Productos | MisMary
     {% endif %}
 
 
-    <!-- BOTÓN REGISTRAR -->
+    <!-- BOTONES DE ACCIONES -->
 
     <div class="acciones">
 
@@ -467,12 +581,23 @@ Productos | MisMary
             + Registrar producto
         </a>
 
+
+        <a
+            href="{% url 'productos_mas_vendidos' %}"
+            class="boton"
+        >
+            📊 Productos más vendidos
+        </a>
+
     </div>
 
 
     <!-- BUSCADOR -->
 
-    <form method="GET" class="buscador">
+    <form
+        method="GET"
+        class="buscador"
+    >
 
         <input
             type="text"
@@ -480,6 +605,7 @@ Productos | MisMary
             placeholder="Buscar producto por nombre..."
             value="{{ buscar|default:'' }}"
         >
+
 
         <button
             type="submit"
@@ -496,19 +622,27 @@ Productos | MisMary
     <div class="filtro-categorias">
 
         <h2 class="subtitulo">
+
             Filtrar por categoría
+
         </h2>
 
 
         <div class="categorias">
 
+
             <!-- TODAS LAS CATEGORÍAS -->
 
             <a
                 href="{% url 'list_producto' %}"
-                class="categoria-boton {% if not categoria_id %}categoria-activa{% endif %}"
+                class="categoria-boton
+                {% if not categoria_id %}
+                    categoria-activa
+                {% endif %}"
             >
+
                 Todas
+
             </a>
 
 
@@ -518,39 +652,53 @@ Productos | MisMary
 
                 <a
                     href="?categoria={{ categoria.id }}{% if buscar %}&buscar={{ buscar }}{% endif %}"
-                    class="categoria-boton {% if categoria_id == categoria.id|stringformat:'s' %}categoria-activa{% endif %}"
+                    class="categoria-boton
+                    {% if categoria_id == categoria.id|stringformat:'s' %}
+                        categoria-activa
+                    {% endif %}"
                 >
+
                     {{ categoria.nombre }}
+
                 </a>
 
             {% endfor %}
+
 
         </div>
 
     </div>
 
 
-    <!-- SUBTÍTULO -->
+    <!-- SUBTÍTULO DE RESULTADOS -->
 
-    <h2 class="subtitulo">
+    <h2 class="subtitulo resultados-titulo">
+
 
         {% if buscar and categoria_id %}
 
-            Resultados para: "{{ buscar }}" en la categoría seleccionada
+            Resultados para:
+            "{{ buscar }}"
+            en la categoría seleccionada
+
 
         {% elif buscar %}
 
-            Resultados para: "{{ buscar }}"
+            Resultados para:
+            "{{ buscar }}"
+
 
         {% elif categoria_id %}
 
             Productos de la categoría seleccionada
 
+
         {% else %}
 
-            Productos del catálogo
+            Todos los productos
 
         {% endif %}
+
 
     </h2>
 
@@ -559,35 +707,80 @@ Productos | MisMary
 
     <section class="lista-productos">
 
+
         {% for producto in productos %}
+
 
             <div class="producto">
 
+
+                <!-- NOMBRE -->
+
                 <h3>
+
                     {{ producto.nombre }}
+
                 </h3>
 
 
+                <!-- PRECIO -->
+
                 <p class="precio">
+
                     ${{ producto.precio_venta }}
+
                 </p>
 
 
+                <!-- CATEGORÍA -->
+
                 <p>
-                    <strong>Categoría:</strong>
+
+                    <strong>
+                        Categoría:
+                    </strong>
+
                 </p>
 
 
                 <p class="categoria">
+
                     {{ producto.categoria.nombre }}
+
                 </p>
 
 
                 <!-- CANTIDAD DISPONIBLE -->
 
                 <p class="cantidad">
-                    Cantidad disponible: {{ producto.cantidad_disponible }}
+
+                    Cantidad disponible:
+                    {{ producto.cantidad_disponible }}
+
                 </p>
+
+
+                <!-- ESTADO DEL PRODUCTO -->
+
+                {% if producto.cantidad_disponible > 0 %}
+
+                    <p class="disponible">
+
+                        Estado:
+                        Disponible
+
+                    </p>
+
+                {% else %}
+
+                    <p class="agotado">
+
+                        Estado:
+                        Agotado
+
+                    </p>
+
+                {% endif %}
 
 
                 <!-- BOTÓN EDITAR -->
@@ -596,7 +789,9 @@ Productos | MisMary
                     href="{% url 'producto_update' producto.id %}"
                     class="boton-editar"
                 >
+
                     Editar
+
                 </a>
 
 
@@ -606,47 +801,69 @@ Productos | MisMary
                     href="{% url 'producto_delete' producto.id %}"
                     class="boton-eliminar"
                 >
+
                     Eliminar
+
                 </a>
+
 
             </div>
 
 
         {% empty %}
 
+
+            <!-- SIN PRODUCTOS -->
+
             <div class="sin-productos">
+
 
                 {% if buscar and categoria_id %}
 
                     <p>
+
                         No se encontraron productos que coincidan con
-                        "{{ buscar }}" en la categoría seleccionada.
+                        "{{ buscar }}"
+                        en la categoría seleccionada.
+
                     </p>
+
 
                 {% elif buscar %}
 
                     <p>
+
                         No se encontraron productos que coincidan con
                         "{{ buscar }}".
+
                     </p>
+
 
                 {% elif categoria_id %}
 
                     <p>
+
                         No hay productos registrados en la categoría seleccionada.
+
                     </p>
+
 
                 {% else %}
 
                     <p>
+
                         No hay productos registrados en el catálogo.
+
                     </p>
 
                 {% endif %}
 
+
             </div>
 
+
         {% endfor %}
+
 
     </section>
 

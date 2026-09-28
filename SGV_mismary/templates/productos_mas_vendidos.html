@@ -1,0 +1,393 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Productos Más Vendidos | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .producto-contenido {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .titulo {
+        margin-bottom: 30px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .titulo p {
+        color: #806b55;
+        font-size: 16px;
+    }
+
+    .formulario-producto {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 30px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+
+        margin-bottom: 30px;
+    }
+
+    .campos-fecha {
+        display: flex;
+        gap: 20px;
+    }
+
+    .campo {
+        flex: 1;
+        margin-bottom: 10px;
+    }
+
+    .campo label {
+        display: block;
+        color: #5c4033;
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .campo input {
+        width: 100%;
+        padding: 12px;
+
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+
+        background: white;
+        color: #5c4033;
+
+        font-size: 15px;
+        outline: none;
+
+        transition: 0.3s;
+
+        box-sizing: border-box;
+    }
+
+    .campo input:focus {
+        border-color: #60472d;
+
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .acciones {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .boton {
+        display: inline-block;
+
+        padding: 12px 20px;
+
+        border-radius: 5px;
+
+        font-size: 15px;
+
+        text-decoration: none;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+    }
+
+    .consultar {
+        background: #7b5e3b;
+        color: white;
+        border: none;
+    }
+
+    .consultar:hover {
+        background: #60472d;
+    }
+
+    .tabla-contenedor {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 30px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+
+        overflow-x: auto;
+    }
+
+    .tabla-titulo {
+        color: #5c4033;
+        font-size: 22px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .tabla-productos {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    .tabla-productos th {
+        background: #7b5e3b;
+        color: white;
+
+        padding: 14px;
+
+        text-align: left;
+
+        font-size: 15px;
+    }
+
+    .tabla-productos td {
+        padding: 14px;
+
+        color: #5c4033;
+
+        border-bottom: 1px solid #d8c7ad;
+
+        font-size: 15px;
+    }
+
+    .tabla-productos tr:hover {
+        background: #f0e4d1;
+    }
+
+    .cantidad {
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .sin-resultados {
+        background: #fff8ed;
+
+        border: 1px solid #c9b18e;
+
+        border-radius: 5px;
+
+        padding: 20px;
+
+        text-align: center;
+
+        color: #806b55;
+
+        font-size: 15px;
+    }
+
+    .numero {
+        width: 60px;
+        text-align: center;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .producto-contenido {
+            width: 95%;
+        }
+
+        .formulario-producto,
+        .tabla-contenedor {
+            padding: 20px;
+        }
+
+        .campos-fecha {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .acciones {
+            flex-direction: column;
+        }
+
+        .boton {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="producto-contenido">
+
+    <!-- TÍTULO -->
+
+    <section class="titulo">
+
+        <h1>
+            Productos Más Vendidos
+        </h1>
+
+        <p>
+            Consulta los productos con mayor salida durante un período de tiempo
+        </p>
+
+    </section>
+
+
+    <!-- FORMULARIO DE FECHAS -->
+
+    <section class="formulario-producto">
+
+        <form method="GET">
+
+            <div class="campos-fecha">
+
+                <!-- FECHA INICIAL -->
+
+                <div class="campo">
+
+                    <label for="fecha_inicio">
+                        Fecha inicial
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fecha_inicio"
+                        name="fecha_inicio"
+                        value="{{ fecha_inicio }}"
+                    >
+
+                </div>
+
+
+                <!-- FECHA FINAL -->
+
+                <div class="campo">
+
+                    <label for="fecha_fin">
+                        Fecha final
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fecha_fin"
+                        name="fecha_fin"
+                        value="{{ fecha_fin }}"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTÓN -->
+
+            <div class="acciones">
+
+                <button
+                    type="submit"
+                    class="boton consultar"
+                >
+                    Consultar ventas
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- RESULTADOS -->
+
+    <section class="tabla-contenedor">
+
+        <h2 class="tabla-titulo">
+            Productos vendidos
+        </h2>
+
+
+        {% if productos_vendidos %}
+
+            <table class="tabla-productos">
+
+                <thead>
+
+                    <tr>
+
+                        <th class="numero">
+                            #
+                        </th>
+
+                        <th>
+                            Producto
+                        </th>
+
+                        <th>
+                            Cantidad vendida
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for producto in productos_vendidos %}
+
+                        <tr>
+
+                            <td class="numero">
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
+                                {{ producto.producto__nombre }}
+                            </td>
+
+                            <td class="cantidad">
+                                {{ producto.total_vendido }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <div class="sin-resultados">
+
+                {% if fecha_inicio or fecha_fin %}
+
+                    No se encontraron productos vendidos
+                    durante el período seleccionado.
+
+                {% else %}
+
+                    Selecciona una fecha inicial y una fecha final
+                    para consultar los productos más vendidos.
+
+                {% endif %}
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}
