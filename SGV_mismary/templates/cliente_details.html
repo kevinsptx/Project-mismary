@@ -1,0 +1,336 @@
+
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Detalle Cliente | MisMary
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+    .detalle-contenido {
+
+        max-width: 700px;
+
+        margin: 0 auto;
+    }
+
+
+    .detalle-tarjeta {
+
+        background: #f5ead7;
+
+        border: 2px solid #8b6f47;
+
+        border-radius: 10px;
+
+        padding: 35px;
+
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+
+    .informacion {
+
+        margin-bottom: 20px;
+
+        padding-bottom: 15px;
+
+        border-bottom: 1px solid #c5ae8d;
+    }
+
+
+    .informacion:last-child {
+
+        border-bottom: none;
+
+        margin-bottom: 0;
+    }
+
+
+    .informacion strong {
+
+        display: block;
+
+        color: #5c4033;
+
+        font-size: 15px;
+
+        margin-bottom: 6px;
+    }
+
+
+    .informacion span {
+
+        color: #806b55;
+
+        font-size: 16px;
+    }
+
+
+    .pendientes {
+
+        margin-top: 25px;
+
+        padding: 15px;
+
+        background: #e6d3b8;
+
+        border: 1px solid #8b6f47;
+
+        border-radius: 5px;
+
+        text-align: center;
+
+        color: #5c4033;
+
+        font-size: 15px;
+    }
+
+
+    .acciones {
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: 12px;
+
+        margin-top: 30px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .boton {
+
+        display: inline-block;
+
+        padding: 11px 20px;
+
+        background: #7b5e3b;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 5px;
+
+        font-size: 14px;
+
+        border: none;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+    }
+
+
+    .boton:hover {
+
+        background: #60472d;
+    }
+
+
+    .eliminar {
+
+        background: #8b4a3b;
+    }
+
+
+    .eliminar:hover {
+
+        background: #70382d;
+    }
+
+
+    @media (max-width: 600px) {
+
+        .detalle-tarjeta {
+
+            padding: 25px;
+        }
+
+
+        .acciones {
+
+            flex-direction: column;
+        }
+
+
+        .boton {
+
+            width: 100%;
+
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="detalle-contenido">
+
+
+    <!-- TITULO -->
+
+    <section class="titulo">
+
+        <h1>
+            Detalle del Cliente
+        </h1>
+
+        <p>
+            Información del cliente registrado
+        </p>
+
+    </section>
+
+
+
+    <!-- TARJETA DEL CLIENTE -->
+
+    <section class="detalle-tarjeta">
+
+
+        <div class="informacion">
+
+            <strong>
+                ID del cliente
+            </strong>
+
+            <span>
+                {{ cliente.id }}
+            </span>
+
+        </div>
+
+
+
+        <div class="informacion">
+
+            <strong>
+                Nombre
+            </strong>
+
+            <span>
+                {{ cliente.nombre }}
+            </span>
+
+        </div>
+
+
+
+        <div class="informacion">
+
+            <strong>
+                Teléfono
+            </strong>
+
+            <span>
+                {{ cliente.telefono }}
+            </span>
+
+        </div>
+
+
+
+        <div class="informacion">
+
+            <strong>
+                Dirección
+            </strong>
+
+            <span>
+                {{ cliente.direccion }}
+            </span>
+
+        </div>
+
+
+
+        <div class="pendientes">
+
+            <strong>
+                Compras pendientes:
+            </strong>
+
+            No disponible por ahora
+
+        </div>
+
+
+
+        <!-- BOTONES -->
+
+        <div class="acciones">
+
+
+            <a href="{% url 'list_cliente' %}"
+               class="boton">
+
+                Volver
+
+            </a>
+
+
+            <a href="{% url 'cliente_update' cliente.id %}"
+               class="boton">
+
+                Actualizar
+
+            </a>
+
+
+            <a href="{% url 'cliente_delete' cliente.id %}"
+               class="boton eliminar"
+               onclick="return confirmarEliminacion()">
+
+                Eliminar
+
+            </a>
+
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+
+<!-- CONFIRMACION ELIMINAR -->
+
+<script>
+
+    function confirmarEliminacion() {
+
+        if (!confirm(
+            "¿Está seguro de que desea eliminar este cliente?"
+        )) {
+
+            return false;
+        }
+
+
+        if (!confirm(
+            "¿El cliente tiene algo pendiente?"
+        )) {
+
+            return false;
+        }
+
+
+        return true;
+    }
+
+</script>
+
+{% endblock %}

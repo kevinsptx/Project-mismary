@@ -1,0 +1,426 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Menú Principal | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* ===== RECIBO DE BIENVENIDA ===== */
+
+    .recibo-bienvenida {
+        max-width: 560px;
+        margin: 0 auto 45px;
+        position: relative;
+
+        background: #fffaf2;
+
+        padding: 34px 32px 26px;
+
+        /* Borde dentado, igual que el login */
+        clip-path: polygon(
+            0% 5%, 6.25% 0%, 12.5% 5%, 18.75% 0%,
+            25% 5%, 31.25% 0%, 37.5% 5%, 43.75% 0%,
+            50% 5%, 56.25% 0%, 62.5% 5%, 68.75% 0%,
+            75% 5%, 81.25% 0%, 87.5% 5%, 93.75% 0%,
+            100% 5%, 100% 100%, 0% 100%
+        );
+
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+
+        opacity: 0;
+        animation: aparecer 0.6s ease-out 0.1s both;
+    }
+
+    @keyframes aparecer {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .recibo-marca {
+        text-align: center;
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        color: #d9622f;
+        margin-bottom: 14px;
+    }
+
+    .recibo-saludo {
+        text-align: center;
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 600;
+        font-size: 19px;
+        color: #4a2c17;
+        margin-bottom: 4px;
+    }
+
+    .recibo-fecha {
+        text-align: center;
+        font-size: 13px;
+        color: #a06a3f;
+        margin-bottom: 18px;
+    }
+
+    .recibo-linea {
+        border: none;
+        border-top: 1.5px dashed #e3d2b8;
+        margin: 0 0 16px;
+    }
+
+    .recibo-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #b39a78;
+    }
+
+
+    /* ===== GRID DE TARJETAS ===== */
+
+    .menu {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .tarjeta {
+        background: #fffaf2;
+        border: 1px solid #f1e6d3;
+        border-radius: 18px;
+        padding: 30px 20px;
+        text-align: center;
+
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        opacity: 0;
+        animation: aparecerTarjeta 0.5s ease-out both;
+    }
+
+    .menu .tarjeta:nth-child(1) { animation-delay: 0.35s; }
+    .menu .tarjeta:nth-child(2) { animation-delay: 0.45s; }
+    .menu .tarjeta:nth-child(3) { animation-delay: 0.55s; }
+    .menu .tarjeta:nth-child(4) { animation-delay: 0.65s; }
+    .menu .tarjeta:nth-child(5) { animation-delay: 0.75s; }
+    .menu .tarjeta:nth-child(6) { animation-delay: 0.85s; }
+
+    @keyframes aparecerTarjeta {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tarjeta:hover {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Contador numérico */
+
+    .contador {
+        display: block;
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 700;
+        font-size: 28px;
+        color: #d9622f;
+        margin-bottom: 6px;
+    }
+
+    /* Icono que cobra vida al hacer hover */
+
+    .icono {
+        font-size: 38px;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    .tarjeta:hover .icono {
+        animation: wiggle 0.5s ease-in-out;
+    }
+
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg) scale(1); }
+        25% { transform: rotate(-12deg) scale(1.1); }
+        50% { transform: rotate(10deg) scale(1.15); }
+        75% { transform: rotate(-6deg) scale(1.1); }
+    }
+
+    .tarjeta h2 {
+        color: #4a2c17;
+        margin-bottom: 10px;
+        font-size: 19px;
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 700;
+    }
+
+    .tarjeta p {
+        color: #a06a3f;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .boton {
+        display: inline-block;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #ff8a4c 0%, #d9622f 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 6px 14px rgba(217, 98, 47, 0.35);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s;
+    }
+
+    .boton:hover {
+        background: linear-gradient(135deg, #ff9a5e 0%, #b8511f 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(217, 98, 47, 0.45);
+    }
+
+    .boton:active {
+        transform: translateY(0) scale(0.97);
+    }
+
+    @media (max-width: 900px) {
+
+        .menu {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .menu {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+
+<!-- RECIBO DE BIENVENIDA -->
+
+<div class="recibo-bienvenida">
+
+    <div class="recibo-marca">MisMary</div>
+
+    <div class="recibo-saludo">
+        ¡Bienvenido de vuelta, {{ user.username }}!
+    </div>
+
+    <div class="recibo-fecha">
+        {% now "d/m/Y" %}
+    </div>
+
+    <hr class="recibo-linea">
+
+    <div class="recibo-meta">
+        <span>Sistema de Gestión</span>
+        <span>Ventas por Catálogo</span>
+    </div>
+
+</div>
+
+
+<section class="menu">
+
+
+    <!-- PRODUCTOS -->
+
+    <div class="tarjeta">
+
+        <span class="contador" data-target="128">0</span>
+
+        <div class="icono">
+            📦
+        </div>
+
+        <h2>
+            Productos
+        </h2>
+
+        <p>
+            Gestiona los productos
+            disponibles en el catálogo.
+        </p>
+
+        <a href="#" class="boton">
+            Ver productos
+        </a>
+
+    </div>
+
+
+    <!-- CLIENTES -->
+
+    <div class="tarjeta">
+
+        <span class="contador" data-target="76">0</span>
+
+        <div class="icono">
+            👥
+        </div>
+
+        <h2>
+            Clientes
+        </h2>
+
+        <p>
+            Administra la información
+            de los clientes.
+        </p>
+
+        <a href="{% url 'list_cliente' %}" class="boton">
+            Ver clientes
+        </a>
+
+    </div>
+
+
+    <!-- VENTAS -->
+
+    <div class="tarjeta">
+
+        <span class="contador" data-target="342">0</span>
+
+        <div class="icono">
+            🛒
+        </div>
+
+        <h2>
+            Ventas
+        </h2>
+
+        <p>
+            Registra y consulta las
+            ventas realizadas.
+        </p>
+
+        <a href="{% url 'list_venta' %}" class="boton">
+            Ver ventas
+        </a>
+
+    </div>
+
+
+    <!-- PEDIDOS -->
+
+    <div class="tarjeta">
+
+        <span class="contador" data-target="19">0</span>
+
+        <div class="icono">
+            📋
+        </div>
+
+        <h2>
+            Pedidos
+        </h2>
+
+        <p>
+            Consulta y administra
+            los pedidos de clientes.
+        </p>
+
+        <a href="#" class="boton">
+            Ver pedidos
+        </a>
+
+    </div>
+
+
+    <!-- REPORTES -->
+
+    <div class="tarjeta">
+
+        <span class="contador" data-target="8">0</span>
+
+        <div class="icono">
+            📊
+        </div>
+
+        <h2>
+            Reportes
+        </h2>
+
+        <p>
+            Consulta información y
+            reportes de las ventas.
+        </p>
+
+        <a href="#" class="boton">
+            Ver reportes
+        </a>
+
+    </div>
+
+
+    <!-- USUARIOS -->
+
+{% if user.is_superuser %}
+
+<div class="tarjeta">
+
+    <span class="contador" data-target="5">0</span>
+
+    <div class="icono">
+            👤
+    </div>
+
+    <h2>Usuarios</h2>
+
+    <p>
+        Administra los usuarios del sistema.
+    </p>
+
+    <a href="{% url 'list_user' %}" class="boton">
+        Ver usuarios
+    </a>
+</div>
+
+{% endif %}
+
+
+</section>
+
+
+<script>
+    // Animación de contadores: sube de 0 al número real al cargar la página
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const contadores = document.querySelectorAll('.contador');
+
+        contadores.forEach(function (el) {
+            const meta = parseInt(el.dataset.target, 10) || 0;
+            const duracion = 900; // ms
+            const inicio = performance.now();
+
+            function actualizar(ahora) {
+                const progreso = Math.min((ahora - inicio) / duracion, 1);
+                el.textContent = Math.floor(progreso * meta);
+
+                if (progreso < 1) {
+                    requestAnimationFrame(actualizar);
+                } else {
+                    el.textContent = meta;
+                }
+            }
+
+            requestAnimationFrame(actualizar);
+        });
+
+    });
+</script>
+
+{% endblock %}

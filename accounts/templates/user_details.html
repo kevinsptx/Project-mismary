@@ -1,0 +1,315 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Detalle del Usuario | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .detalle-contenido {
+        max-width: 750px;
+        margin: 0 auto;
+    }
+
+    .titulo {
+        margin-bottom: 25px;
+    }
+
+    .titulo h1 {
+        color: #5c4033;
+        margin-bottom: 8px;
+    }
+
+    .titulo p {
+        color: #806b55;
+    }
+
+    .tarjeta {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 20px rgba(70, 50, 30, 0.15);
+    }
+
+    .usuario {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .icono {
+        width: 75px;
+        height: 75px;
+        margin: 0 auto 15px;
+        background: #7b5e3b;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .usuario h2 {
+        color: #5c4033;
+        margin: 0;
+    }
+
+    .datos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .dato {
+        background: #fffaf2;
+        border: 1px solid #d2b48c;
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .dato strong {
+        display: block;
+        color: #7b5e3b;
+        margin-bottom: 7px;
+    }
+
+    .dato span {
+        color: #5c4033;
+    }
+
+    .rol {
+        display: inline-block;
+        background: #7b5e3b;
+        color: white !important;
+        padding: 5px 12px;
+        border-radius: 15px;
+    }
+
+    .activo {
+        color: #4f6f3a !important;
+        font-weight: bold;
+    }
+
+    .inactivo {
+        color: #a0522d !important;
+        font-weight: bold;
+    }
+
+    .acciones {
+        margin-top: 25px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .boton {
+        padding: 10px 18px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border-radius: 7px;
+    }
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .volver {
+        background: #806b55;
+    }
+
+    .volver:hover {
+        background: #665442;
+    }
+
+    @media (max-width: 600px) {
+
+        .datos {
+            grid-template-columns: 1fr;
+        }
+
+        .acciones {
+            flex-direction: column;
+        }
+
+        .boton {
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="detalle-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Detalle del Usuario
+        </h1>
+
+        <p>
+            Información del usuario registrado en MisMary.
+        </p>
+
+    </section>
+
+
+    <div class="tarjeta">
+
+        <div class="usuario">
+
+            <div class="icono">
+                {{ usuario.username|first|upper }}
+            </div>
+
+            <h2>
+                {{ usuario.username }}
+            </h2>
+
+        </div>
+
+
+        <div class="datos">
+
+            <div class="dato">
+
+                <strong>
+                    Usuario
+                </strong>
+
+                <span>
+                    {{ usuario.username }}
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>
+                    Nombre
+                </strong>
+
+                <span>
+                    {{ usuario.first_name }}
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>
+                    Apellido
+                </strong>
+
+                <span>
+                    {{ usuario.last_name }}
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>
+                    Correo
+                </strong>
+
+                <span>
+                    {{ usuario.email }}
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>
+                    Rol
+                </strong>
+
+                <span>
+
+                    {% if usuario.is_superuser %}
+
+                        <span class="rol">
+                            Superusuario
+                        </span>
+
+                    {% else %}
+
+                        {% for grupo in usuario.groups.all %}
+
+                            <span class="rol">
+                                {{ grupo.name }}
+                            </span>
+
+                        {% empty %}
+
+                            <span class="rol">
+                                Usuario normal
+                            </span>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>
+                    Estado
+                </strong>
+
+                {% if usuario.is_active %}
+
+                    <span class="activo">
+                        ● Activo
+                    </span>
+
+                {% else %}
+
+                    <span class="inactivo">
+                        ● Inactivo
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="acciones">
+
+            <a
+                href="{% url 'user_update' usuario.id %}"
+                class="boton"
+            >
+                Editar usuario
+            </a>
+
+            <a
+                href="{% url 'list_user' %}"
+                class="boton volver"
+            >
+                Volver
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

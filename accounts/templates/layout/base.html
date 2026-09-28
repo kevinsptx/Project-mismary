@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}MisMary{% endblock %}</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+
+        body {
+
+            background: #d8c3a5;
+
+            min-height: 100vh;
+
+            color: #5c4033;
+        }
+
+
+        /* BARRA SUPERIOR */
+
+        .navbar {
+
+            width: 100%;
+
+            background: #5c4033;
+
+            padding: 16px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 3px 10px
+                rgba(70, 50, 30, 0.3);
+        }
+
+
+        /* LOGO */
+
+        .logo {
+
+            color: #f5ead7;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* OPCIONES */
+
+        .nav-opciones {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .nav-opciones a {
+
+            color: #f5ead7;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            padding: 9px 15px;
+
+            border-radius: 5px;
+
+            transition: 0.3s;
+        }
+
+
+        .nav-opciones a:hover {
+
+            background: #7b5e3b;
+        }
+
+
+        /* USUARIO */
+
+        .usuario {
+
+            color: #f5ead7;
+
+            font-size: 14px;
+
+            padding-left: 10px;
+        }
+
+
+        .usuario strong {
+
+            color: white;
+        }
+
+
+        /* BOTON CERRAR SESION */
+
+        .logout-form {
+
+            margin: 0;
+        }
+
+
+        .logout-btn {
+
+            padding: 9px 15px;
+
+            background: #8b4a3b;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+
+        .logout-btn:hover {
+
+            background: #70382d;
+        }
+
+
+        /* CONTENIDO */
+
+        .contenido {
+
+            max-width: 1100px;
+
+            margin: 40px auto;
+
+            padding: 0 25px;
+        }
+
+
+        /* TITULOS */
+
+        .titulo {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+
+        .titulo h1 {
+
+            color: #5c4033;
+
+            font-size: 30px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .titulo p {
+
+            color: #806b55;
+
+            font-size: 15px;
+        }
+
+
+        /* TARJETA GENERAL */
+
+        .contenedor {
+
+            background: #f5ead7;
+
+            border: 2px solid #8b6f47;
+
+            border-radius: 10px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+
+                padding: 15px 20px;
+
+                flex-direction: column;
+
+                gap: 12px;
+            }
+
+
+            .nav-opciones {
+
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+
+            .contenido {
+
+                margin: 25px auto;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- BARRA SUPERIOR -->
+
+    <header class="navbar">
+
+
+        <div class="logo">
+
+            MisMary
+
+        </div>
+
+
+        <nav class="nav-opciones">
+
+
+            <!-- VOLVER AL HOME -->
+
+            <a href="{% url 'home' %}">
+
+                🏠 Home
+
+            </a>
+
+
+            <!-- USUARIO -->
+
+            <div class="usuario">
+
+                👤
+                <strong>{{ user.username }}</strong>
+
+            </div>
+
+
+            <!-- CERRAR SESION -->
+
+            <form method="POST"
+                  action="{% url 'logout' %}"
+                  class="logout-form">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="logout-btn">
+
+                    Cerrar sesión
+
+                </button>
+
+            </form>
+
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- CONTENIDO DE CADA PAGINA -->
+
+    <main class="contenido">
+
+
+        {% block content %}
+
+        {% endblock %}
+
+
+    </main>
+
+
+</body>
+
+</html>
+```
