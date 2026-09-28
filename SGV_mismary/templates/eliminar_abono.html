@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Eliminar Abono | MisMary</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #d8c3a5;
+            min-height: 100vh;
+            color: #5c4033;
+        }
+
+        .navbar {
+            width: 100%;
+            background: #5c4033;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
+        }
+
+        .logo {
+            color: #f5ead7;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .usuario {
+            color: #f5ead7;
+            font-size: 14px;
+        }
+
+        .contenido {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 0 25px;
+        }
+
+        .tarjeta {
+            background: #f5ead7;
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+        }
+
+        .icono {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #5c4033;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .texto {
+            color: #806b55;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .informacion {
+            background: #eadbc3;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+
+        .informacion p {
+            color: #5c4033;
+            margin-bottom: 8px;
+        }
+
+        .informacion p:last-child {
+            margin-bottom: 0;
+        }
+
+        .botones {
+            display: flex;
+            gap: 10px;
+        }
+
+        .boton {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .eliminar {
+            background: #8b3a2f;
+            color: white;
+        }
+
+        .eliminar:hover {
+            background: #6f2d25;
+        }
+
+        .cancelar {
+            background: #7b5e3b;
+            color: white;
+        }
+
+        .cancelar:hover {
+            background: #60472d;
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .botones {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">
+            MisMary
+        </div>
+
+        <div class="usuario">
+
+            Usuario:
+            <strong>{{ user.username }}</strong>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenido">
+
+        <div class="tarjeta">
+
+            <div class="icono">
+                ⚠️
+            </div>
+
+            <h1>
+                Eliminar abono
+            </h1>
+
+            <p class="texto">
+
+                ¿Estás seguro de que deseas eliminar
+                este abono?
+
+            </p>
+
+
+            <div class="informacion">
+
+                <p>
+                    <strong>Cliente:</strong>
+                    {{ abono.deuda.cliente.nombre }}
+                </p>
+
+                <p>
+                    <strong>Valor:</strong>
+                    ${{ abono.valor }}
+                </p>
+
+                <p>
+                    <strong>Fecha:</strong>
+                    {{ abono.fecha|date:"d/m/Y H:i" }}
+                </p>
+
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="botones">
+
+                    <button
+                        type="submit"
+                        class="boton eliminar">
+
+                        🗑️ Sí, eliminar
+
+                    </button>
+
+
+                    <a
+                        href="{% url 'inicio' %}"
+                        class="boton cancelar">
+
+                        Cancelar
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

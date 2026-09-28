@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Detalle de deuda | MisMary</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #d8c3a5;
+            min-height: 100vh;
+            color: #5c4033;
+        }
+
+        /* ========================================= */
+        /* NAVBAR */
+        /* ========================================= */
+
+        .navbar {
+            width: 100%;
+            background: #5c4033;
+            padding: 18px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow:
+                0 3px 10px
+                rgba(70, 50, 30, 0.3);
+        }
+
+        .logo {
+            color: #f5ead7;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .usuario {
+            color: #f5ead7;
+            font-size: 14px;
+        }
+
+        /* ========================================= */
+        /* CONTENIDO */
+        /* ========================================= */
+
+        .contenido {
+            max-width: 850px;
+            margin: 50px auto;
+            padding: 0 25px;
+        }
+
+        /* ========================================= */
+        /* TÍTULO */
+        /* ========================================= */
+
+        .titulo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .titulo h1 {
+            color: #5c4033;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .titulo p {
+            color: #806b55;
+            font-size: 16px;
+        }
+
+        /* ========================================= */
+        /* TARJETA DE DEUDA */
+        /* ========================================= */
+
+        .tarjeta-deuda {
+            background: #f5ead7;
+
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+
+            margin-bottom: 30px;
+        }
+
+        /* ========================================= */
+        /* CLIENTE */
+        /* ========================================= */
+
+        .cliente {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 25px;
+        }
+
+        .icono-cliente {
+            font-size: 40px;
+        }
+
+        .cliente h2 {
+            color: #5c4033;
+            font-size: 24px;
+        }
+
+        /* ========================================= */
+        /* INFORMACIÓN */
+        /* ========================================= */
+
+        .informacion {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .dato {
+            background: #eadbc3;
+
+            border-radius: 7px;
+
+            padding: 20px;
+        }
+
+        .dato p {
+            color: #806b55;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+        }
+
+        .dato strong {
+            color: #5c4033;
+
+            font-size: 22px;
+        }
+
+        /* ========================================= */
+        /* SALDO */
+        /* ========================================= */
+
+        .dato .saldo {
+            color: #7b5e3b;
+        }
+
+        /* ========================================= */
+        /* ESTADO */
+        /* ========================================= */
+
+        .estado {
+            color: #7b5e3b !important;
+        }
+
+        /* ========================================= */
+        /* ABONOS */
+        /* ========================================= */
+
+        .seccion-abonos {
+            background: #f5ead7;
+
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+        }
+
+        .seccion-abonos h2 {
+            color: #5c4033;
+
+            font-size: 24px;
+
+            margin-bottom: 8px;
+        }
+
+        .descripcion {
+            color: #806b55;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+        /* ========================================= */
+        /* ABONO */
+        /* ========================================= */
+
+        .abono {
+            padding: 18px 0;
+
+            border-bottom: 1px solid #c5aa83;
+        }
+
+        .abono:last-child {
+            border-bottom: none;
+        }
+
+        .abono-valor {
+            color: #7b5e3b;
+
+            font-size: 19px;
+
+            font-weight: bold;
+
+            margin-bottom: 6px;
+        }
+
+        .abono-fecha {
+            color: #806b55;
+
+            font-size: 14px;
+        }
+
+        /* ========================================= */
+        /* SIN ABONOS */
+        /* ========================================= */
+
+        .sin-abonos {
+            text-align: center;
+
+            padding: 25px 0;
+        }
+
+        .sin-abonos .icono {
+            font-size: 40px;
+
+            margin-bottom: 10px;
+        }
+
+        .sin-abonos h3 {
+            color: #5c4033;
+
+            margin-bottom: 8px;
+        }
+
+        .sin-abonos p {
+            color: #806b55;
+        }
+
+        /* ========================================= */
+        /* VOLVER */
+        /* ========================================= */
+
+        .volver {
+            text-align: center;
+
+            margin-top: 35px;
+        }
+
+        .boton-volver {
+            display: inline-block;
+
+            padding: 11px 25px;
+
+            background: #7b5e3b;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+
+            transition: 0.3s;
+        }
+
+        .boton-volver:hover {
+            background: #60472d;
+        }
+
+        /* ========================================= */
+        /* RESPONSIVE */
+        /* ========================================= */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                padding: 15px 20px;
+
+                flex-direction: column;
+
+                gap: 8px;
+            }
+
+            .contenido {
+                margin-top: 30px;
+            }
+
+            .titulo h1 {
+                font-size: 26px;
+            }
+
+            .informacion {
+                grid-template-columns: 1fr;
+            }
+
+            .tarjeta-deuda,
+            .seccion-abonos {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ========================================= -->
+    <!-- NAVBAR -->
+    <!-- ========================================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            MisMary
+        </div>
+
+        <div class="usuario">
+
+            Usuario:
+            <strong>{{ user.username }}</strong>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenido">
+
+
+        <!-- ========================================= -->
+        <!-- TÍTULO -->
+        <!-- ========================================= -->
+
+        <section class="titulo">
+
+            <h1>
+                Detalle de deuda
+            </h1>
+
+            <p>
+                Consulta el estado completo de la deuda del cliente.
+            </p>
+
+        </section>
+
+
+        <!-- ========================================= -->
+        <!-- INFORMACIÓN DE LA DEUDA -->
+        <!-- ========================================= -->
+
+        <section class="tarjeta-deuda">
+
+
+            <!-- CLIENTE -->
+
+            <div class="cliente">
+
+                <div class="icono-cliente">
+                    👤
+                </div>
+
+                <h2>
+                    {{ deuda.cliente.nombre }}
+                </h2>
+
+            </div>
+
+
+            <!-- DATOS -->
+
+            <div class="informacion">
+
+
+                <!-- DEUDA TOTAL -->
+
+                <div class="dato">
+
+                    <p>
+                        Deuda total
+                    </p>
+
+                    <strong>
+                        ${{ deuda.valor_total }}
+                    </strong>
+
+                </div>
+
+
+                <!-- SALDO -->
+
+                <div class="dato">
+
+                    <p>
+                        Saldo pendiente
+                    </p>
+
+                    <strong class="saldo">
+                        ${{ deuda.saldo }}
+                    </strong>
+
+                </div>
+
+
+                <!-- ESTADO -->
+
+                <div class="dato">
+
+                    <p>
+                        Estado
+                    </p>
+
+                    <strong class="estado">
+                        {{ deuda.estado }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ========================================= -->
+        <!-- ABONOS REALIZADOS -->
+        <!-- ========================================= -->
+
+        <section class="seccion-abonos">
+
+
+            <h2>
+                💵 Abonos realizados
+            </h2>
+
+
+            <p class="descripcion">
+
+                Historial de pagos realizados por el cliente.
+
+            </p>
+
+
+            {% if abonos %}
+
+
+                {% for abono in abonos %}
+
+
+                <div class="abono">
+
+
+                    <div class="abono-valor">
+
+                        Abono:
+                        ${{ abono.valor }}
+
+                    </div>
+
+
+                    <div class="abono-fecha">
+
+                        Fecha:
+                        {{ abono.fecha|date:"d/m/Y H:i" }}
+
+                    </div>
+
+
+                </div>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <div class="sin-abonos">
+
+
+                    <div class="icono">
+                        💰
+                    </div>
+
+
+                    <h3>
+                        No hay abonos registrados
+                    </h3>
+
+
+                    <p>
+                        Este cliente todavía no tiene pagos registrados.
+                    </p>
+
+
+                </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+        <!-- ========================================= -->
+        <!-- VOLVER -->
+        <!-- ========================================= -->
+
+        <div class="volver">
+
+            <a
+                href="{% url 'inicio' %}"
+                class="boton-volver">
+
+                ← Volver a deudas
+
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+</body>
+
+</html>

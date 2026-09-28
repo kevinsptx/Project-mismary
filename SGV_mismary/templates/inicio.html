@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Deudas | MisMary</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #d8c3a5;
+            min-height: 100vh;
+            color: #5c4033;
+        }
+
+        /* ========================================= */
+        /* NAVBAR */
+        /* ========================================= */
+
+        .navbar {
+            width: 100%;
+            background: #5c4033;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
+        }
+
+        .logo {
+            color: #f5ead7;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .usuario {
+            color: #f5ead7;
+            font-size: 14px;
+        }
+
+        /* ========================================= */
+        /* CONTENIDO */
+        /* ========================================= */
+
+        .contenido {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 25px;
+        }
+
+        .titulo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .titulo h1 {
+            color: #5c4033;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .titulo p {
+            color: #806b55;
+            font-size: 16px;
+        }
+
+        /* ========================================= */
+        /* MENSAJES */
+        /* ========================================= */
+
+        .mensajes {
+            margin-bottom: 25px;
+        }
+
+        .mensaje {
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background: #eadbc3;
+            border: 1px solid #8b6f47;
+            color: #5c4033;
+            font-weight: bold;
+        }
+
+        /* ========================================= */
+        /* TARJETAS DE DEUDAS */
+        /* ========================================= */
+
+        .tarjetas {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .tarjeta {
+            background: #f5ead7;
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+
+            transition: 0.3s;
+        }
+
+        .tarjeta:hover {
+            transform: translateY(-5px);
+        }
+
+        .icono {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .tarjeta h2 {
+            color: #5c4033;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .tarjeta p {
+            color: #806b55;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .saldo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #7b5e3b;
+            margin: 15px 0;
+        }
+
+        /* ========================================= */
+        /* BOTONES */
+        /* ========================================= */
+
+        .boton {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #7b5e3b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .boton:hover {
+            background: #60472d;
+        }
+
+        /* ========================================= */
+        /* FORMULARIO DE ABONO */
+        /* ========================================= */
+
+        .form-abono {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #c5aa83;
+        }
+
+        .form-abono label {
+            display: block;
+            color: #5c4033;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-abono input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #8b6f47;
+            border-radius: 5px;
+            background: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .form-abono input:focus {
+            outline: none;
+            border: 2px solid #7b5e3b;
+        }
+
+        .boton-abono {
+            width: 100%;
+            padding: 10px;
+            background: #7b5e3b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .boton-abono:hover {
+            background: #60472d;
+        }
+
+        /* ========================================= */
+        /* SIN DEUDAS */
+        /* ========================================= */
+
+        .sin-deudas {
+            background: #f5ead7;
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .volver {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* ========================================= */
+        /* SECCIÓN DE ABONOS REALIZADOS */
+        /* ========================================= */
+
+        .seccion-abonos {
+            margin-top: 45px;
+            background: #f5ead7;
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+        }
+
+        .titulo-abonos {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .titulo-abonos h2 {
+            color: #5c4033;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .titulo-abonos p {
+            color: #806b55;
+            font-size: 14px;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #7b5e3b;
+            color: white;
+        }
+
+        th {
+            padding: 14px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #c5aa83;
+            color: #5c4033;
+            background: #f5ead7;
+        }
+
+        tbody tr:hover td {
+            background: #eadbc3;
+        }
+
+        .valor {
+            font-weight: bold;
+            color: #7b5e3b;
+            font-size: 16px;
+        }
+
+        .sin-abonos {
+            text-align: center;
+            padding: 25px;
+        }
+
+        .sin-abonos h3 {
+            color: #5c4033;
+            margin-bottom: 8px;
+        }
+
+        .sin-abonos p {
+            color: #806b55;
+        }
+
+        /* ========================================= */
+        /* BOTÓN EDITAR */
+        /* ========================================= */
+
+        .boton-editar {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #7b5e3b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+
+        .boton-editar:hover {
+            background: #60472d;
+        }
+
+        /* ========================================= */
+        /* BOTÓN ELIMINAR */
+        /* ========================================= */
+
+        .boton-eliminar {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #8b3a2f;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 13px;
+            transition: 0.3s;
+            margin-left: 5px;
+        }
+
+        .boton-eliminar:hover {
+            background: #6f2d25;
+        }
+
+        /* ========================================= */
+        /* RESPONSIVE */
+        /* ========================================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .titulo h1 {
+                font-size: 26px;
+            }
+
+            .contenido {
+                margin-top: 30px;
+            }
+
+            .seccion-abonos {
+                padding: 15px;
+            }
+
+            .boton-editar,
+            .boton-eliminar {
+                display: block;
+                margin: 5px 0;
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ========================================= -->
+    <!-- NAVBAR -->
+    <!-- ========================================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            MisMary
+        </div>
+
+        <div class="usuario">
+
+            Usuario:
+            <strong>{{ user.username }}</strong>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenido">
+
+
+        <!-- ========================================= -->
+        <!-- MENSAJES -->
+        <!-- ========================================= -->
+
+        {% if messages %}
+
+        <div class="mensajes">
+
+            {% for message in messages %}
+
+            <div class="mensaje">
+
+                {{ message }}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ========================================= -->
+        <!-- TÍTULO -->
+        <!-- ========================================= -->
+
+        <section class="titulo">
+
+            <h1>
+                Deudas de Clientes
+            </h1>
+
+            <p>
+                Consulta los saldos pendientes y registra abonos.
+            </p>
+
+        </section>
+
+
+        <!-- ========================================= -->
+        <!-- DEUDAS -->
+        <!-- ========================================= -->
+
+        {% if deudas %}
+
+        <section class="tarjetas">
+
+
+            {% for deuda in deudas %}
+
+            <div class="tarjeta">
+
+
+                <div class="icono">
+                    👤
+                </div>
+
+
+                <h2>
+
+                    {{ deuda.cliente.nombre }}
+
+                </h2>
+
+
+                <p>
+
+                    Deuda total:
+                    ${{ deuda.valor_total }}
+
+                </p>
+
+
+                <p>
+
+                    Saldo pendiente:
+
+                </p>
+
+
+                <div class="saldo">
+
+                    ${{ deuda.saldo }}
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- VER DEUDA -->
+                <!-- ================================= -->
+
+                <a
+                    href="{% url 'detalle_deuda' deuda.id %}"
+                    class="boton">
+
+                    Ver deuda
+
+                </a>
+
+
+                <!-- ================================= -->
+                <!-- REGISTRAR ABONO -->
+                <!-- ================================= -->
+
+                <form
+                    method="POST"
+                    class="form-abono">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="deuda_id"
+                        value="{{ deuda.id }}">
+
+
+                    <label>
+                        Registrar abono
+                    </label>
+
+
+                    <input
+                        type="number"
+                        name="valor"
+                        placeholder="Ingrese el valor"
+                        min="0.01"
+                        step="0.01"
+                        required>
+
+
+                    <button
+                        type="submit"
+                        class="boton-abono">
+
+                        💰 Registrar abono
+
+                    </button>
+
+                </form>
+
+
+            </div>
+
+            {% endfor %}
+
+
+        </section>
+
+
+        {% else %}
+
+
+        <!-- ========================================= -->
+        <!-- SIN DEUDAS -->
+        <!-- ========================================= -->
+
+        <div class="sin-deudas">
+
+            <div class="icono">
+                📋
+            </div>
+
+            <h2>
+                No hay deudas registradas
+            </h2>
+
+            <p>
+                Actualmente no existen deudas pendientes.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+
+        <!-- ========================================= -->
+        <!-- ABONOS REALIZADOS -->
+        <!-- ========================================= -->
+
+        <section class="seccion-abonos">
+
+
+            <div class="titulo-abonos">
+
+                <h2>
+                    💰 Abonos realizados
+                </h2>
+
+                <p>
+                    Consulta los pagos registrados.
+                </p>
+
+            </div>
+
+
+            {% if abonos %}
+
+
+            <div class="tabla-contenedor">
+
+
+                <table>
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Cliente
+                            </th>
+
+                            <th>
+                                Fecha
+                            </th>
+
+                            <th>
+                                Valor
+                            </th>
+
+                            <th>
+                                Acción
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for abono in abonos %}
+
+
+                        <tr>
+
+
+                            <!-- CLIENTE -->
+
+                            <td>
+
+                                👤
+                                {{ abono.deuda.cliente.nombre }}
+
+                            </td>
+
+
+                            <!-- FECHA -->
+
+                            <td>
+
+                                {{ abono.fecha|date:"d/m/Y H:i" }}
+
+                            </td>
+
+
+                            <!-- VALOR -->
+
+                            <td class="valor">
+
+                                ${{ abono.valor }}
+
+                            </td>
+
+
+                            <!-- ACCIONES -->
+
+                            <td>
+
+
+                                <!-- EDITAR -->
+
+                                <a
+                                    href="{% url 'editar_abono' abono.id %}"
+                                    class="boton-editar">
+
+                                    ✏️ Editar
+
+                                </a>
+
+
+                                <!-- ELIMINAR -->
+
+                                <a
+                                    href="{% url 'eliminar_abono' abono.id %}"
+                                    class="boton-eliminar">
+
+                                    🗑️ Eliminar
+
+                                </a>
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+            {% else %}
+
+
+            <!-- ========================================= -->
+            <!-- SIN ABONOS -->
+            <!-- ========================================= -->
+
+            <div class="sin-abonos">
+
+                <div class="icono">
+                    💰
+                </div>
+
+                <h3>
+                    No hay abonos registrados
+                </h3>
+
+                <p>
+                    Todavía no se han registrado pagos.
+                </p>
+
+            </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>

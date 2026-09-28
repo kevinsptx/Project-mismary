@@ -1,12 +1,24 @@
 from django import forms
+from .models import Abono
 
-from .models import Venta
 
+class AbonoForm(forms.ModelForm):
 
-class VentaForm(forms.ModelForm):
     class Meta:
-        model = Venta
-        fields = ["cliente", "valor_total", "fecha"]
+        model = Abono
+        fields = ["valor"]
+
         widgets = {
-            "fecha": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "valor": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Ingrese el valor del abono",
+                    "min": "1",
+                    "step": "0.01"
+                }
+            )
+        }
+
+        labels = {
+            "valor": "Valor del abono"
         }

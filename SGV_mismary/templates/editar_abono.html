@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Editar Abono | MisMary</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #d8c3a5;
+            min-height: 100vh;
+            color: #5c4033;
+        }
+
+        .navbar {
+            width: 100%;
+            background: #5c4033;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(70, 50, 30, 0.3);
+        }
+
+        .logo {
+            color: #f5ead7;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .usuario {
+            color: #f5ead7;
+            font-size: 14px;
+        }
+
+        .contenido {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 0 25px;
+        }
+
+        .tarjeta {
+            background: #f5ead7;
+            border: 2px solid #8b6f47;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow:
+                0 5px 15px
+                rgba(70, 50, 30, 0.2);
+        }
+
+        .titulo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .titulo h1 {
+            color: #5c4033;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .titulo p {
+            color: #806b55;
+        }
+
+        .informacion {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #eadbc3;
+            border-radius: 6px;
+        }
+
+        .informacion p {
+            margin-bottom: 8px;
+            color: #5c4033;
+        }
+
+        .formulario label {
+            display: block;
+            color: #5c4033;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .formulario input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #8b6f47;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .error {
+            color: #8b3a2f;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .boton {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .guardar {
+            background: #7b5e3b;
+            color: white;
+        }
+
+        .guardar:hover {
+            background: #60472d;
+        }
+
+        .cancelar {
+            background: #8b6f47;
+            color: white;
+        }
+
+        .cancelar:hover {
+            background: #60472d;
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .contenido {
+                margin-top: 30px;
+            }
+
+            .botones {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">
+            MisMary
+        </div>
+
+        <div class="usuario">
+
+            Usuario:
+            <strong>{{ user.username }}</strong>
+
+        </div>
+
+    </header>
+
+
+    <main class="contenido">
+
+        <div class="tarjeta">
+
+            <div class="titulo">
+
+                <h1>
+                    ✏️ Editar abono
+                </h1>
+
+                <p>
+                    Corrige el valor del abono registrado.
+                </p>
+
+            </div>
+
+
+            <div class="informacion">
+
+                <p>
+                    <strong>Cliente:</strong>
+                    {{ abono.deuda.cliente.nombre }}
+                </p>
+
+                <p>
+                    <strong>Valor actual:</strong>
+                    ${{ abono.valor }}
+                </p>
+
+            </div>
+
+
+            <form method="POST"
+                  class="formulario">
+
+                {% csrf_token %}
+
+
+                {{ form.non_field_errors }}
+
+
+                <label for="{{ form.valor.id_for_label }}">
+                    Nuevo valor del abono
+                </label>
+
+                {{ form.valor }}
+
+
+                {% if form.valor.errors %}
+
+                    <div class="error">
+
+                        {{ form.valor.errors }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <div class="botones">
+
+                    <button
+                        type="submit"
+                        class="boton guardar">
+
+                        💾 Guardar cambios
+
+                    </button>
+
+
+                    <a
+                        href="{% url 'inicio' %}"
+                        class="boton cancelar">
+
+                        Cancelar
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

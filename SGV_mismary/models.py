@@ -1,29 +1,76 @@
-from decimal import Decimal
-
-from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils import timezone
 
 
 class Cliente(models.Model):
-    nombre = models.CharField(max_length=150)
+
+    nombre = models.CharField(
+        max_length=100
+    )
+
+    telefono = models.CharField(
+        max_length=20,
+        blank=True
+    )
 
     def __str__(self):
         return self.nombre
 
 
-class Venta(models.Model):
-    """HU-010: venta por catálogo (cliente, valor total y fecha)."""
+class Deuda(models.Model):
+
+    ESTADOS = [
+        ("Pendiente", "Pendiente"),
+        ("Pagada", "Pagada"),
+    ]
 
     cliente = models.ForeignKey(
-        Cliente, on_delete=models.PROTECT, related_name="ventas"
+        Cliente,
+        on_delete=models.CASCADE,
+        related_name="deudas"
     )
+
     valor_total = models.DecimalField(
-        max_digits=12,
-        decimal_places=2,
-        validators=[MinValueValidator(Decimal("0.01"))],
+        max_digits=10,
+        decimal_places=2
     )
-    fecha = models.DateField(default=timezone.localdate)
+
+    saldo = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="Pendiente"
+    )
 
     def __str__(self):
-        return f"Venta #{self.pk} - {self.cliente} - {self.valor_total}"
+
+        return (
+            f"{self.cliente.nombre} - "
+            f"Saldo: ${self.saldo} - "
+            f"{self.estado}"
+        )
+
+
+class Abono(models.Model):
+
+    deuda = models.ForeignKey(
+        Deuda,
+        on_delete=models.CASCADE,
+        related_name="abonos"
+    )
+
+    valor = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    fecha = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+
+        return f"Abono ${self.valor}"
