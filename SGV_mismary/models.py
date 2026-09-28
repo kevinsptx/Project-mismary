@@ -60,6 +60,7 @@ class Venta(models.Model):
         Cliente,
         on_delete=models.PROTECT,
         related_name='ventas'
+    )
     saldo = models.DecimalField(
         max_digits=10,
         decimal_places=2
