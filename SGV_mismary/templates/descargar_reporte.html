@@ -1,0 +1,179 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Descargar reporte | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .reporte-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .filtro {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .filtro form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 15px;
+    }
+
+    .filtro label {
+        display: block;
+        color: #5c4033;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .filtro input,
+    .filtro select {
+        padding: 12px;
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+        background: white;
+        color: #5c4033;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .filtro input:focus,
+    .filtro select:focus {
+        border-color: #60472d;
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .filtro button,
+    .boton {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .filtro button:hover,
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .nota {
+        color: #806b55;
+        font-size: 13px;
+        margin-top: 10px;
+    }
+
+    .mensaje {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 15px 20px;
+        color: #5c4033;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+
+        .filtro form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filtro button {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<div class="reporte-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Descargar reporte
+        </h1>
+
+        <p>
+            Elige el tipo de reporte y descárgalo en un archivo para guardarlo o imprimirlo
+        </p>
+
+    </section>
+
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mensaje">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    <section class="filtro">
+
+        <form method="GET">
+
+            <div>
+                <label>Tipo de reporte</label>
+                <select name="tipo" required>
+                    <option value="">-- Selecciona --</option>
+                    <option value="ingresos">Ingresos</option>
+                    <option value="gastos">Gastos</option>
+                    <option value="clientes_deuda">Clientes con deuda</option>
+                    <option value="balance">Balance</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Desde</label>
+                <input type="date" name="fecha_inicio">
+            </div>
+
+            <div>
+                <label>Hasta</label>
+                <input type="date" name="fecha_fin">
+            </div>
+
+            <button type="submit">
+                Descargar
+            </button>
+
+        </form>
+
+        <p class="nota">
+            Las fechas son opcionales y no aplican al reporte de clientes con deuda.
+        </p>
+
+    </section>
+
+
+    <a href="{% url 'reportes' %}" class="boton">
+        Volver a reportes
+    </a>
+
+</div>
+
+{% endblock %}

@@ -27,4 +27,11 @@ urlpatterns = [
     path('ventas/pendientes/', views.ventas_pendientes, name='ventas_pendientes'),
     path('ventas/pendientes/<int:deuda_id>/', views.detalle_pendiente, name='detalle_pendiente'),
     path('ventas/pendientes/<int:deuda_id>/pagar/', views.marcar_pagada, name='marcar_pagada'),
+    path('cliente_historial/<int:id>', views.cliente_historial, name='cliente_historial'),
+    path('reportes/', views.reportes, name='reportes'),
+    path('reportes/ingresos/', views.reporte_ingresos, name='reporte_ingresos'),
+    path('reportes/clientes_deuda/', views.reporte_clientes_deuda, name='reporte_clientes_deuda'),
+    path('reportes/gastos/', views.reporte_gastos, name='reporte_gastos'),
+    path('reportes/balance/', views.reporte_balance, name='reporte_balance'),
+    path('reportes/descargar/', views.descargar_reporte, name='descargar_reporte'),
 ]

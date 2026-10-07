@@ -1,0 +1,185 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Clientes con deuda | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .reporte-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .boton {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .caja-tabla {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+        margin-bottom: 25px;
+    }
+
+    .caja-tabla table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .caja-tabla th {
+        background: #7b5e3b;
+        color: white;
+        text-align: left;
+        padding: 14px 18px;
+        font-size: 15px;
+    }
+
+    .caja-tabla td {
+        color: #5c4033;
+        padding: 14px 18px;
+        border-bottom: 1px solid #d9c7a5;
+        font-size: 15px;
+    }
+
+    .caja-tabla tr:last-child td {
+        border-bottom: none;
+    }
+
+    .sin-datos {
+        text-align: center;
+        color: #806b55;
+    }
+
+    .total-reporte {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 20px 25px;
+        text-align: right;
+        color: #5c4033;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .acciones-reporte {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 600px) {
+
+        .total-reporte {
+            text-align: center;
+        }
+
+    }
+
+    @media print {
+
+        .acciones-reporte {
+            display: none;
+        }
+
+    }
+
+</style>
+
+
+<div class="reporte-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Clientes con deuda
+        </h1>
+
+        <p>
+            Clientes que tienen saldo pendiente por pagar
+        </p>
+
+    </section>
+
+
+    <div class="caja-tabla">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Saldo pendiente</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for cliente in clientes %}
+
+                    <tr>
+                        <td>{{ cliente.nombre }}</td>
+                        <td>${{ cliente.saldo_pendiente }}</td>
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="2" class="sin-datos">
+                            No hay clientes con deuda pendiente.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div class="total-reporte">
+        Total por cobrar: ${{ total_deuda }}
+    </div>
+
+
+    <div class="acciones-reporte">
+
+        <button onclick="window.print()" class="boton">
+            Imprimir
+        </button>
+
+        <a href="{% url 'reportes' %}" class="boton">
+            Volver a reportes
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

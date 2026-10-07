@@ -129,9 +129,16 @@ Clientes | MisMary
         color: #5c4033;
     }
 
+    /* Contenedor de los botones de cada cliente */
+    .botones-cliente {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
     .informacion {
         display: inline-block;
-        margin-top: 10px;
         padding: 10px 18px;
         background: #7b5e3b;
         color: white;
@@ -248,12 +255,23 @@ Clientes | MisMary
                     {{ cliente.direccion }}
                 </p>
 
-                <a
-                    href="{% url 'details_cliente' cliente.id %}"
-                    class="informacion"
-                >
-                    Ver información
-                </a>
+                <div class="botones-cliente">
+
+                    <a
+                        href="{% url 'details_cliente' cliente.id %}"
+                        class="informacion"
+                    >
+                        Ver información
+                    </a>
+
+                    <a
+                        href="{% url 'cliente_historial' cliente.id %}"
+                        class="informacion"
+                    >
+                        Ver historial
+                    </a>
+
+                </div>
 
             </div>
 

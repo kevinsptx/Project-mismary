@@ -1,0 +1,329 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+
+<style>
+    .historial-page {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 30px 20px 50px;
+    }
+
+    .historial-header {
+        background: linear-gradient(135deg, #fff8f1, #f8e6d3);
+        border-radius: 20px;
+        padding: 28px 30px;
+        margin-bottom: 28px;
+        border: 1px solid #efd7bd;
+        box-shadow: 0 8px 25px rgba(92, 55, 28, 0.08);
+    }
+
+    .historial-header h2 {
+        margin: 0 0 8px;
+        color: #5b351f;
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    .historial-header p {
+        margin: 0;
+        color: #7c604c;
+        font-size: 16px;
+    }
+
+    .info-cliente {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+        padding: 9px 14px;
+        background: #ffffff;
+        border-radius: 10px;
+        color: #684329;
+        font-size: 14px;
+        border: 1px solid #ecd7c2;
+    }
+
+    .seccion-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid #eadfd5;
+        box-shadow: 0 8px 24px rgba(65, 42, 25, 0.07);
+    }
+
+    .seccion-titulo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .seccion-titulo h4 {
+        margin: 0;
+        color: #5b351f;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .contador {
+        background: #f4e0cc;
+        color: #6a4025;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .tabla-contenedor {
+        overflow-x: auto;
+        border-radius: 14px;
+        border: 1px solid #eee3da;
+    }
+
+    .tabla-mismary {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 620px;
+    }
+
+    .tabla-mismary thead {
+        background: #f8eee5;
+    }
+
+    .tabla-mismary th {
+        padding: 15px 16px;
+        text-align: left;
+        color: #69472f;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .tabla-mismary td {
+        padding: 16px;
+        color: #5e5046;
+        border-top: 1px solid #f0e7df;
+        font-size: 15px;
+    }
+
+    .tabla-mismary tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .tabla-mismary tbody tr:hover {
+        background: #fffaf6;
+    }
+
+    .precio {
+        font-weight: 700;
+        color: #6d3f1f;
+    }
+
+    .btn-ver {
+        display: inline-block;
+        padding: 8px 14px;
+        background: #c96f32;
+        color: white;
+        text-decoration: none;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-ver:hover {
+        background: #ad5d26;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .estado-vacio {
+        text-align: center;
+        padding: 30px 20px !important;
+        color: #9a8778 !important;
+        font-style: italic;
+    }
+
+    .saldo-card {
+        background: linear-gradient(135deg, #6d3f1f, #98592d);
+        color: white;
+        border-radius: 20px;
+        padding: 25px 28px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 25px rgba(109, 63, 31, 0.18);
+    }
+
+    .saldo-label {
+        font-size: 14px;
+        opacity: 0.85;
+        margin-bottom: 7px;
+    }
+
+    .saldo-valor {
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .acciones {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 18px;
+        background: #f2ece7;
+        color: #684329;
+        text-decoration: none;
+        border-radius: 10px;
+        border: 1px solid #ded1c7;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-volver:hover {
+        background: #e8ddd5;
+        color: #55331f;
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 700px) {
+        .historial-page {
+            padding: 20px 12px 35px;
+        }
+
+        .historial-header {
+            padding: 22px 20px;
+        }
+
+        .historial-header h2 {
+            font-size: 25px;
+        }
+
+        .seccion-card {
+            padding: 17px;
+            border-radius: 16px;
+        }
+
+        .seccion-titulo h4 {
+            font-size: 18px;
+        }
+
+        .saldo-card {
+            padding: 22px;
+        }
+
+        .saldo-valor {
+            font-size: 27px;
+        }
+    }
+</style>
+
+<div class="historial-page">
+
+```
+<div class="historial-header">
+    <h2>Historial de {{ cliente.nombre }}</h2>
+    <p>Consulta las compras y pagos realizados por este cliente.</p>
+
+    <div class="info-cliente">
+        Teléfono: {{ cliente.telefono }}
+    </div>
+</div>
+
+<div class="seccion-card">
+    <div class="seccion-titulo">
+        <h4>Ventas</h4>
+        <span class="contador">Historial de compras</span>
+    </div>
+
+    <div class="tabla-contenedor">
+        <table class="tabla-mismary">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Valor total</th>
+                    <th>Detalle</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <td>{{ venta.fecha|date:"d/m/Y" }}</td>
+                    <td class="precio">${{ venta.valor_total }}</td>
+                    <td>
+                        <a href="{% url 'details_venta' venta.id %}" class="btn-ver">
+                            Ver venta
+                        </a>
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="estado-vacio">
+                        Este cliente no tiene ventas registradas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="seccion-card">
+    <div class="seccion-titulo">
+        <h4>Abonos realizados</h4>
+        <span class="contador">Pagos registrados</span>
+    </div>
+
+    <div class="tabla-contenedor">
+        <table class="tabla-mismary">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for abono in abonos %}
+                <tr>
+                    <td>{{ abono.fecha|date:"d/m/Y" }}</td>
+                    <td class="precio">${{ abono.valor }}</td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="estado-vacio">
+                        Este cliente no ha realizado abonos.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="saldo-card">
+    <div class="saldo-label">Saldo pendiente</div>
+    <p class="saldo-valor">${{ saldo_pendiente }}</p>
+</div>
+
+<div class="acciones">
+    <a href="{% url 'list_cliente' %}" class="btn-volver">
+        ← Volver a clientes
+    </a>
+</div>
+```
+
+</div>
+
+{% endblock %}

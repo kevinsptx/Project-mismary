@@ -1,0 +1,271 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Ingresos | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .reporte-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .filtro {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .filtro form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 15px;
+    }
+
+    .filtro label {
+        display: block;
+        color: #5c4033;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .filtro input {
+        padding: 12px;
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+        background: white;
+        color: #5c4033;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .filtro input:focus {
+        border-color: #60472d;
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .filtro button,
+    .boton {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .filtro button:hover,
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .caja-tabla {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+        margin-bottom: 25px;
+    }
+
+    .caja-tabla table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .caja-tabla th {
+        background: #7b5e3b;
+        color: white;
+        text-align: left;
+        padding: 14px 18px;
+        font-size: 15px;
+    }
+
+    .caja-tabla td {
+        color: #5c4033;
+        padding: 14px 18px;
+        border-bottom: 1px solid #d9c7a5;
+        font-size: 15px;
+    }
+
+    .caja-tabla tr:last-child td {
+        border-bottom: none;
+    }
+
+    .sin-datos {
+        text-align: center;
+        color: #806b55;
+    }
+
+    .total-reporte {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 20px 25px;
+        text-align: right;
+        color: #5c4033;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .acciones-reporte {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 600px) {
+
+        .filtro form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filtro button {
+            width: 100%;
+        }
+
+        .total-reporte {
+            text-align: center;
+        }
+
+    }
+
+    @media print {
+
+        .filtro,
+        .acciones-reporte {
+            display: none;
+        }
+
+    }
+
+</style>
+
+
+<div class="reporte-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Reporte de ingresos
+        </h1>
+
+        <p>
+            Dinero que ingresó por ventas, agrupado por fecha
+        </p>
+
+    </section>
+
+
+    <section class="filtro">
+
+        <form method="GET">
+
+            <div>
+                <label>Desde</label>
+                <input
+                    type="date"
+                    name="fecha_inicio"
+                    value="{{ fecha_inicio|default:'' }}"
+                >
+            </div>
+
+            <div>
+                <label>Hasta</label>
+                <input
+                    type="date"
+                    name="fecha_fin"
+                    value="{{ fecha_fin|default:'' }}"
+                >
+            </div>
+
+            <button type="submit">
+                Filtrar
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <div class="caja-tabla">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Total vendido</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for fila in ingresos_por_fecha %}
+
+                    <tr>
+                        <td>{{ fila.fecha|date:"d/m/Y" }}</td>
+                        <td>${{ fila.total }}</td>
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="2" class="sin-datos">
+                            No hay ingresos en ese rango de fechas.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div class="total-reporte">
+        Total: ${{ total_ingresos }}
+    </div>
+
+
+    <div class="acciones-reporte">
+
+        <button onclick="window.print()" class="boton">
+            Imprimir
+        </button>
+
+        <a href="{% url 'reportes' %}" class="boton">
+            Volver a reportes
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

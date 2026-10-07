@@ -1,0 +1,230 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Balance | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .reporte-contenido {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .filtro {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .filtro form {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 15px;
+    }
+
+    .filtro label {
+        display: block;
+        color: #5c4033;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .filtro input {
+        padding: 12px;
+        border: 2px solid #8b6f47;
+        border-radius: 5px;
+        background: white;
+        color: #5c4033;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .filtro input:focus {
+        border-color: #60472d;
+        box-shadow:
+            0 0 5px
+            rgba(96, 71, 45, 0.3);
+    }
+
+    .filtro button,
+    .boton {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #7b5e3b;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .filtro button:hover,
+    .boton:hover {
+        background: #60472d;
+    }
+
+    .tarjetas {
+        display: grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(260px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .tarjeta {
+        background: #f5ead7;
+        border: 2px solid #8b6f47;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow:
+            0 5px 15px
+            rgba(70, 50, 30, 0.2);
+    }
+
+    .tarjeta h3 {
+        color: #5c4033;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .tarjeta .valor {
+        color: #5c4033;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .valor-positivo {
+        color: #2e6b3a !important;
+    }
+
+    .valor-negativo {
+        color: #9b2c2c !important;
+    }
+
+    .acciones-reporte {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 600px) {
+
+        .filtro form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filtro button {
+            width: 100%;
+        }
+
+    }
+
+    @media print {
+
+        .filtro,
+        .acciones-reporte {
+            display: none;
+        }
+
+    }
+
+</style>
+
+
+<div class="reporte-contenido">
+
+    <section class="titulo">
+
+        <h1>
+            Balance del negocio
+        </h1>
+
+        <p>
+            Ingresos menos gastos: la utilidad del negocio
+        </p>
+
+    </section>
+
+
+    <section class="filtro">
+
+        <form method="GET">
+
+            <div>
+                <label>Desde</label>
+                <input
+                    type="date"
+                    name="fecha_inicio"
+                    value="{{ fecha_inicio|default:'' }}"
+                >
+            </div>
+
+            <div>
+                <label>Hasta</label>
+                <input
+                    type="date"
+                    name="fecha_fin"
+                    value="{{ fecha_fin|default:'' }}"
+                >
+            </div>
+
+            <button type="submit">
+                Filtrar
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <section class="tarjetas">
+
+        <div class="tarjeta">
+            <h3>Ingresos</h3>
+            <p class="valor">${{ total_ingresos }}</p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>Gastos</h3>
+            <p class="valor">${{ total_gastos }}</p>
+        </div>
+
+        <div class="tarjeta">
+            <h3>Balance final</h3>
+            <p class="valor {% if balance >= 0 %}valor-positivo{% else %}valor-negativo{% endif %}">
+                ${{ balance }}
+            </p>
+        </div>
+
+    </section>
+
+
+    <div class="acciones-reporte">
+
+        <button onclick="window.print()" class="boton">
+            Imprimir
+        </button>
+
+        <a href="{% url 'reportes' %}" class="boton">
+            Volver a reportes
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
