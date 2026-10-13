@@ -9,6 +9,38 @@ from .models import Cliente, Venta, Abono, Deuda, Categoria, Producto, DetalleVe
 import csv
 from django.http import HttpResponse
 
+from django.shortcuts import render, redirect
+from .models import Cliente
+from .forms import ClienteForm
+
+
+def registrar_cliente(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('list_cliente')
+    else:
+        form = ClienteForm()
+
+    return render(
+        request,
+        'registrar_cliente.html',
+        {'form': form}
+    )
+
+
+def list_cliente(request):
+    clientes = Cliente.objects.all()
+
+    return render(
+        request,
+        'list_cliente.html',
+        {'clientes': clientes}
+    )
+
+
 
 @login_required
 def home(request):

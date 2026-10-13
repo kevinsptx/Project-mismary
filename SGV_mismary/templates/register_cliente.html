@@ -1,3 +1,4 @@
+
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -7,7 +8,6 @@ Registrar Cliente | MisMary
 {% block content %}
 
 <style>
-
     .registro-contenido {
         max-width: 600px;
         margin: 0 auto;
@@ -18,9 +18,7 @@ Registrar Cliente | MisMary
         border: 2px solid #8b6f47;
         border-radius: 10px;
         padding: 35px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+        box-shadow: 0 5px 15px rgba(70, 50, 30, 0.2);
     }
 
     .campo {
@@ -48,9 +46,13 @@ Registrar Cliente | MisMary
 
     .campo input:focus {
         border-color: #60472d;
-        box-shadow:
-            0 0 5px
-            rgba(96, 71, 45, 0.3);
+        box-shadow: 0 0 5px rgba(96, 71, 45, 0.3);
+    }
+
+    .error-campo {
+        color: #b42318;
+        font-size: 13px;
+        margin-top: 6px;
     }
 
     .boton {
@@ -83,121 +85,127 @@ Registrar Cliente | MisMary
     }
 
     @media (max-width: 600px) {
-
         .formulario {
             padding: 25px;
         }
-
     }
-
 </style>
 
 <div class="registro-contenido">
 
+    <section class="titulo">
+        <h1>Registrar Cliente</h1>
+        <p>Agrega un nuevo cliente al sistema</p>
+    </section>
 
-<section class="titulo">
+    <form method="POST" class="formulario">
+        {% csrf_token %}
 
-    <h1>
-        Registrar Cliente
-    </h1>
+        <!-- NOMBRE -->
 
-    <p>
-        Agrega un nuevo cliente al sistema
-    </p>
+        <div class="campo">
+            <label for="nombre">Nombre</label>
 
-</section>
-
-
-<form
-    method="POST"
-    class="formulario"
+<input
+    type="text"
+    required
+    maxlength="100"
+    id="nombre"
+    name="nombre"
+    class="capitalizar-nombre"
+    placeholder="Ingrese el nombre del cliente"
+    value="{{ form.nombre.value|default:'' }}"
+    autocomplete="name"
 >
 
-    {% csrf_token %}
+            {% if form.nombre.errors %}
+                <div class="error-campo">
+                    {{ form.nombre.errors }}
+                </div>
+            {% endif %}
+        </div>
 
+        <!-- TELÉFONO -->
 
-    <!-- NOMBRE -->
+        <div class="campo">
+            <label for="telefono">Teléfono</label>
 
-    <div class="campo">
+            <input
+                type="text"
+                required
+                maxlength="10"
+                id="telefono"
+                name="telefono"
+                placeholder="Ingrese el teléfono"
+                value="{{ form.telefono.value|default:'' }}"
+                autocomplete="tel"
+            >
 
-        <label for="nombre">
-            Nombre
-        </label>
+            {% if form.telefono.errors %}
+                <div class="error-campo">
+                    {{ form.telefono.errors }}
+                </div>
+            {% endif %}
+        </div>
 
-        <input
-            type="text"
-            required
-            maxlength="100"
-            id="nombre"
-            name="nombre"
-            placeholder="Ingrese el nombre del cliente"
-        >
+        <!-- DIRECCIÓN -->
 
-    </div>
+        <div class="campo">
+            <label for="direccion">Dirección</label>
 
+            <input
+                type="text"
+                required
+                maxlength="150"
+                id="direccion"
+                name="direccion"
+                placeholder="Ingrese la dirección"
+                value="{{ form.direccion.value|default:'' }}"
+                autocomplete="street-address"
+            >
 
-    <!-- TELEFONO -->
+            {% if form.direccion.errors %}
+                <div class="error-campo">
+                    {{ form.direccion.errors }}
+                </div>
+            {% endif %}
+        </div>
 
-    <div class="campo">
+        <!-- BOTÓN -->
 
-        <label for="telefono">
-            Teléfono
-        </label>
+        <button type="submit" class="boton">
+            Registrar Cliente
+        </button>
 
-        <input
-            type="text"
-            required
-            maxlength="10"
-            id="telefono"
-            name="telefono"
-            placeholder="Ingrese el teléfono"
-        >
+        <!-- VOLVER -->
 
-    </div>
+        <a href="{% url 'list_cliente' %}" class="volver">
+            Volver a la lista de clientes
+        </a>
 
-
-    <!-- DIRECCION -->
-
-    <div class="campo">
-
-        <label for="direccion">
-            Dirección
-        </label>
-
-        <input
-            type="text"
-            required
-            maxlength="150"
-            id="direccion"
-            name="direccion"
-            placeholder="Ingrese la dirección"
-        >
-
-    </div>
-
-
-    <!-- BOTON -->
-
-    <button
-        type="submit"
-        class="boton"
-    >
-        Registrar Cliente
-    </button>
-
-
-    <!-- VOLVER -->
-
-    <a
-        href="{% url 'list_cliente' %}"
-        class="volver"
-    >
-        Volver a la lista de clientes
-    </a>
-
-</form>
-
+    </form>
 
 </div>
+
+<!-- CONVERSIÓN AUTOMÁTICA DEL NOMBRE -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const campoNombre = document.getElementById('nombre');
+
+        campoNombre.addEventListener('input', function () {
+            const inicio = this.selectionStart;
+            const fin = this.selectionEnd;
+
+            this.value = this.value
+                .toLocaleLowerCase('es')
+                .replace(/(^|\s)\S/gu, function (letra) {
+                    return letra.toLocaleUpperCase('es');
+                });
+
+            this.setSelectionRange(inicio, fin);
+        });
+    });
+</script>
 
 {% endblock %}

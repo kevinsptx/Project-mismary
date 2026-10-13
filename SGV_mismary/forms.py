@@ -1,6 +1,45 @@
 from django import forms
-from .models import Cliente, Categoria, Producto
+from .models import Cliente, Categoria, Producto, Abono
+from django import forms
+from .models import Cliente
+import re
 
+
+def capitalizar_nombre(texto):
+    if not texto:
+        return texto
+
+    texto = re.sub(r'\s+', ' ', texto.strip()).lower()
+
+    return re.sub(
+        r'(^|\s)([a-záéíóúüñ])',
+        lambda m: m.group(1) + m.group(2).upper(),
+        texto
+    )
+
+
+class ClienteForm(forms.ModelForm):
+
+    class Meta:
+        model = Cliente
+        fields = ['nombre', 'telefono', 'direccion']
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        return capitalizar_nombre(nombre)
+
+
+
+# ===== FORMATO DE NOMBRES PROPIOS =====
+
+def formato_nombre(valor):
+    if not valor:
+        return valor
+
+    return ' '.join(valor.strip().split()).title()
+
+
+# ===== FORMULARIO DE CLIENTES =====
 
 class ClienteForm(forms.ModelForm):
     class Meta:
@@ -28,6 +67,12 @@ class ClienteForm(forms.ModelForm):
             }),
         }
 
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre', '')
+        return formato_nombre(nombre)
+
+
+# ===== FORMULARIO DE CATEGORÍAS =====
 
 class CategoriaForm(forms.ModelForm):
     class Meta:
@@ -45,6 +90,12 @@ class CategoriaForm(forms.ModelForm):
             }),
         }
 
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre', '')
+        return formato_nombre(nombre)
+
+
+# ===== FORMULARIO DE PRODUCTOS =====
 
 class ProductoForm(forms.ModelForm):
     class Meta:
@@ -90,8 +141,11 @@ class ProductoForm(forms.ModelForm):
             }),
         }
 
-    def clean_precio_venta(self):
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre', '')
+        return formato_nombre(nombre)
 
+    def clean_precio_venta(self):
         precio = self.cleaned_data.get('precio_venta')
 
         if precio is None:
@@ -107,7 +161,6 @@ class ProductoForm(forms.ModelForm):
         return precio
 
     def clean_cantidad_disponible(self):
-
         cantidad = self.cleaned_data.get('cantidad_disponible')
 
         if cantidad is None:
@@ -121,11 +174,11 @@ class ProductoForm(forms.ModelForm):
             )
 
         return cantidad
-from .models import Abono
 
+
+# ===== FORMULARIO DE ABONOS =====
 
 class AbonoForm(forms.ModelForm):
-
     class Meta:
         model = Abono
         fields = ["valor"]

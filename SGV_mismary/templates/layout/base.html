@@ -1,12 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{% block title %}MisMary{% endblock %}</title>
 
@@ -15,12 +13,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-
             font-family: 'Quicksand', sans-serif;
         }
 
@@ -37,21 +33,23 @@
             --ancho-sidebar-colapsado: 76px;
         }
 
-
         html {
             scroll-behavior: smooth;
         }
 
-
         body {
+            background: linear-gradient(
+                160deg,
+                #4a2c17 0%,
+                #3a2010 45%,
+                #2b160b 75%,
+                #4a2c17 100%
+            );
 
-            /* Fondo café animado con blobs (queda igual, es el "ambiente") */
-            background: linear-gradient(160deg, #4a2c17 0%, #3a2010 45%, #2b160b 75%, #4a2c17 100%);
             background-size: 300% 300%;
             animation: gradientMove 14s ease-in-out infinite;
 
             min-height: 100vh;
-
             color: var(--cafe-texto);
 
             position: relative;
@@ -63,6 +61,8 @@
             50% { background-position: 100% 70%; }
             100% { background-position: 0% 30%; }
         }
+
+        /* ===== FONDOS ANIMADOS ===== */
 
         body::before,
         body::after {
@@ -110,29 +110,42 @@
         }
 
         @keyframes float1 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(40px, 30px) scale(1.08); }
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(40px, 30px) scale(1.08);
+            }
         }
 
         @keyframes float2 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-35px, -25px) scale(1.05); }
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(-35px, -25px) scale(1.05);
+            }
         }
 
         @keyframes float3 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-25px, 35px) scale(1.1); }
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(-25px, 35px) scale(1.1);
+            }
         }
 
-
-        /* ===== SIDEBAR IZQUIERDO ===== */
+        /* ===== BARRA LATERAL FIJA ===== */
 
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            height: 100vh;
+
             width: var(--ancho-sidebar);
+            height: 100vh;
+            height: 100dvh;
 
             background: var(--crema);
             border-right: 1px solid var(--crema-borde);
@@ -140,30 +153,34 @@
             display: flex;
             flex-direction: column;
 
-            z-index: 10;
+            /* Se muestra por encima del contenido */
+            z-index: 1000;
 
             box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
 
+            /* Solo se anima el ancho de la barra */
             transition: width 0.3s ease;
 
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .sidebar.colapsado {
             width: var(--ancho-sidebar-colapsado);
         }
 
-
-        /* CABECERA DEL SIDEBAR */
+        /* ===== CABECERA DEL MENÚ ===== */
 
         .sidebar-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 8px;
 
             padding: 22px 18px;
 
             border-bottom: 1px solid var(--crema-borde);
+            flex-shrink: 0;
         }
 
         .logo-sidebar {
@@ -212,13 +229,14 @@
             display: block;
             width: 18px;
             height: 2px;
+
             background: var(--cafe-texto);
             border-radius: 2px;
+
             transition: transform 0.25s ease;
         }
 
-
-        /* NAVEGACIÓN */
+        /* ===== NAVEGACIÓN ===== */
 
         .sidebar-nav {
             flex: 1;
@@ -235,11 +253,11 @@
             gap: 14px;
 
             padding: 11px 12px;
-
             border-radius: 10px;
 
             text-decoration: none;
             color: var(--cafe-texto);
+
             font-size: 14px;
             font-weight: 600;
 
@@ -248,7 +266,10 @@
 
             border-left: 3px solid transparent;
 
-            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease;
         }
 
         .nav-item:hover {
@@ -278,12 +299,12 @@
             padding: 11px 0;
         }
 
-
-        /* PIE DEL SIDEBAR: USUARIO + LOGOUT */
+        /* ===== PIE DEL MENÚ ===== */
 
         .sidebar-bottom {
             padding: 16px 12px 22px;
             border-top: 1px solid var(--crema-borde);
+            flex-shrink: 0;
         }
 
         .usuario-sidebar {
@@ -323,7 +344,11 @@
 
             padding: 10px 12px;
 
-            background: linear-gradient(135deg, var(--naranja) 0%, var(--naranja-oscuro) 100%);
+            background: linear-gradient(
+                135deg,
+                var(--naranja) 0%,
+                var(--naranja-oscuro) 100%
+            );
 
             color: #fff8f0;
 
@@ -335,17 +360,24 @@
             font-weight: 600;
 
             cursor: pointer;
-
             white-space: nowrap;
             overflow: hidden;
 
             box-shadow: 0 4px 12px rgba(217, 98, 47, 0.35);
 
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s;
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                background 0.2s;
         }
 
         .logout-btn:hover {
-            background: linear-gradient(135deg, #ff9a5e 0%, #b8511f 100%);
+            background: linear-gradient(
+                135deg,
+                #ff9a5e 0%,
+                #b8511f 100%
+            );
+
             transform: translateY(-2px);
             box-shadow: 0 8px 18px rgba(217, 98, 47, 0.45);
         }
@@ -358,17 +390,19 @@
             display: none;
         }
 
-
         /* ===== CONTENIDO PRINCIPAL ===== */
 
         .contenido-wrap {
-            margin-left: var(--ancho-sidebar);
-            transition: margin-left 0.3s ease;
+            /* El contenido conserva su posición */
+            margin-left: var(--ancho-sidebar-colapsado);
 
             position: relative;
             z-index: 1;
 
             min-height: 100vh;
+
+            /* No cambia el margen al abrir el menú */
+            transition: none;
         }
 
         .contenido-wrap.expandido {
@@ -376,13 +410,14 @@
         }
 
         .contenido {
+            width: 100%;
             max-width: 1100px;
+
             margin: 40px auto;
             padding: 0 25px;
         }
 
-
-        /* TITULOS */
+        /* ===== TÍTULOS ===== */
 
         .titulo {
             text-align: center;
@@ -404,8 +439,7 @@
             font-weight: 600;
         }
 
-
-        /* TARJETA GENERAL (crema, no café) */
+        /* ===== TARJETAS GENERALES ===== */
 
         .contenedor {
             background: var(--crema);
@@ -418,11 +452,9 @@
             color: var(--cafe-texto);
         }
 
-
-        /* RESPONSIVE */
+        /* ===== RESPONSIVE ===== */
 
         @media (max-width: 700px) {
-
             .sidebar {
                 width: var(--ancho-sidebar-colapsado);
             }
@@ -437,31 +469,36 @@
                 border-right: none;
             }
 
-            .contenido-wrap {
-                margin-left: var(--ancho-sidebar-colapsado);
-            }
-
+            .contenido-wrap,
             .contenido-wrap.expandido {
-                margin-left: 0;
+                margin-left: var(--ancho-sidebar-colapsado);
             }
 
             .contenido {
                 margin: 25px auto;
+                padding: 0 15px;
             }
-
         }
 
+        /* Respeta la preferencia de reducir animaciones */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
-
 </head>
-
 
 <body>
 
     <div class="blob-extra-layout"></div>
 
-
-    <!-- SIDEBAR IZQUIERDO (inicia colapsado) -->
+    <!-- BARRA LATERAL -->
 
     <aside class="sidebar colapsado" id="sidebar">
 
@@ -471,14 +508,20 @@
                 MisMary
             </div>
 
-            <button class="toggle-btn" id="toggleBtn" aria-label="Alternar menú">
+            <button
+                type="button"
+                class="toggle-btn"
+                id="toggleBtn"
+                aria-label="Abrir o cerrar menú"
+                aria-expanded="false"
+                aria-controls="sidebar"
+            >
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
         </div>
-
 
         <nav class="sidebar-nav">
 
@@ -489,60 +532,92 @@
 
         </nav>
 
-
         <div class="sidebar-bottom">
 
             <div class="usuario-sidebar">
                 <span class="nav-icono">👤</span>
+
                 <span class="nav-texto">
                     <strong>{{ user.username }}</strong>
                 </span>
             </div>
 
-            <form method="POST"
-                  action="{% url 'logout' %}"
-                  class="logout-form">
-
+            <form
+                method="POST"
+                action="{% url 'logout' %}"
+                class="logout-form"
+            >
                 {% csrf_token %}
 
                 <button type="submit" class="logout-btn">
                     <span class="nav-icono">🚪</span>
                     <span class="nav-texto">Cerrar sesión</span>
                 </button>
-
             </form>
 
         </div>
 
     </aside>
 
-
     <!-- CONTENIDO DE CADA PÁGINA -->
 
-    <div class="contenido-wrap expandido" id="contenidoWrap">
+    <div class="contenido-wrap" id="contenidoWrap">
 
         <main class="contenido">
 
             {% block content %}
-
             {% endblock %}
 
         </main>
 
     </div>
 
+    <!-- CONTROL DE LA BARRA -->
 
     <script>
         const sidebar = document.getElementById('sidebar');
-        const contenidoWrap = document.getElementById('contenidoWrap');
         const toggleBtn = document.getElementById('toggleBtn');
 
         toggleBtn.addEventListener('click', function () {
-            sidebar.classList.toggle('colapsado');
-            contenidoWrap.classList.toggle('expandido');
+            const estaColapsado = sidebar.classList.toggle('colapsado');
+
+            toggleBtn.setAttribute(
+                'aria-expanded',
+                String(!estaColapsado)
+            );
         });
     </script>
 
-</body>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    function capitalizarNombre(texto) {
+        return texto
+            .toLocaleLowerCase('es')
+            .replace(/(^|\s)([a-záéíóúüñ])/gu, function (_, espacio, letra) {
+                return espacio + letra.toLocaleUpperCase('es');
+            });
+    }
+
+    // Se aplica a todos los campos que tengan esta clase.
+    document.querySelectorAll('.capitalizar-nombre').forEach(function (campo) {
+
+        campo.addEventListener('input', function () {
+            const inicio = this.selectionStart;
+            const fin = this.selectionEnd;
+
+            this.value = capitalizarNombre(this.value);
+
+            this.setSelectionRange(inicio, fin);
+        });
+
+        // Normaliza también el valor que ya estaba escrito.
+        campo.value = capitalizarNombre(campo.value);
+    });
+
+});
+</script>
+
+</body>
 </html>
