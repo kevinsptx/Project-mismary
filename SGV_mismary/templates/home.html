@@ -8,421 +8,381 @@ Menú Principal | MisMary
 
 <style>
 
-    /* ===== RECIBO DE BIENVENIDA ===== */
+    /* ===== PALETA Y BASE ===== */
 
-    .recibo-bienvenida {
-        max-width: 560px;
-        margin: 0 auto 45px;
-        position: relative;
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
 
-        background: #fffaf2;
-
-        padding: 34px 32px 26px;
-
-        /* Borde dentado, igual que el login */
-        clip-path: polygon(
-            0% 5%, 6.25% 0%, 12.5% 5%, 18.75% 0%,
-            25% 5%, 31.25% 0%, 37.5% 5%, 43.75% 0%,
-            50% 5%, 56.25% 0%, 62.5% 5%, 68.75% 0%,
-            75% 5%, 81.25% 0%, 87.5% 5%, 93.75% 0%,
-            100% 5%, 100% 100%, 0% 100%
-        );
-
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-
-        opacity: 0;
-        animation: aparecer 0.6s ease-out 0.1s both;
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
-    @keyframes aparecer {
-        from { opacity: 0; transform: translateY(16px); }
-        to { opacity: 1; transform: translateY(0); }
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
     }
 
-    .recibo-marca {
-        text-align: center;
-        font-family: 'Fredoka', sans-serif;
-        font-weight: 700;
-        font-size: 22px;
-        color: #d9622f;
-        margin-bottom: 14px;
+    .wrap-mismary {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 30px 20px;
     }
 
-    .recibo-saludo {
-        text-align: center;
-        font-family: 'Fredoka', sans-serif;
-        font-weight: 600;
-        font-size: 19px;
-        color: #4a2c17;
-        margin-bottom: 4px;
-    }
+    /* ===== SALUDO COMPACTO ===== */
 
-    .recibo-fecha {
-        text-align: center;
-        font-size: 13px;
-        color: #a06a3f;
-        margin-bottom: 18px;
-    }
-
-    .recibo-linea {
-        border: none;
-        border-top: 1.5px dashed #e3d2b8;
-        margin: 0 0 16px;
-    }
-
-    .recibo-meta {
+    .saludo-caja {
         display: flex;
+        align-items: center;
         justify-content: space-between;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: #b39a78;
+        margin-bottom: 25px;
     }
 
+    .saludo-texto h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
 
-    /* ===== GRID DE TARJETAS ===== */
+    .saludo-texto p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
 
-    .menu {
+    .chip-mismary {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    /* ===== ESTRUCTURA ASIMÉTRICA ===== */
+
+    .layout-mismary {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* 1. TARJETA PROTAGONISTA (HERO) */
+
+    .hero-card {
+        background: linear-gradient(135deg, var(--naranja) 0%, var(--terracota) 100%);
+        color: #FFFFFF;
+        border-radius: 28px;
+        padding: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        box-shadow: 0 14px 28px rgba(255, 107, 53, 0.25);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        max-width: 550px;
+    }
+
+    .hero-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: #FFF;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+
+    .hero-content h2 {
+        font-size: 28px;
+        margin: 0 0 8px 0;
+        font-weight: 700;
+        color: #FFF;
+    }
+
+    .hero-content p {
+        font-size: 15px;
+        margin: 0 0 20px 0;
+        opacity: 0.92;
+        line-height: 1.4;
+    }
+
+    .btn-hero {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #FFFFFF;
+        color: var(--terracota);
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-hero:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-icon {
+        font-size: 90px;
+        opacity: 0.85;
+        line-height: 1;
+        transform: rotate(-8deg);
+    }
+
+    /* 2. FILA MEDIANA (2 COLUMNAS) */
+
+    .grid-dos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    .card-mediana {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: var(--sombra-suave);
+        transition: all 0.25s ease;
+    }
+
+    .card-mediana:hover {
+        transform: translateY(-4px);
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-hover);
+    }
+
+    .card-header-flex {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 12px;
+    }
+
+    .icono-box {
+        width: 50px;
+        height: 50px;
+        border-radius: 16px;
+        background: var(--arena-suave);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .card-mediana h3 {
+        margin: 0;
+        font-size: 20px;
+        color: var(--cafe-tostado);
+    }
+
+    .card-mediana p {
+        font-size: 14px;
+        color: #6C5243;
+        margin: 0 0 20px 0;
+        line-height: 1.4;
+    }
+
+    /* 3. FILA COMPACTA (3 COLUMNAS) */
+
+    .grid-tres {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 25px;
-        max-width: 1000px;
-        margin: auto;
+        gap: 20px;
     }
 
-    .tarjeta {
-        background: #fffaf2;
-        border: 1px solid #f1e6d3;
-        border-radius: 18px;
-        padding: 30px 20px;
-        text-align: center;
-
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-        opacity: 0;
-        animation: aparecerTarjeta 0.5s ease-out both;
-    }
-
-    .menu .tarjeta:nth-child(1) { animation-delay: 0.35s; }
-    .menu .tarjeta:nth-child(2) { animation-delay: 0.45s; }
-    .menu .tarjeta:nth-child(3) { animation-delay: 0.55s; }
-    .menu .tarjeta:nth-child(4) { animation-delay: 0.65s; }
-    .menu .tarjeta:nth-child(5) { animation-delay: 0.75s; }
-    .menu .tarjeta:nth-child(6) { animation-delay: 0.85s; }
-
-    @keyframes aparecerTarjeta {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .tarjeta:hover {
-        transform: translateY(-6px) scale(1.03);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Contador numérico */
-
-    .contador {
-        display: block;
-        font-family: 'Fredoka', sans-serif;
-        font-weight: 700;
-        font-size: 28px;
-        color: #d9622f;
-        margin-bottom: 6px;
-    }
-
-    /* Icono que cobra vida al hacer hover */
-
-    .icono {
-        font-size: 38px;
-        margin-bottom: 10px;
-        display: inline-block;
-    }
-
-    .tarjeta:hover .icono {
-        animation: wiggle 0.5s ease-in-out;
-    }
-
-    @keyframes wiggle {
-        0%, 100% { transform: rotate(0deg) scale(1); }
-        25% { transform: rotate(-12deg) scale(1.1); }
-        50% { transform: rotate(10deg) scale(1.15); }
-        75% { transform: rotate(-6deg) scale(1.1); }
-    }
-
-    .tarjeta h2 {
-        color: #4a2c17;
-        margin-bottom: 10px;
-        font-size: 19px;
-        font-family: 'Fredoka', sans-serif;
-        font-weight: 700;
-    }
-
-    .tarjeta p {
-        color: #a06a3f;
-        font-size: 14px;
-        line-height: 1.5;
-        margin-bottom: 20px;
-    }
-
-    .boton {
-        display: inline-block;
-        padding: 10px 20px;
-        background: linear-gradient(135deg, #ff8a4c 0%, #d9622f 100%);
-        color: white;
+    .card-compacta {
+        background: var(--arena-suave);
+        border: 1px solid transparent;
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
         text-decoration: none;
-        border-radius: 10px;
-        font-size: 14px;
+        color: var(--cafe-tostado);
+        transition: all 0.2s ease;
+    }
+
+    .card-compacta:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        transform: translateY(-3px);
+        box-shadow: var(--sombra-suave);
+    }
+
+    .card-compacta .icono-box {
+        background: var(--blanco);
+        flex-shrink: 0;
+    }
+
+    .card-compacta-info h4 {
+        margin: 0 0 2px 0;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .card-compacta-info span {
+        font-size: 12px;
+        color: var(--terracota);
+    }
+
+    /* BOTONES ESTÁNDAR */
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
         font-weight: 600;
-        box-shadow: 0 6px 14px rgba(217, 98, 47, 0.35);
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s;
+        transition: background 0.2s ease;
     }
 
-    .boton:hover {
-        background: linear-gradient(135deg, #ff9a5e 0%, #b8511f 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(217, 98, 47, 0.45);
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    .boton:active {
-        transform: translateY(0) scale(0.97);
-    }
+    /* RESPONSIVO */
 
-    @media (max-width: 900px) {
-
-        .menu {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-    }
-
-    @media (max-width: 600px) {
-
-        .menu {
+    @media (max-width: 850px) {
+        .grid-dos, .grid-tres {
             grid-template-columns: 1fr;
         }
 
+        .hero-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .hero-icon {
+            display: none;
+        }
     }
 
 </style>
 
 
-<!-- RECIBO DE BIENVENIDA -->
+<div class="wrap-mismary">
 
-<div class="recibo-bienvenida">
-
-    <div class="recibo-marca">MisMary</div>
-
-    <div class="recibo-saludo">
-        ¡Bienvenido de vuelta, {{ user.username }}!
+    <!-- SALUDO -->
+    <div class="saludo-caja">
+        <div class="saludo-texto">
+            <h1>¡Hola, {{ user.username }}! ✨</h1>
+            <p>Bienvenido a tu espacio de trabajo en MisMary</p>
+        </div>
+        <div class="chip-mismary">
+            {% now "d/m/Y" %}
+        </div>
     </div>
 
-    <div class="recibo-fecha">
-        {% now "d/m/Y" %}
-    </div>
+    <div class="layout-mismary">
 
-    <hr class="recibo-linea">
+        <!-- 1. BLOQUE PRINCIPAL (HERO) -->
+        <div class="hero-card">
+            <div class="hero-content">
+                <span class="hero-badge">Acceso Principal</span>
+                <h2>Gestión de Catálogo</h2>
+                <p>Explora todos los productos disponibles, actualiza existencias o añade nuevos artículos a tu tienda.</p>
+                <a href="{% url 'list_producto' %}" class="btn-hero">
+                    Ver catálogo completo ➔
+                </a>
+            </div>
+            <div class="hero-icon">📦</div>
+        </div>
 
-    <div class="recibo-meta">
-        <span>Sistema de Gestión</span>
-        <span>Ventas por Catálogo</span>
+        <!-- 2. SECCIÓN OPERACIONES DIARIAS (2 COLUMNAS) -->
+        <div class="grid-dos">
+
+            <div class="card-mediana">
+                <div>
+                    <div class="card-header-flex">
+                        <div class="icono-box">🛍️</div>
+                        <h3>Ventas</h3>
+                    </div>
+                    <p>Registra las compras de tus clientes y revisa el historial completo de ventas.</p>
+                </div>
+                <a href="{% url 'list_venta' %}" class="btn-mismary">
+                    Ir a ventas
+                </a>
+            </div>
+
+            <div class="card-mediana">
+                <div>
+                    <div class="card-header-flex">
+                        <div class="icono-box">📌</div>
+                        <h3>Pedidos</h3>
+                    </div>
+                    <p>Gestiona los encargos pendientes, entregas en camino y estado de solicitudes.</p>
+                </div>
+                <a href="#" class="btn-mismary">
+                    Ver pedidos
+                </a>
+            </div>
+
+        </div>
+
+        <!-- 3. ACCESOS COMPACTOS (3 COLUMNAS) -->
+        <div class="grid-tres">
+
+            <a href="{% url 'list_cliente' %}" class="card-compacta">
+                <div class="icono-box">💛</div>
+                <div class="card-compacta-info">
+                    <h4>Clientes</h4>
+                    <span>Directorio y contacto</span>
+                </div>
+            </a>
+
+            <a href="{% url 'reportes' %}" class="card-compacta">
+                <div class="icono-box">📈</div>
+                <div class="card-compacta-info">
+                    <h4>Reportes</h4>
+                    <span>Resumen y métricas</span>
+                </div>
+            </a>
+
+            {% if user.is_superuser %}
+            <a href="{% url 'list_user' %}" class="card-compacta">
+                <div class="icono-box">🔑</div>
+                <div class="card-compacta-info">
+                    <h4>Usuarios</h4>
+                    <span>Permisos del sistema</span>
+                </div>
+            </a>
+            {% endif %}
+
+        </div>
+
     </div>
 
 </div>
-
-
-<section class="menu">
-
-
-    <!-- PRODUCTOS -->
-
-    <div class="tarjeta">
-
-        
-
-        <div class="icono">
-            📦
-        </div>
-
-        <h2>
-            Productos
-        </h2>
-
-        <p>
-            Gestiona los productos
-            disponibles en el catálogo.
-        </p>
-
-        <a
-            href="{% url 'list_producto' %}"
-            class="boton"
-        >
-            Ver productos
-        </a>
-
-    </div>
-
-
-    <!-- CLIENTES -->
-
-    <div class="tarjeta">
-
-
-        <div class="icono">
-            👥
-        </div>
-
-        <h2>
-            Clientes
-        </h2>
-
-        <p>
-            Administra la información
-            de los clientes.
-        </p>
-
-        <a href="{% url 'list_cliente' %}" class="boton">
-            Ver clientes
-        </a>
-
-    </div>
-
-
-    <!-- VENTAS -->
-
-    <div class="tarjeta">
-
-        
-
-        <div class="icono">
-            🛒
-        </div>
-
-        <h2>
-            Ventas
-        </h2>
-
-        <p>
-            Registra y consulta las
-            ventas realizadas.
-        </p>
-
-        <a href="{% url 'list_venta' %}" class="boton">
-            Ver ventas
-        </a>
-
-    </div>
-
-
-    <!-- PEDIDOS -->
-
-    <div class="tarjeta">
-
-       
-
-        <div class="icono">
-            📋
-        </div>
-
-        <h2>
-            Pedidos
-        </h2>
-
-        <p>
-            Consulta y administra
-            los pedidos de clientes.
-        </p>
-
-        <a href="#" class="boton">
-            Ver pedidos
-        </a>
-
-    </div>
-
-
-    <!-- REPORTES -->
-
-    <div class="tarjeta">
-
-        
-
-        <div class="icono">
-            📊
-        </div>
-
-        <h2>
-            Reportes
-        </h2>
-
-        <p>
-            Consulta información y
-            reportes de las ventas.
-        </p>
-
-        <a href="{% url 'reportes' %}" class="boton">
-            Ver reportes
-        </a>
-
-    </div>
-
-
-    <!-- USUARIOS -->
-
-{% if user.is_superuser %}
-
-<div class="tarjeta">
-
-    
-
-    <div class="icono">
-            👤
-    </div>
-
-    <h2>Usuarios</h2>
-
-    <p>
-        Administra los usuarios del sistema.
-    </p>
-
-    <a href="{% url 'list_user' %}" class="boton">
-        Ver usuarios
-    </a>
-</div>
-
-{% endif %}
-
-
-</section>
-
-
-<script>
-    // Animación de contadores: sube de 0 al número real al cargar la página
-    document.addEventListener('DOMContentLoaded', function () {
-
-        const contadores = document.querySelectorAll('.contador');
-
-        contadores.forEach(function (el) {
-            const meta = parseInt(el.dataset.target, 10) || 0;
-            const duracion = 900; // ms
-            const inicio = performance.now();
-
-            function actualizar(ahora) {
-                const progreso = Math.min((ahora - inicio) / duracion, 1);
-                el.textContent = Math.floor(progreso * meta);
-
-                if (progreso < 1) {
-                    requestAnimationFrame(actualizar);
-                } else {
-                    el.textContent = meta;
-                }
-            }
-
-            requestAnimationFrame(actualizar);
-        });
-
-    });
-</script>
 
 {% endblock %}

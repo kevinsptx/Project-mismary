@@ -8,208 +8,227 @@ Eliminar Producto | MisMary
 
 <style>
 
-    .eliminar-contenido {
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --cafe-medio:    #8A5A3C;
+        --sombra-caja:   0 18px 36px -8px rgba(74, 44, 27, 0.28), 0 4px 10px rgba(74, 44, 27, 0.10);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
         max-width: 600px;
         margin: 0 auto;
+        padding: 30px 20px;
     }
 
-
-    .titulo {
-        margin-bottom: 30px;
+    .wrap-mismary * {
+        box-sizing: border-box;
     }
 
-    .titulo h1 {
-        color: #5c4033;
-        font-size: 30px;
-        margin-bottom: 10px;
-    }
+    /* ===== ENCABEZADO ===== */
 
-    .titulo p {
-        color: #806b55;
-        font-size: 16px;
-    }
-
-
-    .confirmacion {
-        background: #f5ead7;
-
-        border: 2px solid #8b6f47;
-
-        border-radius: 10px;
-
-        padding: 30px;
-
-        text-align: center;
-
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
-    }
-
-
-    .confirmacion h2 {
-        color: #5c4033;
-
-        font-size: 22px;
-
-        margin-bottom: 20px;
-    }
-
-
-    .confirmacion p {
-        color: #806b55;
-
-        font-size: 16px;
-
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
         margin-bottom: 25px;
     }
 
-
-    .nombre-producto {
-        color: #5c4033;
-
-        font-weight: bold;
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== TARJETA DE CONFIRMACIÓN ===== */
+
+    .confirmacion {
+        background: var(--blanco);
+        border: 2px solid var(--cafe-medio);
+        border-radius: 24px;
+        padding: 36px 30px;
+        text-align: center;
+        box-shadow: var(--sombra-caja);
+    }
+
+    .icono-alerta {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 18px;
+        border-radius: 20px;
+        background: #FBE9E7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+    }
+
+    .confirmacion h2 {
+        margin: 0 0 18px 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .producto-chip {
+        display: inline-block;
+        margin-bottom: 18px;
+        padding: 8px 20px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .aviso {
+        margin: 0 0 26px 0;
+        font-size: 14px;
+        color: var(--terracota);
+        font-weight: 600;
+    }
+
+    /* ===== BOTONES ===== */
 
     .botones {
         display: flex;
-
         justify-content: center;
-
         gap: 10px;
     }
 
+    .botones form {
+        margin: 0;
+    }
 
-    .boton {
-        padding: 12px 20px;
-
-        border: none;
-
-        border-radius: 5px;
-
-        font-size: 15px;
-
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        color: #FFF;
         text-decoration: none;
-
+        padding: 11px 24px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid transparent;
         cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
 
-
-    .boton-eliminar {
-        background: #a94442;
-
-        color: white;
+    .btn-eliminar {
+        background: var(--terracota);
     }
 
-
-    .boton-eliminar:hover {
-        background: #843534;
+    .btn-eliminar:hover {
+        background: #7E2C1C;
     }
 
-
-    .boton-cancelar {
-        background: #806b55;
-
-        color: white;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
     }
 
-
-    .boton-cancelar:hover {
-        background: #5c4033;
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
     }
 
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
-        .eliminar-contenido {
-            width: 95%;
+        .confirmacion {
+            padding: 28px 18px;
         }
 
         .botones {
             flex-direction: column;
         }
 
-        .boton {
+        .botones form,
+        .botones .btn-mismary {
             width: 100%;
-
-            box-sizing: border-box;
         }
-
     }
 
 </style>
 
 
-<div class="eliminar-contenido">
+<div class="wrap-mismary">
 
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Eliminar producto 🗑️</h1>
+            <p>Confirma la eliminación del producto seleccionado</p>
+        </div>
+    </div>
 
-    <section class="titulo">
-
-        <h1>
-            Eliminar producto
-        </h1>
-
-        <p>
-            Confirma la eliminación del producto seleccionado.
-        </p>
-
-    </section>
-
-
+    <!-- CONFIRMACIÓN -->
     <div class="confirmacion">
 
-        <h2>
-            ¿Está seguro de eliminar este producto?
-        </h2>
+        <div class="icono-alerta">⚠️</div>
 
+        <h2>¿Está seguro de eliminar este producto?</h2>
 
-        <p>
+        <span class="producto-chip">{{ producto.nombre }}</span>
 
-            Producto:
-
-            <span class="nombre-producto">
-                {{ producto.nombre }}
-            </span>
-
-        </p>
-
-
-        <p>
-            Esta acción no se puede deshacer.
-        </p>
-
+        <p class="aviso">Esta acción no se puede deshacer.</p>
 
         <div class="botones">
 
-            <form
-                method="POST"
-                style="display: inline;"
-            >
-
+            <form method="POST">
                 {% csrf_token %}
 
-                <button
-                    type="submit"
-                    class="boton boton-eliminar"
-                >
+                <button type="submit" class="btn-mismary btn-eliminar">
                     Sí, eliminar
                 </button>
-
             </form>
 
-
-            <a
-                href="{% url 'list_producto' %}"
-                class="boton boton-cancelar"
-            >
+            <a href="{% url 'list_producto' %}" class="btn-mismary btn-secundario">
                 Cancelar
             </a>
 
         </div>
 
     </div>
-
 
 </div>
 

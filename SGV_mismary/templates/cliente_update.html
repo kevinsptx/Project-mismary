@@ -8,195 +8,225 @@ Actualizar Cliente | MisMary
 
 <style>
 
-    .actualizar-contenido {
-        max-width: 600px;
-        margin: 0 auto;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== FORMULARIO ===== */
+
     .formulario {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 35px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
     }
 
     .campo {
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
     .campo label {
         display: block;
-        color: #5c4033;
-        font-weight: bold;
-        margin-bottom: 8px;
-        font-size: 15px;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
     .campo input {
         width: 100%;
-        padding: 12px;
-        border: 2px solid #8b6f47;
-        border-radius: 5px;
-        background: white;
-        color: #5c4033;
-        font-size: 15px;
-        outline: none;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .campo input:focus {
-        border-color: #60472d;
-        box-shadow:
-            0 0 5px
-            rgba(96, 71, 45, 0.3);
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
     }
 
-    .boton {
-        width: 100%;
-        padding: 12px;
-        background: #7b5e3b;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
+    /* ===== BOTONES ===== */
+
+    .acciones-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
     }
 
-    .boton:hover {
-        background: #60472d;
-    }
-
-    .volver {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-        color: #7b5e3b;
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
-        font-size: 14px;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .volver:hover {
-        text-decoration: underline;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    @media (max-width: 600px) {
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
 
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 700px) {
         .formulario {
-            padding: 25px;
+            padding: 22px 18px;
         }
 
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
+        }
     }
 
 </style>
 
-<div class="actualizar-contenido">
 
+<div class="wrap-mismary">
 
-<section class="titulo">
-
-    <h1>
-        Actualizar Cliente
-    </h1>
-
-    <p>
-        Modifica la información del cliente
-    </p>
-
-</section>
-
-
-<form
-    method="POST"
-    class="formulario"
->
-
-    {% csrf_token %}
-
-
-    <!-- NOMBRE -->
-
-    <div class="campo">
-
-        <label for="nombre">
-            Nombre
-        </label>
-
-        <input
-            type="text"
-            required
-            maxlength="100"
-            id="nombre"
-            name="nombre"
-            value="{{ cliente.nombre }}"
-        >
-
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Actualizar cliente ✏️</h1>
+        <p>Modifica la información del cliente</p>
     </div>
 
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-    <!-- TELEFONO -->
+    <!-- FORMULARIO -->
+    <form method="POST" class="formulario">
 
-    <div class="campo">
+        {% csrf_token %}
 
-        <label for="telefono">
-            Teléfono
-        </label>
+        <div class="campo">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" maxlength="100" value="{{ cliente.nombre }}" required>
+        </div>
 
-        <input
-            type="text"
-            required
-            maxlength="10"
-            id="telefono"
-            name="telefono"
-            value="{{ cliente.telefono }}"
-        >
+        <div class="campo">
+            <label for="telefono">Teléfono</label>
+            <input type="text" id="telefono" name="telefono" maxlength="10" value="{{ cliente.telefono }}" required>
+        </div>
 
-    </div>
+        <div class="campo">
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" name="direccion" maxlength="150" value="{{ cliente.direccion }}" required>
+        </div>
 
+        <div class="acciones-form">
+            <button type="submit" class="btn-mismary">Actualizar cliente</button>
+            <a href="{% url 'details_cliente' cliente.id %}" class="btn-mismary btn-secundario">Volver al cliente</a>
+        </div>
 
-    <!-- DIRECCION -->
-
-    <div class="campo">
-
-        <label for="direccion">
-            Dirección
-        </label>
-
-        <input
-            type="text"
-            required
-            maxlength="150"
-            id="direccion"
-            name="direccion"
-            value="{{ cliente.direccion }}"
-        >
-
-    </div>
-
-
-    <!-- BOTON -->
-
-    <button
-        type="submit"
-        class="boton"
-    >
-        Actualizar Cliente
-    </button>
-
-
-    <!-- VOLVER -->
-
-    <a
-        href="{% url 'details_cliente' cliente.id %}"
-        class="volver"
-    >
-        Volver al cliente
-    </a>
-
-</form>
-
+    </form>
 
 </div>
 

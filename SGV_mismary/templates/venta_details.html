@@ -8,127 +8,288 @@ Detalle de Venta | MisMary
 
 <style>
 
-    .venta-detalle {
-        max-width: 700px;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 720px;
         margin: 0 auto;
+        padding: 30px 20px;
     }
 
-    .tarjeta {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 30px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
-    }
+    /* ===== ENCABEZADO ===== */
 
-    .tarjeta h2 {
-        color: #5c4033;
+    .encabezado {
         margin-bottom: 25px;
     }
 
-    .tarjeta p {
-        color: #806b55;
-        font-size: 16px;
-        margin-bottom: 15px;
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
-    .tarjeta strong {
-        color: #5c4033;
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
     }
+
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== TARJETA ===== */
+
+    .tarjeta {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .venta-titulo {
+        text-align: center;
+        margin-bottom: 26px;
+    }
+
+    .icono {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 14px;
+        background: var(--naranja);
+        color: #FFF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .venta-titulo h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    /* ===== DATOS ===== */
+
+    .datos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .dato {
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 14px 18px;
+    }
+
+    .dato strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--terracota);
+    }
+
+    .dato span {
+        font-size: 14px;
+        color: var(--cafe-tostado);
+    }
+
+    .dato .precio {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--terracota);
+    }
+
+    /* ===== BOTONES ===== */
 
     .acciones {
+        margin-top: 26px;
         display: flex;
+        justify-content: center;
         gap: 10px;
-        margin-top: 25px;
+        flex-wrap: wrap;
     }
 
-    .boton {
-        padding: 12px 20px;
-        background: #7b5e3b;
-        color: white;
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
-        border-radius: 5px;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
         border: none;
         cursor: pointer;
-        font-size: 15px;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .boton:hover {
-        background: #60472d;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    .eliminar {
-        background: #a94442;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
     }
 
-    .eliminar:hover {
-        background: #842f2d;
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    .btn-eliminar {
+        background: var(--blanco);
+        color: var(--terracota);
+        border: 1px solid var(--terracota);
+    }
+
+    .btn-eliminar:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 600px) {
+        .tarjeta {
+            padding: 22px 18px;
+        }
+
+        .datos {
+            grid-template-columns: 1fr;
+        }
+
+        .acciones .btn-mismary {
+            flex: 1 1 100%;
+        }
     }
 
 </style>
 
 
-<div class="venta-detalle">
+<div class="wrap-mismary">
 
-    <section class="titulo">
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Detalle de venta 🛒</h1>
+        <p>Información de la venta registrada</p>
+    </div>
 
-        <h1>
-            Detalle de Venta
-        </h1>
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-        <p>
-            Información de la venta registrada
-        </p>
-
-    </section>
-
-
+    <!-- TARJETA -->
     <div class="tarjeta">
 
-        <h2>
-            Venta #{{ venta.id }}
-        </h2>
+        <div class="venta-titulo">
+            <div class="icono">🛒</div>
+            <h2>Venta #{{ venta.id }}</h2>
+        </div>
 
-        <p>
-            <strong>Cliente:</strong>
-            {{ venta.cliente.nombre }}
-        </p>
+        <div class="datos">
 
-        <p>
-            <strong>Teléfono:</strong>
-            {{ venta.cliente.telefono }}
-        </p>
+            <div class="dato">
+                <strong>Cliente</strong>
+                <span>{{ venta.cliente.nombre }}</span>
+            </div>
 
-        <p>
-            <strong>Valor total:</strong>
-            ${{ venta.valor_total }}
-        </p>
+            <div class="dato">
+                <strong>Teléfono</strong>
+                <span>{{ venta.cliente.telefono }}</span>
+            </div>
 
-        <p>
-            <strong>Fecha:</strong>
-            {{ venta.fecha }}
-        </p>
+            <div class="dato">
+                <strong>Valor total</strong>
+                <span class="precio">${{ venta.valor_total }}</span>
+            </div>
 
+            <div class="dato">
+                <strong>Fecha</strong>
+                <span>{{ venta.fecha }}</span>
+            </div>
+
+        </div>
 
         <div class="acciones">
+            <a href="{% url 'list_venta' %}" class="btn-mismary btn-secundario">← Volver</a>
 
-            <a
-                href="{% url 'venta_update' venta.id %}"
-                class="boton"
-            >
-                Actualizar
-            </a>
+            <a href="{% url 'venta_update' venta.id %}" class="btn-mismary">Actualizar</a>
 
             <a
                 href="{% url 'venta_delete' venta.id %}"
-                class="boton eliminar"
+                class="btn-mismary btn-eliminar"
                 onclick="return confirm('¿Está seguro de eliminar esta venta?')"
             >
                 Eliminar
             </a>
-
         </div>
 
     </div>

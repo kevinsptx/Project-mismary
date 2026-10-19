@@ -1,4 +1,4 @@
-{% extends 'layout/base.html' %}
+ {% extends 'layout/base.html' %}
 
 {% block title %}
 Registrar Producto | MisMary
@@ -7,542 +7,422 @@ Registrar Producto | MisMary
 {% block content %}
 
 <style>
+    :root {
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
 
-    .producto-contenido {
+    .wrap-registro {
         max-width: 850px;
         margin: 0 auto;
+        padding: 30px 20px;
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
     }
 
+    /* ENCABEZADO */
 
-    /* TÍTULO */
-
-    .titulo {
-        margin-bottom: 30px;
-    }
-
-    .titulo h1 {
-        color: #5c4033;
-        font-size: 30px;
-        margin-bottom: 10px;
-    }
-
-    .titulo p {
-        color: #806b55;
-        font-size: 16px;
-    }
-
-
-    /* FORMULARIO */
-
-    .formulario-producto {
-        background: #f5ead7;
-
-        border: 2px solid #8b6f47;
-
-        border-radius: 10px;
-
-        padding: 30px;
-
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
-    }
-
-
-    /* INFORMACIÓN */
-
-    .informacion {
-        background: #e8dcc9;
-
-        border: 1px solid #8b6f47;
-
-        border-radius: 5px;
-
-        padding: 12px 15px;
-
+    .encabezado-registro {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
         margin-bottom: 25px;
+    }
 
-        color: #806b55;
+    .encabezado-registro h1 {
+        margin: 0;
+        color: var(--cafe-tostado);
+        font-size: 26px;
+        font-weight: 700;
+    }
 
+    .encabezado-registro p {
+        margin: 7px 0 0;
+        color: var(--terracota);
         font-size: 14px;
     }
 
+    .fecha-registro {
+        padding: 7px 15px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    /* TARJETA DEL FORMULARIO */
+
+    .panel-registro {
+        padding: 28px;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .panel-titulo {
+        margin: 0 0 8px;
+        color: var(--cafe-tostado);
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .panel-descripcion {
+        margin: 0 0 25px;
+        color: #947D6E;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    /* MENSAJE INFORMATIVO */
+
+    .informacion {
+        padding: 13px 16px;
+        margin-bottom: 25px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 14px;
+        color: var(--cafe-tostado);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .obligatorio {
+        color: var(--terracota);
+        font-weight: 700;
+    }
 
     /* CAMPOS */
 
     .campo {
+        min-width: 0;
         margin-bottom: 22px;
     }
 
-
     .campo label {
         display: block;
-
-        color: #5c4033;
-
-        font-weight: bold;
-
-        font-size: 15px;
-
-        margin-bottom: 8px;
+        margin-bottom: 9px;
+        color: var(--cafe-tostado);
+        font-size: 13px;
+        font-weight: 700;
     }
-
 
     .campo input,
     .campo select {
+        display: block;
         width: 100%;
-
-        padding: 12px;
-
-        border: 2px solid #8b6f47;
-
-        border-radius: 5px;
-
-        background: white;
-
-        color: #5c4033;
-
-        font-size: 15px;
-
-        outline: none;
-
+        min-height: 46px;
+        padding: 12px 15px;
         box-sizing: border-box;
-
-        transition: 0.3s;
+        background: var(--marfil-bg);
+        border: 1px solid var(--arena);
+        border-radius: 12px;
+        color: var(--cafe-tostado);
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
     }
-
 
     .campo input:focus,
     .campo select:focus {
-        border-color: #60472d;
-
-        box-shadow:
-            0 0 5px
-            rgba(96, 71, 45, 0.3);
+        border-color: var(--naranja);
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
     }
-
 
     .campo input::placeholder {
-        color: #a08b75;
+        color: #947D6E;
     }
 
-
-    /* CAMPOS EN DOS COLUMNAS */
+    /* DOS COLUMNAS */
 
     .campos-fila {
         display: grid;
-
-        grid-template-columns:
-            1fr 1fr;
-
+        grid-template-columns: 1fr 1fr;
         gap: 20px;
     }
 
-
-    /* CANTIDAD DISPONIBLE */
+    /* EXISTENCIAS */
 
     .campo-cantidad {
-        background: #e8dcc9;
-
-        border: 1px solid #8b6f47;
-
-        border-radius: 5px;
-
-        padding: 15px;
-
-        box-sizing: border-box;
+        padding: 17px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
     }
 
-
-    .campo-cantidad label {
-        margin-bottom: 8px;
+    .campo-cantidad input {
+        background: var(--blanco);
     }
-
 
     .ayuda-cantidad {
-        color: #806b55;
-
-        font-size: 13px;
-
-        margin-top: 7px;
-
-        margin-bottom: 0;
+        margin: 9px 0 0;
+        color: #947D6E;
+        font-size: 12px;
+        line-height: 1.5;
     }
-
 
     /* ERRORES */
 
     .errores {
-        color: #a94442;
-
-        font-size: 14px;
-
-        margin-top: 6px;
+        margin-top: 8px;
+        color: #A63830;
+        font-size: 12px;
     }
-
 
     .errores ul {
         margin: 0;
-
         padding-left: 20px;
     }
 
+    .errores li {
+        margin-bottom: 4px;
+    }
 
     .error-general {
-        background: #f2dede;
-
-        border: 1px solid #c9a6a6;
-
-        border-radius: 5px;
-
-        padding: 12px;
-
+        padding: 14px 17px;
         margin-bottom: 20px;
-
-        color: #8a4b4b;
+        background: #FBE9E7;
+        border: 1px solid #F1CECA;
+        border-radius: 14px;
+        color: #A63830;
+        font-size: 13px;
     }
 
+    /* BOTONES */
 
-    /* OBLIGATORIO */
-
-    .obligatorio {
-        color: #8b6f47;
-    }
-
-
-    /* ACCIONES */
-
-    .acciones {
+    .acciones-registro {
         display: flex;
-
         justify-content: flex-end;
-
+        flex-wrap: wrap;
         gap: 10px;
-
-        margin-top: 30px;
-
-        padding-top: 20px;
-
-        border-top: 1px solid #c8b89f;
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid var(--arena);
     }
 
-
-    .boton {
-        display: inline-block;
-
-        padding: 12px 20px;
-
-        border-radius: 5px;
-
-        font-size: 15px;
-
+    .btn-registro {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 43px;
+        padding: 11px 19px;
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
         text-decoration: none;
-
         cursor: pointer;
-
-        transition: 0.3s;
+        transition: background 0.2s, transform 0.2s;
     }
 
-
-    /* GUARDAR */
-
-    .guardar {
-        background: #7b5e3b;
-
-        color: white;
-
-        border: none;
+    .btn-guardar {
+        background: var(--naranja);
+        color: var(--blanco);
     }
 
-
-    .guardar:hover {
-        background: #60472d;
+    .btn-guardar:hover {
+        background: var(--terracota);
+        color: var(--blanco);
+        transform: translateY(-2px);
     }
 
-
-    /* CANCELAR */
-
-    .cancelar {
-        background: white;
-
-        color: #5c4033;
-
-        border: 2px solid #8b6f47;
+    .btn-cancelar {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
     }
 
-
-    .cancelar:hover {
-        background: #e8dcc9;
+    .btn-cancelar:hover {
+        background: var(--arena);
+        color: var(--cafe-tostado);
     }
-
 
     /* RESPONSIVE */
 
-    @media (max-width: 700px) {
-
-        .producto-contenido {
-            width: 95%;
+    @media (max-width: 650px) {
+        .wrap-registro {
+            padding: 22px 12px;
         }
 
-
-        .formulario-producto {
-            padding: 20px;
+        .encabezado-registro {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 12px;
         }
 
+        .encabezado-registro h1 {
+            font-size: 23px;
+        }
+
+        .panel-registro {
+            padding: 19px;
+            border-radius: 20px;
+        }
 
         .campos-fila {
             grid-template-columns: 1fr;
+            gap: 0;
         }
 
-
-        .acciones {
-            flex-direction: column;
+        .acciones-registro {
+            flex-direction: column-reverse;
         }
 
-
-        .boton {
+        .btn-registro {
             width: 100%;
-
-            text-align: center;
-
-            box-sizing: border-box;
         }
-
     }
-
 </style>
 
+<div class="wrap-registro">
 
-<div class="producto-contenido">
+    <!-- ENCABEZADO -->
 
+    <div class="encabezado-registro">
+        <div>
+            <h1>Registrar producto</h1>
+            <p>Agrega un nuevo producto al catálogo de tu tienda MisMary.</p>
+        </div>
 
-    <!-- TÍTULO -->
-
-    <section class="titulo">
-
-        <h1>
-            Registrar Producto
-        </h1>
-
-
-        <p>
-            Registra un nuevo producto de cosmética en el catálogo.
-        </p>
-
-    </section>
-
+        <div class="fecha-registro">
+            {% now "d/m/Y" %}
+        </div>
+    </div>
 
     <!-- FORMULARIO -->
 
-    <section class="formulario-producto">
+    <section class="panel-registro">
 
+        <h2 class="panel-titulo">Información del producto</h2>
 
-        <!-- ERRORES GENERALES -->
+        <p class="panel-descripcion">
+            Completa los datos para registrar el producto en el inventario.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="informacion">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
         {% if form.non_field_errors %}
-
             <div class="error-general">
-
                 {{ form.non_field_errors }}
-
             </div>
-
         {% endif %}
 
 
-        <!-- INFORMACIÓN -->
-
-        <div class="informacion">
-
-            Los campos marcados con
-
-            <span class="obligatorio">
-                *
-            </span>
-
-            son obligatorios.
-
-
-        </div>
-
 
         <form method="POST">
-
             {% csrf_token %}
-
 
             <!-- NOMBRE -->
 
             <div class="campo">
-
                 <label for="{{ form.nombre.id_for_label }}">
-
                     Nombre del producto
-
-                    <span class="obligatorio">
-                        *
-                    </span>
-
+                    <span class="obligatorio">*</span>
                 </label>
-
 
                 {{ form.nombre }}
 
-
                 {% if form.nombre.errors %}
-
                     <div class="errores">
-
                         {{ form.nombre.errors }}
-
                     </div>
-
                 {% endif %}
-
             </div>
-
 
             <!-- PRECIO Y CANTIDAD -->
 
             <div class="campos-fila">
 
-
-                <!-- PRECIO -->
-
                 <div class="campo">
-
                     <label for="{{ form.precio_venta.id_for_label }}">
-
                         Precio de venta
-
-                        <span class="obligatorio">
-                            *
-                        </span>
-
+                        <span class="obligatorio">*</span>
                     </label>
-
 
                     {{ form.precio_venta }}
 
-
                     {% if form.precio_venta.errors %}
-
                         <div class="errores">
-
                             {{ form.precio_venta.errors }}
-
                         </div>
-
                     {% endif %}
-
                 </div>
 
-
-                <!-- CANTIDAD DISPONIBLE -->
-
                 <div class="campo campo-cantidad">
-
                     <label for="{{ form.cantidad_disponible.id_for_label }}">
-
                         Cantidad disponible
-
-                        <span class="obligatorio">
-                            *
-                        </span>
-
+                        <span class="obligatorio">*</span>
                     </label>
-
 
                     {{ form.cantidad_disponible }}
 
-
                     <p class="ayuda-cantidad">
-
-                        Indica cuántas unidades hay disponibles para la venta.
-
+                        Indica cuántas unidades tienes disponibles para la venta.
                     </p>
 
-
                     {% if form.cantidad_disponible.errors %}
-
                         <div class="errores">
-
                             {{ form.cantidad_disponible.errors }}
-
                         </div>
-
                     {% endif %}
-
                 </div>
 
-
             </div>
-
 
             <!-- CATEGORÍA -->
 
             <div class="campo">
-
                 <label for="{{ form.categoria.id_for_label }}">
-
                     Categoría
-
-                    <span class="obligatorio">
-                        *
-                    </span>
-
+                    <span class="obligatorio">*</span>
                 </label>
-
 
                 {{ form.categoria }}
 
-
                 {% if form.categoria.errors %}
-
                     <div class="errores">
-
                         {{ form.categoria.errors }}
-
                     </div>
-
                 {% endif %}
-
             </div>
-
 
             <!-- BOTONES -->
 
-            <div class="acciones">
+            <div class="acciones-registro">
 
-
-                <a
-                    href="{% url 'list_producto' %}"
-                    class="boton cancelar"
-                >
-
+                <a href="{% url 'list_producto' %}" class="btn-registro btn-cancelar">
                     Cancelar
-
                 </a>
 
-
-                <button
-                    type="submit"
-                    class="boton guardar"
-                >
-
+                <button type="submit" class="btn-registro btn-guardar">
                     Guardar producto
-
                 </button>
-
 
             </div>
 
-
         </form>
 
-
     </section>
-
 
 </div>
 

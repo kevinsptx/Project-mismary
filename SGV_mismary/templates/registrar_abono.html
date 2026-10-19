@@ -1,278 +1,306 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'layout/base.html' %}
 
-<head>
+{% block title %}
+Registrar abono | MisMary
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<style>
 
-    <title>Registrar abono | MisMary</title>
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
 
-    <style>
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
 
-        body {
-            background: #d8c3a5;
-            min-height: 100vh;
-            color: #5c4033;
-        }
+        --rojo-fondo:    #FBE9E7;
 
-        .navbar {
-            width: 100%;
-            background: #5c4033;
-            padding: 18px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 10px
-                rgba(70, 50, 30, 0.3);
-        }
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+    }
 
-        .logo {
-            color: #f5ead7;
-            font-size: 24px;
-            font-weight: bold;
-        }
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
 
-        .usuario {
-            color: #f5ead7;
-            font-size: 14px;
-        }
+    .wrap-mismary {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
 
-        .contenido {
-            max-width: 650px;
-            margin: 50px auto;
-            padding: 0 25px;
-        }
+    /* ===== ENCABEZADO ===== */
 
-        .titulo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .encabezado {
+        margin-bottom: 25px;
+    }
 
-        .titulo h1 {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
 
-        .titulo p {
-            color: #806b55;
-        }
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
 
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== TARJETA ===== */
+
+    .tarjeta {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .cliente {
+        text-align: center;
+        margin-bottom: 22px;
+    }
+
+    .icono {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 14px;
+        background: var(--naranja);
+        color: #FFF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: 700;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .cliente h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    /* ===== SALDO ===== */
+
+    .saldo {
+        text-align: center;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-bottom: 26px;
+    }
+
+    .saldo p {
+        margin: 0 0 6px 0;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--terracota);
+    }
+
+    .saldo strong {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    /* ===== FORMULARIO (form.as_p) ===== */
+
+    .formulario p {
+        margin: 0 0 20px 0;
+    }
+
+    .formulario label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .formulario input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .formulario input:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
+    }
+
+    .formulario .errorlist {
+        list-style: none;
+        margin: 0 0 8px 0;
+        padding: 10px 16px;
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        border-radius: 16px;
+        color: var(--terracota);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .formulario .helptext {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        color: #6C5243;
+    }
+
+    /* ===== BOTONES ===== */
+
+    .acciones-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 600px) {
         .tarjeta {
-            background: #f5ead7;
-            border: 2px solid #8b6f47;
-            border-radius: 10px;
-            padding: 35px;
-            box-shadow: 0 5px 15px
-                rgba(70, 50, 30, 0.2);
+            padding: 22px 18px;
         }
 
-        .cliente {
-            text-align: center;
-            margin-bottom: 25px;
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
         }
+    }
 
-        .cliente .icono {
-            font-size: 45px;
-            margin-bottom: 10px;
-        }
-
-        .cliente h2 {
-            color: #5c4033;
-        }
-
-        .saldo {
-            text-align: center;
-            background: #d8c3a5;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-
-        .saldo p {
-            color: #806b55;
-            margin-bottom: 8px;
-        }
-
-        .saldo strong {
-            font-size: 28px;
-            color: #7b5e3b;
-        }
-
-        .formulario p {
-            margin-bottom: 20px;
-        }
-
-        .formulario label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #5c4033;
-        }
-
-        .formulario input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #8b6f47;
-            border-radius: 5px;
-            background: white;
-            font-size: 16px;
-        }
-
-        .formulario input:focus {
-            outline: none;
-            border-color: #7b5e3b;
-        }
-
-        .errorlist {
-            color: #8b4a3b;
-            margin-bottom: 10px;
-            padding-left: 20px;
-        }
-
-        .acciones {
-            text-align: center;
-            margin-top: 25px;
-        }
-
-        .boton {
-            display: inline-block;
-            padding: 12px 25px;
-            background: #7b5e3b;
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 5px;
-            font-size: 15px;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        .boton:hover {
-            background: #60472d;
-        }
-
-        .boton-cancelar {
-            background: #8b4a3b;
-        }
-
-        .boton-cancelar:hover {
-            background: #70382d;
-        }
-
-    </style>
-
-</head>
+</style>
 
 
-<body>
+<div class="wrap-mismary">
 
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Registrar abono 💰</h1>
+        <p>Registra el pago realizado por el cliente</p>
+    </div>
 
-    <header class="navbar">
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-        <div class="logo">
-            MisMary
+    <!-- TARJETA -->
+    <div class="tarjeta">
+
+        <div class="cliente">
+            <div class="icono">{{ deuda.cliente.nombre|first|upper }}</div>
+            <h2>{{ deuda.cliente.nombre }}</h2>
         </div>
 
-        <div class="usuario">
-
-            Usuario:
-            <strong>{{ user.username }}</strong>
-
+        <div class="saldo">
+            <p>Saldo pendiente actual</p>
+            <strong>${{ deuda.saldo }}</strong>
         </div>
 
-    </header>
+        <form method="POST" class="formulario">
 
+            {% csrf_token %}
 
-    <main class="contenido">
+            {{ form.as_p }}
 
-
-        <section class="titulo">
-
-            <h1>
-                Registrar abono
-            </h1>
-
-            <p>
-                Registra el pago realizado por el cliente.
-            </p>
-
-        </section>
-
-
-        <section class="tarjeta">
-
-
-            <div class="cliente">
-
-                <div class="icono">
-                    👤
-                </div>
-
-                <h2>
-                    {{ deuda.cliente.nombre }}
-                </h2>
-
+            <div class="acciones-form">
+                <button type="submit" class="btn-mismary">💰 Registrar abono</button>
+                <a href="{% url 'detalle_deuda' deuda.id %}" class="btn-mismary btn-secundario">Cancelar</a>
             </div>
 
+        </form>
 
-            <div class="saldo">
+    </div>
 
-                <p>
-                    Saldo pendiente actual
-                </p>
+</div>
 
-                <strong>
-                    ${{ deuda.saldo }}
-                </strong>
-
-            </div>
-
-
-            <form method="POST"
-                  class="formulario">
-
-                {% csrf_token %}
-
-                {{ form.as_p }}
-
-
-                <div class="acciones">
-
-                    <button type="submit"
-                            class="boton">
-
-                        💰 Registrar abono
-
-                    </button>
-
-
-                    <a href="{% url 'detalle_deuda' deuda.id %}"
-                       class="boton boton-cancelar">
-
-                        Cancelar
-
-                    </a>
-
-                </div>
-
-            </form>
-
-
-        </section>
-
-
-    </main>
-
-</body>
-
-</html>
+{% endblock %}

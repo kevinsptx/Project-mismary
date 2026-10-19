@@ -1,4 +1,3 @@
-
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -8,115 +7,222 @@ Registrar Cliente | MisMary
 {% block content %}
 
 <style>
-    .registro-contenido {
-        max-width: 600px;
-        margin: 0 auto;
+
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --cafe-medio:    #8A5A3C;
+        --sombra-caja:   0 18px 36px -8px rgba(74, 44, 27, 0.28), 0 4px 10px rgba(74, 44, 27, 0.10);
     }
 
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .wrap-mismary * {
+        box-sizing: border-box;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== FORMULARIO ===== */
+
     .formulario {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 35px;
-        box-shadow: 0 5px 15px rgba(70, 50, 30, 0.2);
+        background: var(--blanco);
+        border: 2px solid var(--cafe-medio);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-caja);
     }
 
     .campo {
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
     .campo label {
         display: block;
-        color: #5c4033;
-        font-weight: bold;
+        font-size: 13px;
+        font-weight: 600;
         margin-bottom: 8px;
-        font-size: 15px;
+        color: var(--cafe-tostado);
     }
 
     .campo input {
         width: 100%;
-        padding: 12px;
-        border: 2px solid #8b6f47;
-        border-radius: 5px;
-        background: white;
-        color: #5c4033;
-        font-size: 15px;
-        outline: none;
+        padding: 12px 18px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        background: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: inherit;
+        font-size: 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .campo input::placeholder {
+        color: #A8978A;
     }
 
     .campo input:focus {
-        border-color: #60472d;
-        box-shadow: 0 0 5px rgba(96, 71, 45, 0.3);
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
     }
 
     .error-campo {
-        color: #b42318;
+        margin-top: 8px;
         font-size: 13px;
-        margin-top: 6px;
+        color: var(--terracota);
     }
 
-    .boton {
-        width: 100%;
-        padding: 12px;
-        background: #7b5e3b;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
+    .error-campo .errorlist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
     }
 
-    .boton:hover {
-        background: #60472d;
+    /* ===== BOTONES ===== */
+
+    .botones {
+        display: flex;
+        gap: 10px;
+        margin-top: 26px;
     }
 
-    .volver {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-        color: #7b5e3b;
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
+        padding: 11px 22px;
+        border-radius: 999px;
         font-size: 14px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease;
     }
 
-    .volver:hover {
-        text-decoration: underline;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
         .formulario {
-            padding: 25px;
+            padding: 22px 18px;
+        }
+
+        .botones {
+            flex-direction: column;
+        }
+
+        .botones .btn-mismary {
+            width: 100%;
         }
     }
+
 </style>
 
-<div class="registro-contenido">
 
-    <section class="titulo">
-        <h1>Registrar Cliente</h1>
-        <p>Agrega un nuevo cliente al sistema</p>
-    </section>
+<div class="wrap-mismary">
 
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Registrar cliente 💛</h1>
+            <p>Agrega un nuevo cliente al sistema</p>
+        </div>
+
+        <a href="{% url 'list_cliente' %}" class="btn-mismary btn-secundario">
+            ← Regresar a clientes
+        </a>
+    </div>
+
+    <!-- FORMULARIO -->
     <form method="POST" class="formulario">
         {% csrf_token %}
 
         <!-- NOMBRE -->
-
         <div class="campo">
             <label for="nombre">Nombre</label>
 
-<input
-    type="text"
-    required
-    maxlength="100"
-    id="nombre"
-    name="nombre"
-    class="capitalizar-nombre"
-    placeholder="Ingrese el nombre del cliente"
-    value="{{ form.nombre.value|default:'' }}"
-    autocomplete="name"
->
+            <input
+                type="text"
+                required
+                maxlength="100"
+                id="nombre"
+                name="nombre"
+                class="capitalizar-nombre"
+                placeholder="Ingrese el nombre del cliente"
+                value="{{ form.nombre.value|default:'' }}"
+                autocomplete="name"
+            >
 
             {% if form.nombre.errors %}
                 <div class="error-campo">
@@ -126,7 +232,6 @@ Registrar Cliente | MisMary
         </div>
 
         <!-- TELÉFONO -->
-
         <div class="campo">
             <label for="telefono">Teléfono</label>
 
@@ -149,7 +254,6 @@ Registrar Cliente | MisMary
         </div>
 
         <!-- DIRECCIÓN -->
-
         <div class="campo">
             <label for="direccion">Dirección</label>
 
@@ -171,17 +275,16 @@ Registrar Cliente | MisMary
             {% endif %}
         </div>
 
-        <!-- BOTÓN -->
+        <!-- BOTONES -->
+        <div class="botones">
+            <button type="submit" class="btn-mismary">
+                Registrar cliente
+            </button>
 
-        <button type="submit" class="boton">
-            Registrar Cliente
-        </button>
-
-        <!-- VOLVER -->
-
-        <a href="{% url 'list_cliente' %}" class="volver">
-            Volver a la lista de clientes
-        </a>
+            <a href="{% url 'list_cliente' %}" class="btn-mismary btn-secundario">
+                Cancelar
+            </a>
+        </div>
 
     </form>
 

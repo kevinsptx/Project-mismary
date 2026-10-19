@@ -1,320 +1,319 @@
-
 {% extends 'layout/base.html' %}
 
 {% block title %}
 Detalle Cliente | MisMary
 {% endblock %}
 
-
 {% block content %}
 
 <style>
 
-    .detalle-contenido {
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
 
-        max-width: 700px;
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
 
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 720px;
         margin: 0 auto;
+        padding: 30px 20px;
     }
 
+    /* ===== ENCABEZADO ===== */
 
-    .detalle-tarjeta {
-
-        background: #f5ead7;
-
-        border: 2px solid #8b6f47;
-
-        border-radius: 10px;
-
-        padding: 35px;
-
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+    .encabezado {
+        margin-bottom: 25px;
     }
 
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
 
-    .informacion {
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
 
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
         margin-bottom: 20px;
-
-        padding-bottom: 15px;
-
-        border-bottom: 1px solid #c5ae8d;
+        font-size: 14px;
+        font-weight: 600;
     }
 
-
-    .informacion:last-child {
-
-        border-bottom: none;
-
-        margin-bottom: 0;
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
     }
 
+    /* ===== TARJETA ===== */
 
-    .informacion strong {
+    .tarjeta {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
+    }
 
+    .cliente {
+        text-align: center;
+        margin-bottom: 26px;
+    }
+
+    .icono {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 14px;
+        background: var(--naranja);
+        color: #FFF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: 700;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .cliente h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    /* ===== DATOS ===== */
+
+    .datos {
+        display: grid;
+        gap: 14px;
+    }
+
+    .dato {
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 14px 18px;
+    }
+
+    .dato strong {
         display: block;
-
-        color: #5c4033;
-
-        font-size: 15px;
-
         margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--terracota);
     }
 
-
-    .informacion span {
-
-        color: #806b55;
-
-        font-size: 16px;
+    .dato span {
+        font-size: 14px;
+        color: var(--cafe-tostado);
     }
 
+    /* ===== PENDIENTES ===== */
 
     .pendientes {
-
-        margin-top: 25px;
-
-        padding: 15px;
-
-        background: #e6d3b8;
-
-        border: 1px solid #8b6f47;
-
-        border-radius: 5px;
-
+        margin-top: 18px;
+        padding: 14px 18px;
+        background: var(--arena-suave);
+        border: 1px dashed var(--arena);
+        border-radius: 16px;
         text-align: center;
-
-        color: #5c4033;
-
-        font-size: 15px;
+        font-size: 14px;
+        color: #6C5243;
     }
 
+    .pendientes strong {
+        color: var(--cafe-tostado);
+    }
+
+    /* ===== BOTONES ===== */
 
     .acciones {
-
+        margin-top: 26px;
         display: flex;
-
         justify-content: center;
-
-        gap: 12px;
-
-        margin-top: 30px;
-
+        gap: 10px;
         flex-wrap: wrap;
     }
 
-
-    .boton {
-
-        display: inline-block;
-
-        padding: 11px 20px;
-
-        background: #7b5e3b;
-
-        color: white;
-
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
-
-        border-radius: 5px;
-
-        font-size: 14px;
-
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
         border: none;
-
         cursor: pointer;
-
-        transition: 0.3s;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-
-    .boton:hover {
-
-        background: #60472d;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-
-    .eliminar {
-
-        background: #8b4a3b;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
     }
 
-
-    .eliminar:hover {
-
-        background: #70382d;
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
     }
 
+    .btn-eliminar {
+        background: var(--blanco);
+        color: var(--terracota);
+        border: 1px solid var(--terracota);
+    }
+
+    .btn-eliminar:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
-
-        .detalle-tarjeta {
-
-            padding: 25px;
+        .tarjeta {
+            padding: 22px 18px;
         }
 
-
-        .acciones {
-
-            flex-direction: column;
+        .acciones .btn-mismary {
+            flex: 1 1 100%;
         }
-
-
-        .boton {
-
-            width: 100%;
-
-            text-align: center;
-        }
-
     }
 
 </style>
 
 
-<div class="detalle-contenido">
+<div class="wrap-mismary">
 
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Detalle del cliente 🧑‍🤝‍🧑</h1>
+        <p>Información del cliente registrado</p>
+    </div>
 
-    <!-- TITULO -->
-
-    <section class="titulo">
-
-        <h1>
-            Detalle del Cliente
-        </h1>
-
-        <p>
-            Información del cliente registrado
-        </p>
-
-    </section>
-
-
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
     <!-- TARJETA DEL CLIENTE -->
+    <div class="tarjeta">
 
-    <section class="detalle-tarjeta">
-
-
-
-
-        <div class="informacion">
-
-            <strong>
-                Nombre
-            </strong>
-
-            <span>
-                {{ cliente.nombre }}
-            </span>
-
+        <div class="cliente">
+            <div class="icono">{{ cliente.nombre|first|upper }}</div>
+            <h2>{{ cliente.nombre }}</h2>
         </div>
 
+        <div class="datos">
 
+            <div class="dato">
+                <strong>Nombre</strong>
+                <span>{{ cliente.nombre }}</span>
+            </div>
 
-        <div class="informacion">
+            <div class="dato">
+                <strong>Teléfono</strong>
+                <span>{{ cliente.telefono }}</span>
+            </div>
 
-            <strong>
-                Teléfono
-            </strong>
-
-            <span>
-                {{ cliente.telefono }}
-            </span>
-
-        </div>
-
-
-
-        <div class="informacion">
-
-            <strong>
-                Dirección
-            </strong>
-
-            <span>
-                {{ cliente.direccion }}
-            </span>
+            <div class="dato">
+                <strong>Dirección</strong>
+                <span>{{ cliente.direccion }}</span>
+            </div>
 
         </div>
-
-
 
         <div class="pendientes">
-
-            <strong>
-                Compras pendientes:
-            </strong>
-
-            No disponible por ahora
-
+            <strong>Compras pendientes:</strong> No disponible por ahora
         </div>
-
-
 
         <!-- BOTONES -->
-
         <div class="acciones">
+            <a href="{% url 'list_cliente' %}" class="btn-mismary btn-secundario">Volver</a>
 
-
-            <a href="{% url 'list_cliente' %}"
-               class="boton">
-
-                Volver
-
-            </a>
-
-
-            <a href="{% url 'cliente_update' cliente.id %}"
-               class="boton">
-
-                Actualizar
-
-            </a>
-
+            <a href="{% url 'cliente_update' cliente.id %}" class="btn-mismary">Actualizar</a>
 
             <a href="{% url 'cliente_delete' cliente.id %}"
-               class="boton eliminar"
+               class="btn-mismary btn-eliminar"
                onclick="return confirmarEliminacion()">
-
                 Eliminar
-
             </a>
-
-
         </div>
 
-
-    </section>
-
+    </div>
 
 </div>
 
 
-
-<!-- CONFIRMACION ELIMINAR -->
-
+<!-- CONFIRMACIÓN ELIMINAR -->
 <script>
 
     function confirmarEliminacion() {
 
-        if (!confirm(
-            "¿Está seguro de que desea eliminar este cliente?"
-        )) {
-
+        if (!confirm("¿Está seguro de que desea eliminar este cliente?")) {
             return false;
         }
 
-
-        if (!confirm(
-            "¿El cliente tiene algo pendiente?"
-        )) {
-
+        if (!confirm("¿El cliente tiene algo pendiente?")) {
             return false;
         }
-
 
         return true;
     }

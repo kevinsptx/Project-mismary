@@ -8,304 +8,293 @@ Detalle del Usuario | MisMary
 
 <style>
 
-    .detalle-contenido {
-        max-width: 750px;
-        margin: 0 auto;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
-    .titulo {
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
         margin-bottom: 25px;
     }
 
-    .titulo h1 {
-        color: #5c4033;
-        margin-bottom: 8px;
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
-    .titulo p {
-        color: #806b55;
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
     }
+
+    /* ===== TARJETA ===== */
 
     .tarjeta {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 15px;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
         padding: 30px;
-        box-shadow: 0 8px 20px rgba(70, 50, 30, 0.15);
+        box-shadow: var(--sombra-suave);
     }
 
     .usuario {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 28px;
     }
 
     .icono {
-        width: 75px;
-        height: 75px;
-        margin: 0 auto 15px;
-        background: #7b5e3b;
-        color: white;
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 14px;
+        background: var(--naranja);
+        color: #FFF;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 30px;
-        font-weight: bold;
+        font-weight: 700;
+        box-shadow: var(--sombra-suave);
     }
 
     .usuario h2 {
-        color: #5c4033;
         margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
+
+    /* ===== DATOS ===== */
 
     .datos {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 15px;
+        gap: 14px;
     }
 
     .dato {
-        background: #fffaf2;
-        border: 1px solid #d2b48c;
-        border-radius: 10px;
-        padding: 15px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 14px 18px;
     }
 
     .dato strong {
         display: block;
-        color: #7b5e3b;
-        margin-bottom: 7px;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--terracota);
     }
 
     .dato span {
-        color: #5c4033;
+        font-size: 14px;
+        color: var(--cafe-tostado);
     }
+
+    /* ===== CHIPS ===== */
 
     .rol {
         display: inline-block;
-        background: #7b5e3b;
-        color: white !important;
-        padding: 5px 12px;
-        border-radius: 15px;
+        padding: 4px 12px;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--cafe-tostado) !important;
+        white-space: nowrap;
     }
 
-    .activo {
-        color: #4f6f3a !important;
-        font-weight: bold;
+    .estado {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
     }
 
-    .inactivo {
-        color: #a0522d !important;
-        font-weight: bold;
+    .estado-activo {
+        background: var(--verde-fondo);
+        color: var(--verde) !important;
     }
+
+    .estado-inactivo {
+        background: var(--rojo-fondo);
+        color: var(--terracota) !important;
+    }
+
+    /* ===== BOTONES ===== */
 
     .acciones {
-        margin-top: 25px;
+        margin-top: 26px;
         display: flex;
         gap: 10px;
+        flex-wrap: wrap;
     }
 
-    .boton {
-        padding: 10px 18px;
-        background: #7b5e3b;
-        color: white;
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
-        border-radius: 7px;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .boton:hover {
-        background: #60472d;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    .volver {
-        background: #806b55;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
     }
 
-    .volver:hover {
-        background: #665442;
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
     }
+
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
+        .tarjeta {
+            padding: 22px 18px;
+        }
 
         .datos {
             grid-template-columns: 1fr;
         }
 
-        .acciones {
-            flex-direction: column;
+        .acciones .btn-mismary {
+            flex: 1 1 100%;
         }
-
-        .boton {
-            text-align: center;
-        }
-
     }
 
 </style>
 
 
-<div class="detalle-contenido">
+<div class="wrap-mismary">
 
-    <section class="titulo">
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Detalle del usuario 👤</h1>
+        <p>Información del usuario registrado en MisMary</p>
+    </div>
 
-        <h1>
-            Detalle del Usuario
-        </h1>
-
-        <p>
-            Información del usuario registrado en MisMary.
-        </p>
-
-    </section>
-
-
+    <!-- TARJETA -->
     <div class="tarjeta">
 
         <div class="usuario">
-
-            <div class="icono">
-                {{ usuario.username|first|upper }}
-            </div>
-
-            <h2>
-                {{ usuario.username }}
-            </h2>
-
+            <div class="icono">{{ usuario.username|first|upper }}</div>
+            <h2>{{ usuario.username }}</h2>
         </div>
-
 
         <div class="datos">
 
             <div class="dato">
-
-                <strong>
-                    Usuario
-                </strong>
-
-                <span>
-                    {{ usuario.username }}
-                </span>
-
+                <strong>Usuario</strong>
+                <span>{{ usuario.username }}</span>
             </div>
 
-
             <div class="dato">
-
-                <strong>
-                    Nombre
-                </strong>
-
-                <span>
-                    {{ usuario.first_name }}
-                </span>
-
+                <strong>Nombre</strong>
+                <span>{{ usuario.first_name }}</span>
             </div>
 
-
             <div class="dato">
-
-                <strong>
-                    Apellido
-                </strong>
-
-                <span>
-                    {{ usuario.last_name }}
-                </span>
-
+                <strong>Apellido</strong>
+                <span>{{ usuario.last_name }}</span>
             </div>
 
-
             <div class="dato">
-
-                <strong>
-                    Correo
-                </strong>
-
-                <span>
-                    {{ usuario.email }}
-                </span>
-
+                <strong>Correo</strong>
+                <span>{{ usuario.email }}</span>
             </div>
 
-
             <div class="dato">
-
-                <strong>
-                    Rol
-                </strong>
-
+                <strong>Rol</strong>
                 <span>
-
                     {% if usuario.is_superuser %}
-
-                        <span class="rol">
-                            Superusuario
-                        </span>
-
+                        <span class="rol">Superusuario</span>
                     {% else %}
-
                         {% for grupo in usuario.groups.all %}
-
-                            <span class="rol">
-                                {{ grupo.name }}
-                            </span>
-
+                            <span class="rol">{{ grupo.name }}</span>
                         {% empty %}
-
-                            <span class="rol">
-                                Usuario normal
-                            </span>
-
+                            <span class="rol">Usuario normal</span>
                         {% endfor %}
-
                     {% endif %}
-
                 </span>
-
             </div>
 
-
             <div class="dato">
-
-                <strong>
-                    Estado
-                </strong>
-
+                <strong>Estado</strong>
                 {% if usuario.is_active %}
-
-                    <span class="activo">
-                        ● Activo
-                    </span>
-
+                    <span class="estado estado-activo">● Activo</span>
                 {% else %}
-
-                    <span class="inactivo">
-                        ● Inactivo
-                    </span>
-
+                    <span class="estado estado-inactivo">● Inactivo</span>
                 {% endif %}
-
             </div>
 
         </div>
 
-
         <div class="acciones">
-
-            <a
-                href="{% url 'user_update' usuario.id %}"
-                class="boton"
-            >
+            <a href="{% url 'user_update' usuario.id %}" class="btn-mismary">
                 Editar usuario
             </a>
 
-            <a
-                href="{% url 'list_user' %}"
-                class="boton volver"
-            >
+            <a href="{% url 'list_user' %}" class="btn-mismary btn-secundario">
                 Volver
             </a>
-
         </div>
 
     </div>

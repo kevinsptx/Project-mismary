@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -20,17 +19,35 @@
             font-family: 'Quicksand', sans-serif;
         }
 
-        :root {
-            --crema: #fffaf2;
-            --crema-borde: #f1e6d3;
-            --cafe-oscuro: #4a2c17;
-            --cafe-texto: #5c3a21;
-            --texto-suave: #a06a3f;
-            --naranja: #ff8a4c;
-            --naranja-oscuro: #d9622f;
+        /* ===== PALETA: CAFÉ TOSTADO & TERRACOTA ===== */
 
+        :root {
+            --cafe:      #4A2C1B;   /* Café Tostado: menú, títulos, estructura */
+            --terracota: #9E3B27;   /* Terracota: banners y estados intermedios */
+            --naranja:   #FF6B35;   /* Naranja Cálido: botones (CTA) */
+            --arena:     #E8DFC8;   /* Arena Suave: tarjetas y contenedores */
+            --marfil:    #F9F6F0;   /* Crema Marfil: fondo */
+
+            --texto:       #2E1D14;
+            --texto-suave: #7A5A48;
+            --borde:       rgba(74, 44, 27, 0.12);
+            --sombra:      rgba(74, 44, 27, 0.14);
+
+            --principal:      var(--naranja);
+            --acento:         var(--terracota);
+            --tan:            #D8CBAA;
+            --fondo:          var(--marfil);
+            --superficie:     #FFFFFF;
+            --crema:          var(--marfil);
+            --crema-borde:    var(--borde);
+            --cafe-oscuro:    var(--cafe);
+            --cafe-texto:     var(--cafe);
+            --naranja-oscuro: var(--terracota);
+
+            /* medidas del menú */
             --ancho-sidebar: 230px;
             --ancho-sidebar-colapsado: 76px;
+            --margen-sidebar: 0px;
         }
 
         html {
@@ -38,127 +55,118 @@
         }
 
         body {
-            background: linear-gradient(
-                160deg,
-                #4a2c17 0%,
-                #3a2010 45%,
-                #2b160b 75%,
-                #4a2c17 100%
-            );
-
-            background-size: 300% 300%;
-            animation: gradientMove 14s ease-in-out infinite;
-
+            background: var(--marfil);
             min-height: 100vh;
-            color: var(--cafe-texto);
+            color: var(--texto);
 
             position: relative;
             overflow-x: hidden;
         }
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 30%; }
-            50% { background-position: 100% 70%; }
-            100% { background-position: 0% 30%; }
-        }
+        /* ===== FONDO DECORATIVO (suave, sobre crema) ===== */
 
-        /* ===== FONDOS ANIMADOS ===== */
-
-        body::before,
-        body::after {
-            content: "";
+        .fondo-decor {
             position: fixed;
-            border-radius: 50%;
-            filter: blur(100px);
+            inset: 0;
             z-index: 0;
+            overflow: hidden;
             pointer-events: none;
         }
 
-        body::before {
-            width: 450px;
-            height: 450px;
+        .fondo-decor::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(74, 44, 27, 0.10) 1.5px, transparent 1.6px);
+            background-size: 30px 30px;
+            -webkit-mask-image: radial-gradient(ellipse at center, transparent 30%, #000 90%);
+                    mask-image: radial-gradient(ellipse at center, transparent 30%, #000 90%);
+        }
+
+        .orbe {
+            position: absolute;
+            border-radius: 50%;
+            animation: flotar 20s ease-in-out infinite;
+        }
+
+        .orbe-1 {
+            width: 520px;
+            height: 520px;
+            top: -200px;
+            right: -150px;
+            background: var(--arena);
+            opacity: 0.9;
+        }
+
+        .orbe-2 {
+            width: 420px;
+            height: 420px;
+            bottom: -180px;
+            left: -140px;
             background: var(--naranja);
-            opacity: 0.4;
-            top: -140px;
-            left: -110px;
-            animation: float1 9s ease-in-out infinite;
+            opacity: 0.14;
+            filter: blur(60px);
+            animation-delay: -7s;
         }
 
-        body::after {
-            width: 400px;
-            height: 400px;
-            background: #ffb877;
-            opacity: 0.25;
-            bottom: -160px;
-            right: -90px;
-            animation: float2 11s ease-in-out infinite;
+        .orbe-3 {
+            width: 54px;
+            height: 54px;
+            top: 24%;
+            left: 12%;
+            background: var(--arena);
+            opacity: 0.9;
+            animation-duration: 14s;
         }
 
-        .blob-extra-layout {
-            position: fixed;
-            width: 320px;
-            height: 320px;
-            background: var(--naranja-oscuro);
-            opacity: 0.3;
-            border-radius: 50%;
-            filter: blur(90px);
-            top: 55%;
-            right: 20%;
-            z-index: 0;
-            pointer-events: none;
-            animation: float3 13s ease-in-out infinite;
+        .orbe-4 {
+            width: 28px;
+            height: 28px;
+            top: 31%;
+            left: 16%;
+            background: var(--naranja);
+            opacity: 0.35;
+            animation-duration: 11s;
+            animation-delay: -4s;
         }
 
-        @keyframes float1 {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-            }
-            50% {
-                transform: translate(40px, 30px) scale(1.08);
-            }
+        .orbe-5 {
+            width: 74px;
+            height: 74px;
+            bottom: 16%;
+            right: 8%;
+            background: var(--terracota);
+            opacity: 0.12;
+            animation-duration: 17s;
+            animation-delay: -9s;
         }
 
-        @keyframes float2 {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-            }
-            50% {
-                transform: translate(-35px, -25px) scale(1.05);
-            }
+        @keyframes flotar {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(18px, -26px); }
         }
 
-        @keyframes float3 {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-            }
-            50% {
-                transform: translate(-25px, 35px) scale(1.1);
-            }
-        }
-
-        /* ===== BARRA LATERAL FIJA ===== */
+        /* ===== BARRA LATERAL ===== */
 
         .sidebar {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: var(--margen-sidebar);
+            left: var(--margen-sidebar);
 
             width: var(--ancho-sidebar);
             height: 100vh;
             height: 100dvh;
 
-            background: var(--crema);
-            border-right: 1px solid var(--crema-borde);
+            background: var(--cafe);
+            border-radius: 0 26px 26px 0;
 
             display: flex;
             flex-direction: column;
 
-            /* Se muestra por encima del contenido */
             z-index: 1000;
 
-            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
+            box-shadow: 6px 0 30px rgba(74, 44, 27, 0.25);
 
-            /* Solo se anima el ancho de la barra */
             transition: width 0.3s ease;
 
             overflow-x: hidden;
@@ -169,6 +177,25 @@
             width: var(--ancho-sidebar-colapsado);
         }
 
+        .backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 900;
+
+            background: rgba(46, 29, 20, 0.45);
+            -webkit-backdrop-filter: blur(2px);
+                    backdrop-filter: blur(2px);
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .backdrop.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         /* ===== CABECERA DEL MENÚ ===== */
 
         .sidebar-top {
@@ -177,17 +204,17 @@
             justify-content: space-between;
             gap: 8px;
 
-            padding: 22px 18px;
+            padding: 20px;
 
-            border-bottom: 1px solid var(--crema-borde);
+            border-bottom: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
         }
 
         .logo-sidebar {
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 21px;
-            color: var(--naranja-oscuro);
+            font-size: 22px;
+            color: var(--naranja);
 
             white-space: nowrap;
             overflow: hidden;
@@ -214,7 +241,7 @@
 
             background: transparent;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
 
             cursor: pointer;
 
@@ -222,7 +249,12 @@
         }
 
         .toggle-btn:hover {
-            background: rgba(217, 98, 47, 0.12);
+            background: rgba(249, 246, 240, 0.12);
+        }
+
+        .toggle-btn:focus-visible {
+            outline: 3px solid var(--naranja);
+            outline-offset: 2px;
         }
 
         .toggle-btn span {
@@ -230,10 +262,22 @@
             width: 18px;
             height: 2px;
 
-            background: var(--cafe-texto);
+            background: var(--marfil);
             border-radius: 2px;
 
-            transition: transform 0.25s ease;
+            transition: transform 0.25s ease, opacity 0.2s ease;
+        }
+
+        .toggle-btn[aria-expanded="true"] span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+        }
+
+        .toggle-btn[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .toggle-btn[aria-expanded="true"] span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
         }
 
         /* ===== NAVEGACIÓN ===== */
@@ -244,7 +288,7 @@
 
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .nav-item {
@@ -252,11 +296,11 @@
             align-items: center;
             gap: 14px;
 
-            padding: 11px 12px;
-            border-radius: 10px;
+            padding: 11px 14px;
+            border-radius: 14px;
 
             text-decoration: none;
-            color: var(--cafe-texto);
+            color: var(--marfil);
 
             font-size: 14px;
             font-weight: 600;
@@ -264,18 +308,24 @@
             white-space: nowrap;
             overflow: hidden;
 
-            border-left: 3px solid transparent;
-
             transition:
                 background 0.2s ease,
-                border-color 0.2s ease,
                 color 0.2s ease;
         }
 
         .nav-item:hover {
-            background: rgba(255, 138, 76, 0.14);
-            border-left-color: var(--naranja-oscuro);
-            color: var(--naranja-oscuro);
+            background: rgba(249, 246, 240, 0.12);
+        }
+
+        .nav-item:focus-visible {
+            outline: 3px solid var(--naranja);
+            outline-offset: -3px;
+        }
+
+        .nav-item.activo {
+            background: var(--naranja);
+            color: #fff;
+            box-shadow: 0 6px 14px rgba(255, 107, 53, 0.35);
         }
 
         .nav-icono {
@@ -302,8 +352,8 @@
         /* ===== PIE DEL MENÚ ===== */
 
         .sidebar-bottom {
-            padding: 16px 12px 22px;
-            border-top: 1px solid var(--crema-borde);
+            padding: 16px 12px 20px;
+            border-top: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
         }
 
@@ -312,18 +362,23 @@
             align-items: center;
             gap: 12px;
 
-            padding: 8px 12px;
+            padding: 8px 14px;
             margin-bottom: 10px;
 
             font-size: 13px;
-            color: var(--texto-suave);
+            color: var(--arena);
 
             white-space: nowrap;
             overflow: hidden;
         }
 
         .usuario-sidebar strong {
-            color: var(--cafe-texto);
+            color: var(--marfil);
+        }
+
+        .sidebar.colapsado .usuario-sidebar {
+            justify-content: center;
+            padding: 8px 0;
         }
 
         .sidebar.colapsado .usuario-sidebar .nav-texto {
@@ -342,18 +397,13 @@
             justify-content: center;
             gap: 10px;
 
-            padding: 10px 12px;
+            padding: 11px 12px;
 
-            background: linear-gradient(
-                135deg,
-                var(--naranja) 0%,
-                var(--naranja-oscuro) 100%
-            );
-
-            color: #fff8f0;
+            background: var(--naranja);
+            color: #fff;
 
             border: none;
-            border-radius: 10px;
+            border-radius: 999px;
 
             font-family: 'Quicksand', sans-serif;
             font-size: 14px;
@@ -363,27 +413,26 @@
             white-space: nowrap;
             overflow: hidden;
 
-            box-shadow: 0 4px 12px rgba(217, 98, 47, 0.35);
+            box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
 
             transition:
                 transform 0.15s ease,
-                box-shadow 0.15s ease,
-                background 0.2s;
+                box-shadow 0.2s ease,
+                background 0.25s ease;
         }
 
         .logout-btn:hover {
-            background: linear-gradient(
-                135deg,
-                #ff9a5e 0%,
-                #b8511f 100%
-            );
-
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(217, 98, 47, 0.45);
+            background: var(--terracota);
+            box-shadow: 0 10px 20px rgba(158, 59, 39, 0.4);
         }
 
         .logout-btn:active {
-            transform: translateY(0) scale(0.97);
+            transform: scale(0.97);
+        }
+
+        .logout-btn:focus-visible {
+            outline: 3px solid var(--arena);
+            outline-offset: 3px;
         }
 
         .sidebar.colapsado .logout-btn .nav-texto {
@@ -393,20 +442,12 @@
         /* ===== CONTENIDO PRINCIPAL ===== */
 
         .contenido-wrap {
-            /* El contenido conserva su posición */
-            margin-left: var(--ancho-sidebar-colapsado);
+            margin-left: calc(var(--ancho-sidebar-colapsado) + var(--margen-sidebar));
 
             position: relative;
             z-index: 1;
 
             min-height: 100vh;
-
-            /* No cambia el margen al abrir el menú */
-            transition: none;
-        }
-
-        .contenido-wrap.expandido {
-            margin-left: var(--ancho-sidebar-colapsado);
         }
 
         .contenido {
@@ -425,7 +466,7 @@
         }
 
         .titulo h1 {
-            color: #fff8f0;
+            color: var(--cafe);
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
             font-size: 30px;
@@ -434,7 +475,7 @@
         }
 
         .titulo p {
-            color: #ffd9b0;
+            color: var(--texto-suave);
             font-size: 15px;
             font-weight: 600;
         }
@@ -442,36 +483,25 @@
         /* ===== TARJETAS GENERALES ===== */
 
         .contenedor {
-            background: var(--crema);
-            border: 1px solid var(--crema-borde);
-            border-radius: 18px;
+            background: #FFFFFF;
+            border: 1px solid var(--borde);
+            border-radius: 22px;
             padding: 25px;
 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 28px var(--sombra);
 
-            color: var(--cafe-texto);
+            color: var(--cafe);
         }
 
         /* ===== RESPONSIVE ===== */
 
         @media (max-width: 700px) {
             .sidebar {
-                width: var(--ancho-sidebar-colapsado);
-            }
-
-            .sidebar .logo-sidebar,
-            .sidebar .nav-texto {
-                display: none;
+                width: min(var(--ancho-sidebar), 100vw);
             }
 
             .sidebar.colapsado {
-                width: 0;
-                border-right: none;
-            }
-
-            .contenido-wrap,
-            .contenido-wrap.expandido {
-                margin-left: var(--ancho-sidebar-colapsado);
+                width: var(--ancho-sidebar-colapsado);
             }
 
             .contenido {
@@ -480,7 +510,6 @@
             }
         }
 
-        /* Respeta la preferencia de reducir animaciones */
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -496,7 +525,19 @@
 
 <body>
 
-    <div class="blob-extra-layout"></div>
+    <!-- FONDO DECORATIVO -->
+
+    <div class="fondo-decor" aria-hidden="true">
+        <span class="orbe orbe-1"></span>
+        <span class="orbe orbe-2"></span>
+        <span class="orbe orbe-3"></span>
+        <span class="orbe orbe-4"></span>
+        <span class="orbe orbe-5"></span>
+    </div>
+
+    <!-- CAPA OSCURA CUANDO EL MENÚ ESTÁ ABIERTO -->
+
+    <div class="backdrop" id="backdrop"></div>
 
     <!-- BARRA LATERAL -->
 
@@ -525,17 +566,77 @@
 
         <nav class="sidebar-nav">
 
-            <a href="{% url 'home' %}" class="nav-item">
+            <!-- HOME / MENÚ PRINCIPAL -->
+            <a
+                href="{% url 'home' %}"
+                class="nav-item{% if request.resolver_match.url_name == 'home' %} activo{% endif %}"
+            >
                 <span class="nav-icono">🏠</span>
                 <span class="nav-texto">Home</span>
             </a>
+
+            <!-- PRODUCTOS -->
+            <a
+                href="{% url 'list_producto' %}"
+                class="nav-item{% if request.resolver_match.url_name == 'list_producto' %} activo{% endif %}"
+            >
+                <span class="nav-icono">📦</span>
+                <span class="nav-texto">Productos</span>
+            </a>
+
+            <!-- CLIENTES -->
+            <a
+                href="{% url 'list_cliente' %}"
+                class="nav-item{% if request.resolver_match.url_name == 'list_cliente' %} activo{% endif %}"
+            >
+                <span class="nav-icono">👥</span>
+                <span class="nav-texto">Clientes</span>
+            </a>
+
+            <!-- VENTAS -->
+            <a
+                href="{% url 'list_venta' %}"
+                class="nav-item{% if request.resolver_match.url_name == 'list_venta' %} activo{% endif %}"
+            >
+                <span class="nav-icono">🛒</span>
+                <span class="nav-texto">Ventas</span>
+            </a>
+
+            <!-- PEDIDOS -->
+            <a
+                href="#"
+                class="nav-item{% if request.resolver_match.url_name == 'pedidos' %} activo{% endif %}"
+            >
+                <span class="nav-icono">📋</span>
+                <span class="nav-texto">Pedidos</span>
+            </a>
+
+            <!-- REPORTES -->
+            <a
+                href="{% url 'reportes' %}"
+                class="nav-item{% if request.resolver_match.url_name == 'reportes' %} activo{% endif %}"
+            >
+                <span class="nav-icono">📊</span>
+                <span class="nav-texto">Reportes</span>
+            </a>
+
+            <!-- USUARIOS (SOLO SUPERUSUARIO) -->
+            {% if user.is_superuser %}
+            <a
+                href="{% url 'list_user' %}"
+                class="nav-item{% if request.resolver_match.url_name == 'list_user' %} activo{% endif %}"
+            >
+                <span class="nav-icono">👤</span>
+                <span class="nav-texto">Usuarios</span>
+            </a>
+            {% endif %}
 
         </nav>
 
         <div class="sidebar-bottom">
 
             <div class="usuario-sidebar">
-                <span class="nav-icono">👤</span>
+                <span class="nav-icono">⚙️</span>
 
                 <span class="nav-texto">
                     <strong>{{ user.username }}</strong>
@@ -577,47 +678,56 @@
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggleBtn');
+        const backdrop = document.getElementById('backdrop');
+
+        function abrirMenu(abrir) {
+            sidebar.classList.toggle('colapsado', !abrir);
+            backdrop.classList.toggle('visible', abrir);
+            toggleBtn.setAttribute('aria-expanded', String(abrir));
+        }
 
         toggleBtn.addEventListener('click', function () {
-            const estaColapsado = sidebar.classList.toggle('colapsado');
+            abrirMenu(sidebar.classList.contains('colapsado'));
+        });
 
-            toggleBtn.setAttribute(
-                'aria-expanded',
-                String(!estaColapsado)
-            );
+        backdrop.addEventListener('click', function () {
+            abrirMenu(false);
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                abrirMenu(false);
+            }
         });
     </script>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+        function capitalizarNombre(texto) {
+            return texto
+                .toLocaleLowerCase('es')
+                .replace(/(^|\s)([a-záéíóúüñ])/gu, function (_, espacio, letra) {
+                    return espacio + letra.toLocaleUpperCase('es');
+                });
+        }
 
-    function capitalizarNombre(texto) {
-        return texto
-            .toLocaleLowerCase('es')
-            .replace(/(^|\s)([a-záéíóúüñ])/gu, function (_, espacio, letra) {
-                return espacio + letra.toLocaleUpperCase('es');
+        document.querySelectorAll('.capitalizar-nombre').forEach(function (campo) {
+
+            campo.addEventListener('input', function () {
+                const inicio = this.selectionStart;
+                const fin = this.selectionEnd;
+
+                this.value = capitalizarNombre(this.value);
+
+                this.setSelectionRange(inicio, fin);
             });
-    }
 
-    // Se aplica a todos los campos que tengan esta clase.
-    document.querySelectorAll('.capitalizar-nombre').forEach(function (campo) {
-
-        campo.addEventListener('input', function () {
-            const inicio = this.selectionStart;
-            const fin = this.selectionEnd;
-
-            this.value = capitalizarNombre(this.value);
-
-            this.setSelectionRange(inicio, fin);
+            campo.value = capitalizarNombre(campo.value);
         });
 
-        // Normaliza también el valor que ya estaba escrito.
-        campo.value = capitalizarNombre(campo.value);
     });
-
-});
-</script>
+    </script>
 
 </body>
 </html>

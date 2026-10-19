@@ -8,238 +8,268 @@ Actualizar Venta | MisMary
 
 <style>
 
-    .venta-contenido {
-        max-width: 700px;
-        margin: 0 auto;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== FORMULARIO ===== */
 
     .formulario {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 12px;
-        padding: 35px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
     }
 
-    .formulario h2 {
-        color: #5c4033;
-        font-size: 24px;
-        margin-bottom: 8px;
-    }
-
-    .formulario .descripcion {
-        color: #806b55;
-        margin-bottom: 30px;
-        font-size: 15px;
+    .venta-chip {
+        display: inline-block;
+        margin-bottom: 22px;
+        padding: 6px 16px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
     .campo {
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
     .campo label {
         display: block;
-        color: #5c4033;
-        font-weight: bold;
-        margin-bottom: 8px;
-        font-size: 15px;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
     .campo input,
     .campo select {
         width: 100%;
         box-sizing: border-box;
-        padding: 12px;
-        border: 2px solid #8b6f47;
-        border-radius: 6px;
-        background: white;
-        color: #5c4033;
-        font-size: 15px;
-        outline: none;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .campo input:focus,
     .campo select:focus {
-        border-color: #60472d;
-        box-shadow:
-            0 0 5px
-            rgba(96, 71, 45, 0.3);
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
     }
 
-    .botones {
+    /* ===== BOTONES ===== */
+
+    .acciones-form {
         display: flex;
-        gap: 12px;
-        margin-top: 30px;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
     }
 
-    .boton {
-        flex: 1;
-        padding: 13px;
-        border: none;
-        border-radius: 6px;
-        font-size: 15px;
-        text-align: center;
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
         cursor: pointer;
-        transition: 0.3s;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .guardar {
-        background: #7b5e3b;
-        color: white;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    .guardar:hover {
-        background: #60472d;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
     }
 
-    .cancelar {
-        background: #d8c5a9;
-        color: #5c4033;
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
     }
 
-    .cancelar:hover {
-        background: #c5ad8c;
-    }
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
-
         .formulario {
-            padding: 25px;
+            padding: 22px 18px;
         }
 
-        .botones {
-            flex-direction: column;
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
         }
-
     }
 
 </style>
 
 
-<div class="venta-contenido">
+<div class="wrap-mismary">
 
-    <section class="titulo">
-
-        <h1>
-            Actualizar Venta
-        </h1>
-
-        <p>
-            Modifica la información de la venta registrada
-        </p>
-
-    </section>
-
-
-    <div class="formulario">
-
-        <h2>
-            Venta #{{ venta.id }}
-        </h2>
-
-        <p class="descripcion">
-            Actualiza los datos necesarios y guarda los cambios.
-        </p>
-
-
-        <form method="POST">
-
-            {% csrf_token %}
-
-
-            <div class="campo">
-
-                <label for="cliente">
-                    Cliente
-                </label>
-
-                <select
-                    name="cliente"
-                    id="cliente"
-                    required
-                >
-
-                    {% for cliente in clientes %}
-
-                        <option
-                            value="{{ cliente.id }}"
-                            {% if cliente.id == venta.cliente.id %}
-                                selected
-                            {% endif %}
-                        >
-                            {{ cliente.nombre }}
-                        </option>
-
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-
-            <div class="campo">
-
-                <label for="valor_total">
-                    Valor total
-                </label>
-
-                <input
-                    type="number"
-                    name="valor_total"
-                    id="valor_total"
-                    value="{{ venta.valor_total }}"
-                    min="0"
-                    required
-                >
-
-            </div>
-
-
-            <div class="campo">
-
-                <label for="fecha">
-                    Fecha
-                </label>
-
-                <input
-                    type="date"
-                    name="fecha"
-                    id="fecha"
-                    value="{{ venta.fecha|date:'Y-m-d' }}"
-                    required
-                >
-
-            </div>
-
-
-            <div class="botones">
-
-                <a
-                    href="{% url 'details_venta' venta.id %}"
-                    class="boton cancelar"
-                >
-                    Cancelar
-                </a>
-
-                <button
-                    type="submit"
-                    class="boton guardar"
-                >
-                    Guardar cambios
-                </button>
-
-            </div>
-
-        </form>
-
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Actualizar venta ✏️</h1>
+        <p>Modifica la información de la venta registrada</p>
     </div>
+
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- FORMULARIO -->
+    <form method="POST" class="formulario">
+
+        {% csrf_token %}
+
+        <span class="venta-chip">Venta #{{ venta.id }}</span>
+
+        <!-- CLIENTE -->
+        <div class="campo">
+            <label for="cliente">Cliente</label>
+            <select name="cliente" id="cliente" required>
+                {% for cliente in clientes %}
+                    <option
+                        value="{{ cliente.id }}"
+                        {% if cliente.id == venta.cliente.id %}selected{% endif %}
+                    >
+                        {{ cliente.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- VALOR TOTAL -->
+        <div class="campo">
+            <label for="valor_total">Valor total</label>
+            <input
+                type="number"
+                name="valor_total"
+                id="valor_total"
+                value="{{ venta.valor_total }}"
+                min="0"
+                required
+            >
+        </div>
+
+        <!-- FECHA -->
+        <div class="campo">
+            <label for="fecha">Fecha</label>
+            <input
+                type="date"
+                name="fecha"
+                id="fecha"
+                value="{{ venta.fecha|date:'Y-m-d' }}"
+                required
+            >
+        </div>
+
+        <!-- BOTONES -->
+        <div class="acciones-form">
+            <button type="submit" class="btn-mismary">Guardar cambios</button>
+            <a href="{% url 'details_venta' venta.id %}" class="btn-mismary btn-secundario">Cancelar</a>
+        </div>
+
+    </form>
 
 </div>
 
 {% endblock %}
-```
-
-Este ya queda más acorde con los otros HTML: **beige, café, bordes redondeados, campos separados y botones de cancelar/guardar**.

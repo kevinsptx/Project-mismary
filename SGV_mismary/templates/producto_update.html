@@ -8,272 +8,260 @@ Editar Producto | MisMary
 
 <style>
 
-    .producto-contenido {
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --cafe-medio:    #8A5A3C;
+        --sombra-caja:   0 18px 36px -8px rgba(74, 44, 27, 0.28), 0 4px 10px rgba(74, 44, 27, 0.10);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
         max-width: 700px;
         margin: 0 auto;
+        padding: 30px 20px;
     }
 
-
-    /* TÍTULO */
-
-    .titulo {
-        margin-bottom: 30px;
+    .wrap-mismary * {
+        box-sizing: border-box;
     }
 
-    .titulo h1 {
-        color: #5c4033;
-        font-size: 30px;
-        margin-bottom: 10px;
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
     }
 
-    .titulo p {
-        color: #806b55;
-        font-size: 16px;
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
 
-    /* FORMULARIO */
+    /* ===== FORMULARIO ===== */
 
     .formulario {
-        background: #f5ead7;
-
-        border: 2px solid #8b6f47;
-
-        border-radius: 10px;
-
+        background: var(--blanco);
+        border: 2px solid var(--cafe-medio);
+        border-radius: 24px;
         padding: 30px;
-
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+        box-shadow: var(--sombra-caja);
     }
-
 
     .campo {
         margin-bottom: 20px;
     }
 
-
     .campo label {
         display: block;
-
-        color: #5c4033;
-
-        font-weight: bold;
-
+        font-size: 13px;
+        font-weight: 600;
         margin-bottom: 8px;
+        color: var(--cafe-tostado);
     }
-
 
     .campo input,
     .campo select {
         width: 100%;
-
-        padding: 12px;
-
-        border: 1px solid #8b6f47;
-
-        border-radius: 5px;
-
-        box-sizing: border-box;
-
-        font-size: 15px;
+        padding: 12px 18px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        background: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: inherit;
+        font-size: 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
-
 
     .campo input:focus,
     .campo select:focus {
         outline: none;
-
-        border-color: #7b5e3b;
+        border-color: var(--terracota);
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
     }
 
+    /* Errores de cada campo (Django los pinta como <ul class="errorlist">) */
 
-    /* BOTONES */
+    .campo .errorlist {
+        list-style: none;
+        margin: 8px 0 0 0;
+        padding: 0;
+        font-size: 13px;
+        color: var(--terracota);
+    }
+
+    .errores {
+        background: #FBE9E7;
+        border: 1px solid #F4B8AE;
+        color: var(--terracota);
+        padding: 12px 18px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== BOTONES ===== */
 
     .botones {
         display: flex;
-
         gap: 10px;
-
-        margin-top: 25px;
+        margin-top: 26px;
     }
 
-
-    .boton {
-        padding: 12px 20px;
-
-        background: #7b5e3b;
-
-        color: white;
-
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
-
+        padding: 11px 22px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
         border: none;
-
-        border-radius: 5px;
-
-        font-size: 15px;
-
         cursor: pointer;
-
-        transition: 0.3s;
+        font-family: inherit;
+        transition: background 0.2s ease;
     }
 
-
-    .boton:hover {
-        background: #60472d;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-
-    .boton-cancelar {
-        background: #806b55;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
     }
 
-
-    .boton-cancelar:hover {
-        background: #5c4033;
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
     }
 
-
-    /* ERRORES */
-
-    .errores {
-        color: #a94442;
-
-        margin-bottom: 15px;
-    }
-
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
-        .producto-contenido {
-            width: 95%;
+        .formulario {
+            padding: 22px 18px;
         }
 
         .botones {
             flex-direction: column;
         }
 
-        .boton {
-            text-align: center;
+        .botones .btn-mismary {
             width: 100%;
         }
-
     }
 
 </style>
 
 
-<div class="producto-contenido">
+<div class="wrap-mismary">
 
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Editar producto ✏️</h1>
+            <p>Modifica la información del producto seleccionado</p>
+        </div>
 
-    <!-- TÍTULO -->
-
-    <section class="titulo">
-
-        <h1>
-            Editar producto
-        </h1>
-
-        <p>
-            Modifica la información del producto seleccionado.
-        </p>
-
-    </section>
-
+        <a href="{% url 'list_producto' %}" class="btn-mismary btn-secundario">
+            ← Regresar a productos
+        </a>
+    </div>
 
     <!-- FORMULARIO -->
-
     <form method="POST" class="formulario">
 
         {% csrf_token %}
 
-
         {% if form.errors %}
-
             <div class="errores">
                 Por favor, corrige los errores del formulario.
             </div>
-
         {% endif %}
 
-
         <!-- NOMBRE -->
-
         <div class="campo">
-
             {{ form.nombre.label_tag }}
-
             {{ form.nombre }}
-
             {{ form.nombre.errors }}
-
         </div>
-
 
         <!-- PRECIO -->
-
         <div class="campo">
-
             {{ form.precio_venta.label_tag }}
-
             {{ form.precio_venta }}
-
             {{ form.precio_venta.errors }}
-
         </div>
-
 
         <!-- CANTIDAD DISPONIBLE -->
-
         <div class="campo">
-
             {{ form.cantidad_disponible.label_tag }}
-
             {{ form.cantidad_disponible }}
-
             {{ form.cantidad_disponible.errors }}
-
         </div>
-
 
         <!-- CATEGORÍA -->
-
         <div class="campo">
-
             {{ form.categoria.label_tag }}
-
             {{ form.categoria }}
-
             {{ form.categoria.errors }}
-
         </div>
 
-
         <!-- BOTONES -->
-
         <div class="botones">
-
-            <button
-                type="submit"
-                class="boton"
-            >
+            <button type="submit" class="btn-mismary">
                 Guardar cambios
             </button>
 
-
-            <a
-                href="{% url 'list_producto' %}"
-                class="boton boton-cancelar"
-            >
+            <a href="{% url 'list_producto' %}" class="btn-mismary btn-secundario">
                 Cancelar
             </a>
-
         </div>
 
     </form>
-
 
 </div>
 

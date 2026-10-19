@@ -8,227 +8,296 @@ Editar Abono | MisMary
 
 <style>
 
-    .editar-contenido {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 0 20px;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== TARJETA ===== */
 
     .tarjeta {
-        background: #fffdf9;
-        border-radius: 18px;
-        padding: 32px;
-        border: 1px solid #f2e4d8;
-        box-shadow: 0 4px 18px rgba(190, 140, 110, 0.10);
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
     }
 
-    .titulo {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .titulo h1 {
-        color: #d98c70;
-        font-size: 28px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .titulo p {
-        color: #8b817a;
-        font-size: 15px;
-    }
+    /* ===== INFORMACIÓN ACTUAL ===== */
 
     .informacion {
-        margin-bottom: 25px;
-        padding: 18px;
-        background: #fff3eb;
-        border-radius: 12px;
-        border: 1px solid #f4ddd0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 24px;
     }
 
-    .informacion p {
-        margin-bottom: 8px;
-        color: #6f6863;
-        font-size: 15px;
+    .dato {
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 14px 18px;
     }
 
-    .informacion p:last-child {
-        margin-bottom: 0;
-    }
-
-    .informacion strong {
-        color: #cf8065;
-    }
-
-    .formulario label {
+    .dato strong {
         display: block;
-        color: #625c58;
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--terracota);
+    }
+
+    .dato span {
+        font-size: 14px;
         font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 15px;
+        color: var(--cafe-tostado);
     }
 
-    .formulario input {
+    /* ===== FORMULARIO ===== */
+
+    .campo {
+        margin-bottom: 20px;
+    }
+
+    .campo label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .campo input {
         width: 100%;
-        padding: 13px 14px;
-        border: 1px solid #e7d8ce;
-        border-radius: 9px;
-        margin-bottom: 10px;
-        font-size: 15px;
-        color: #625c58;
-        background: #ffffff;
-        outline: none;
-        transition: 0.2s;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .formulario input:focus {
-        border-color: #dda08a;
-        box-shadow: 0 0 0 3px rgba(221, 160, 138, 0.12);
+    .campo input:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
     }
 
     .error {
-        color: #b86d61;
-        margin-bottom: 15px;
+        margin-top: 8px;
+        padding: 10px 16px;
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        border-radius: 16px;
+        color: var(--terracota);
+        font-size: 13px;
         font-weight: 600;
-        font-size: 14px;
     }
 
-    .botones {
+    .error ul,
+    .errorlist {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* ===== BOTONES ===== */
+
+    .acciones-form {
         display: flex;
-        gap: 12px;
-        margin-top: 22px;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
     }
 
-    .boton {
-        flex: 1;
-        padding: 13px 20px;
-        border: none;
-        border-radius: 9px;
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
-        text-align: center;
-        font-size: 15px;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
         font-weight: 600;
+        border: none;
         cursor: pointer;
-        transition: 0.2s;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .guardar {
-        background: #dda08a;
-        color: #ffffff;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    .guardar:hover {
-        background: #cf8d75;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
     }
 
-    .cancelar {
-        background: #f5e8df;
-        color: #9b7565;
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
     }
 
-    .cancelar:hover {
-        background: #edddd2;
-    }
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
-
-        .editar-contenido {
-            margin-top: 25px;
-            padding: 0 15px;
-        }
-
         .tarjeta {
-            padding: 22px;
+            padding: 22px 18px;
         }
 
-        .titulo h1 {
-            font-size: 24px;
+        .informacion {
+            grid-template-columns: 1fr;
         }
 
-        .botones {
-            flex-direction: column;
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
         }
-
     }
 
 </style>
 
-<div class="editar-contenido">
 
-```
-<div class="tarjeta">
+<div class="wrap-mismary">
 
-    <div class="titulo">
-
-        <h1>
-            ✏️ Editar abono
-        </h1>
-
-        <p>
-            Corrige el valor del abono registrado.
-        </p>
-
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Editar abono ✏️</h1>
+        <p>Corrige el valor del abono registrado</p>
     </div>
 
-    <div class="informacion">
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-        <p>
-            <strong>Cliente:</strong>
-            {{ abono.deuda.cliente.nombre }}
-        </p>
+    <!-- TARJETA -->
+    <div class="tarjeta">
 
-        <p>
-            <strong>Valor actual:</strong>
-            ${{ abono.valor }}
-        </p>
-
-    </div>
-
-    <form method="POST" class="formulario">
-
-        {% csrf_token %}
-
-        {{ form.non_field_errors }}
-
-        <label for="{{ form.valor.id_for_label }}">
-            Nuevo valor del abono
-        </label>
-
-        {{ form.valor }}
-
-        {% if form.valor.errors %}
-
-            <div class="error">
-                {{ form.valor.errors }}
+        <!-- INFORMACIÓN ACTUAL -->
+        <div class="informacion">
+            <div class="dato">
+                <strong>Cliente</strong>
+                <span>{{ abono.deuda.cliente.nombre }}</span>
             </div>
 
-        {% endif %}
-
-        <div class="botones">
-
-            <button
-                type="submit"
-                class="boton guardar">
-
-                💾 Guardar cambios
-
-            </button>
-
-            <a
-                href="{% url 'inicio' %}"
-                class="boton cancelar">
-
-                Cancelar
-
-            </a>
-
+            <div class="dato">
+                <strong>Valor actual</strong>
+                <span>${{ abono.valor }}</span>
+            </div>
         </div>
 
-    </form>
+        <!-- FORMULARIO -->
+        <form method="POST">
 
-</div>
-```
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="campo">
+                <label for="{{ form.valor.id_for_label }}">Nuevo valor del abono</label>
+
+                {{ form.valor }}
+
+                {% if form.valor.errors %}
+                    <div class="error">{{ form.valor.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="acciones-form">
+                <button type="submit" class="btn-mismary">💾 Guardar cambios</button>
+                <a href="{% url 'inicio' %}" class="btn-mismary btn-secundario">Cancelar</a>
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 

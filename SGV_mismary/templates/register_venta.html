@@ -8,254 +8,285 @@ Registrar Venta | MisMary
 
 <style>
 
-    .registro-contenido {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 0 20px;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
-    .titulo {
-        text-align: center;
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
         margin-bottom: 25px;
     }
 
-    .titulo h1 {
-        color: #5c4033;
-        font-size: 32px;
-        margin-bottom: 8px;
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
-    .titulo p {
-        color: #7b5e3b;
-        font-size: 16px;
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
     }
+
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== FORMULARIO ===== */
 
     .formulario {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 35px;
-        box-shadow: 0 5px 15px rgba(70, 50, 30, 0.2);
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
     }
 
     .campo {
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
     .campo label {
         display: block;
-        color: #5c4033;
-        font-weight: bold;
-        margin-bottom: 8px;
-        font-size: 15px;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
     .campo input,
     .campo select {
         width: 100%;
         box-sizing: border-box;
-        padding: 12px;
-        border: 2px solid #8b6f47;
-        border-radius: 5px;
-        background: white;
-        color: #5c4033;
-        font-size: 15px;
-        outline: none;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .campo input:focus,
     .campo select:focus {
-        border-color: #60472d;
-        box-shadow: 0 0 5px rgba(96, 71, 45, 0.3);
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
     }
+
+    /* ===== FALTA POR PAGAR ===== */
 
     .falta {
-        background: white;
-        border: 2px dashed #8b6f47;
-        border-radius: 5px;
-        padding: 12px;
-        margin-bottom: 22px;
-        color: #5c4033;
-        font-size: 16px;
-        text-align: center;
-    }
-
-    .boton {
-        width: 100%;
-        padding: 12px;
-        background: #7b5e3b;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .boton:hover {
-        background: #60472d;
-    }
-
-    .volver {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-        color: #7b5e3b;
-        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: var(--arena-suave);
+        border: 1px dashed var(--arena);
+        border-radius: 16px;
+        padding: 14px 20px;
+        margin-bottom: 20px;
         font-size: 14px;
+        font-weight: 600;
+        color: #6C5243;
     }
 
-    .volver:hover {
-        text-decoration: underline;
+    .falta strong {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--terracota);
     }
+
+    /* ===== BOTONES ===== */
+
+    .acciones-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
-
         .formulario {
-            padding: 25px;
+            padding: 22px 18px;
         }
 
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
+        }
     }
 
 </style>
 
-<div class="registro-contenido">
 
-    <section class="titulo">
+<div class="wrap-mismary">
 
-        <h1>
-            Registrar Venta
-        </h1>
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Registrar venta 🛒</h1>
+        <p>Registra una nueva venta por catálogo</p>
+    </div>
 
-        <p>
-            Registra una nueva venta por catálogo
-        </p>
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-    </section>
-
-
+    <!-- FORMULARIO -->
     <form method="POST" class="formulario">
 
         {% csrf_token %}
 
-
         <!-- CLIENTE -->
-
         <div class="campo">
-
-            <label for="cliente">
-                Cliente
-            </label>
-
-            <select
-                required
-                id="cliente"
-                name="cliente"
-            >
-
-                <option value="">
-                    Seleccione un cliente
-                </option>
-
+            <label for="cliente">Cliente</label>
+            <select id="cliente" name="cliente" required>
+                <option value="">Seleccione un cliente</option>
                 {% for cliente in clientes %}
-
-                    <option value="{{ cliente.id }}">
-                        {{ cliente.nombre }}
-                    </option>
-
+                    <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
                 {% endfor %}
-
             </select>
-
         </div>
-
 
         <!-- VALOR TOTAL -->
-
         <div class="campo">
-
-            <label for="valor_total">
-                Valor Total
-            </label>
-
+            <label for="valor_total">Valor total</label>
             <input
                 type="number"
-                required
-                min="0"
-                step="0.01"
                 id="valor_total"
                 name="valor_total"
+                min="0"
+                step="0.01"
                 placeholder="Ingrese el valor total de la venta"
+                required
             >
-
         </div>
 
-
         <!-- VALOR PAGADO -->
-
         <div class="campo">
-
-            <label for="valor_pagado">
-                Valor pagado (0 si no ha pagado nada)
-            </label>
-
+            <label for="valor_pagado">Valor pagado (0 si no ha pagado nada)</label>
             <input
                 type="number"
+                id="valor_pagado"
+                name="valor_pagado"
                 min="0"
                 step="0.01"
                 value="0"
-                id="valor_pagado"
-                name="valor_pagado"
                 placeholder="¿Cuánto ha pagado el cliente?"
             >
-
         </div>
 
-
-        <!-- CUANTO FALTA -->
-
+        <!-- FALTA POR PAGAR -->
         <div class="falta">
-            Falta por pagar:
+            <span>Falta por pagar:</span>
             <strong id="falta">$0.00</strong>
         </div>
 
-
         <!-- FECHA -->
-
         <div class="campo">
-
-            <label for="fecha">
-                Fecha
-            </label>
-
-            <input
-                type="date"
-                required
-                id="fecha"
-                name="fecha"
-            >
-
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha" name="fecha" required>
         </div>
 
-
-        <!-- BOTON -->
-
-        <button
-            type="submit"
-            class="boton"
-        >
-            Registrar Venta
-        </button>
-
-
-        <!-- VOLVER -->
-
-        <a
-            href="{% url 'list_venta' %}"
-            class="volver"
-        >
-            ← Volver a ventas
-        </a>
+        <!-- BOTONES -->
+        <div class="acciones-form">
+            <button type="submit" class="btn-mismary">Registrar venta</button>
+            <a href="{% url 'list_venta' %}" class="btn-mismary btn-secundario">← Volver a ventas</a>
+        </div>
 
     </form>
 

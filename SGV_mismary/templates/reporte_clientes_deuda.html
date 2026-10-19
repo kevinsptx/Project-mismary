@@ -8,148 +8,301 @@ Clientes con deuda | MisMary
 
 <style>
 
-    .reporte-contenido {
-        max-width: 1100px;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 1040px;
         margin: 0 auto;
+        padding: 30px 20px;
     }
 
-    .boton {
-        display: inline-block;
-        padding: 12px 25px;
-        background: #7b5e3b;
-        color: white;
-        text-decoration: none;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+    /* ===== ENCABEZADO ===== */
 
-    .boton:hover {
-        background: #60472d;
-    }
-
-    .caja-tabla {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
         margin-bottom: 25px;
     }
 
-    .caja-tabla table {
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== BOTONES ===== */
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESULTADOS ===== */
+
+    .resultados-barra {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .resultados-barra h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .chip-mismary {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    /* ===== TABLA ===== */
+
+    .tabla-caja {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        box-shadow: var(--sombra-suave);
+        overflow-x: auto;
+        margin-bottom: 22px;
+    }
+
+    .tabla-deudas {
         width: 100%;
         border-collapse: collapse;
+        font-size: 14px;
     }
 
-    .caja-tabla th {
-        background: #7b5e3b;
-        color: white;
+    .tabla-deudas thead th {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
         text-align: left;
-        padding: 14px 18px;
-        font-size: 15px;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--arena);
+        white-space: nowrap;
     }
 
-    .caja-tabla td {
-        color: #5c4033;
-        padding: 14px 18px;
-        border-bottom: 1px solid #d9c7a5;
-        font-size: 15px;
+    .tabla-deudas tbody td {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--arena-suave);
+        vertical-align: middle;
     }
 
-    .caja-tabla tr:last-child td {
+    .tabla-deudas tbody tr:last-child td {
         border-bottom: none;
     }
 
-    .sin-datos {
-        text-align: center;
-        color: #806b55;
+    .tabla-deudas tbody tr:hover {
+        background: var(--marfil-bg);
     }
+
+    .col-numero {
+        text-align: right !important;
+        white-space: nowrap;
+    }
+
+    .nombre-cliente {
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .precio {
+        font-weight: 700;
+        color: var(--terracota);
+    }
+
+    .sin-registros {
+        text-align: center;
+        padding: 40px 20px !important;
+        color: #6C5243;
+    }
+
+    /* ===== TOTAL ===== */
 
     .total-reporte {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 20px 25px;
-        text-align: right;
-        color: #5c4033;
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 25px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 20px 28px;
+        box-shadow: var(--sombra-suave);
     }
 
-    .acciones-reporte {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 30px;
+    .total-reporte span {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--terracota);
     }
+
+    .total-reporte strong {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
         .total-reporte {
+            justify-content: center;
             text-align: center;
         }
 
+        .tabla-deudas thead th,
+        .tabla-deudas tbody td {
+            padding: 12px 14px;
+        }
     }
 
-    @media print {
+    /* ===== IMPRESIÓN ===== */
 
-        .acciones-reporte {
+    @media print {
+        .acciones {
             display: none;
         }
-
     }
 
 </style>
 
 
-<div class="reporte-contenido">
+<div class="wrap-mismary">
 
-    <section class="titulo">
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Clientes con deuda 🧾</h1>
+            <p>Clientes que tienen saldo pendiente por pagar</p>
+        </div>
 
-        <h1>
-            Clientes con deuda
-        </h1>
+        <div class="acciones">
+            <button onclick="window.print()" class="btn-mismary">🖨️ Imprimir</button>
+            <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">← Volver a reportes</a>
+        </div>
+    </div>
 
-        <p>
-            Clientes que tienen saldo pendiente por pagar
-        </p>
+    <!-- TÍTULO DE RESULTADOS -->
+    <div class="resultados-barra">
+        <h2>Saldos pendientes</h2>
 
-    </section>
+        <span class="chip-mismary">{{ clientes|length }} cliente{{ clientes|length|pluralize }}</span>
+    </div>
 
-
-    <div class="caja-tabla">
-
-        <table>
+    <!-- TABLA -->
+    <div class="tabla-caja">
+        <table class="tabla-deudas">
 
             <thead>
                 <tr>
                     <th>Nombre</th>
-                    <th>Saldo pendiente</th>
+                    <th class="col-numero">Saldo pendiente</th>
                 </tr>
             </thead>
 
             <tbody>
 
                 {% for cliente in clientes %}
-
                     <tr>
-                        <td>{{ cliente.nombre }}</td>
-                        <td>${{ cliente.saldo_pendiente }}</td>
+                        <td class="nombre-cliente">{{ cliente.nombre }}</td>
+                        <td class="col-numero precio">${{ cliente.saldo_pendiente }}</td>
                     </tr>
 
                 {% empty %}
 
                     <tr>
-                        <td colspan="2" class="sin-datos">
+                        <td colspan="2" class="sin-registros">
                             No hay clientes con deuda pendiente.
                         </td>
                     </tr>
@@ -159,25 +312,12 @@ Clientes con deuda | MisMary
             </tbody>
 
         </table>
-
     </div>
 
-
+    <!-- TOTAL -->
     <div class="total-reporte">
-        Total por cobrar: ${{ total_deuda }}
-    </div>
-
-
-    <div class="acciones-reporte">
-
-        <button onclick="window.print()" class="boton">
-            Imprimir
-        </button>
-
-        <a href="{% url 'reportes' %}" class="boton">
-            Volver a reportes
-        </a>
-
+        <span>Total por cobrar</span>
+        <strong>${{ total_deuda }}</strong>
     </div>
 
 </div>

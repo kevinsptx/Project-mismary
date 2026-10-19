@@ -54,7 +54,7 @@ def usuario_update(request, id):
         usuario.last_name = request.POST['last_name']
         usuario.email = request.POST['email']
         usuario.save()
-
+ 
         return redirect('list_user')
 
     return render(request, 'user_update.html', {

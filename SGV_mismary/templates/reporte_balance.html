@@ -8,119 +8,219 @@ Balance | MisMary
 
 <style>
 
-    .reporte-contenido {
-        max-width: 1100px;
-        margin: 0 auto;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== BOTONES ===== */
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== FILTRO ===== */
+
     .filtro {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 30px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 20px 24px;
+        margin-bottom: 26px;
+        box-shadow: var(--sombra-suave);
     }
 
     .filtro form {
         display: flex;
         flex-wrap: wrap;
         align-items: flex-end;
-        gap: 15px;
+        gap: 14px;
     }
 
     .filtro label {
         display: block;
-        color: #5c4033;
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
     .filtro input {
-        padding: 12px;
-        border: 2px solid #8b6f47;
-        border-radius: 5px;
-        background: white;
-        color: #5c4033;
-        font-size: 15px;
-        outline: none;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
     }
 
     .filtro input:focus {
-        border-color: #60472d;
-        box-shadow:
-            0 0 5px
-            rgba(96, 71, 45, 0.3);
+        outline: none;
+        border-color: var(--terracota);
     }
 
-    .filtro button,
-    .boton {
-        display: inline-block;
-        padding: 12px 25px;
-        background: #7b5e3b;
-        color: white;
-        text-decoration: none;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .filtro button:hover,
-    .boton:hover {
-        background: #60472d;
-    }
+    /* ===== TARJETAS ===== */
 
     .tarjetas {
-        display: grid;
-        grid-template-columns:
-            repeat(auto-fit, minmax(260px, 1fr));
-        gap: 25px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 22px;
         margin-bottom: 30px;
     }
 
     .tarjeta {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 25px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+        flex: 1 1 260px;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 26px 24px;
+        box-shadow: var(--sombra-suave);
+        text-align: center;
+    }
+
+    .tarjeta-icono {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 50%;
+        font-size: 24px;
     }
 
     .tarjeta h3 {
-        color: #5c4033;
-        font-size: 20px;
-        margin-bottom: 10px;
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--terracota);
     }
 
     .tarjeta .valor {
-        color: #5c4033;
+        margin: 0;
         font-size: 28px;
-        font-weight: bold;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .tarjeta-balance .valor {
+        display: inline-block;
+        padding: 6px 20px;
+        border-radius: 999px;
     }
 
     .valor-positivo {
-        color: #2e6b3a !important;
+        background: var(--verde-fondo);
+        color: var(--verde) !important;
     }
 
     .valor-negativo {
-        color: #9b2c2c !important;
+        background: var(--rojo-fondo);
+        color: var(--terracota) !important;
     }
 
-    .acciones-reporte {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 30px;
-    }
+    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
         .filtro form {
             flex-direction: column;
@@ -131,79 +231,84 @@ Balance | MisMary
             width: 100%;
         }
 
+        .tarjeta {
+            flex: 1 1 100%;
+        }
     }
 
-    @media print {
+    /* ===== IMPRESIÓN ===== */
 
+    @media print {
         .filtro,
-        .acciones-reporte {
+        .acciones {
             display: none;
         }
-
     }
 
 </style>
 
 
-<div class="reporte-contenido">
+<div class="wrap-mismary">
 
-    <section class="titulo">
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Balance del negocio ⚖️</h1>
+            <p>Ingresos menos gastos: la utilidad del negocio</p>
+        </div>
 
-        <h1>
-            Balance del negocio
-        </h1>
+        <div class="acciones">
+            <button onclick="window.print()" class="btn-mismary">🖨️ Imprimir</button>
+            <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">← Volver a reportes</a>
+        </div>
+    </div>
 
-        <p>
-            Ingresos menos gastos: la utilidad del negocio
-        </p>
-
-    </section>
-
-
+    <!-- FILTRO -->
     <section class="filtro">
-
         <form method="GET">
 
             <div>
-                <label>Desde</label>
+                <label for="fecha_inicio">Desde</label>
                 <input
                     type="date"
+                    id="fecha_inicio"
                     name="fecha_inicio"
                     value="{{ fecha_inicio|default:'' }}"
                 >
             </div>
 
             <div>
-                <label>Hasta</label>
+                <label for="fecha_fin">Hasta</label>
                 <input
                     type="date"
+                    id="fecha_fin"
                     name="fecha_fin"
                     value="{{ fecha_fin|default:'' }}"
                 >
             </div>
 
-            <button type="submit">
-                Filtrar
-            </button>
+            <button type="submit" class="btn-mismary">Filtrar</button>
 
         </form>
-
     </section>
 
-
+    <!-- TARJETAS -->
     <section class="tarjetas">
 
         <div class="tarjeta">
+            <div class="tarjeta-icono">💰</div>
             <h3>Ingresos</h3>
             <p class="valor">${{ total_ingresos }}</p>
         </div>
 
         <div class="tarjeta">
+            <div class="tarjeta-icono">💸</div>
             <h3>Gastos</h3>
             <p class="valor">${{ total_gastos }}</p>
         </div>
 
-        <div class="tarjeta">
+        <div class="tarjeta tarjeta-balance">
+            <div class="tarjeta-icono">⚖️</div>
             <h3>Balance final</h3>
             <p class="valor {% if balance >= 0 %}valor-positivo{% else %}valor-negativo{% endif %}">
                 ${{ balance }}
@@ -211,19 +316,6 @@ Balance | MisMary
         </div>
 
     </section>
-
-
-    <div class="acciones-reporte">
-
-        <button onclick="window.print()" class="boton">
-            Imprimir
-        </button>
-
-        <a href="{% url 'reportes' %}" class="boton">
-            Volver a reportes
-        </a>
-
-    </div>
 
 </div>
 

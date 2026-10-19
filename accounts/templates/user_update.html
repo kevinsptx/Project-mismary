@@ -8,25 +8,93 @@ Editar Usuario | MisMary
 
 <style>
 
-    .formulario-contenido {
-        max-width: 600px;
+    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 620px;
         margin: 0 auto;
+        padding: 30px 20px;
     }
 
-    .titulo {
-        margin-bottom: 30px;
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        margin-bottom: 25px;
     }
 
-    .titulo h1 {
-        color: #5c4033;
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== MENSAJES ===== */
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== FORMULARIO ===== */
 
     .formulario {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
         padding: 30px;
-        box-shadow: 0 5px 15px rgba(70, 50, 30, 0.2);
+        box-shadow: var(--sombra-suave);
     }
 
     .campo {
@@ -35,120 +103,133 @@ Editar Usuario | MisMary
 
     .campo label {
         display: block;
-        color: #5c4033;
         margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
     .campo input {
         width: 100%;
-        padding: 10px;
-        border: 1px solid #8b6f47;
-        border-radius: 5px;
         box-sizing: border-box;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .boton {
-        padding: 10px 20px;
-        background: #7b5e3b;
-        color: white;
+    .campo input:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
+    }
+
+    /* ===== BOTONES ===== */
+
+    .acciones-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
         border: none;
-        border-radius: 5px;
         cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .boton:hover {
-        background: #60472d;
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 700px) {
+        .formulario {
+            padding: 22px 18px;
+        }
+
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
+        }
     }
 
 </style>
 
 
-<div class="formulario-contenido">
+<div class="wrap-mismary">
 
-    <section class="titulo">
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Editar usuario ✏️</h1>
+        <p>Modifica la información del usuario</p>
+    </div>
 
-        <h1>
-            Editar Usuario
-        </h1>
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-        <p>
-            Modifica la información del usuario.
-        </p>
-
-    </section>
-
-
+    <!-- FORMULARIO -->
     <form method="POST" class="formulario">
 
         {% csrf_token %}
 
         <div class="campo">
-
-            <label>
-                Usuario
-            </label>
-
-            <input
-                type="text"
-                name="username"
-                value="{{ usuario.username }}"
-                required
-            >
-
+            <label for="username">Usuario</label>
+            <input type="text" id="username" name="username" value="{{ usuario.username }}" required>
         </div>
-
 
         <div class="campo">
-
-            <label>
-                Nombre
-            </label>
-
-            <input
-                type="text"
-                name="first_name"
-                value="{{ usuario.first_name }}"
-                required
-            >
-
+            <label for="first_name">Nombre</label>
+            <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}" required>
         </div>
-
 
         <div class="campo">
-
-            <label>
-                Apellido
-            </label>
-
-            <input
-                type="text"
-                name="last_name"
-                value="{{ usuario.last_name }}"
-                required
-            >
-
+            <label for="last_name">Apellido</label>
+            <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}" required>
         </div>
-
 
         <div class="campo">
-
-            <label>
-                Correo
-            </label>
-
-            <input
-                type="email"
-                name="email"
-                value="{{ usuario.email }}"
-                required
-            >
-
+            <label for="email">Correo</label>
+            <input type="email" id="email" name="email" value="{{ usuario.email }}" required>
         </div>
 
-
-        <button type="submit" class="boton">
-            Guardar cambios
-        </button>
+        <div class="acciones-form">
+            <button type="submit" class="btn-mismary">Guardar cambios</button>
+            <a href="{% url 'list_user' %}" class="btn-mismary btn-secundario">Cancelar</a>
+        </div>
 
     </form>
 
