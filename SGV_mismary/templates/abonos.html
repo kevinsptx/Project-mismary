@@ -1,0 +1,143 @@
+{% extends 'layout/base.html' %}
+{% load humanize %}
+
+{% block title %} Abonos | MisMary {% endblock %}
+
+{% block content %}
+<style>
+    .wrap-mismary { 
+        max-width: 1040px; 
+        margin: 0 auto; 
+        padding: 30px 20px; 
+        font-family: 'Fredoka', 'Quicksand', sans-serif; 
+    }
+
+    .encabezado-abonos {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado-abonos h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: #4A2C1B;
+    }
+
+    .encabezado-abonos p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: #9E3B27;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: #F5EFE3;
+        color: #4A2C1B;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid #E8DFC8;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: #FFFFFF;
+        border-color: #9E3B27;
+        color: #9E3B27;
+    }
+
+    .tabla-caja { 
+        background: #FFFFFF; 
+        border: 1px solid #E8DFC8; 
+        border-radius: 20px; 
+        overflow-x: auto; 
+        box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+    }
+
+    th { 
+        background: #F5EFE3; 
+        color: #4A2C1B; 
+        padding: 14px 20px; 
+        text-align: left; 
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    td { 
+        padding: 14px 20px; 
+        border-bottom: 1px solid #F5EFE3; 
+        color: #4A2C1B; 
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .monto-abono {
+        color: #2E7D32;
+        font-weight: 700;
+    }
+
+    .mensaje-vacio {
+        padding: 20px;
+        background: #F5EFE3;
+        border-radius: 14px;
+        color: #6C5243;
+    }
+</style>
+
+<div class="wrap-mismary">
+    <div class="encabezado-abonos">
+        <div>
+            <h1>💵 Registro General de Abonos</h1>
+            <p>Listado completo de todos los abonos realizados</p>
+        </div>
+        <a href="{% url 'list_venta' %}" class="btn-mismary">
+            ← Volver a ventas
+        </a>
+    </div>
+
+    {% if abonos %}
+    <div class="tabla-caja">
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Total Venta</th>
+                    <th>Fecha Abono</th>
+                    <th>Valor Abonado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for abono in abonos %}
+                <tr>
+                    <td><strong>{{ abono.deuda.cliente.nombre }}</strong></td>
+                    <td>$ {{ abono.deuda.valor_total|floatformat:0|intcomma }}</td>
+                    <td>{{ abono.fecha }}</td>
+                    <td class="monto-abono">$ {{ abono.valor|floatformat:0|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="mensaje-vacio">No hay abonos registrados por el momento.</p>
+    {% endif %}
+</div>
+{% endblock %}

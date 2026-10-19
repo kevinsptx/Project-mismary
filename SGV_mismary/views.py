@@ -15,6 +15,13 @@ from .models import (
 )
 
 
+def int_cop(valor):
+    """Auxiliar para formatear montos a pesos colombianos sin decimales en el CSV."""
+    if valor is None:
+        return "$ 0"
+    return f"$ {int(round(float(valor))):,}"
+
+
 @login_required
 def home(request):
     return render(request, 'home.html')
@@ -152,9 +159,12 @@ def producto_delete(request, id):
 
     if request.method == 'POST':
         nombre_producto = producto.nombre
-        producto.delete()
 
-        messages.success(request, f'El producto "{nombre_producto}" fue eliminado correctamente.')
+        with transaction.atomic():
+            DetalleVenta.objects.filter(producto=producto).delete()
+            producto.delete()
+
+        messages.success(request, f'El producto "{nombre_producto}" y su historial fueron eliminados correctamente.')
 
         return redirect('list_producto')
 
@@ -213,7 +223,6 @@ def register_venta(request):
             return redirect('register_venta')
 
         cliente = get_object_or_404(Cliente, id=cliente_id)
-
 
         pedidos = {}
 
@@ -286,13 +295,23 @@ def register_venta(request):
 
                 saldo = valor_total - valor_pagado
 
-                if saldo > 0:
-                    Deuda.objects.create(
+                # Si hay saldo pendiente o hubo un pago parcial, creamos la Deuda
+                if saldo > 0 or valor_pagado > 0:
+                    estado = 'Pagada' if saldo == 0 else 'Pendiente'
+                    deuda = Deuda.objects.create(
                         cliente=cliente,
                         valor_total=valor_total,
                         saldo=saldo,
-                        estado='Pendiente'
+                        estado=estado
                     )
+
+                    # Registrar el PRIMER ABONO de la venta si se pagó algo inicial
+                    if valor_pagado > 0:
+                        Abono.objects.create(
+                            deuda=deuda,
+                            valor=valor_pagado,
+                            fecha=fecha
+                        )
 
         except StockInsuficiente as e:
             messages.error(request, str(e))
@@ -326,31 +345,13 @@ def list_venta(request):
 def venta_details(request, id):
     venta = get_object_or_404(Venta, id=id)
     detalles = venta.detalles.select_related('producto')
+    deuda = Deuda.objects.filter(cliente=venta.cliente, valor_total=venta.valor_total).last()
 
-    return render(request, 'venta_details.html', {'venta': venta, 'detalles': detalles})
-
-
-@login_required
-def venta_update(request, id):
-    venta = get_object_or_404(Venta, id=id)
-
-    if request.method == 'POST':
-        cliente_id = request.POST['cliente']
-        valor_total = request.POST['valor_total']
-        fecha = request.POST['fecha']
-
-        cliente = get_object_or_404(Cliente, id=cliente_id)
-
-        venta.cliente = cliente
-        venta.valor_total = valor_total
-        venta.fecha = fecha
-        venta.save()
-
-        return redirect('list_venta')
-
-    clientes = Cliente.objects.all()
-
-    return render(request, 'venta_update.html', {'venta': venta, 'clientes': clientes})
+    return render(request, 'venta_details.html', {
+        'venta': venta,
+        'detalles': detalles,
+        'deuda': deuda
+    })
 
 
 @login_required
@@ -358,72 +359,55 @@ def venta_delete(request, id):
     venta = get_object_or_404(Venta, id=id)
 
     with transaction.atomic():
-
+        # Devuelve el stock
         for detalle in venta.detalles.select_related('producto'):
             producto = detalle.producto
-            producto.cantidad_disponible += detalle.cantidad
-            producto.save(update_fields=['cantidad_disponible'])
+            if producto:
+                producto.cantidad_disponible += detalle.cantidad
+                producto.save(update_fields=['cantidad_disponible'])
+
+        # Elimina la deuda y sus abonos si existían
+        deudas = Deuda.objects.filter(cliente=venta.cliente, valor_total=venta.valor_total)
+        for deuda in deudas:
+            deuda.abonos.all().delete()
+            deuda.delete()
 
         venta.delete()
 
+    messages.success(request, 'La venta y sus deudas/abonos asociados fueron eliminados.')
     return redirect('list_venta')
 
 
 @login_required
-def inicio(request):
-    deudas = Deuda.objects.all()
-    abonos = Abono.objects.select_related('deuda__cliente').order_by('-fecha')
+def ventas_pendientes(request):
+    deudas = Deuda.objects.filter(estado='Pendiente').select_related('cliente')
+    return render(request, 'ventas_pendientes.html', {'deudas': deudas})
 
-    ventas_filtradas = None
+
+@login_required
+def consultar_por_fecha(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
+    ventas = None
+    abonos = None
+
     if fecha_inicio and fecha_fin:
-        ventas_filtradas = Venta.objects.filter(
-            fecha__gte=fecha_inicio,
-            fecha__lte=fecha_fin
-        ).select_related('cliente').order_by('-fecha')
+        ventas = Venta.objects.filter(fecha__gte=fecha_inicio, fecha__lte=fecha_fin).select_related('cliente')
+        abonos = Abono.objects.filter(fecha__gte=fecha_inicio, fecha__lte=fecha_fin).select_related('deuda__cliente')
 
-    if request.method == 'POST':
-        deuda_id = request.POST.get('deuda_id')
-        deuda = get_object_or_404(Deuda, id=deuda_id)
-
-        form = AbonoForm(request.POST)
-
-        if form.is_valid():
-            valor_abono = form.cleaned_data['valor']
-
-            if valor_abono <= 0:
-                messages.error(request, 'El valor del abono debe ser mayor que cero.')
-                return redirect('inicio')
-
-            if valor_abono > deuda.saldo:
-                messages.error(request, 'El abono no puede ser mayor que el saldo pendiente.')
-                return redirect('inicio')
-
-            with transaction.atomic():
-                abono = form.save(commit=False)
-                abono.deuda = deuda
-                abono.save()
-
-                deuda.saldo = deuda.saldo - valor_abono
-                deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
-                deuda.save()
-
-            messages.success(request, f'Abono de ${valor_abono} registrado correctamente.')
-
-            return redirect('inicio')
-        else:
-            messages.error(request, 'Por favor, ingresa un valor válido.')
-            return redirect('inicio')
-
-    return render(request, 'inicio.html', {
-        'deudas': deudas,
-        'abonos': abonos,
-        'ventas_filtradas': ventas_filtradas,
+    return render(request, 'consultar_por_fecha.html', {
         'fecha_inicio': fecha_inicio,
-        'fecha_fin': fecha_fin
+        'fecha_fin': fecha_fin,
+        'ventas': ventas,
+        'abonos': abonos,
     })
+
+
+@login_required
+def lista_abonos(request):
+    abonos = Abono.objects.select_related('deuda__cliente').order_by('-fecha')
+    return render(request, 'abonos.html', {'abonos': abonos})
 
 
 @login_required
@@ -438,10 +422,8 @@ def registrar_abono(request, deuda_id):
 
             if valor_abono <= 0:
                 form.add_error('valor', 'El valor del abono debe ser mayor que cero.')
-
             elif valor_abono > deuda.saldo:
                 form.add_error('valor', 'El abono no puede ser mayor que el saldo pendiente.')
-
             else:
                 with transaction.atomic():
                     abono = form.save(commit=False)
@@ -453,13 +435,35 @@ def registrar_abono(request, deuda_id):
                     deuda.save()
 
                 messages.success(request, 'Abono registrado correctamente.')
-
-                return redirect('inicio')
+                return redirect('ventas_pendientes')
     else:
         form = AbonoForm()
 
     return render(request, 'registrar_abono.html', {'form': form, 'deuda': deuda})
 
+@login_required
+def eliminar_pendiente(request, deuda_id):
+    deuda = get_object_or_404(Deuda, id=deuda_id)
+
+    if request.method == 'POST':
+        with transaction.atomic():
+            # Buscar la venta asociada si existe para devolver stock
+            ventas = Venta.objects.filter(cliente=deuda.cliente, valor_total=deuda.valor_total)
+            for venta in ventas:
+                for detalle in venta.detalles.select_related('producto'):
+                    if detalle.producto:
+                        detalle.producto.cantidad_disponible += detalle.cantidad
+                        detalle.producto.save(update_fields=['cantidad_disponible'])
+                venta.delete()
+
+            # Eliminar abonos y la deuda
+            deuda.abonos.all().delete()
+            deuda.delete()
+
+        messages.success(request, 'La deuda y sus registros asociados fueron eliminados.')
+        return redirect('ventas_pendientes')
+
+    return redirect('detalle_pendiente', deuda_id=deuda.id)
 
 @login_required
 def detalle_deuda(request, deuda_id):
@@ -499,8 +503,7 @@ def editar_abono(request, abono_id):
                         deuda.save()
 
                     messages.success(request, 'Abono actualizado correctamente.')
-
-                    return redirect('inicio')
+                    return redirect('lista_abonos')
     else:
         form = AbonoForm(instance=abono)
 
@@ -520,17 +523,9 @@ def eliminar_abono(request, abono_id):
             abono.delete()
 
         messages.success(request, 'Abono eliminado correctamente.')
-
-        return redirect('inicio')
+        return redirect('lista_abonos')
 
     return render(request, 'eliminar_abono.html', {'abono': abono})
-
-
-@login_required
-def ventas_pendientes(request):
-    deudas = Deuda.objects.filter(estado='Pendiente').select_related('cliente')
-
-    return render(request, 'ventas_pendientes.html', {'deudas': deudas})
 
 
 @login_required
@@ -551,7 +546,6 @@ def marcar_pagada(request, deuda_id):
         deuda.save()
 
         messages.success(request, 'La venta fue marcada como pagada.')
-
         return redirect('ventas_pendientes')
 
     return redirect('detalle_pendiente', deuda_id=deuda.id)
@@ -707,9 +701,9 @@ def descargar_reporte(request):
         writer.writerow(['Fecha', 'Total vendido'])
 
         for fila in por_fecha:
-            writer.writerow([fila['fecha'], fila['total']])
+            writer.writerow([fila['fecha'], int_cop(fila['total'])])
 
-        writer.writerow(['TOTAL', total])
+        writer.writerow(['TOTAL', int_cop(total)])
 
     elif tipo == 'gastos':
         por_fecha, total = datos_gastos(fecha_inicio, fecha_fin)
@@ -717,9 +711,9 @@ def descargar_reporte(request):
         writer.writerow(['Fecha', 'Total gastado'])
 
         for fila in por_fecha:
-            writer.writerow([fila['fecha'], fila['total']])
+            writer.writerow([fila['fecha'], int_cop(fila['total'])])
 
-        writer.writerow(['TOTAL', total])
+        writer.writerow(['TOTAL', int_cop(total)])
 
     elif tipo == 'clientes_deuda':
         clientes, total = datos_clientes_deuda()
@@ -727,17 +721,17 @@ def descargar_reporte(request):
         writer.writerow(['Cliente', 'Saldo pendiente'])
 
         for cliente in clientes:
-            writer.writerow([cliente.nombre, cliente.saldo_pendiente])
+            writer.writerow([cliente.nombre, int_cop(cliente.saldo_pendiente)])
 
-        writer.writerow(['TOTAL', total])
+        writer.writerow(['TOTAL', int_cop(total)])
 
     elif tipo == 'balance':
         ingresos = datos_ingresos(fecha_inicio, fecha_fin)[1]
         gastos = datos_gastos(fecha_inicio, fecha_fin)[1]
 
         writer.writerow(['Concepto', 'Valor'])
-        writer.writerow(['Ingresos', ingresos])
-        writer.writerow(['Gastos', gastos])
-        writer.writerow(['Balance final', ingresos - gastos])
+        writer.writerow(['Ingresos', int_cop(ingresos)])
+        writer.writerow(['Gastos', int_cop(gastos)])
+        writer.writerow(['Balance final', int_cop(ingresos - gastos)])
 
     return response

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -13,7 +14,7 @@
 
     <style>
 
-        /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+        /* ===== PALETA Y BASE ===== */
 
         :root {
             --cafe-tostado:  #4A2C1B;
@@ -27,8 +28,8 @@
 
             --rojo-fondo:    #FBE9E7;
 
-            --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-            --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+            --sombra-suave:  0 12px 30px -5px rgba(74, 44, 27, 0.09);
+            --sombra-hover:  0 20px 36px -8px rgba(74, 44, 27, 0.15);
         }
 
         * {
@@ -38,12 +39,9 @@
         }
 
         body {
-            background: linear-gradient(160deg, #FCFAF7 0%, #F5EFE3 45%, #FBE3D3 75%, #FCFAF7 100%);
-            background-size: 300% 300%;
-            animation: fondoMovil 16s ease-in-out infinite;
-
+            background-color: var(--marfil-bg);
             color: var(--cafe-tostado);
-            font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+            font-family:  sans-serif;
 
             min-height: 100vh;
             display: flex;
@@ -55,17 +53,10 @@
             overflow: hidden;
         }
 
-        @keyframes fondoMovil {
-            0%   { background-position: 0% 30%; }
-            50%  { background-position: 100% 70%; }
-            100% { background-position: 0% 30%; }
-        }
-
-        /* ===== MANCHAS DIFUMINADAS ===== */
+        /* ===== FONDO SUAVE ===== */
 
         body::before,
-        body::after,
-        .mancha {
+        body::after {
             content: "";
             position: absolute;
             border-radius: 50%;
@@ -74,129 +65,21 @@
         }
 
         body::before {
-            width: 420px;
-            height: 420px;
+            width: 440px;
+            height: 440px;
             background: var(--naranja);
-            opacity: 0.22;
-            top: -140px;
-            left: -110px;
-            animation: flotar1 10s ease-in-out infinite;
+            opacity: 0.18;
+            top: -120px;
+            left: -100px;
         }
 
         body::after {
-            width: 380px;
-            height: 380px;
-            background: #FFB877;
-            opacity: 0.35;
-            bottom: -140px;
-            right: -90px;
-            animation: flotar2 12s ease-in-out infinite;
-        }
-
-        .mancha {
-            width: 300px;
-            height: 300px;
-            background: var(--terracota);
-            opacity: 0.12;
-            top: 58%;
-            right: 14%;
-            animation: flotar3 14s ease-in-out infinite;
-        }
-
-        @keyframes flotar1 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50%      { transform: translate(40px, 30px) scale(1.08); }
-        }
-
-        @keyframes flotar2 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50%      { transform: translate(-35px, -25px) scale(1.05); }
-        }
-
-        @keyframes flotar3 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50%      { transform: translate(-25px, 35px) scale(1.1); }
-        }
-
-        /* ===== STICKERS DE PROMOCIÓN ===== */
-
-        .sticker {
-            position: absolute;
-            z-index: 2;
-
-            width: 128px;
-            height: 128px;
-            padding: 10px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-
-            background: linear-gradient(135deg, var(--naranja) 0%, var(--terracota) 100%);
-            color: #FFF8F0;
-            font-weight: 700;
-            font-size: 15px;
-            line-height: 1.3;
-
-            clip-path: polygon(
-                50% 0%, 64.5% 14.9%, 85.4% 14.6%, 85.1% 35.5%,
-                100% 50%, 85.1% 64.5%, 85.4% 85.4%, 64.5% 85.1%,
-                50% 100%, 35.5% 85.1%, 14.6% 85.4%, 14.9% 64.5%,
-                0% 50%, 14.9% 35.5%, 14.6% 14.6%, 35.5% 14.9%
-            );
-
-            filter: drop-shadow(0 10px 18px rgba(74, 44, 27, 0.25));
-            transform: rotate(var(--rot));
-            animation: aparecerSticker 0.5s ease-out both, flotarSticker 6s ease-in-out infinite;
-        }
-
-        .sticker.s1 {
-            --rot: -10deg;
-            top: 9%;
-            right: 8%;
-            animation-delay: 0.8s, 1.4s;
-        }
-
-        .sticker.s2 {
-            --rot: 8deg;
-            bottom: 10%;
-            left: 7%;
-            width: 140px;
-            height: 140px;
-            font-size: 14px;
-            animation-delay: 1s, 1.4s;
-        }
-
-        @keyframes aparecerSticker {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-
-        @keyframes flotarSticker {
-            0%, 100% { transform: rotate(var(--rot)) translateY(0); }
-            50%      { transform: rotate(var(--rot)) translateY(-8px); }
-        }
-
-        /* ===== EMOJIS FLOTANTES (productos de catálogo) ===== */
-
-        .flotante {
-            position: absolute;
-            z-index: 0;
-            font-size: 34px;
-            opacity: 0.55;
-            user-select: none;
-            animation: subir 9s ease-in-out infinite;
-        }
-
-        .flotante.f1 { top: 14%; left: 12%; animation-delay: 0s; }
-        .flotante.f2 { top: 70%; left: 20%; animation-delay: 2s;  font-size: 28px; }
-        .flotante.f3 { top: 22%; right: 22%; animation-delay: 4s; font-size: 30px; }
-        .flotante.f4 { top: 78%; right: 10%; animation-delay: 1s; }
-
-        @keyframes subir {
-            0%, 100% { transform: translateY(0) rotate(-6deg); }
-            50%      { transform: translateY(-18px) rotate(6deg); }
+            width: 400px;
+            height: 400px;
+            background: var(--arena);
+            opacity: 0.8;
+            bottom: -120px;
+            right: -80px;
         }
 
         /* ===== TARJETA ===== */
@@ -205,25 +88,19 @@
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 400px;
+            max-width: 480px;
 
             background: var(--blanco);
             border: 1px solid var(--arena);
-            border-radius: 24px;
-            padding: 36px 30px 28px;
+            border-radius: 30px;
+            padding: 44px 38px 38px;
             box-shadow: var(--sombra-suave);
 
-            animation: aparecerTarjeta 0.6s ease-out;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: aparecer 0.5s ease-out;
         }
 
-        .login:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--sombra-hover);
-        }
-
-        @keyframes aparecerTarjeta {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(14px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
@@ -231,83 +108,33 @@
 
         .encabezado {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .logo {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 14px;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 20px;
             background: var(--naranja);
             color: #FFF;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            box-shadow: 0 10px 22px -6px rgba(255, 107, 53, 0.55);
-            animation: rebote 0.8s ease-out 0.2s both;
-        }
-
-        /* Anillo pulsante alrededor del logo */
-        .logo::after {
-            content: "";
-            position: absolute;
-            inset: -6px;
-            border: 2px solid var(--naranja);
-            border-radius: 50%;
-            opacity: 0;
-            animation: pulso 2.8s ease-out 1.2s infinite;
-        }
-
-        @keyframes rebote {
-            0%   { opacity: 0; transform: scale(0.6) translateY(-12px); }
-            60%  { opacity: 1; transform: scale(1.08) translateY(0); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes pulso {
-            0%   { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 0;   transform: scale(1.35); }
+            box-shadow: var(--sombra-suave);
+            overflow: hidden;
         }
 
         .encabezado h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--cafe-tostado);
-            animation: aparecer 0.5s ease-out 0.35s both;
         }
 
         .encabezado p {
-            margin-top: 4px;
-            font-size: 14px;
+            margin-top: 6px;
+            font-size: 16px;
             color: var(--terracota);
-            animation: aparecer 0.5s ease-out 0.45s both;
-        }
-
-        @keyframes aparecer {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ===== DETALLE TIPO RECIBO ===== */
-
-        .linea-punteada {
-            border: none;
-            border-top: 1.5px dashed var(--arena);
-            margin: 16px 0;
-        }
-
-        .meta-recibo {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 14px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: #A08A6C;
         }
 
         /* ===== MENSAJE DE ERROR ===== */
@@ -316,48 +143,34 @@
             background: var(--rojo-fondo);
             border: 1px solid #F5B7AB;
             color: var(--terracota);
-            padding: 12px 18px;
-            border-radius: 16px;
-            margin-bottom: 18px;
-            font-size: 13px;
+            padding: 14px 20px;
+            border-radius: 18px;
+            margin-bottom: 22px;
+            font-size: 14px;
             font-weight: 600;
             text-align: center;
-            animation: sacudir 0.4s ease-in-out;
-        }
-
-        @keyframes sacudir {
-            0%, 100% { transform: translateX(0); }
-            20%      { transform: translateX(-6px); }
-            40%      { transform: translateX(6px); }
-            60%      { transform: translateX(-4px); }
-            80%      { transform: translateX(4px); }
         }
 
         /* ===== FORMULARIO ===== */
 
         .campo {
-            margin-bottom: 18px;
-            opacity: 0;
-            animation: aparecer 0.5s ease-out both;
+            margin-bottom: 22px;
         }
-
-        .campo:nth-of-type(1) { animation-delay: 0.55s; }
-        .campo:nth-of-type(2) { animation-delay: 0.7s; }
 
         .campo label {
             display: block;
-            margin-bottom: 7px;
-            font-size: 13px;
+            margin-bottom: 8px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--cafe-tostado);
         }
 
         .campo input {
             width: 100%;
-            padding: 12px 20px;
+            padding: 16px 26px;
             border: 1px solid var(--arena);
             border-radius: 999px;
-            font-size: 14px;
+            font-size: 17px;
             font-family: inherit;
             color: var(--cafe-tostado);
             background: var(--blanco);
@@ -371,104 +184,47 @@
         .campo input:focus {
             outline: none;
             border-color: var(--terracota);
-            box-shadow: 0 0 0 4px rgba(158, 59, 39, 0.10);
+            box-shadow: var(--sombra-suave);
         }
 
-        /* ===== BOTÓN CON BRILLO ===== */
+        /* ===== BOTÓN ===== */
 
         .btn-mismary {
-            position: relative;
-            overflow: hidden;
-
             width: 100%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-top: 6px;
-
+            margin-top: 10px;
             background: var(--naranja);
             color: #FFF;
-            padding: 13px 22px;
+            padding: 16px 28px;
             border-radius: 999px;
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 600;
             border: none;
             cursor: pointer;
             font-family: inherit;
-            box-shadow: 0 10px 20px -8px rgba(255, 107, 53, 0.6);
-
             transition: background 0.2s ease, transform 0.2s ease;
-
-            opacity: 0;
-            animation: aparecer 0.5s ease-out 0.85s both;
-        }
-
-        /* Destello que cruza el botón */
-        .btn-mismary::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -80%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-            transform: skewX(-20deg);
-            animation: brillo 4s ease-in-out 1.6s infinite;
-        }
-
-        @keyframes brillo {
-            0%, 60%, 100% { left: -80%; }
-            80%           { left: 130%; }
-        }
-
-        .btn-mismary .flecha {
-            transition: transform 0.2s ease;
         }
 
         .btn-mismary:hover {
             background: var(--terracota);
         }
 
-        .btn-mismary:hover .flecha {
-            transform: translateX(5px);
-        }
-
         .btn-mismary:active {
             transform: scale(0.98);
         }
 
-        /* ===== PIE ===== */
-
-        .pie {
-            margin-top: 18px;
-            text-align: center;
-            font-size: 12px;
-            color: #A08A6C;
-            animation: aparecer 0.5s ease-out 1s both;
-        }
-
-        .pie span {
-            color: var(--naranja);
-        }
-
         /* ===== RESPONSIVO ===== */
 
-        @media (max-width: 900px) {
-            .sticker { display: none; }
-        }
-
-        @media (max-width: 480px) {
-            .login { padding: 28px 20px 22px; }
-            .flotante { opacity: 0.3; }
-        }
-
-        /* ===== ACCESIBILIDAD: menos movimiento ===== */
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
+        @media (max-width: 500px) {
+            .login {
+                padding: 32px 24px 28px;
+            }
+            .logo {
+                width: 120px;
+                height: 120px;
             }
         }
 
@@ -479,32 +235,15 @@
 
 <body>
 
-    <!-- Fondo -->
-    <div class="mancha"></div>
-
-    <span class="flotante f1">💄</span>
-    <span class="flotante f2">🧴</span>
-    <span class="flotante f3">🌸</span>
-    <span class="flotante f4">✨</span>
-
-    <!-- Stickers de promoción -->
-    <div class="sticker s1">¡MisMary!</div>
-    <div class="sticker s2">Te amamos,<br>MisMary</div>
-
     <div class="login">
 
         <!-- ENCABEZADO -->
         <div class="encabezado">
-            <div class="logo">🛍️</div>
+            <div class="logo">
+                <img src="{% static 'logo.jpeg' %}" alt="Logo MisMary" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
             <h1>MisMary</h1>
             <p>Sistema de Gestión de Ventas por Catálogo</p>
-        </div>
-
-        <hr class="linea-punteada">
-
-        <div class="meta-recibo">
-            <span>Acceso</span>
-            <span>Requerido</span>
         </div>
 
         <!-- ERROR -->
@@ -541,13 +280,9 @@
                 >
             </div>
 
-            <button type="submit" class="btn-mismary">
-                Iniciar sesión <span class="flecha">→</span>
-            </button>
+            <button type="submit" class="btn-mismary">Iniciar sesión →</button>
 
         </form>
-
-        <p class="pie">Hecho con <span>♥</span> para tus ventas</p>
 
     </div>
 

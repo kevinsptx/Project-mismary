@@ -167,6 +167,27 @@ Detalle Cliente | MisMary
     .pendientes strong {
         color: var(--cafe-tostado);
     }
+    /* ===== BOTÓN HISTORIAL ===== */
+
+    .btn-historial {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: 8px;
+        background: var(--naranja);
+        color: #FFF !important;
+        text-decoration: none;
+        padding: 5px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-historial:hover {
+        background: var(--terracota);
+        transform: translateY(-1px);
+    }
 
     /* ===== BOTONES ===== */
 
@@ -281,7 +302,10 @@ Detalle Cliente | MisMary
         </div>
 
         <div class="pendientes">
-            <strong>Compras pendientes:</strong> No disponible por ahora
+            <strong>Historial de compras:</strong> 
+            <a href="{% url 'cliente_historial' cliente.id %}" class="btn-historial">
+                📜 Ver historial completo
+            </a>
         </div>
 
         <!-- BOTONES -->

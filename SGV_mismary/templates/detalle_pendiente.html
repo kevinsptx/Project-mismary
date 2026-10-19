@@ -1,0 +1,343 @@
+{% extends 'layout/base.html' %}
+{% load humanize %}
+
+{% block title %} Detalle Pendiente | MisMary {% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+        --verde:         #2E7D32;
+        --rojo-fondo:    #FBE9E7;
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    .wrap-mismary {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 30px 20px;
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+    }
+
+    .encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn-volver:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    .tarjeta {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: var(--sombra-suave);
+        margin-bottom: 25px;
+    }
+
+    .cliente-info {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .icono-cliente {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 12px;
+        background: var(--naranja);
+        color: #FFF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .cliente-info h2 {
+        margin: 0;
+        font-size: 22px;
+        color: var(--cafe-tostado);
+    }
+
+    /* GRID RESUMEN */
+
+    .resumen-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .caja-resumen {
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 14px;
+        text-align: center;
+    }
+
+    .caja-resumen span {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--terracota);
+        margin-bottom: 6px;
+    }
+
+    .caja-resumen strong {
+        font-size: 17px;
+        color: var(--cafe-tostado);
+    }
+
+    .caja-resumen.destacado strong {
+        color: var(--terracota);
+        font-size: 19px;
+    }
+
+    /* TABLA DE HISTORIAL DE ABONOS */
+
+    .titulo-seccion {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+        margin: 0 0 14px 0;
+    }
+
+    .tabla-caja {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 18px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 12px 18px;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    td {
+        padding: 12px 18px;
+        border-bottom: 1px solid var(--arena-suave);
+        color: var(--cafe-tostado);
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .monto-abono {
+        color: var(--verde);
+        font-weight: 700;
+    }
+
+    .mensaje-vacio {
+        padding: 16px;
+        background: var(--arena-suave);
+        border-radius: 14px;
+        color: #6C5243;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    /* ACCIONES */
+
+    .acciones-finales {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 11px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-pagar {
+        background: var(--verde);
+    }
+
+    .btn-pagar:hover {
+        background: #1B5E20;
+    }
+
+    .btn-eliminar {
+        background: var(--blanco);
+        color: var(--terracota);
+        border: 1px solid var(--terracota);
+    }
+
+    .btn-eliminar:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    @media (max-width: 600px) {
+        .resumen-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .acciones-finales {
+            flex-direction: column;
+        }
+
+        .acciones-finales .btn-mismary {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<div class="wrap-mismary">
+
+    <div class="encabezado">
+        <div>
+            <h1>Detalle de deuda 📄</h1>
+            <p>Información detallada del saldo y abonos</p>
+        </div>
+        <a href="{% url 'ventas_pendientes' %}" class="btn-volver">
+            ← Volver a pendientes
+        </a>
+    </div>
+
+    <div class="tarjeta">
+
+        <!-- CLIENTE -->
+        <div class="cliente-info">
+            <div class="icono-cliente">{{ deuda.cliente.nombre|first|upper }}</div>
+            <h2>{{ deuda.cliente.nombre }}</h2>
+        </div>
+
+        <!-- RESUMEN DE SALDO -->
+        <div class="resumen-grid">
+            <div class="caja-resumen">
+                <span>Total Compra</span>
+                <strong>$ {{ deuda.valor_total|floatformat:0|intcomma }}</strong>
+            </div>
+
+            <div class="caja-resumen destacado">
+                <span>Saldo Pendiente</span>
+                <strong>$ {{ deuda.saldo|floatformat:0|intcomma }}</strong>
+            </div>
+
+            <div class="caja-resumen">
+                <span>Estado</span>
+                <strong>{{ deuda.estado }}</strong>
+            </div>
+        </div>
+
+        <!-- HISTORIAL DE ABONOS -->
+        <h3 class="titulo-seccion">💵 Historial de Abonos Realizados</h3>
+
+        {% if abonos %}
+            <div class="tabla-caja">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Monto Abonado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for abono in abonos %}
+                            <tr>
+                                <td>{{ abono.fecha }}</td>
+                                <td class="monto-abono">$ {{ abono.valor|floatformat:0|intcomma }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="mensaje-vacio">No hay abonos registrados para esta deuda.</p>
+        {% endif %}
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="acciones-finales">
+            <a href="{% url 'registrar_abono' deuda.id %}" class="btn-mismary">
+                💵 Registrar nuevo abono
+            </a>
+
+            <form method="POST" action="{% url 'eliminar_pendiente' deuda.id %}" style="margin: 0;">
+                {% csrf_token %}
+                <button type="submit" class="btn-mismary btn-eliminar" onclick="return confirm('¿Está seguro de eliminar esta deuda? Se eliminarán la venta y abonos asociados.')">
+                    🗑️ Eliminar
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

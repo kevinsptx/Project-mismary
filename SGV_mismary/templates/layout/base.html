@@ -201,13 +201,16 @@
         .sidebar-top {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-
-            padding: 20px;
+            justify-content: center;
+            padding: 20px 0;
 
             border-bottom: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
+        }
+
+        .sidebar:not(.colapsado) .sidebar-top {
+            justify-content: space-between;
+            padding: 20px;
         }
 
         .logo-sidebar {
@@ -223,8 +226,7 @@
         }
 
         .sidebar.colapsado .logo-sidebar {
-            opacity: 0;
-            width: 0;
+            display: none;
         }
 
         .toggle-btn {

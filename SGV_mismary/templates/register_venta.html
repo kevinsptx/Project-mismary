@@ -1,5 +1,5 @@
 {% extends 'layout/base.html' %}
-{% load l10n %}
+{% load l10n humanize %}
 
 {% block title %}
 Registrar Venta | MisMary
@@ -239,7 +239,7 @@ Registrar Venta | MisMary
 
         <div class="falta">
             <span>Valor total:</span>
-            <strong id="total">$0.00</strong>
+            <strong id="total">$ 0</strong>
         </div>
 
         <div class="campo">
@@ -249,7 +249,7 @@ Registrar Venta | MisMary
                 id="valor_pagado"
                 name="valor_pagado"
                 min="0"
-                step="0.01"
+                step="1"
                 value="0"
                 placeholder="¿Cuánto ha pagado el cliente?"
             >
@@ -257,7 +257,7 @@ Registrar Venta | MisMary
 
         <div class="falta">
             <span>Falta por pagar:</span>
-            <strong id="falta">$0.00</strong>
+            <strong id="falta">$ 0</strong>
         </div>
 
         <div class="campo">
@@ -282,12 +282,12 @@ Registrar Venta | MisMary
                 <option value="{{ p.id }}"
                         data-precio="{{ p.precio_venta|unlocalize }}"
                         data-stock="{{ p.cantidad_disponible }}">
-                    {{ p.nombre }} (disp: {{ p.cantidad_disponible }})
+                    {{ p.nombre }} - $ {{ p.precio_venta|floatformat:0|intcomma }} (disp: {{ p.cantidad_disponible }})
                 </option>
             {% endfor %}
         </select>
         <input type="number" name="cantidad" class="inp-cantidad" min="1" step="1" value="1" required>
-        <span class="subtotal">$0.00</span>
+        <span class="subtotal">$ 0</span>
         <button type="button" class="btn-quitar" title="Quitar">✕</button>
     </div>
 </template>
@@ -303,6 +303,12 @@ Registrar Venta | MisMary
 
     fecha.value = new Date().toISOString().slice(0, 10);
 
+    // Función auxiliar para formatear números en Pesos Colombianos (COP) sin decimales
+    function formatearCOP(valor) {
+        const entero = Math.round(valor || 0);
+        return '$ ' + entero.toLocaleString('es-CO');
+    }
+
     function calcular() {
         let total = 0;
 
@@ -317,14 +323,14 @@ Registrar Venta | MisMary
             if (stock) inpCant.max = stock;
             const sub = precio * cant;
 
-            fila.querySelector('.subtotal').textContent = '$' + sub.toFixed(2);
+            fila.querySelector('.subtotal').textContent = formatearCOP(sub);
             total += sub;
         });
 
         const p = parseFloat(pagado.value) || 0;
 
-        totalEl.textContent = '$' + total.toFixed(2);
-        faltaEl.textContent = '$' + (total - p).toFixed(2);
+        totalEl.textContent = formatearCOP(total);
+        faltaEl.textContent = formatearCOP(total - p);
         pagado.max = total;
     }
 

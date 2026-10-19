@@ -1,4 +1,4 @@
- {% extends 'layout/base.html' %}
+{% extends 'layout/base.html' %}
 
 {% block title %}
 Registrar Producto | MisMary
@@ -144,32 +144,32 @@ Registrar Producto | MisMary
         color: #947D6E;
     }
 
-    /* DOS COLUMNAS */
+    /* DOS COLUMNAS ALINEADAS */
 
     .campos-fila {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
+        align-items: start;
     }
 
-    /* EXISTENCIAS */
+    /* AJUSTE PARA SUBIR EL PRECIO DE VENTA */
+    .campo-precio-ajustado {
+        padding-top: 15px; /* Compensa la altura del recuadro vecino */
+    }
 
-    .campo-cantidad {
-        padding: 17px;
+    /* TARJETA SOLO PARA CANTIDAD */
+
+    .campo-cantidad-tarjeta {
+        padding: 15px;
         background: var(--arena-suave);
         border: 1px solid var(--arena);
         border-radius: 16px;
+        box-sizing: border-box;
     }
 
-    .campo-cantidad input {
+    .campo-cantidad-tarjeta input {
         background: var(--blanco);
-    }
-
-    .ayuda-cantidad {
-        margin: 9px 0 0;
-        color: #947D6E;
-        font-size: 12px;
-        line-height: 1.5;
     }
 
     /* ERRORES */
@@ -278,6 +278,10 @@ Registrar Producto | MisMary
             gap: 0;
         }
 
+        .campo-precio-ajustado {
+            padding-top: 0;
+        }
+
         .acciones-registro {
             flex-direction: column-reverse;
         }
@@ -327,8 +331,6 @@ Registrar Producto | MisMary
             </div>
         {% endif %}
 
-
-
         <form method="POST">
             {% csrf_token %}
 
@@ -349,11 +351,11 @@ Registrar Producto | MisMary
                 {% endif %}
             </div>
 
-            <!-- PRECIO Y CANTIDAD -->
+            <!-- PRECIO Y CANTIDAD ALINEADOS PERFECTAMENTE -->
 
             <div class="campos-fila">
 
-                <div class="campo">
+                <div class="campo campo-precio-ajustado">
                     <label for="{{ form.precio_venta.id_for_label }}">
                         Precio de venta
                         <span class="obligatorio">*</span>
@@ -368,17 +370,13 @@ Registrar Producto | MisMary
                     {% endif %}
                 </div>
 
-                <div class="campo campo-cantidad">
+                <div class="campo campo-cantidad-tarjeta">
                     <label for="{{ form.cantidad_disponible.id_for_label }}">
                         Cantidad disponible
                         <span class="obligatorio">*</span>
                     </label>
 
                     {{ form.cantidad_disponible }}
-
-                    <p class="ayuda-cantidad">
-                        Indica cuántas unidades tienes disponibles para la venta.
-                    </p>
 
                     {% if form.cantidad_disponible.errors %}
                         <div class="errores">

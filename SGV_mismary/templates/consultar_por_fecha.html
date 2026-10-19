@@ -1,0 +1,237 @@
+{% extends 'layout/base.html' %}
+{% load humanize %}
+
+{% block title %} Consultar por Fecha | MisMary {% endblock %}
+
+{% block content %}
+<style>
+    .wrap-mismary { 
+        max-width: 1040px; 
+        margin: 0 auto; 
+        padding: 30px 20px; 
+        font-family: 'Fredoka', 'Quicksand', sans-serif; 
+    }
+
+    .encabezado-fecha {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado-fecha h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: #4A2C1B;
+    }
+
+    .encabezado-fecha p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: #9E3B27;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: #F5EFE3;
+        color: #4A2C1B;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid #E8DFC8;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: #FFFFFF;
+        border-color: #9E3B27;
+        color: #9E3B27;
+    }
+
+    .filtro-box { 
+        background: #FFFFFF; 
+        border: 1px solid #E8DFC8; 
+        border-radius: 20px; 
+        padding: 20px; 
+        margin-bottom: 25px; 
+        box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    .filtro-fechas { 
+        display: grid; 
+        grid-template-columns: 1fr 1fr auto; 
+        gap: 15px; 
+        align-items: end; 
+    }
+
+    .campo-fecha label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #4A2C1B;
+    }
+
+    .campo-fecha input { 
+        width: 100%; 
+        padding: 10px 14px; 
+        border: 1px solid #E8DFC8; 
+        border-radius: 12px; 
+        box-sizing: border-box; 
+        font-family: inherit;
+        color: #4A2C1B;
+    }
+
+    .btn-buscar { 
+        background: #FF6B35; 
+        color: #FFF; 
+        border: none; 
+        padding: 12px 22px; 
+        border-radius: 999px; 
+        font-weight: 700; 
+        font-family: inherit;
+        cursor: pointer; 
+        transition: background 0.2s ease;
+    }
+
+    .btn-buscar:hover { 
+        background: #9E3B27; 
+    }
+
+    .tabla-caja { 
+        background: #FFFFFF; 
+        border: 1px solid #E8DFC8; 
+        border-radius: 20px; 
+        overflow-x: auto; 
+        margin-bottom: 25px; 
+        box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+    }
+
+    th { 
+        background: #F5EFE3; 
+        color: #4A2C1B; 
+        padding: 14px 20px; 
+        text-align: left; 
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    td { 
+        padding: 14px 20px; 
+        border-bottom: 1px solid #F5EFE3; 
+        color: #4A2C1B; 
+        font-size: 14px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    h2 {
+        color: #4A2C1B;
+        font-size: 18px;
+        margin: 20px 0 12px 0;
+    }
+
+    @media (max-width: 650px) {
+        .filtro-fechas {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="wrap-mismary">
+    <div class="encabezado-fecha">
+        <div>
+            <h1>📅 Consultar Movimientos por Fecha</h1>
+            <p>Selecciona un rango de fechas para ver ventas y abonos</p>
+        </div>
+        <a href="{% url 'list_venta' %}" class="btn-mismary">
+            ← Volver a ventas
+        </a>
+    </div>
+
+    <div class="filtro-box">
+        <form method="GET" action="{% url 'consultar_por_fecha' %}">
+            <div class="filtro-fechas">
+                <div class="campo-fecha">
+                    <label>Fecha inicial</label>
+                    <input type="date" name="fecha_inicio" value="{{ fecha_inicio|default:'' }}" required>
+                </div>
+                <div class="campo-fecha">
+                    <label>Fecha final</label>
+                    <input type="date" name="fecha_fin" value="{{ fecha_fin|default:'' }}" required>
+                </div>
+                <button type="submit" class="btn-buscar">🔎 Consultar</button>
+            </div>
+        </form>
+    </div>
+
+    {% if fecha_inicio and fecha_fin %}
+        <h2>🛒 Ventas Encontradas</h2>
+        <div class="tabla-caja">
+            {% if ventas %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total Venta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for venta in ventas %}
+                    <tr>
+                        <td>{{ venta.cliente.nombre }}</td>
+                        <td>{{ venta.fecha }}</td>
+                        <td><strong>$ {{ venta.valor_total|floatformat:0|intcomma }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="padding: 18px; color: #6C5243; margin: 0;">No se encontraron ventas en este rango de fechas.</p>
+            {% endif %}
+        </div>
+
+        <h2>💵 Abonos Encontrados</h2>
+        <div class="tabla-caja">
+            {% if abonos %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Monto Abonado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for abono in abonos %}
+                    <tr>
+                        <td>{{ abono.deuda.cliente.nombre }}</td>
+                        <td>{{ abono.fecha }}</td>
+                        <td><strong>$ {{ abono.valor|floatformat:0|intcomma }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="padding: 18px; color: #6C5243; margin: 0;">No se encontraron abonos en este rango de fechas.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

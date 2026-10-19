@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load humanize %}
 
 {% block title %}
 Ventas | MisMary
@@ -8,7 +9,7 @@ Ventas | MisMary
 
 <style>
 
-    /* ===== PALETA Y BASE (igual que productos) ===== */
+    /* ===== PALETA Y BASE ===== */
 
     :root {
         --cafe-tostado:  #4A2C1B;
@@ -42,7 +43,7 @@ Ventas | MisMary
         padding: 30px 20px;
     }
 
-    /* ===== ENCABEZADO ===== */
+    /* ===== ENCABEZADO Y ACCIONES ===== */
 
     .encabezado {
         display: flex;
@@ -281,6 +282,14 @@ Ventas | MisMary
             align-items: flex-start;
         }
 
+        .acciones {
+            width: 100%;
+        }
+
+        .acciones .btn-mismary {
+            flex: 1 1 auto;
+        }
+
         .buscador {
             flex-direction: column;
         }
@@ -296,7 +305,7 @@ Ventas | MisMary
 
 <div class="wrap-mismary">
 
-    <!-- ENCABEZADO -->
+    <!-- ENCABEZADO CON NAVEGACIÓN A LAS 3 PÁGINAS -->
     <div class="encabezado">
         <div>
             <h1>Lista de ventas 🛒</h1>
@@ -304,8 +313,14 @@ Ventas | MisMary
         </div>
 
         <div class="acciones">
-            <a href="{% url 'inicio' %}" class="btn-mismary btn-secundario">
+            <a href="{% url 'ventas_pendientes' %}" class="btn-mismary btn-secundario">
                 ⏳ Ventas pendientes
+            </a>
+            <a href="{% url 'consultar_por_fecha' %}" class="btn-mismary btn-secundario">
+                📅 Consultar por fecha
+            </a>
+            <a href="{% url 'lista_abonos' %}" class="btn-mismary btn-secundario">
+                💵 Abonos
             </a>
             <a href="{% url 'register_venta' %}" class="btn-mismary">
                 + Registrar venta
@@ -369,7 +384,7 @@ Ventas | MisMary
                             <span class="chip-tabla">{{ venta.cliente.nombre }}</span>
                         </td>
 
-                        <td class="col-numero precio">${{ venta.valor_total }}</td>
+                        <td class="col-numero precio">$ {{ venta.valor_total|floatformat:0|intcomma }}</td>
 
                         <td>{{ venta.fecha }}</td>
 

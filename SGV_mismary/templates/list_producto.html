@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load humanize %}
 
 {% block title %}
 Productos | MisMary
@@ -463,7 +464,7 @@ Productos | MisMary
                             <span class="chip-tabla">{{ producto.categoria.nombre }}</span>
                         </td>
 
-                        <td class="col-numero precio">${{ producto.precio_venta }}</td>
+                        <td class="col-numero precio">$ {{ producto.precio_venta|floatformat:0|intcomma }}</td>
 
                         <td class="col-numero">{{ producto.cantidad_disponible }}</td>
 
