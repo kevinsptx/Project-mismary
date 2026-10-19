@@ -1,0 +1,259 @@
+```html
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Registrar gasto | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    .wrap-mismary {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 30px 20px;
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+    }
+
+    .encabezado {
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .mensaje-exito,
+    .mensaje-error {
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+    }
+
+    .tarjeta {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .cabecera-gasto {
+        text-align: center;
+        margin-bottom: 26px;
+    }
+
+    .icono {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 14px;
+        background: var(--naranja);
+        color: #FFF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .cabecera-gasto h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .cabecera-gasto p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        color: var(--terracota);
+    }
+
+    .formulario p {
+        margin: 0 0 20px;
+    }
+
+    .formulario label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .formulario input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .formulario input:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
+    }
+
+    .formulario .errorlist {
+        list-style: none;
+        margin: 0 0 8px;
+        padding: 10px 16px;
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        border-radius: 16px;
+        color: var(--terracota);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .acciones-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    @media (max-width: 600px) {
+        .tarjeta {
+            padding: 22px 18px;
+        }
+
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+
+<div class="wrap-mismary">
+
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Registrar gasto 🧾</h1>
+        <p>Registra una salida de dinero del negocio</p>
+    </div>
+
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- TARJETA -->
+    <div class="tarjeta">
+
+        <div class="cabecera-gasto">
+            <div class="icono">🧾</div>
+            <h2>Información del gasto</h2>
+            <p>Completa los datos para guardar el gasto</p>
+        </div>
+
+        <form method="POST" class="formulario">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+           <div class="acciones-form">
+    <button type="submit" class="btn-mismary">
+        🧾 Guardar gasto
+    </button>
+
+    <a href="{% url 'reporte_gastos' %}"
+       class="btn-mismary btn-secundario">
+        Cancelar
+    </a>
+
+    <a href="{% url 'reporte_gastos' %}"
+       class="btn-mismary btn-secundario">
+        ← Volver al reporte de gastos
+    </a>
+</div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
+```

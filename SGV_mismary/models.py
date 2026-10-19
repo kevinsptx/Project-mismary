@@ -57,6 +57,18 @@ class Venta(models.Model):
         return f"Venta de {self.cliente} - ${self.valor_total}"
 
 
+    forma_pago = models.CharField(
+        max_length=20,
+        choices=[
+            ('Efectivo', 'Efectivo'),
+            ('Nequi', 'Nequi'),
+            ('Daviplata', 'Daviplata'),
+            ('Transferencia', 'Transferencia'),
+        ],
+        default='Efectivo',
+    )
+
+
 class Deuda(models.Model):
     ESTADOS = [
         ("Pendiente", "Pendiente"),
@@ -93,6 +105,27 @@ class Deuda(models.Model):
         )
 
 
+
+class Pago(models.Model):
+    venta = models.ForeignKey(
+        Venta,
+        on_delete=models.PROTECT,
+        related_name='pagos'
+    )
+
+    valor = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    fecha = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"Pago de ${self.valor} - {self.fecha.strftime('%d/%m/%Y')}"
+
+
 class Abono(models.Model):
     deuda = models.ForeignKey(
         Deuda,
@@ -108,12 +141,25 @@ class Abono(models.Model):
     fecha = models.DateTimeField(
         auto_now_add=True
     )
+    
+    forma_pago = models.CharField(
+        max_length=20,
+        choices=[
+            ('Efectivo', 'Efectivo'),
+            ('Nequi', 'Nequi'),
+            ('Daviplata', 'Daviplata'),
+            ('Transferencia', 'Transferencia'),
+        ],
+        default='Efectivo',
+    )
 
     def __str__(self):
         return (
             f"Abono ${self.valor} - "
             f"{self.fecha.strftime('%d/%m/%Y')}"
         )
+
+    
 
 
 class DetalleVenta(models.Model):
