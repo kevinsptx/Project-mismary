@@ -8,10 +8,10 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import ProductoForm, AbonoForm, ClienteForm
+from .forms import ProductoForm, AbonoForm, ClienteForm, GastoForm
 from .models import (
     Cliente, Venta, Abono, Deuda, Categoria,
-    Producto, DetalleVenta, Gasto,
+    Producto, DetalleVenta, Gasto, Pago,
 )
 
 
@@ -278,6 +278,12 @@ def register_venta(request):
                     cliente=cliente,
                     valor_total=valor_total,
                     fecha=fecha
+                )
+
+                if valor_pagado > 0:
+                    Pago.objects.create(
+                    venta=venta,
+                    valor=valor_pagado
                 )
 
                 for pid, cantidad in pedidos.items():
@@ -580,13 +586,58 @@ def filtrar_por_fecha(consulta, fecha_inicio, fecha_fin):
     return consulta
 
 
+
 def datos_ingresos(fecha_inicio, fecha_fin):
-    ventas = filtrar_por_fecha(Venta.objects.all(), fecha_inicio, fecha_fin)
+    # Pagos recibidos al registrar una venta
+    pagos = Pago.objects.all()
 
-    por_fecha = ventas.values('fecha').annotate(total=Sum('valor_total')).order_by('fecha')
-    total = ventas.aggregate(total=Sum('valor_total'))['total'] or 0
+    if fecha_inicio:
+        pagos = pagos.filter(fecha__date__gte=fecha_inicio)
+    if fecha_fin:
+        pagos = pagos.filter(fecha__date__lte=fecha_fin)
 
-    return por_fecha, total
+    pagos_por_fecha = (
+        pagos.annotate(dia=TruncDate('fecha'))
+        .values('dia')
+        .annotate(total=Sum('valor'))
+        .order_by('dia')
+    )
+
+    # Abonos recibidos posteriormente
+    abonos = Abono.objects.all()
+
+    if fecha_inicio:
+        abonos = abonos.filter(fecha__date__gte=fecha_inicio)
+    if fecha_fin:
+        abonos = abonos.filter(fecha__date__lte=fecha_fin)
+
+    abonos_por_fecha = (
+        abonos.annotate(dia=TruncDate('fecha'))
+        .values('dia')
+        .annotate(total=Sum('valor'))
+        .order_by('dia')
+    )
+
+    # Combinar pagos y abonos por día
+    totales = {}
+
+    for fila in pagos_por_fecha:
+        dia = fila['dia']
+        totales[dia] = totales.get(dia, Decimal('0')) + fila['total']
+
+    for fila in abonos_por_fecha:
+        dia = fila['dia']
+        totales[dia] = totales.get(dia, Decimal('0')) + fila['total']
+
+    ingresos_por_fecha = [
+        {'fecha': dia, 'total': total}
+        for dia, total in sorted(totales.items())
+    ]
+
+    total_ingresos = sum(totales.values(), Decimal('0'))
+
+    return ingresos_por_fecha, total_ingresos
+
 
 
 def datos_gastos(fecha_inicio, fecha_fin):
@@ -600,14 +651,18 @@ def datos_gastos(fecha_inicio, fecha_fin):
 
 def datos_clientes_deuda():
     clientes = Cliente.objects.filter(
-        deudas__estado='Pendiente'
+        deudas__estado='Pendiente',
+        deudas__saldo__gt=0
     ).annotate(
         saldo_pendiente=Sum('deudas__saldo')
-    )
+    ).distinct()
 
     total = Deuda.objects.filter(
-        estado='Pendiente'
-    ).aggregate(total=Sum('saldo'))['total'] or 0
+        estado='Pendiente',
+        saldo__gt=0
+    ).aggregate(
+        total=Sum('saldo')
+    )['total'] or 0
 
     return clientes, total
 
@@ -639,6 +694,22 @@ def reporte_clientes_deuda(request):
     return render(request, 'reporte_clientes_deuda.html', {
         'clientes': clientes,
         'total_deuda': total_deuda
+    })
+
+@login_required
+def registrar_gasto(request):
+    if request.method == 'POST':
+        form = GastoForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Gasto registrado correctamente.')
+            return redirect('reporte_gastos')
+    else:
+        form = GastoForm()
+
+    return render(request, 'registrar_gasto.html', {
+        'form': form
     })
 
 

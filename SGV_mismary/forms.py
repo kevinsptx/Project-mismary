@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente, Categoria, Producto, Abono
+from .models import Cliente, Categoria, Producto, Abono, Gasto
 from django import forms
 from .models import Cliente
 import re
@@ -178,10 +178,11 @@ class ProductoForm(forms.ModelForm):
 
 # ===== FORMULARIO DE ABONOS =====
 
+
 class AbonoForm(forms.ModelForm):
     class Meta:
         model = Abono
-        fields = ["valor"]
+        fields = ["valor", "forma_pago"]
 
         widgets = {
             "valor": forms.NumberInput(
@@ -191,9 +192,55 @@ class AbonoForm(forms.ModelForm):
                     "min": "1",
                     "step": "0.01"
                 }
-            )
+            ),
+            "forma_pago": forms.Select(
+                attrs={
+                    "class": "form-control"
+                }
+            ),
         }
 
         labels = {
-            "valor": "Valor del abono"
+            "valor": "Valor del abono",
+            "forma_pago": "Forma de pago",
         }
+
+
+
+class GastoForm(forms.ModelForm):
+    class Meta:
+        model = Gasto
+        fields = ["descripcion", "valor", "fecha"]
+
+        labels = {
+            "descripcion": "Descripción del gasto",
+            "valor": "Valor del gasto",
+            "fecha": "Fecha del gasto",
+        }
+
+        widgets = {
+            "descripcion": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Ej: Compra de materiales",
+            }),
+            "valor": forms.NumberInput(attrs={
+                "class": "form-control",
+                "placeholder": "Ingrese el valor",
+                "min": "1",
+                "step": "1",
+            }),
+            "fecha": forms.DateInput(attrs={
+                "class": "form-control",
+                "type": "date",
+            }),
+        }
+
+    def clean_valor(self):
+        valor = self.cleaned_data["valor"]
+
+        if valor <= 0:
+            raise forms.ValidationError(
+                "El valor del gasto debe ser mayor que cero."
+            )
+
+        return valor

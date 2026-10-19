@@ -7,45 +7,32 @@ Gastos | MisMary
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
-
+    /* ===== PALETA Y BASE ===== */
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
-
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
-
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
-    }
-
-    body {
-        background-color: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding-bottom: 60px;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
     .wrap-mismary {
         max-width: 1040px;
         margin: 0 auto;
         padding: 30px 20px;
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
     }
 
     /* ===== ENCABEZADO ===== */
-
     .encabezado {
         display: flex;
         align-items: center;
@@ -63,7 +50,7 @@ Gastos | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
@@ -72,15 +59,15 @@ Gastos | MisMary
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+        align-items: center;
     }
 
     /* ===== BOTONES ===== */
-
     .btn-mismary {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
+        gap: 8px;
         background: var(--naranja);
         color: #FFF;
         text-decoration: none;
@@ -91,11 +78,15 @@ Gastos | MisMary
         border: none;
         cursor: pointer;
         font-family: inherit;
-        transition: background 0.2s ease, transform 0.2s ease;
+        transition: background 0.2s ease, transform 0.2s ease,
+                    box-shadow 0.2s ease;
     }
 
     .btn-mismary:hover {
         background: var(--terracota);
+        color: #FFF;
+        transform: translateY(-2px);
+        box-shadow: var(--sombra-hover);
     }
 
     .btn-secundario {
@@ -110,8 +101,59 @@ Gastos | MisMary
         color: var(--terracota);
     }
 
-    /* ===== FILTRO ===== */
+    /* ===== BOTÓN REGISTRAR GASTO ===== */
+.contenedor-boton-gasto {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 32px;
+    margin-bottom: 15px;
+}
 
+.btn-registrar-gasto {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 23px;
+    background: var(--naranja);
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid var(--naranja);
+    font-family: inherit;
+    box-shadow: var(--sombra-suave);
+    transition: background 0.2s ease, transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.btn-registrar-gasto:hover {
+    background: var(--terracota);
+    border-color: var(--terracota);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+}
+
+.icono-gasto {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .btn-registrar-gasto {
+        padding: 12px 20px;
+    }
+}
+
+@media print {
+    .contenedor-boton-gasto {
+        display: none;
+    }
+}
+
+    /* ===== FILTRO ===== */
     .filtro {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -149,10 +191,10 @@ Gastos | MisMary
     .filtro input:focus {
         outline: none;
         border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
     }
 
     /* ===== RESULTADOS ===== */
-
     .resultados-barra {
         display: flex;
         align-items: center;
@@ -180,7 +222,6 @@ Gastos | MisMary
     }
 
     /* ===== TABLA ===== */
-
     .tabla-caja {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -238,7 +279,6 @@ Gastos | MisMary
     }
 
     /* ===== TOTAL ===== */
-
     .total-reporte {
         display: flex;
         align-items: center;
@@ -265,16 +305,37 @@ Gastos | MisMary
     }
 
     /* ===== RESPONSIVO ===== */
-
     @media (max-width: 600px) {
         .encabezado {
             flex-direction: column;
             align-items: flex-start;
         }
 
+        .acciones {
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .acciones > a,
+        .acciones > button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-registrar-gasto {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
         .filtro form {
             flex-direction: column;
             align-items: stretch;
+        }
+
+        .filtro input {
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .filtro button {
@@ -293,16 +354,19 @@ Gastos | MisMary
     }
 
     /* ===== IMPRESIÓN ===== */
-
     @media print {
         .filtro,
-        .acciones {
-            display: none;
+        .acciones,
+        .btn-registrar-gasto {
+            display: none !important;
+        }
+
+        .wrap-mismary {
+            max-width: 100%;
+            padding: 0;
         }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
@@ -314,11 +378,21 @@ Gastos | MisMary
         </div>
 
         <div class="acciones">
-            <button onclick="window.print()" class="btn-mismary">🖨️ Imprimir</button>
-            <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">← Volver a reportes</a>
+            <button
+                type="button"
+                onclick="window.print()"
+                class="btn-mismary">
+                🖨️ Imprimir
+            </button>
+
+            <a href="{% url 'reportes' %}"
+               class="btn-mismary btn-secundario">
+                ← Volver a reportes
+            </a>
         </div>
     </div>
 
+    
     <!-- FILTRO -->
     <section class="filtro">
         <form method="GET">
@@ -343,7 +417,9 @@ Gastos | MisMary
                 >
             </div>
 
-            <button type="submit" class="btn-mismary">Filtrar</button>
+            <button type="submit" class="btn-mismary">
+                Filtrar
+            </button>
 
         </form>
     </section>
@@ -352,7 +428,10 @@ Gastos | MisMary
     <div class="resultados-barra">
         <h2>Gastos por fecha</h2>
 
-        <span class="chip-mismary">{{ gastos_por_fecha|length }} fecha{{ gastos_por_fecha|length|pluralize }}</span>
+        <span class="chip-mismary">
+            {{ gastos_por_fecha|length }}
+            fecha{{ gastos_por_fecha|length|pluralize }}
+        </span>
     </div>
 
     <!-- TABLA -->
@@ -367,23 +446,20 @@ Gastos | MisMary
             </thead>
 
             <tbody>
-
                 {% for fila in gastos_por_fecha %}
                     <tr>
                         <td>{{ fila.fecha|date:"d/m/Y" }}</td>
-                        <td class="col-numero precio">${{ fila.total }}</td>
+                        <td class="col-numero precio">
+                            ${{ fila.total }}
+                        </td>
                     </tr>
-
                 {% empty %}
-
                     <tr>
                         <td colspan="2" class="sin-registros">
                             No hay gastos en ese rango de fechas.
                         </td>
                     </tr>
-
                 {% endfor %}
-
             </tbody>
 
         </table>
@@ -393,7 +469,17 @@ Gastos | MisMary
     <div class="total-reporte">
         <span>Total gastado</span>
         <strong>${{ total_gastos }}</strong>
+
+
     </div>
+
+    <!-- BOTÓN REGISTRAR GASTO -->
+<div class="contenedor-boton-gasto">
+    <a href="{% url 'registrar_gasto' %}" class="btn-registrar-gasto">
+        <span class="icono-gasto">＋</span>
+        Registrar gasto
+    </a>
+</div>
 
 </div>
 

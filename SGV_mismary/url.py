@@ -38,6 +38,7 @@ urlpatterns = [
     path('reportes/ingresos/', views.reporte_ingresos, name='reporte_ingresos'),
     path('reportes/clientes_deuda/', views.reporte_clientes_deuda, name='reporte_clientes_deuda'),
     path('reportes/gastos/', views.reporte_gastos, name='reporte_gastos'),
+    path('gastos/registrar/', views.registrar_gasto, name='registrar_gasto'),
     path('reportes/balance/', views.reporte_balance, name='reporte_balance'),
     path('reportes/descargar/', views.descargar_reporte, name='descargar_reporte'),
 ]

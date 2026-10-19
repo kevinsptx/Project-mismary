@@ -1,4 +1,8 @@
+```django
 {% extends 'layout/base.html' %}
+{% load humanize %}
+${{ fila.total|floatformat:0|intcomma }}
+<strong>${{ total_ingresos|default:0|floatformat:0|intcomma }}</strong>
 
 {% block title %}
 Ingresos | MisMary
@@ -7,26 +11,20 @@ Ingresos | MisMary
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
-
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
-
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
-
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
     body {
@@ -43,8 +41,6 @@ Ingresos | MisMary
         margin: 0 auto;
         padding: 30px 20px;
     }
-
-    /* ===== ENCABEZADO ===== */
 
     .encabezado {
         display: flex;
@@ -63,7 +59,7 @@ Ingresos | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
@@ -73,8 +69,6 @@ Ingresos | MisMary
         gap: 10px;
         flex-wrap: wrap;
     }
-
-    /* ===== BOTONES ===== */
 
     .btn-mismary {
         display: inline-flex;
@@ -109,8 +103,6 @@ Ingresos | MisMary
         border-color: var(--terracota);
         color: var(--terracota);
     }
-
-    /* ===== FILTRO ===== */
 
     .filtro {
         background: var(--blanco);
@@ -151,8 +143,6 @@ Ingresos | MisMary
         border-color: var(--terracota);
     }
 
-    /* ===== RESULTADOS ===== */
-
     .resultados-barra {
         display: flex;
         align-items: center;
@@ -178,8 +168,6 @@ Ingresos | MisMary
         font-weight: 600;
         border: 1px solid var(--arena);
     }
-
-    /* ===== TABLA ===== */
 
     .tabla-caja {
         background: var(--blanco);
@@ -237,8 +225,6 @@ Ingresos | MisMary
         color: #6C5243;
     }
 
-    /* ===== TOTAL ===== */
-
     .total-reporte {
         display: flex;
         align-items: center;
@@ -263,8 +249,6 @@ Ingresos | MisMary
         font-weight: 700;
         color: var(--cafe-tostado);
     }
-
-    /* ===== RESPONSIVO ===== */
 
     @media (max-width: 600px) {
         .encabezado {
@@ -292,17 +276,27 @@ Ingresos | MisMary
         }
     }
 
-    /* ===== IMPRESIÓN ===== */
-
     @media print {
         .filtro,
         .acciones {
             display: none;
         }
+
+        body {
+            background: #FFFFFF;
+        }
+
+        .wrap-mismary {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .tabla-caja,
+        .total-reporte {
+            box-shadow: none;
+        }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
@@ -310,19 +304,26 @@ Ingresos | MisMary
     <div class="encabezado">
         <div>
             <h1>Reporte de ingresos 💰</h1>
-            <p>Dinero que ingresó por ventas, agrupado por fecha</p>
+            <p>Consulta los ingresos recibidos por fecha y el total acumulado.</p>
         </div>
 
         <div class="acciones">
-            <button onclick="window.print()" class="btn-mismary">🖨️ Imprimir</button>
-            <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">← Volver a reportes</a>
+            <button type="button"
+                    onclick="window.print()"
+                    class="btn-mismary">
+                🖨️ Imprimir reporte
+            </button>
+
+            <a href="{% url 'reportes' %}"
+               class="btn-mismary btn-secundario">
+                ← Volver a reportes
+            </a>
         </div>
     </div>
 
-    <!-- FILTRO -->
+    <!-- FILTRO POR FECHA -->
     <section class="filtro">
         <form method="GET">
-
             <div>
                 <label for="fecha_inicio">Desde</label>
                 <input
@@ -330,6 +331,7 @@ Ingresos | MisMary
                     id="fecha_inicio"
                     name="fecha_inicio"
                     value="{{ fecha_inicio|default:'' }}"
+                    max="{{ fecha_fin|default:'' }}"
                 >
             </div>
 
@@ -340,61 +342,67 @@ Ingresos | MisMary
                     id="fecha_fin"
                     name="fecha_fin"
                     value="{{ fecha_fin|default:'' }}"
+                    min="{{ fecha_inicio|default:'' }}"
                 >
             </div>
 
-            <button type="submit" class="btn-mismary">Filtrar</button>
+            <button type="submit" class="btn-mismary">
+                Filtrar ingresos
+            </button>
 
+            <a href="{% url 'reporte_ingresos' %}"
+               class="btn-mismary btn-secundario">
+                Limpiar filtros
+            </a>
         </form>
     </section>
 
-    <!-- TÍTULO DE RESULTADOS -->
+    <!-- RESULTADOS -->
     <div class="resultados-barra">
         <h2>Ingresos por fecha</h2>
 
-        <span class="chip-mismary">{{ ingresos_por_fecha|length }} fecha{{ ingresos_por_fecha|length|pluralize }}</span>
+        <span class="chip-mismary">
+            {{ ingresos_por_fecha|length }}
+            fecha{{ ingresos_por_fecha|length|pluralize }}
+        </span>
     </div>
 
-    <!-- TABLA -->
+    <!-- TABLA DE INGRESOS -->
     <div class="tabla-caja">
         <table class="tabla-ingresos">
-
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th class="col-numero">Total vendido</th>
+                    <th class="col-numero">Total de ingresos</th>
                 </tr>
             </thead>
 
             <tbody>
-
                 {% for fila in ingresos_por_fecha %}
                     <tr>
                         <td>{{ fila.fecha|date:"d/m/Y" }}</td>
-                        <td class="col-numero precio">${{ fila.total }}</td>
-                    </tr>
-
-                {% empty %}
-
-                    <tr>
-                        <td colspan="2" class="sin-registros">
-                            No hay ingresos en ese rango de fechas.
+                        <td class="col-numero precio">
+                            ${{ fila.total|floatformat:0 }}
                         </td>
                     </tr>
-
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="sin-registros">
+                            No hay ingresos registrados para el período seleccionado.
+                        </td>
+                    </tr>
                 {% endfor %}
-
             </tbody>
-
         </table>
     </div>
 
-    <!-- TOTAL -->
+    <!-- TOTAL ACUMULADO -->
     <div class="total-reporte">
-        <span>Total vendido</span>
-        <strong>${{ total_ingresos }}</strong>
+        <span>Total de ingresos del período</span>
+        <strong>${{ total_ingresos|default:0|floatformat:0 }}</strong>
     </div>
 
 </div>
 
 {% endblock %}
+```
