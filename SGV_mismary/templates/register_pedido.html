@@ -1,0 +1,340 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}
+Registrar Pedido | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* ===== PALETA Y BASE ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== TARJETA Y FORMULARIO ===== */
+
+    .tarjeta {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .grid-proveedor {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--arena);
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        box-sizing: border-box;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--terracota);
+    }
+
+    /* ===== CONTENEDOR DE MULTIPLES PRODUCTOS ===== */
+
+    .filas-productos {
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        padding: 20px;
+        border-radius: 18px;
+        margin-bottom: 16px;
+    }
+
+    .fila-item {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 42px;
+        gap: 12px;
+        margin-bottom: 12px;
+        align-items: center;
+    }
+
+    .fila-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .btn-quitar {
+        background: var(--rojo-fondo);
+        color: var(--terracota);
+        border: 1px solid var(--terracota);
+        border-radius: 10px;
+        height: 44px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 15px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-quitar:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    .btn-agregar {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        color: var(--cafe-tostado);
+        padding: 10px 18px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        font-family: inherit;
+        margin-bottom: 25px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-agregar:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== ACCIONES Y BOTONES FINALIZAR ===== */
+
+    .acciones {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 650px) {
+        .grid-proveedor {
+            grid-template-columns: 1fr;
+        }
+
+        .fila-item {
+            grid-template-columns: 1fr;
+            background: var(--blanco);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--arena);
+        }
+
+        .btn-quitar {
+            height: 38px;
+        }
+
+        .acciones {
+            flex-direction: column;
+        }
+
+        .acciones .btn-mismary {
+            width: 100%;
+        }
+    }
+
+</style>
+
+
+<div class="wrap-mismary">
+
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <h1>Registrar pedido 📦</h1>
+        <p>Registra las compras realizadas a proveedores para actualizar el inventario</p>
+    </div>
+
+    <!-- TARJETA DEL FORMULARIO -->
+    <div class="tarjeta">
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- PROVEEDOR Y FECHA -->
+            <div class="grid-proveedor">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label for="proveedor">Proveedor</label>
+                    <input type="text" id="proveedor" name="proveedor" placeholder="Ej: Distribuidora Belleza" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <label for="fecha">Fecha del Pedido</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DE PRODUCTOS SOLICITADOS -->
+            <label style="margin-top: 15px;">Productos a solicitar</label>
+            
+            <div class="filas-productos" id="contenedor-items">
+                <div class="fila-item">
+                    <select name="producto_id[]" required>
+                        <option value="">-- Seleccionar producto --</option>
+                        {% for p in productos %}
+                            <option value="{{ p.id }}">{{ p.nombre }} (Stock actual: {{ p.cantidad_disponible }})</option>
+                        {% endfor %}
+                    </select>
+
+                    <input type="number" name="cantidad[]" placeholder="Cantidad" min="1" required>
+
+                    <input type="number" step="1" name="costo_unitario[]" placeholder="Costo C/U ($ COP)" required>
+
+                    <button type="button" class="btn-quitar" onclick="eliminarFila(this)" title="Quitar producto">✕</button>
+                </div>
+            </div>
+
+            <button type="button" class="btn-agregar" onclick="agregarFila()">
+                ➕ Agregar otro producto
+            </button>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="acciones">
+                <a href="{% url 'list_pedido' %}" class="btn-mismary btn-secundario">
+                    Volver
+                </a>
+
+                <button type="submit" class="btn-mismary">
+                    Guardar Pedido
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- JAVASCRIPT PARA AGREGAR Y ELIMINAR FILAS DE PRODUCTOS -->
+<script>
+
+    function agregarFila() {
+        const contenedor = document.getElementById('contenedor-items');
+        const primeraFila = contenedor.querySelector('.fila-item');
+        const nuevaFila = primeraFila.cloneNode(true);
+
+        // Limpiar los campos del elemento clonado
+        nuevaFila.querySelectorAll('input').forEach(input => input.value = '');
+        nuevaFila.querySelector('select').selectedIndex = 0;
+
+        contenedor.appendChild(nuevaFila);
+    }
+
+    function eliminarFila(boton) {
+        const contenedor = document.getElementById('contenedor-items');
+        // Mantener mínimo una fila
+        if (contenedor.querySelectorAll('.fila-item').length > 1) {
+            boton.closest('.fila-item').remove();
+        }
+    }
+
+</script>
+
+{% endblock %}

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -197,6 +198,40 @@
             pointer-events: auto;
         }
 
+        /* ===== LOGO EN EL ESPACIO LIBRE DEL MENÚ ===== */
+
+        .logo-contenedor-medio {
+            flex: 1;
+            min-height: 70px;
+
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;   /* pegado abajo, justo encima de la línea punteada */
+
+            padding: 10px 10px 10px; /* el último valor es el espacio de abajo */
+        }
+
+        .logo-img-medio {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--arena);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            transition: width 0.3s ease, height 0.3s ease, border-width 0.3s ease, transform 0.2s ease;
+        }
+
+        .logo-img-medio:hover {
+            transform: scale(1.05);
+        }
+
+        /* Menú minimizado: logo pequeño */
+        .sidebar.colapsado .logo-img-medio {
+            width: 44px;
+            height: 44px;
+            border-width: 2px;
+        }
+
         /* ===== CABECERA DEL MENÚ ===== */
 
         .sidebar-top {
@@ -286,7 +321,7 @@
         /* ===== NAVEGACIÓN ===== */
 
         .sidebar-nav {
-            flex: 1;
+            flex: 0 0 auto;
             padding: 18px 12px;
 
             display: flex;
@@ -607,11 +642,20 @@
 
             <!-- PEDIDOS -->
             <a
-                href="#"
-                class="nav-item{% if request.resolver_match.url_name == 'pedidos' %} activo{% endif %}"
+                href="{% url 'list_pedido' %}"
+                class="nav-item{% if request.resolver_match.url_name == 'list_pedido' %} activo{% endif %}"
             >
                 <span class="nav-icono">📋</span>
                 <span class="nav-texto">Pedidos</span>
+            </a>
+
+            <!-- REEMPLAZOS -->
+            <a
+                href="#"
+                class="nav-item{% if request.resolver_match.url_name == 'list_reemplazo' %} activo{% endif %}"
+            >
+                <span class="nav-icono">🔄</span>
+                <span class="nav-texto">Reemplazos</span>
             </a>
 
             <!-- REPORTES -->
@@ -636,16 +680,31 @@
 
         </nav>
 
+        <!-- LOGO EN EL ESPACIO LIBRE (grande abierto, pequeño al minimizar) -->
+        <div class="logo-contenedor-medio">
+            <img src="{% static 'logo.jpeg' %}" alt="Logo MisMary" class="logo-img-medio">
+        </div>
+
         <div class="sidebar-bottom">
 
+            <!-- SECCIÓN DEL USUARIO CON ENLACE -->
+            {% if user.is_superuser %}
+            <a href="{% url 'list_user' %}" class="usuario-sidebar" style="text-decoration: none; cursor: pointer;">
+                <span class="nav-icono">⚙️</span>
+                <span class="nav-texto">
+                    <strong>{{ user.username }}</strong>
+                </span>
+            </a>
+            {% else %}
             <div class="usuario-sidebar">
                 <span class="nav-icono">⚙️</span>
-
                 <span class="nav-texto">
                     <strong>{{ user.username }}</strong>
                 </span>
             </div>
+            {% endif %}
 
+            <!-- BOTÓN CERRAR SESIÓN -->
             <form
                 method="POST"
                 action="{% url 'logout' %}"
@@ -728,8 +787,6 @@
 
             campo.value = capitalizarNombre(campo.value);
         });
-
-        
 
     });
     </script>

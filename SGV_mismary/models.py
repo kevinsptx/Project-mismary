@@ -197,3 +197,22 @@ class Gasto(models.Model):
 
     def __str__(self):
         return f"{self.descripcion} - ${self.valor}"
+
+class Pedido(models.Model):
+    ESTADOS = [
+        ('Pendiente', 'Pendiente'),
+        ('Recibido', 'Recibido'),
+        ('Cancelado', 'Cancelado'),
+    ]
+    
+    proveedor = models.CharField(max_length=150)
+    fecha = models.DateField()
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
+    costo_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)  # <-- Cambia max_length por max_digits
+
+
+class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+    costo_unitario = models.DecimalField(max_digits=12, decimal_places=2)  # <-- Cambia max_length por max_digits

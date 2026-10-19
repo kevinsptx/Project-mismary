@@ -13,7 +13,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import ProductoForm, AbonoForm, ClienteForm, GastoForm
 from .models import (
     Cliente, Venta, Abono, Deuda, Categoria,
-    Producto, DetalleVenta, Gasto, Pago,
+    Producto, DetalleVenta, Gasto, Pago,DetallePedido,Pedido
 )
 
 
@@ -907,3 +907,120 @@ def descargar_reporte(request):
         writer.writerow(['Balance final', int_cop(ingresos - gastos)])
 
     return response
+
+@login_required
+def list_pedido(request):
+    # Trae todos los pedidos ordenados del más reciente al más antiguo
+    pedidos = Pedido.objects.all().order_by('-id')
+    return render(request, 'list_pedido.html', {'pedidos': pedidos})
+
+
+@login_required
+def register_pedido(request):
+    productos = Producto.objects.all()
+
+    if request.method == 'POST':
+        proveedor = request.POST.get('proveedor')
+        fecha = request.POST.get('fecha')
+        
+        productos_ids = request.POST.getlist('producto_id[]')
+        cantidades = request.POST.getlist('cantidad[]')
+        costos = request.POST.getlist('costo_unitario[]')
+
+        # 1. Creamos el pedido principal
+        pedido = Pedido.objects.create(
+            proveedor=proveedor,
+            fecha=fecha,
+            estado='Pendiente',
+            costo_total=0
+        )
+
+        costo_total_acumulado = 0
+
+        # 2. Recorremos los productos agregados
+        for i in range(len(productos_ids)):
+            p_id = productos_ids[i]
+            cant = int(cantidades[i])
+            costo = float(costos[i])
+
+            costo_total_acumulado += (cant * costo)
+
+            producto = get_object_or_404(Producto, id=p_id)
+            DetallePedido.objects.create(
+                pedido=pedido,
+                producto=producto,
+                cantidad=cant,
+                costo_unitario=costo
+            )
+
+        # 3. Guardamos el costo total del pedido
+        pedido.costo_total = costo_total_acumulado
+        pedido.save()
+
+        # 4. Sincronización automática con Gastos (Campos corregidos: descripcion y valor)
+        Gasto.objects.create(
+            descripcion=f"Pedido a proveedor: {proveedor} (Pedido #{pedido.id})",
+            valor=costo_total_acumulado,
+            fecha=fecha
+        )
+
+        messages.success(request, 'Pedido registrado y sincronizado en gastos correctamente.')
+        return redirect('list_pedido')
+
+    return render(request, 'register_pedido.html', {'productos': productos})
+
+@login_required
+def pedido_details(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    detalles = DetallePedido.objects.filter(pedido=pedido)
+
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+
+        # Si el pedido no estaba recibido y ahora se marca como Recibido, sumamos el stock
+        if nuevo_estado == 'Recibido' and pedido.estado != 'Recibido':
+            for detalle in detalles:
+                detalle.producto.cantidad_disponible += detalle.cantidad
+                detalle.producto.save()
+
+        # Si estaba Recibido y se vuelve a poner Pendiente o Cancelado, quitamos el stock sumado
+        elif pedido.estado == 'Recibido' and nuevo_estado != 'Recibido':
+            for detalle in detalles:
+                detalle.producto.cantidad_disponible -= detalle.cantidad
+                detalle.producto.save()
+
+        pedido.estado = nuevo_estado
+        pedido.save()
+
+        messages.success(request, f'Estado del pedido actualizado a {nuevo_estado}.')
+        return redirect('pedido_details', pedido_id=pedido.id)
+
+    return render(request, 'pedido_details.html', {
+        'pedido': pedido,
+        'detalles': detalles
+    })
+
+
+@login_required
+def eliminar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    if request.method == 'POST':
+        detalles = DetallePedido.objects.filter(pedido=pedido)
+
+        # Restar stock si ya se había recibido
+        if pedido.estado == 'Recibido':
+            for detalle in detalles:
+                detalle.producto.cantidad_disponible -= detalle.cantidad
+                detalle.producto.save()
+
+        # Eliminar el registro del Gasto asociado a este pedido
+        
+        Gasto.objects.filter(descripcion__icontains=f"Pedido #{pedido.id}").delete()
+
+
+        pedido.delete()
+        messages.success(request, 'Pedido y su gasto asociado eliminados correctamente.')
+        return redirect('list_pedido')
+
+    return redirect('pedido_details', pedido_id=pedido.id)

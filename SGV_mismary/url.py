@@ -41,4 +41,9 @@ urlpatterns = [
     path('gastos/registrar/', views.registrar_gasto, name='registrar_gasto'),
     path('reportes/balance/', views.reporte_balance, name='reporte_balance'),
     path('reportes/descargar/', views.descargar_reporte, name='descargar_reporte'),
+
+    path('pedidos/', views.list_pedido, name='list_pedido'),
+    path('pedidos/registrar/', views.register_pedido, name='register_pedido'),
+    path('pedidos/<int:pedido_id>/', views.pedido_details, name='pedido_details'),
+    path('pedidos/<int:pedido_id>/eliminar/', views.eliminar_pedido, name='eliminar_pedido'),
 ]
