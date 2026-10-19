@@ -1,19 +1,26 @@
-from django.db.models import Sum
-from .forms import ProductoForm, AbonoForm
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.db import transaction
-from django.contrib.auth.decorators import login_required
-from decimal import Decimal
-from .models import Cliente, Venta, Abono, Deuda, Categoria, Producto, DetalleVenta, Gasto
 import csv
+from decimal import Decimal, InvalidOperation
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.db.models import Sum
 from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
 
-from django.shortcuts import render, redirect
-from .models import Cliente
-from .forms import ClienteForm
+from .forms import ProductoForm, AbonoForm, ClienteForm
+from .models import (
+    Cliente, Venta, Abono, Deuda, Categoria,
+    Producto, DetalleVenta, Gasto,
+)
 
 
+@login_required
+def home(request):
+    return render(request, 'home.html')
+
+
+@login_required
 def registrar_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
@@ -24,27 +31,7 @@ def registrar_cliente(request):
     else:
         form = ClienteForm()
 
-    return render(
-        request,
-        'registrar_cliente.html',
-        {'form': form}
-    )
-
-
-def list_cliente(request):
-    clientes = Cliente.objects.all()
-
-    return render(
-        request,
-        'list_cliente.html',
-        {'clientes': clientes}
-    )
-
-
-
-@login_required
-def home(request):
-    return render(request, 'home.html')
+    return render(request, 'registrar_cliente.html', {'form': form})
 
 
 @login_required
@@ -52,7 +39,10 @@ def list_cliente(request):
     buscar = request.GET.get('buscar')
 
     if buscar:
-        clientes = Cliente.objects.filter(nombre__icontains=buscar) | Cliente.objects.filter(telefono__icontains=buscar)
+        clientes = (
+            Cliente.objects.filter(nombre__icontains=buscar)
+            | Cliente.objects.filter(telefono__icontains=buscar)
+        )
     else:
         clientes = Cliente.objects.all()
 
@@ -110,7 +100,6 @@ def register_producto(request):
 
         if form.is_valid():
             form.save()
-
             return redirect('list_producto')
     else:
         form = ProductoForm()
@@ -149,9 +138,7 @@ def producto_update(request, id):
 
         if form.is_valid():
             form.save()
-
             messages.success(request, 'Producto actualizado correctamente.')
-
             return redirect('list_producto')
     else:
         form = ProductoForm(instance=producto)
@@ -186,10 +173,10 @@ def productos_mas_vendidos(request):
         productos_vendidos = DetalleVenta.objects.none()
     else:
         if fecha_inicio:
-            productos_vendidos = productos_vendidos.filter(venta__fecha__date__gte=fecha_inicio)
+            productos_vendidos = productos_vendidos.filter(venta__fecha__gte=fecha_inicio)
 
         if fecha_fin:
-            productos_vendidos = productos_vendidos.filter(venta__fecha__date__lte=fecha_fin)
+            productos_vendidos = productos_vendidos.filter(venta__fecha__lte=fecha_fin)
 
         productos_vendidos = productos_vendidos.values('producto__nombre').annotate(
             total_vendido=Sum('cantidad')
@@ -202,38 +189,125 @@ def productos_mas_vendidos(request):
     })
 
 
+class StockInsuficiente(Exception):
+    pass
+
+
 @login_required
 def register_venta(request):
     if request.method == 'POST':
-        cliente_id = request.POST['cliente']
-        valor_total = Decimal(request.POST['valor_total'])
-        valor_pagado = Decimal(request.POST.get('valor_pagado') or 0)
-        fecha = request.POST['fecha']
+        cliente_id = request.POST.get('cliente')
+        fecha = request.POST.get('fecha')
 
-        if valor_pagado > valor_total:
-            messages.error(request, 'Lo pagado no puede ser mayor que el valor total.')
+        producto_ids = request.POST.getlist('producto_id')
+        cantidades = request.POST.getlist('cantidad')
+
+        try:
+            valor_pagado = Decimal(request.POST.get('valor_pagado') or 0)
+        except InvalidOperation:
+            messages.error(request, 'El valor pagado no es válido.')
+            return redirect('register_venta')
+
+        if valor_pagado < 0:
+            messages.error(request, 'El valor pagado no puede ser negativo.')
             return redirect('register_venta')
 
         cliente = get_object_or_404(Cliente, id=cliente_id)
 
-        with transaction.atomic():
-            Venta.objects.create(cliente=cliente, valor_total=valor_total, fecha=fecha)
 
-            saldo = valor_total - valor_pagado
+        pedidos = {}
 
-            if saldo > 0:
-                Deuda.objects.create(
+        for pid, cant in zip(producto_ids, cantidades):
+            if not pid:
+                continue
+
+            try:
+                cantidad = int(cant)
+                pid = int(pid)
+            except (TypeError, ValueError):
+                messages.error(request, 'Hay un producto o cantidad no válidos.')
+                return redirect('register_venta')
+
+            if cantidad <= 0:
+                messages.error(request, 'La cantidad debe ser mayor que cero.')
+                return redirect('register_venta')
+
+            pedidos[pid] = pedidos.get(pid, 0) + cantidad
+
+        if not pedidos:
+            messages.error(request, 'Debes agregar al menos un producto a la venta.')
+            return redirect('register_venta')
+
+        try:
+            with transaction.atomic():
+
+                productos = {
+                    p.id: p
+                    for p in Producto.objects.select_for_update().filter(id__in=pedidos.keys())
+                }
+
+                if len(productos) != len(pedidos):
+                    raise StockInsuficiente('Uno de los productos ya no existe.')
+
+                valor_total = Decimal('0')
+
+                for pid, cantidad in pedidos.items():
+                    producto = productos[pid]
+
+                    if cantidad > producto.cantidad_disponible:
+                        raise StockInsuficiente(
+                            f'No hay suficiente stock de "{producto.nombre}". '
+                            f'Disponible: {producto.cantidad_disponible}.'
+                        )
+
+                    valor_total += producto.precio_venta * cantidad
+
+                if valor_pagado > valor_total:
+                    raise StockInsuficiente('Lo pagado no puede ser mayor que el valor total.')
+
+                venta = Venta.objects.create(
                     cliente=cliente,
                     valor_total=valor_total,
-                    saldo=saldo,
-                    estado='Pendiente'
+                    fecha=fecha
                 )
 
+                for pid, cantidad in pedidos.items():
+                    producto = productos[pid]
+
+                    DetalleVenta.objects.create(
+                        venta=venta,
+                        producto=producto,
+                        cantidad=cantidad,
+                        precio=producto.precio_venta
+                    )
+
+                    producto.cantidad_disponible -= cantidad
+                    producto.save(update_fields=['cantidad_disponible'])
+
+                saldo = valor_total - valor_pagado
+
+                if saldo > 0:
+                    Deuda.objects.create(
+                        cliente=cliente,
+                        valor_total=valor_total,
+                        saldo=saldo,
+                        estado='Pendiente'
+                    )
+
+        except StockInsuficiente as e:
+            messages.error(request, str(e))
+            return redirect('register_venta')
+
+        messages.success(request, 'Venta registrada correctamente.')
         return redirect('list_venta')
 
     clientes = Cliente.objects.all()
+    productos = Producto.objects.filter(cantidad_disponible__gt=0).order_by('nombre')
 
-    return render(request, 'register_venta.html', {'clientes': clientes})
+    return render(request, 'register_venta.html', {
+        'clientes': clientes,
+        'productos': productos,
+    })
 
 
 @login_required
@@ -251,8 +325,9 @@ def list_venta(request):
 @login_required
 def venta_details(request, id):
     venta = get_object_or_404(Venta, id=id)
+    detalles = venta.detalles.select_related('producto')
 
-    return render(request, 'venta_details.html', {'venta': venta})
+    return render(request, 'venta_details.html', {'venta': venta, 'detalles': detalles})
 
 
 @login_required
@@ -281,7 +356,15 @@ def venta_update(request, id):
 @login_required
 def venta_delete(request, id):
     venta = get_object_or_404(Venta, id=id)
-    venta.delete()
+
+    with transaction.atomic():
+
+        for detalle in venta.detalles.select_related('producto'):
+            producto = detalle.producto
+            producto.cantidad_disponible += detalle.cantidad
+            producto.save(update_fields=['cantidad_disponible'])
+
+        venta.delete()
 
     return redirect('list_venta')
 
@@ -324,12 +407,7 @@ def inicio(request):
                 abono.save()
 
                 deuda.saldo = deuda.saldo - valor_abono
-
-                if deuda.saldo == 0:
-                    deuda.estado = 'Pagada'
-                else:
-                    deuda.estado = 'Pendiente'
-
+                deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
                 deuda.save()
 
             messages.success(request, f'Abono de ${valor_abono} registrado correctamente.')
@@ -348,6 +426,7 @@ def inicio(request):
     })
 
 
+@login_required
 def registrar_abono(request, deuda_id):
     deuda = get_object_or_404(Deuda, id=deuda_id)
 
@@ -370,12 +449,7 @@ def registrar_abono(request, deuda_id):
                     abono.save()
 
                     deuda.saldo = deuda.saldo - valor_abono
-
-                    if deuda.saldo == 0:
-                        deuda.estado = 'Pagada'
-                    else:
-                        deuda.estado = 'Pendiente'
-
+                    deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
                     deuda.save()
 
                 messages.success(request, 'Abono registrado correctamente.')
@@ -387,6 +461,7 @@ def registrar_abono(request, deuda_id):
     return render(request, 'registrar_abono.html', {'form': form, 'deuda': deuda})
 
 
+@login_required
 def detalle_deuda(request, deuda_id):
     deuda = get_object_or_404(Deuda, id=deuda_id)
     abonos = deuda.abonos.all().order_by('-fecha')
@@ -394,6 +469,7 @@ def detalle_deuda(request, deuda_id):
     return render(request, 'detalle_deuda.html', {'deuda': deuda, 'abonos': abonos})
 
 
+@login_required
 def editar_abono(request, abono_id):
     abono = get_object_or_404(Abono, id=abono_id)
     deuda = abono.deuda
@@ -419,12 +495,7 @@ def editar_abono(request, abono_id):
                         abono.save()
 
                         deuda.saldo = deuda.saldo - diferencia
-
-                        if deuda.saldo == 0:
-                            deuda.estado = 'Pagada'
-                        else:
-                            deuda.estado = 'Pendiente'
-
+                        deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
                         deuda.save()
 
                     messages.success(request, 'Abono actualizado correctamente.')
@@ -436,6 +507,7 @@ def editar_abono(request, abono_id):
     return render(request, 'editar_abono.html', {'form': form, 'abono': abono})
 
 
+@login_required
 def eliminar_abono(request, abono_id):
     abono = get_object_or_404(Abono, id=abono_id)
     deuda = abono.deuda
@@ -443,12 +515,7 @@ def eliminar_abono(request, abono_id):
     if request.method == 'POST':
         with transaction.atomic():
             deuda.saldo = deuda.saldo + abono.valor
-
-            if deuda.saldo == 0:
-                deuda.estado = 'Pagada'
-            else:
-                deuda.estado = 'Pendiente'
-
+            deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
             deuda.save()
             abono.delete()
 

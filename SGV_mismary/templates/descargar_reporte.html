@@ -8,172 +8,282 @@ Descargar reporte | MisMary
 
 <style>
 
-    .reporte-contenido {
-        max-width: 1100px;
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 720px;
         margin: 0 auto;
+        padding: 30px 20px;
     }
 
-    .filtro {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 30px;
-        box-shadow:
-            0 5px 15px
-            rgba(70, 50, 30, 0.2);
+    .encabezado {
+        margin-bottom: 25px;
     }
 
-    .filtro form {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-end;
-        gap: 15px;
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
     }
 
-    .filtro label {
-        display: block;
-        color: #5c4033;
-        font-weight: bold;
+    .encabezado p {
+        margin: 4px 0 0 0;
         font-size: 14px;
-        margin-bottom: 5px;
+        color: var(--terracota);
     }
 
-    .filtro input,
-    .filtro select {
-        padding: 12px;
-        border: 2px solid #8b6f47;
-        border-radius: 5px;
-        background: white;
-        color: #5c4033;
-        font-size: 15px;
-        outline: none;
+    .mensaje-exito,
+    .mensaje-error {
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
     }
 
-    .filtro input:focus,
-    .filtro select:focus {
-        border-color: #60472d;
-        box-shadow:
-            0 0 5px
-            rgba(96, 71, 45, 0.3);
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
     }
 
-    .filtro button,
-    .boton {
-        display: inline-block;
-        padding: 12px 25px;
-        background: #7b5e3b;
-        color: white;
-        text-decoration: none;
-        border: none;
-        border-radius: 5px;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.3s;
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
     }
 
-    .filtro button:hover,
-    .boton:hover {
-        background: #60472d;
+    .formulario {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-suave);
     }
 
-    .nota {
-        color: #806b55;
-        font-size: 13px;
-        margin-top: 10px;
-    }
-
-    .mensaje {
-        background: #f5ead7;
-        border: 2px solid #8b6f47;
-        border-radius: 10px;
-        padding: 15px 20px;
-        color: #5c4033;
+    .campo {
         margin-bottom: 20px;
     }
 
+    .campo label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .campo input,
+    .campo select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .campo input:focus,
+    .campo select:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: var(--sombra-suave);
+    }
+
+    .campo input:disabled {
+        background: var(--arena-suave);
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .fechas {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .nota {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        background: var(--arena-suave);
+        border: 1px dashed var(--arena);
+        border-radius: 16px;
+        padding: 12px 18px;
+        margin: 0 0 20px 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6C5243;
+    }
+
+    .acciones-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
     @media (max-width: 600px) {
-
-        .filtro form {
-            flex-direction: column;
-            align-items: stretch;
+        .formulario {
+            padding: 22px 18px;
         }
 
-        .filtro button {
-            width: 100%;
+        .fechas {
+            grid-template-columns: 1fr;
+            gap: 0;
         }
 
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
+        }
     }
 
 </style>
 
 
-<div class="reporte-contenido">
+<div class="wrap-mismary">
 
-    <section class="titulo">
-
-        <h1>
-            Descargar reporte
-        </h1>
-
-        <p>
-            Elige el tipo de reporte y descárgalo en un archivo para guardarlo o imprimirlo
-        </p>
-
-    </section>
-
+    <div class="encabezado">
+        <h1>Descargar reporte 📥</h1>
+        <p>Elige el tipo de reporte y descárgalo para guardarlo o imprimirlo</p>
+    </div>
 
     {% if messages %}
         {% for message in messages %}
-            <div class="mensaje">
-                {{ message }}
-            </div>
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
+    <form method="GET" class="formulario">
 
-    <section class="filtro">
+        <div class="campo">
+            <label for="tipo">Tipo de reporte</label>
+            <select id="tipo" name="tipo" required>
+                <option value="">Selecciona un reporte</option>
+                <option value="ingresos">Ingresos</option>
+                <option value="gastos">Gastos</option>
+                <option value="clientes_deuda">Clientes con deuda</option>
+                <option value="balance">Balance</option>
+            </select>
+        </div>
 
-        <form method="GET">
-
-            <div>
-                <label>Tipo de reporte</label>
-                <select name="tipo" required>
-                    <option value="">-- Selecciona --</option>
-                    <option value="ingresos">Ingresos</option>
-                    <option value="gastos">Gastos</option>
-                    <option value="clientes_deuda">Clientes con deuda</option>
-                    <option value="balance">Balance</option>
-                </select>
+        <div class="fechas">
+            <div class="campo">
+                <label for="fecha_inicio">Desde</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio">
             </div>
 
-            <div>
-                <label>Desde</label>
-                <input type="date" name="fecha_inicio">
+            <div class="campo">
+                <label for="fecha_fin">Hasta</label>
+                <input type="date" id="fecha_fin" name="fecha_fin">
             </div>
-
-            <div>
-                <label>Hasta</label>
-                <input type="date" name="fecha_fin">
-            </div>
-
-            <button type="submit">
-                Descargar
-            </button>
-
-        </form>
+        </div>
 
         <p class="nota">
-            Las fechas son opcionales y no aplican al reporte de clientes con deuda.
+            <span>ℹ️</span>
+            <span>Las fechas son opcionales y no aplican al reporte de clientes con deuda.</span>
         </p>
 
-    </section>
+        <div class="acciones-form">
+            <button type="submit" class="btn-mismary">Descargar</button>
+            <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">← Volver a reportes</a>
+        </div>
 
-
-    <a href="{% url 'reportes' %}" class="boton">
-        Volver a reportes
-    </a>
+    </form>
 
 </div>
+
+
+<script>
+
+    const tipo = document.getElementById('tipo');
+    const desde = document.getElementById('fecha_inicio');
+    const hasta = document.getElementById('fecha_fin');
+
+    function actualizarFechas() {
+        const sinFechas = tipo.value === 'clientes_deuda';
+
+        desde.disabled = sinFechas;
+        hasta.disabled = sinFechas;
+
+        if (sinFechas) {
+            desde.value = '';
+            hasta.value = '';
+        }
+    }
+
+    desde.addEventListener('change', function () {
+        hasta.min = desde.value;
+    });
+
+    tipo.addEventListener('change', actualizarFechas);
+
+    actualizarFechas();
+
+</script>
 
 {% endblock %}

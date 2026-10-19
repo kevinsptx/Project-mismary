@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load l10n %}
 
 {% block title %}
 Registrar Venta | MisMary
@@ -7,8 +8,6 @@ Registrar Venta | MisMary
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
 
     :root {
         --cafe-tostado:  #4A2C1B;
@@ -39,55 +38,24 @@ Registrar Venta | MisMary
     }
 
     .wrap-mismary {
-        max-width: 620px;
+        max-width: 720px;
         margin: 0 auto;
         padding: 30px 20px;
     }
 
-    /* ===== ENCABEZADO ===== */
+    .encabezado { margin-bottom: 25px; }
+    .encabezado h1 { margin: 0; font-size: 26px; font-weight: 700; color: var(--cafe-tostado); }
+    .encabezado p { margin: 4px 0 0 0; font-size: 14px; color: var(--terracota); }
 
-    .encabezado {
-        margin-bottom: 25px;
-    }
-
-    .encabezado h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .encabezado p {
-        margin: 4px 0 0 0;
-        font-size: 14px;
-        color: var(--terracota);
-    }
-
-    /* ===== MENSAJES ===== */
-
-    .mensaje-exito {
-        background: var(--verde-fondo);
-        border: 1px solid #A5D6A7;
-        color: var(--verde);
+    .mensaje-exito, .mensaje-error {
         padding: 14px 20px;
         border-radius: 16px;
         margin-bottom: 20px;
         font-size: 14px;
         font-weight: 600;
     }
-
-    .mensaje-error {
-        background: var(--rojo-fondo);
-        border: 1px solid #F5B7AB;
-        color: var(--terracota);
-        padding: 14px 20px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    /* ===== FORMULARIO ===== */
+    .mensaje-exito { background: var(--verde-fondo); border: 1px solid #A5D6A7; color: var(--verde); }
+    .mensaje-error { background: var(--rojo-fondo); border: 1px solid #F5B7AB; color: var(--terracota); }
 
     .formulario {
         background: var(--blanco);
@@ -97,9 +65,7 @@ Registrar Venta | MisMary
         box-shadow: var(--sombra-suave);
     }
 
-    .campo {
-        margin-bottom: 20px;
-    }
+    .campo { margin-bottom: 20px; }
 
     .campo label {
         display: block;
@@ -110,7 +76,9 @@ Registrar Venta | MisMary
     }
 
     .campo input,
-    .campo select {
+    .campo select,
+    .fila-producto select,
+    .fila-producto input {
         width: 100%;
         box-sizing: border-box;
         padding: 12px 20px;
@@ -124,13 +92,52 @@ Registrar Venta | MisMary
     }
 
     .campo input:focus,
-    .campo select:focus {
+    .campo select:focus,
+    .fila-producto select:focus,
+    .fila-producto input:focus {
         outline: none;
         border-color: var(--terracota);
         box-shadow: var(--sombra-suave);
     }
 
-    /* ===== FALTA POR PAGAR ===== */
+    .titulo-seccion {
+        font-size: 13px;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+    }
+
+    .fila-producto {
+        display: grid;
+        grid-template-columns: 1fr 90px 120px 40px;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .fila-producto .subtotal {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--terracota);
+        text-align: right;
+    }
+
+    .btn-quitar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--arena);
+        background: var(--arena-suave);
+        color: var(--terracota);
+        font-size: 16px;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .btn-quitar:hover { background: var(--rojo-fondo); }
+
+    .btn-agregar {
+        margin-bottom: 20px;
+    }
 
     .falta {
         display: flex;
@@ -141,26 +148,15 @@ Registrar Venta | MisMary
         border: 1px dashed var(--arena);
         border-radius: 16px;
         padding: 14px 20px;
-        margin-bottom: 20px;
+        margin-bottom: 14px;
         font-size: 14px;
         font-weight: 600;
         color: #6C5243;
     }
 
-    .falta strong {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--terracota);
-    }
+    .falta strong { font-size: 20px; font-weight: 700; color: var(--terracota); }
 
-    /* ===== BOTONES ===== */
-
-    .acciones-form {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-    }
+    .acciones-form { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 
     .btn-mismary {
         display: inline-flex;
@@ -180,9 +176,7 @@ Registrar Venta | MisMary
         transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .btn-mismary:hover {
-        background: var(--terracota);
-    }
+    .btn-mismary:hover { background: var(--terracota); }
 
     .btn-secundario {
         background: var(--arena-suave);
@@ -196,42 +190,35 @@ Registrar Venta | MisMary
         color: var(--terracota);
     }
 
-    /* ===== RESPONSIVO ===== */
-
     @media (max-width: 600px) {
-        .formulario {
-            padding: 22px 18px;
-        }
+        .formulario { padding: 22px 18px; }
+        .acciones-form .btn-mismary { flex: 1 1 100%; }
 
-        .acciones-form .btn-mismary {
-            flex: 1 1 100%;
+        .fila-producto {
+            grid-template-columns: 1fr 80px 40px;
         }
+        .fila-producto .subtotal { grid-column: 1 / 3; text-align: left; }
     }
 
 </style>
 
-
 <div class="wrap-mismary">
 
-    <!-- ENCABEZADO -->
     <div class="encabezado">
         <h1>Registrar venta 🛒</h1>
         <p>Registra una nueva venta por catálogo</p>
     </div>
 
-    <!-- MENSAJES -->
     {% if messages %}
         {% for message in messages %}
             <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
-    <!-- FORMULARIO -->
-    <form method="POST" class="formulario">
+    <form method="POST" class="formulario" id="form-venta">
 
         {% csrf_token %}
 
-        <!-- CLIENTE -->
         <div class="campo">
             <label for="cliente">Cliente</label>
             <select id="cliente" name="cliente" required>
@@ -242,21 +229,19 @@ Registrar Venta | MisMary
             </select>
         </div>
 
-        <!-- VALOR TOTAL -->
-        <div class="campo">
-            <label for="valor_total">Valor total</label>
-            <input
-                type="number"
-                id="valor_total"
-                name="valor_total"
-                min="0"
-                step="0.01"
-                placeholder="Ingrese el valor total de la venta"
-                required
-            >
+        <p class="titulo-seccion">Productos</p>
+
+        <div id="lista-productos"></div>
+
+        <button type="button" class="btn-mismary btn-secundario btn-agregar" id="btn-agregar">
+            + Agregar producto
+        </button>
+
+        <div class="falta">
+            <span>Valor total:</span>
+            <strong id="total">$0.00</strong>
         </div>
 
-        <!-- VALOR PAGADO -->
         <div class="campo">
             <label for="valor_pagado">Valor pagado (0 si no ha pagado nada)</label>
             <input
@@ -270,19 +255,16 @@ Registrar Venta | MisMary
             >
         </div>
 
-        <!-- FALTA POR PAGAR -->
         <div class="falta">
             <span>Falta por pagar:</span>
             <strong id="falta">$0.00</strong>
         </div>
 
-        <!-- FECHA -->
         <div class="campo">
             <label for="fecha">Fecha</label>
             <input type="date" id="fecha" name="fecha" required>
         </div>
 
-        <!-- BOTONES -->
         <div class="acciones-form">
             <button type="submit" class="btn-mismary">Registrar venta</button>
             <a href="{% url 'list_venta' %}" class="btn-mismary btn-secundario">← Volver a ventas</a>
@@ -292,22 +274,83 @@ Registrar Venta | MisMary
 
 </div>
 
+<template id="tpl-fila">
+    <div class="fila-producto">
+        <select name="producto_id" class="sel-producto" required>
+            <option value="">Seleccione un producto</option>
+            {% for p in productos %}
+                <option value="{{ p.id }}"
+                        data-precio="{{ p.precio_venta|unlocalize }}"
+                        data-stock="{{ p.cantidad_disponible }}">
+                    {{ p.nombre }} (disp: {{ p.cantidad_disponible }})
+                </option>
+            {% endfor %}
+        </select>
+        <input type="number" name="cantidad" class="inp-cantidad" min="1" step="1" value="1" required>
+        <span class="subtotal">$0.00</span>
+        <button type="button" class="btn-quitar" title="Quitar">✕</button>
+    </div>
+</template>
 
 <script>
 
-    const total = document.getElementById('valor_total');
-    const pagado = document.getElementById('valor_pagado');
-    const falta = document.getElementById('falta');
+    const lista   = document.getElementById('lista-productos');
+    const plantilla = document.getElementById('tpl-fila');
+    const totalEl = document.getElementById('total');
+    const pagado  = document.getElementById('valor_pagado');
+    const faltaEl = document.getElementById('falta');
+    const fecha   = document.getElementById('fecha');
+
+    fecha.value = new Date().toISOString().slice(0, 10);
 
     function calcular() {
-        const t = parseFloat(total.value) || 0;
+        let total = 0;
+
+        lista.querySelectorAll('.fila-producto').forEach(fila => {
+            const sel = fila.querySelector('.sel-producto');
+            const cant = parseInt(fila.querySelector('.inp-cantidad').value) || 0;
+            const opt = sel.options[sel.selectedIndex];
+            const precio = parseFloat(opt ? opt.dataset.precio : 0) || 0;
+            const stock = parseInt(opt ? opt.dataset.stock : 0) || 0;
+            const inpCant = fila.querySelector('.inp-cantidad');
+
+            if (stock) inpCant.max = stock;
+            const sub = precio * cant;
+
+            fila.querySelector('.subtotal').textContent = '$' + sub.toFixed(2);
+            total += sub;
+        });
+
         const p = parseFloat(pagado.value) || 0;
 
-        falta.textContent = '$' + (t - p).toFixed(2);
+        totalEl.textContent = '$' + total.toFixed(2);
+        faltaEl.textContent = '$' + (total - p).toFixed(2);
+        pagado.max = total;
     }
 
-    total.addEventListener('input', calcular);
+    function agregarFila() {
+        const fila = plantilla.content.cloneNode(true);
+        lista.appendChild(fila);
+        calcular();
+    }
+
+    document.getElementById('btn-agregar').addEventListener('click', agregarFila);
+
+    lista.addEventListener('input', calcular);
+    lista.addEventListener('change', calcular);
+
+    lista.addEventListener('click', e => {
+        if (e.target.classList.contains('btn-quitar')) {
+            if (lista.querySelectorAll('.fila-producto').length > 1) {
+                e.target.closest('.fila-producto').remove();
+                calcular();
+            }
+        }
+    });
+
     pagado.addEventListener('input', calcular);
+
+    agregarFila();
 
 </script>
 
