@@ -56,6 +56,39 @@
         color: #9E3B27;
     }
 
+    /* Botón naranja para registrar un abono desde la fila */
+    .btn-abonar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: #FF6B35;
+        color: #FFFFFF;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-abonar:hover {
+        background: #9E3B27;
+        transform: translateY(-1px);
+    }
+
+    .etiqueta-pagado {
+        display: inline-block;
+        background: #E8F5E9;
+        color: #2E7D32;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
     .tabla-caja { 
         background: #FFFFFF; 
         border: 1px solid #E8DFC8; 
@@ -83,10 +116,15 @@
         border-bottom: 1px solid #F5EFE3; 
         color: #4A2C1B; 
         font-size: 14px;
+        vertical-align: middle;
     }
 
     tr:last-child td {
         border-bottom: none;
+    }
+
+    .col-accion {
+        text-align: center;
     }
 
     .monto-abono {
@@ -122,6 +160,7 @@
                     <th>Total Venta</th>
                     <th>Fecha Abono</th>
                     <th>Valor Abonado</th>
+                    <th class="col-accion">Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,6 +170,15 @@
                     <td>$ {{ abono.deuda.valor_total|floatformat:0|intcomma }}</td>
                     <td>{{ abono.fecha }}</td>
                     <td class="monto-abono">$ {{ abono.valor|floatformat:0|intcomma }}</td>
+                    <td class="col-accion">
+                        {% if abono.deuda.saldo > 0 %}
+                            <a href="{% url 'registrar_abono' abono.deuda.id %}" class="btn-abonar">
+                                💰 Abonar
+                            </a>
+                        {% else %}
+                            <span class="etiqueta-pagado">✔ Pagado</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
