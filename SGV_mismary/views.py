@@ -1,3 +1,4 @@
+
 import csv
 from decimal import Decimal, InvalidOperation
 
@@ -5,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Sum
+from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -16,7 +18,7 @@ from .models import (
 
 
 def int_cop(valor):
-    """Auxiliar para formatear montos a pesos colombianos sin decimales en el CSV."""
+    """Formatea montos a pesos colombianos sin decimales."""
     if valor is None:
         return "$ 0"
     return f"$ {int(round(float(valor))):,}"
@@ -31,7 +33,6 @@ def home(request):
 def registrar_cliente(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
-
         if form.is_valid():
             form.save()
             return redirect('list_cliente')
@@ -53,7 +54,10 @@ def list_cliente(request):
     else:
         clientes = Cliente.objects.all()
 
-    return render(request, 'list_cliente.html', {'clientes': clientes, 'buscar': buscar})
+    return render(request, 'list_cliente.html', {
+        'clientes': clientes,
+        'buscar': buscar
+    })
 
 
 @login_required
@@ -63,8 +67,11 @@ def register_cliente(request):
         telefono = request.POST['telefono']
         direccion = request.POST['direccion']
 
-        Cliente.objects.create(nombre=nombre, telefono=telefono, direccion=direccion)
-
+        Cliente.objects.create(
+            nombre=nombre,
+            telefono=telefono,
+            direccion=direccion
+        )
         return redirect('list_cliente')
 
     return render(request, 'register_cliente.html')
@@ -73,7 +80,6 @@ def register_cliente(request):
 @login_required
 def cliente_details(request, id):
     cliente = get_object_or_404(Cliente, id=id)
-
     return render(request, 'cliente_details.html', {'cliente': cliente})
 
 
@@ -86,7 +92,6 @@ def cliente_update(request, id):
         cliente.telefono = request.POST['telefono']
         cliente.direccion = request.POST['direccion']
         cliente.save()
-
         return redirect('list_cliente')
 
     return render(request, 'cliente_update.html', {'cliente': cliente})
@@ -96,7 +101,6 @@ def cliente_update(request, id):
 def cliente_delete(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     cliente.delete()
-
     return redirect('list_cliente')
 
 
@@ -150,7 +154,10 @@ def producto_update(request, id):
     else:
         form = ProductoForm(instance=producto)
 
-    return render(request, 'producto_update.html', {'form': form, 'producto': producto})
+    return render(request, 'producto_update.html', {
+        'form': form,
+        'producto': producto
+    })
 
 
 @login_required
@@ -164,8 +171,10 @@ def producto_delete(request, id):
             DetalleVenta.objects.filter(producto=producto).delete()
             producto.delete()
 
-        messages.success(request, f'El producto "{nombre_producto}" y su historial fueron eliminados correctamente.')
-
+        messages.success(
+            request,
+            f'El producto "{nombre_producto}" y su historial fueron eliminados correctamente.'
+        )
         return redirect('list_producto')
 
     return render(request, 'producto_delete.html', {'producto': producto})
@@ -179,18 +188,27 @@ def productos_mas_vendidos(request):
     productos_vendidos = DetalleVenta.objects.all()
 
     if fecha_inicio and fecha_fin and fecha_inicio > fecha_fin:
-        messages.error(request, 'La fecha inicial no puede ser posterior a la fecha final.')
+        messages.error(
+            request,
+            'La fecha inicial no puede ser posterior a la fecha final.'
+        )
         productos_vendidos = DetalleVenta.objects.none()
     else:
         if fecha_inicio:
-            productos_vendidos = productos_vendidos.filter(venta__fecha__gte=fecha_inicio)
+            productos_vendidos = productos_vendidos.filter(
+                venta__fecha__gte=fecha_inicio
+            )
 
         if fecha_fin:
-            productos_vendidos = productos_vendidos.filter(venta__fecha__lte=fecha_fin)
+            productos_vendidos = productos_vendidos.filter(
+                venta__fecha__lte=fecha_fin
+            )
 
-        productos_vendidos = productos_vendidos.values('producto__nombre').annotate(
-            total_vendido=Sum('cantidad')
-        ).order_by('-total_vendido')
+        productos_vendidos = (
+            productos_vendidos.values('producto__nombre')
+            .annotate(total_vendido=Sum('cantidad'))
+            .order_by('-total_vendido')
+        )
 
     return render(request, 'productos_mas_vendidos.html', {
         'productos_vendidos': productos_vendidos,
@@ -213,17 +231,16 @@ def register_venta(request):
         cantidades = request.POST.getlist('cantidad')
 
         try:
-            valor_pagado = Decimal(request.POST.get('valor_pagado') or 0)
-        except InvalidOperation:
+            valor_pagado = Decimal(request.POST.get('valor_pagado') or '0')
+        except (InvalidOperation, TypeError, ValueError):
             messages.error(request, 'El valor pagado no es válido.')
             return redirect('register_venta')
 
-        if valor_pagado < 0:
+        if not valor_pagado.is_finite() or valor_pagado < 0:
             messages.error(request, 'El valor pagado no puede ser negativo.')
             return redirect('register_venta')
 
         cliente = get_object_or_404(Cliente, id=cliente_id)
-
         pedidos = {}
 
         for pid, cant in zip(producto_ids, cantidades):
@@ -249,10 +266,11 @@ def register_venta(request):
 
         try:
             with transaction.atomic():
-
                 productos = {
                     p.id: p
-                    for p in Producto.objects.select_for_update().filter(id__in=pedidos.keys())
+                    for p in Producto.objects.select_for_update().filter(
+                        id__in=pedidos.keys()
+                    )
                 }
 
                 if len(productos) != len(pedidos):
@@ -272,7 +290,9 @@ def register_venta(request):
                     valor_total += producto.precio_venta * cantidad
 
                 if valor_pagado > valor_total:
-                    raise StockInsuficiente('Lo pagado no puede ser mayor que el valor total.')
+                    raise StockInsuficiente(
+                        'Lo pagado no puede ser mayor que el valor total.'
+                    )
 
                 venta = Venta.objects.create(
                     cliente=cliente,
@@ -282,9 +302,9 @@ def register_venta(request):
 
                 if valor_pagado > 0:
                     Pago.objects.create(
-                    venta=venta,
-                    valor=valor_pagado
-                )
+                        venta=venta,
+                        valor=valor_pagado
+                    )
 
                 for pid, cantidad in pedidos.items():
                     producto = productos[pid]
@@ -301,9 +321,9 @@ def register_venta(request):
 
                 saldo = valor_total - valor_pagado
 
-                # Si hay saldo pendiente o hubo un pago parcial, creamos la Deuda
                 if saldo > 0 or valor_pagado > 0:
                     estado = 'Pagada' if saldo == 0 else 'Pendiente'
+
                     deuda = Deuda.objects.create(
                         cliente=cliente,
                         valor_total=valor_total,
@@ -311,7 +331,6 @@ def register_venta(request):
                         estado=estado
                     )
 
-                    # Registrar el PRIMER ABONO de la venta si se pagó algo inicial
                     if valor_pagado > 0:
                         Abono.objects.create(
                             deuda=deuda,
@@ -327,7 +346,9 @@ def register_venta(request):
         return redirect('list_venta')
 
     clientes = Cliente.objects.all()
-    productos = Producto.objects.filter(cantidad_disponible__gt=0).order_by('nombre')
+    productos = Producto.objects.filter(
+        cantidad_disponible__gt=0
+    ).order_by('nombre')
 
     return render(request, 'register_venta.html', {
         'clientes': clientes,
@@ -344,14 +365,20 @@ def list_venta(request):
     else:
         ventas = Venta.objects.all()
 
-    return render(request, 'list_ventas.html', {'ventas': ventas, 'buscar': buscar})
+    return render(request, 'list_ventas.html', {
+        'ventas': ventas,
+        'buscar': buscar
+    })
 
 
 @login_required
 def venta_details(request, id):
     venta = get_object_or_404(Venta, id=id)
     detalles = venta.detalles.select_related('producto')
-    deuda = Deuda.objects.filter(cliente=venta.cliente, valor_total=venta.valor_total).last()
+    deuda = Deuda.objects.filter(
+        cliente=venta.cliente,
+        valor_total=venta.valor_total
+    ).last()
 
     return render(request, 'venta_details.html', {
         'venta': venta,
@@ -365,28 +392,37 @@ def venta_delete(request, id):
     venta = get_object_or_404(Venta, id=id)
 
     with transaction.atomic():
-        # Devuelve el stock
         for detalle in venta.detalles.select_related('producto'):
             producto = detalle.producto
+
             if producto:
                 producto.cantidad_disponible += detalle.cantidad
                 producto.save(update_fields=['cantidad_disponible'])
 
-        # Elimina la deuda y sus abonos si existían
-        deudas = Deuda.objects.filter(cliente=venta.cliente, valor_total=venta.valor_total)
+        deudas = Deuda.objects.filter(
+            cliente=venta.cliente,
+            valor_total=venta.valor_total
+        )
+
         for deuda in deudas:
             deuda.abonos.all().delete()
             deuda.delete()
 
         venta.delete()
 
-    messages.success(request, 'La venta y sus deudas/abonos asociados fueron eliminados.')
+    messages.success(
+        request,
+        'La venta y sus deudas/abonos asociados fueron eliminados.'
+    )
     return redirect('list_venta')
 
 
 @login_required
 def ventas_pendientes(request):
-    deudas = Deuda.objects.filter(estado='Pendiente').select_related('cliente')
+    deudas = Deuda.objects.filter(
+        estado='Pendiente'
+    ).select_related('cliente')
+
     return render(request, 'ventas_pendientes.html', {'deudas': deudas})
 
 
@@ -399,8 +435,15 @@ def consultar_por_fecha(request):
     abonos = None
 
     if fecha_inicio and fecha_fin:
-        ventas = Venta.objects.filter(fecha__gte=fecha_inicio, fecha__lte=fecha_fin).select_related('cliente')
-        abonos = Abono.objects.filter(fecha__gte=fecha_inicio, fecha__lte=fecha_fin).select_related('deuda__cliente')
+        ventas = Venta.objects.filter(
+            fecha__gte=fecha_inicio,
+            fecha__lte=fecha_fin
+        ).select_related('cliente')
+
+        abonos = Abono.objects.filter(
+            fecha__gte=fecha_inicio,
+            fecha__lte=fecha_fin
+        ).select_related('deuda__cliente')
 
     return render(request, 'consultar_por_fecha.html', {
         'fecha_inicio': fecha_inicio,
@@ -412,7 +455,10 @@ def consultar_por_fecha(request):
 
 @login_required
 def lista_abonos(request):
-    abonos = Abono.objects.select_related('deuda__cliente').order_by('-fecha')
+    abonos = Abono.objects.select_related(
+        'deuda__cliente'
+    ).order_by('-fecha')
+
     return render(request, 'abonos.html', {'abonos': abonos})
 
 
@@ -427,16 +473,22 @@ def registrar_abono(request, deuda_id):
             valor_abono = form.cleaned_data['valor']
 
             if valor_abono <= 0:
-                form.add_error('valor', 'El valor del abono debe ser mayor que cero.')
+                form.add_error(
+                    'valor',
+                    'El valor del abono debe ser mayor que cero.'
+                )
             elif valor_abono > deuda.saldo:
-                form.add_error('valor', 'El abono no puede ser mayor que el saldo pendiente.')
+                form.add_error(
+                    'valor',
+                    'El abono no puede ser mayor que el saldo pendiente.'
+                )
             else:
                 with transaction.atomic():
                     abono = form.save(commit=False)
                     abono.deuda = deuda
                     abono.save()
 
-                    deuda.saldo = deuda.saldo - valor_abono
+                    deuda.saldo -= valor_abono
                     deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
                     deuda.save()
 
@@ -445,7 +497,11 @@ def registrar_abono(request, deuda_id):
     else:
         form = AbonoForm()
 
-    return render(request, 'registrar_abono.html', {'form': form, 'deuda': deuda})
+    return render(request, 'registrar_abono.html', {
+        'form': form,
+        'deuda': deuda
+    })
+
 
 @login_required
 def eliminar_pendiente(request, deuda_id):
@@ -453,30 +509,42 @@ def eliminar_pendiente(request, deuda_id):
 
     if request.method == 'POST':
         with transaction.atomic():
-            # Buscar la venta asociada si existe para devolver stock
-            ventas = Venta.objects.filter(cliente=deuda.cliente, valor_total=deuda.valor_total)
+            ventas = Venta.objects.filter(
+                cliente=deuda.cliente,
+                valor_total=deuda.valor_total
+            )
+
             for venta in ventas:
                 for detalle in venta.detalles.select_related('producto'):
                     if detalle.producto:
                         detalle.producto.cantidad_disponible += detalle.cantidad
-                        detalle.producto.save(update_fields=['cantidad_disponible'])
+                        detalle.producto.save(
+                            update_fields=['cantidad_disponible']
+                        )
+
                 venta.delete()
 
-            # Eliminar abonos y la deuda
             deuda.abonos.all().delete()
             deuda.delete()
 
-        messages.success(request, 'La deuda y sus registros asociados fueron eliminados.')
+        messages.success(
+            request,
+            'La deuda y sus registros asociados fueron eliminados.'
+        )
         return redirect('ventas_pendientes')
 
     return redirect('detalle_pendiente', deuda_id=deuda.id)
+
 
 @login_required
 def detalle_deuda(request, deuda_id):
     deuda = get_object_or_404(Deuda, id=deuda_id)
     abonos = deuda.abonos.all().order_by('-fecha')
 
-    return render(request, 'detalle_deuda.html', {'deuda': deuda, 'abonos': abonos})
+    return render(request, 'detalle_deuda.html', {
+        'deuda': deuda,
+        'abonos': abonos
+    })
 
 
 @login_required
@@ -491,12 +559,18 @@ def editar_abono(request, abono_id):
             nuevo_valor = form.cleaned_data['valor']
 
             if nuevo_valor <= 0:
-                form.add_error('valor', 'El valor del abono debe ser mayor que cero.')
+                form.add_error(
+                    'valor',
+                    'El valor del abono debe ser mayor que cero.'
+                )
             else:
                 saldo_anterior = deuda.saldo + abono.valor
 
                 if nuevo_valor > saldo_anterior:
-                    form.add_error('valor', 'El nuevo valor no puede ser mayor que la deuda pendiente.')
+                    form.add_error(
+                        'valor',
+                        'El nuevo valor no puede ser mayor que la deuda pendiente.'
+                    )
                 else:
                     with transaction.atomic():
                         diferencia = nuevo_valor - abono.valor
@@ -504,16 +578,22 @@ def editar_abono(request, abono_id):
                         abono.valor = nuevo_valor
                         abono.save()
 
-                        deuda.saldo = deuda.saldo - diferencia
+                        deuda.saldo -= diferencia
                         deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
                         deuda.save()
 
-                    messages.success(request, 'Abono actualizado correctamente.')
+                    messages.success(
+                        request,
+                        'Abono actualizado correctamente.'
+                    )
                     return redirect('lista_abonos')
     else:
         form = AbonoForm(instance=abono)
 
-    return render(request, 'editar_abono.html', {'form': form, 'abono': abono})
+    return render(request, 'editar_abono.html', {
+        'form': form,
+        'abono': abono
+    })
 
 
 @login_required
@@ -523,7 +603,7 @@ def eliminar_abono(request, abono_id):
 
     if request.method == 'POST':
         with transaction.atomic():
-            deuda.saldo = deuda.saldo + abono.valor
+            deuda.saldo += abono.valor
             deuda.estado = 'Pagada' if deuda.saldo == 0 else 'Pendiente'
             deuda.save()
             abono.delete()
@@ -536,10 +616,16 @@ def eliminar_abono(request, abono_id):
 
 @login_required
 def detalle_pendiente(request, deuda_id):
-    deuda = get_object_or_404(Deuda.objects.select_related('cliente'), id=deuda_id)
+    deuda = get_object_or_404(
+        Deuda.objects.select_related('cliente'),
+        id=deuda_id
+    )
     abonos = deuda.abonos.all().order_by('-fecha')
 
-    return render(request, 'detalle_pendiente.html', {'deuda': deuda, 'abonos': abonos})
+    return render(request, 'detalle_pendiente.html', {
+        'deuda': deuda,
+        'abonos': abonos
+    })
 
 
 @login_required
@@ -561,7 +647,9 @@ def marcar_pagada(request, deuda_id):
 def cliente_historial(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     ventas = Venta.objects.filter(cliente=cliente).order_by('-fecha')
-    abonos = Abono.objects.filter(deuda__cliente=cliente).order_by('-fecha')
+    abonos = Abono.objects.filter(
+        deuda__cliente=cliente
+    ).order_by('-fecha')
 
     saldo_pendiente = Deuda.objects.filter(
         cliente=cliente,
@@ -586,13 +674,12 @@ def filtrar_por_fecha(consulta, fecha_inicio, fecha_fin):
     return consulta
 
 
-
 def datos_ingresos(fecha_inicio, fecha_fin):
-    # Pagos recibidos al registrar una venta
     pagos = Pago.objects.all()
 
     if fecha_inicio:
         pagos = pagos.filter(fecha__date__gte=fecha_inicio)
+
     if fecha_fin:
         pagos = pagos.filter(fecha__date__lte=fecha_fin)
 
@@ -603,11 +690,11 @@ def datos_ingresos(fecha_inicio, fecha_fin):
         .order_by('dia')
     )
 
-    # Abonos recibidos posteriormente
     abonos = Abono.objects.all()
 
     if fecha_inicio:
         abonos = abonos.filter(fecha__date__gte=fecha_inicio)
+
     if fecha_fin:
         abonos = abonos.filter(fecha__date__lte=fecha_fin)
 
@@ -618,7 +705,6 @@ def datos_ingresos(fecha_inicio, fecha_fin):
         .order_by('dia')
     )
 
-    # Combinar pagos y abonos por día
     totales = {}
 
     for fila in pagos_por_fecha:
@@ -639,11 +725,19 @@ def datos_ingresos(fecha_inicio, fecha_fin):
     return ingresos_por_fecha, total_ingresos
 
 
-
 def datos_gastos(fecha_inicio, fecha_fin):
-    gastos = filtrar_por_fecha(Gasto.objects.all(), fecha_inicio, fecha_fin)
+    gastos = filtrar_por_fecha(
+        Gasto.objects.all(),
+        fecha_inicio,
+        fecha_fin
+    )
 
-    por_fecha = gastos.values('fecha').annotate(total=Sum('valor')).order_by('fecha')
+    por_fecha = (
+        gastos.values('fecha')
+        .annotate(total=Sum('valor'))
+        .order_by('fecha')
+    )
+
     total = gastos.aggregate(total=Sum('valor'))['total'] or 0
 
     return por_fecha, total
@@ -660,9 +754,7 @@ def datos_clientes_deuda():
     total = Deuda.objects.filter(
         estado='Pendiente',
         saldo__gt=0
-    ).aggregate(
-        total=Sum('saldo')
-    )['total'] or 0
+    ).aggregate(total=Sum('saldo'))['total'] or 0
 
     return clientes, total
 
@@ -677,7 +769,10 @@ def reporte_ingresos(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
-    ingresos_por_fecha, total_ingresos = datos_ingresos(fecha_inicio, fecha_fin)
+    ingresos_por_fecha, total_ingresos = datos_ingresos(
+        fecha_inicio,
+        fecha_fin
+    )
 
     return render(request, 'reporte_ingresos.html', {
         'ingresos_por_fecha': ingresos_por_fecha,
@@ -696,6 +791,7 @@ def reporte_clientes_deuda(request):
         'total_deuda': total_deuda
     })
 
+
 @login_required
 def registrar_gasto(request):
     if request.method == 'POST':
@@ -708,9 +804,7 @@ def registrar_gasto(request):
     else:
         form = GastoForm()
 
-    return render(request, 'registrar_gasto.html', {
-        'form': form
-    })
+    return render(request, 'registrar_gasto.html', {'form': form})
 
 
 @login_required
@@ -718,7 +812,10 @@ def reporte_gastos(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
-    gastos_por_fecha, total_gastos = datos_gastos(fecha_inicio, fecha_fin)
+    gastos_por_fecha, total_gastos = datos_gastos(
+        fecha_inicio,
+        fecha_fin
+    )
 
     return render(request, 'reporte_gastos.html', {
         'gastos_por_fecha': gastos_por_fecha,
@@ -735,7 +832,6 @@ def reporte_balance(request):
 
     total_ingresos = datos_ingresos(fecha_inicio, fecha_fin)[1]
     total_gastos = datos_gastos(fecha_inicio, fecha_fin)[1]
-
     balance = total_ingresos - total_gastos
 
     return render(request, 'reporte_balance.html', {
@@ -761,7 +857,9 @@ def descargar_reporte(request):
         return redirect('descargar_reporte')
 
     response = HttpResponse(content_type='text/csv; charset=utf-8')
-    response['Content-Disposition'] = f'attachment; filename="reporte_{tipo}.csv"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="reporte_{tipo}.csv"'
+    )
     response.write('\ufeff')
 
     writer = csv.writer(response)
@@ -792,7 +890,10 @@ def descargar_reporte(request):
         writer.writerow(['Cliente', 'Saldo pendiente'])
 
         for cliente in clientes:
-            writer.writerow([cliente.nombre, int_cop(cliente.saldo_pendiente)])
+            writer.writerow([
+                cliente.nombre,
+                int_cop(cliente.saldo_pendiente)
+            ])
 
         writer.writerow(['TOTAL', int_cop(total)])
 
