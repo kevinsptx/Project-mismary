@@ -213,7 +213,7 @@ class GastoForm(forms.ModelForm):
         fields = ["descripcion", "valor", "fecha"]
 
         labels = {
-            "descripcion": "Descripción del gasto",
+            "descripcion": "Titulo del gasto",
             "valor": "Valor del gasto",
             "fecha": "Fecha del gasto",
         }

@@ -77,10 +77,13 @@ def register_cliente(request):
     return render(request, 'register_cliente.html')
 
 
+
 @login_required
 def cliente_details(request, id):
     cliente = get_object_or_404(Cliente, id=id)
-    return render(request, 'cliente_details.html', {'cliente': cliente})
+    tiene_deuda = Deuda.objects.filter(cliente=cliente, estado='Pendiente', saldo__gt=0).exists()
+    return render(request, 'cliente_details.html', {'cliente': cliente, 'tiene_deuda': tiene_deuda})
+
 
 
 @login_required
@@ -97,10 +100,25 @@ def cliente_update(request, id):
     return render(request, 'cliente_update.html', {'cliente': cliente})
 
 
+
 @login_required
 def cliente_delete(request, id):
     cliente = get_object_or_404(Cliente, id=id)
+
+    if cliente.ventas.exists():
+        messages.error(request, f'No se puede eliminar a {cliente.nombre} porque tiene ventas registradas. Elimina primero las ventas asociadas si corresponde.')
+        return redirect('list_cliente')
+
+    if cliente.deudas.filter(estado='Pendiente', saldo__gt=0).exists():
+        messages.error(request, f'No se puede eliminar a {cliente.nombre} porque tiene una deuda pendiente.')
+        return redirect('list_cliente')
+
+    if cliente.deudas.exists():
+        messages.error(request, f'No se puede eliminar a {cliente.nombre} porque tiene registros de deudas y abonos.')
+        return redirect('list_cliente')
+
     cliente.delete()
+    messages.success(request, f'El cliente {cliente.nombre} fue eliminado correctamente.')
     return redirect('list_cliente')
 
 

@@ -1,50 +1,30 @@
+
 {% extends 'layout/base.html' %}
 
-{% block title %}
-Detalle Cliente | MisMary
-{% endblock %}
+{% block title %}Detalle Cliente | MisMary{% endblock %}
 
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
-
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
-        --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
-
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
-
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --rojo-fondo: #FBE9E7;
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
     }
 
-    body {
-        background-color: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding-bottom: 60px;
-    }
-
-    .wrap-mismary {
+    .detalle-cliente {
         max-width: 720px;
         margin: 0 auto;
         padding: 30px 20px;
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
+        color: var(--cafe-tostado);
     }
-
-    /* ===== ENCABEZADO ===== */
 
     .encabezado {
         margin-bottom: 25px;
@@ -58,36 +38,10 @@ Detalle Cliente | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
-
-    /* ===== MENSAJES ===== */
-
-    .mensaje-exito {
-        background: var(--verde-fondo);
-        border: 1px solid #A5D6A7;
-        color: var(--verde);
-        padding: 14px 20px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .mensaje-error {
-        background: var(--rojo-fondo);
-        border: 1px solid #F5B7AB;
-        color: var(--terracota);
-        padding: 14px 20px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    /* ===== TARJETA ===== */
 
     .tarjeta {
         background: var(--blanco);
@@ -114,17 +68,14 @@ Detalle Cliente | MisMary
         justify-content: center;
         font-size: 30px;
         font-weight: 700;
-        box-shadow: var(--sombra-suave);
     }
 
     .cliente h2 {
         margin: 0;
         font-size: 20px;
         font-weight: 700;
-        color: var(--cafe-tostado);
+        overflow-wrap: anywhere;
     }
-
-    /* ===== DATOS ===== */
 
     .datos {
         display: grid;
@@ -142,16 +93,13 @@ Detalle Cliente | MisMary
         display: block;
         margin-bottom: 6px;
         font-size: 12px;
-        font-weight: 700;
         color: var(--terracota);
     }
 
     .dato span {
         font-size: 14px;
-        color: var(--cafe-tostado);
+        overflow-wrap: anywhere;
     }
-
-    /* ===== PENDIENTES ===== */
 
     .pendientes {
         margin-top: 18px;
@@ -164,32 +112,25 @@ Detalle Cliente | MisMary
         color: #6C5243;
     }
 
-    .pendientes strong {
-        color: var(--cafe-tostado);
-    }
-    /* ===== BOTÓN HISTORIAL ===== */
-
     .btn-historial {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        margin-left: 8px;
+        margin-top: 10px;
         background: var(--naranja);
         color: #FFF !important;
         text-decoration: none;
-        padding: 5px 14px;
+        padding: 8px 14px;
         border-radius: 999px;
         font-size: 12px;
         font-weight: 600;
-        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .btn-historial:hover {
+    .btn-historial:hover,
+    .btn-mismary:hover {
         background: var(--terracota);
-        transform: translateY(-1px);
+        color: #FFF;
     }
-
-    /* ===== BOTONES ===== */
 
     .acciones {
         margin-top: 26px;
@@ -211,20 +152,16 @@ Detalle Cliente | MisMary
         border-radius: 999px;
         font-size: 13px;
         font-weight: 600;
-        border: none;
+        border: 1px solid transparent;
         cursor: pointer;
         font-family: inherit;
-        transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .btn-mismary:hover {
-        background: var(--terracota);
+        transition: background 0.2s ease;
     }
 
     .btn-secundario {
         background: var(--arena-suave);
         color: var(--cafe-tostado);
-        border: 1px solid var(--arena);
+        border-color: var(--arena);
     }
 
     .btn-secundario:hover {
@@ -236,7 +173,7 @@ Detalle Cliente | MisMary
     .btn-eliminar {
         background: var(--blanco);
         color: var(--terracota);
-        border: 1px solid var(--terracota);
+        border-color: var(--terracota);
     }
 
     .btn-eliminar:hover {
@@ -244,37 +181,111 @@ Detalle Cliente | MisMary
         color: #FFF;
     }
 
-    /* ===== RESPONSIVO ===== */
+    .modal-fondo {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(35, 23, 16, 0.58);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-fondo.visible {
+        display: flex;
+    }
+
+    .modal-contenido {
+        background: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        width: 100%;
+        max-width: 420px;
+        padding: 30px 25px;
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        animation: modalEntrada 0.22s ease-out;
+    }
+
+    .modal-icono {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--rojo-fondo);
+        border-radius: 50%;
+        font-size: 32px;
+    }
+
+    .modal-contenido h3 {
+        font-size: 22px;
+        margin: 0 0 12px;
+    }
+
+    .modal-contenido p {
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 10px 0;
+    }
+
+    .modal-aviso {
+        background: var(--arena-suave);
+        color: var(--terracota);
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .modal-acciones {
+        display: flex;
+        justify-content: center;
+        margin-top: 22px;
+    }
+
+    body.modal-abierto {
+        overflow: hidden;
+    }
+
+    @keyframes modalEntrada {
+        from {
+            opacity: 0;
+            transform: scale(0.94);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
 
     @media (max-width: 600px) {
+        .detalle-cliente {
+            padding: 22px 14px;
+        }
+
         .tarjeta {
             padding: 22px 18px;
+        }
+
+        .encabezado h1 {
+            font-size: 23px;
         }
 
         .acciones .btn-mismary {
             flex: 1 1 100%;
         }
     }
-
 </style>
 
+<div class="detalle-cliente">
 
-<div class="wrap-mismary">
-
-    <!-- ENCABEZADO -->
     <div class="encabezado">
         <h1>Detalle del cliente 🧑‍🤝‍🧑</h1>
         <p>Información del cliente registrado</p>
     </div>
 
-    <!-- MENSAJES -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-
-    <!-- TARJETA DEL CLIENTE -->
     <div class="tarjeta">
 
         <div class="cliente">
@@ -283,7 +294,6 @@ Detalle Cliente | MisMary
         </div>
 
         <div class="datos">
-
             <div class="dato">
                 <strong>Nombre</strong>
                 <span>{{ cliente.nombre }}</span>
@@ -291,57 +301,107 @@ Detalle Cliente | MisMary
 
             <div class="dato">
                 <strong>Teléfono</strong>
-                <span>{{ cliente.telefono }}</span>
+                <span>{{ cliente.telefono|default:"No registrado" }}</span>
             </div>
 
             <div class="dato">
                 <strong>Dirección</strong>
-                <span>{{ cliente.direccion }}</span>
+                <span>{{ cliente.direccion|default:"No registrada" }}</span>
             </div>
-
         </div>
 
         <div class="pendientes">
-            <strong>Historial de compras:</strong> 
+            <strong>Historial de compras</strong>
+            <br>
             <a href="{% url 'cliente_historial' cliente.id %}" class="btn-historial">
                 📜 Ver historial completo
             </a>
         </div>
 
-        <!-- BOTONES -->
         <div class="acciones">
-            <a href="{% url 'list_cliente' %}" class="btn-mismary btn-secundario">Volver</a>
-
-            <a href="{% url 'cliente_update' cliente.id %}" class="btn-mismary">Actualizar</a>
-
-            <a href="{% url 'cliente_delete' cliente.id %}"
-               class="btn-mismary btn-eliminar"
-               onclick="return confirmarEliminacion()">
-                Eliminar
+            <a href="{% url 'list_cliente' %}" class="btn-mismary btn-secundario">
+                Volver
             </a>
+
+            <a href="{% url 'cliente_update' cliente.id %}" class="btn-mismary">
+                Actualizar
+            </a>
+
+            {% if tiene_deuda %}
+                <button type="button" class="btn-mismary btn-eliminar" onclick="mostrarAviso()">
+                    Eliminar
+                </button>
+            {% else %}
+                <a href="{% url 'cliente_delete' cliente.id %}" class="btn-mismary btn-eliminar">
+                    Eliminar
+                </a>
+            {% endif %}
         </div>
 
     </div>
-
 </div>
 
+{% if tiene_deuda %}
+<div id="modalEliminar" class="modal-fondo" role="dialog"
+     aria-modal="true" aria-labelledby="tituloModal">
 
-<!-- CONFIRMACIÓN ELIMINAR -->
+    <div class="modal-contenido">
+        <div class="modal-icono">⚠️</div>
+
+        <h3 id="tituloModal">No se puede eliminar</h3>
+
+        <p>
+            El cliente <strong>{{ cliente.nombre }}</strong> tiene una deuda pendiente.
+        </p>
+
+        <p class="modal-aviso">
+            No es posible eliminar este cliente mientras tenga dinero pendiente por pagar.
+        </p>
+
+        <div class="modal-acciones">
+            <button type="button" class="btn-mismary btn-secundario" onclick="cerrarModal()">
+                Cancelar
+            </button>
+        </div>
+    </div>
+
+</div>
+{% endif %}
+
 <script>
+    function mostrarAviso() {
+        const modal = document.getElementById('modalEliminar');
 
-    function confirmarEliminacion() {
-
-        if (!confirm("¿Está seguro de que desea eliminar este cliente?")) {
-            return false;
+        if (modal) {
+            modal.classList.add('visible');
+            document.body.classList.add('modal-abierto');
         }
-
-        if (!confirm("¿El cliente tiene algo pendiente?")) {
-            return false;
-        }
-
-        return true;
     }
 
+    function cerrarModal() {
+        const modal = document.getElementById('modalEliminar');
+
+        if (modal) {
+            modal.classList.remove('visible');
+            document.body.classList.remove('modal-abierto');
+        }
+    }
+
+    const modalEliminar = document.getElementById('modalEliminar');
+
+    if (modalEliminar) {
+        modalEliminar.addEventListener('click', function(event) {
+            if (event.target === this) {
+                cerrarModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            cerrarModal();
+        }
+    });
 </script>
 
 {% endblock %}

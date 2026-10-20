@@ -185,7 +185,13 @@ class DetalleVenta(models.Model):
     def __str__(self):
         return f'{self.producto.nombre} - {self.cantidad} unidades'
 
+
 class Gasto(models.Model):
+    TIPOS_GASTO = [
+        ('Pedido', 'Pedido'),
+        ('Hormiga', 'Hormiga'),
+    ]
+
     descripcion = models.CharField(max_length=200)
 
     valor = models.DecimalField(
@@ -195,8 +201,15 @@ class Gasto(models.Model):
 
     fecha = models.DateField()
 
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPOS_GASTO,
+        default='Hormiga'
+    )
+
     def __str__(self):
         return f"{self.descripcion} - ${self.valor}"
+
 
 class Pedido(models.Model):
     ESTADOS = [
