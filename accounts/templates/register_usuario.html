@@ -1,0 +1,220 @@
+
+{% extends 'layout/base.html' %}
+
+{% block title %}Crear Usuario | MisMary{% endblock %}
+
+{% block content %}
+
+<style>
+    .registro-page {
+        --cafe: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil: #FCFAF7;
+        --blanco: #FFFFFF;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
+
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 30px 20px;
+        color: var(--cafe);
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
+    }
+
+    .registro-page * {
+        box-sizing: border-box;
+    }
+
+    .registro-page .encabezado {
+        margin-bottom: 25px;
+    }
+
+    .registro-page h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+    .registro-page .encabezado p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .registro-page .mensaje {
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        font-weight: 600;
+        background: var(--verde-fondo);
+        color: var(--verde);
+    }
+
+    .registro-page .mensaje.error {
+        background: var(--rojo-fondo);
+        color: var(--terracota);
+    }
+
+    .registro-page .formulario {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    .registro-page .campo {
+        margin-bottom: 20px;
+    }
+
+    .registro-page label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .registro-page input,
+    .registro-page select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe);
+        background: var(--marfil);
+    }
+
+    .registro-page input:focus,
+    .registro-page select:focus {
+        outline: 2px solid #FFB08F;
+        border-color: var(--terracota);
+    }
+
+    .registro-page .ayuda {
+        display: block;
+        margin-top: 7px;
+        font-size: 12px;
+        color: #79563F;
+    }
+
+    .registro-page .acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .registro-page .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 22px;
+        border: none;
+        border-radius: 999px;
+        background: var(--naranja);
+        color: white;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    .registro-page .btn:hover {
+        background: var(--terracota);
+    }
+
+    .registro-page .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe);
+        border: 1px solid var(--arena);
+    }
+
+    .registro-page .btn-secundario:hover {
+        background: var(--arena);
+    }
+
+    @media (max-width: 600px) {
+        .registro-page .formulario {
+            padding: 22px 18px;
+        }
+
+        .registro-page .acciones .btn {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+
+<div class="registro-page">
+    <div class="encabezado">
+        <h1>Crear usuario 👤</h1>
+        <p>Registra un usuario y selecciona el rol que tendrá en MisMary.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mensaje {% if message.tags == 'error' %}error{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" class="formulario">
+        {% csrf_token %}
+
+        <div class="campo">
+            <label for="username">Usuario</label>
+            <input type="text" id="username" name="username" maxlength="150" required>
+        </div>
+
+        <div class="campo">
+            <label for="first_name">Nombre</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+
+        <div class="campo">
+            <label for="last_name">Apellido</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+
+        <div class="campo">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="campo">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="campo">
+            <label for="grupo_id">Rol del usuario</label>
+
+            <select id="grupo_id" name="grupo_id" required>
+                <option value="">Selecciona un rol</option>
+
+                {% for grupo in grupos %}
+                    <option value="{{ grupo.id }}">{{ grupo.name }}</option>
+                {% endfor %}
+            </select>
+
+            <span class="ayuda">
+                Las opciones corresponden a los grupos que hayas creado en Grupos y roles.
+            </span>
+        </div>
+
+        <div class="acciones">
+            <button type="submit" class="btn">Crear usuario</button>
+            <a href="{% url 'list_user' %}" class="btn btn-secundario">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,3 +1,4 @@
+
 {% extends 'layout/base.html' %}
 {% load humanize %}
 
@@ -8,24 +9,22 @@ Ventas | MisMary
 {% block content %}
 
 <style>
-
     /* ===== PALETA Y BASE ===== */
-
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
 
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
 
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
     body {
@@ -44,7 +43,6 @@ Ventas | MisMary
     }
 
     /* ===== ENCABEZADO Y ACCIONES ===== */
-
     .encabezado {
         display: flex;
         align-items: center;
@@ -62,7 +60,7 @@ Ventas | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
@@ -73,15 +71,14 @@ Ventas | MisMary
         flex-wrap: wrap;
     }
 
-    /* ===== BOTONES ===== */
-
+    /* ===== BOTONES GENERALES ===== */
     .btn-mismary {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
         background: var(--naranja);
-        color: #FFF;
+        color: #FFFFFF;
         text-decoration: none;
         padding: 10px 18px;
         border-radius: 999px;
@@ -95,6 +92,7 @@ Ventas | MisMary
 
     .btn-mismary:hover {
         background: var(--terracota);
+        color: #FFFFFF;
     }
 
     .btn-secundario {
@@ -110,7 +108,6 @@ Ventas | MisMary
     }
 
     /* ===== MENSAJES ===== */
-
     .mensaje-exito {
         background: var(--verde-fondo);
         border: 1px solid #A5D6A7;
@@ -123,7 +120,6 @@ Ventas | MisMary
     }
 
     /* ===== BUSCADOR ===== */
-
     .buscador {
         display: flex;
         gap: 10px;
@@ -132,6 +128,7 @@ Ventas | MisMary
 
     .buscador input[type="text"] {
         flex: 1;
+        min-width: 0;
         padding: 12px 20px;
         border: 1px solid var(--arena);
         border-radius: 999px;
@@ -148,7 +145,6 @@ Ventas | MisMary
     }
 
     /* ===== RESULTADOS ===== */
-
     .resultados-barra {
         display: flex;
         align-items: center;
@@ -176,7 +172,6 @@ Ventas | MisMary
     }
 
     /* ===== TABLA ===== */
-
     .tabla-caja {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -232,7 +227,11 @@ Ventas | MisMary
     }
 
     .chip-tabla {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        min-height: 32px;
         padding: 4px 12px;
         background: var(--arena-suave);
         border: 1px solid var(--arena);
@@ -242,32 +241,75 @@ Ventas | MisMary
         white-space: nowrap;
     }
 
+    /* ===== ACCIONES ALINEADAS ===== */
     .col-acciones {
-        white-space: nowrap;
         text-align: right !important;
+        white-space: nowrap;
+        min-width: 260px;
+    }
+
+    .grupo-botones {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: nowrap;
+        vertical-align: middle;
     }
 
     .btn-tabla {
-        display: inline-block;
-        padding: 7px 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        min-height: 32px;
+        padding: 7px 12px;
         border-radius: 999px;
         font-size: 12px;
         font-weight: 600;
         text-decoration: none;
+        white-space: nowrap;
         transition: all 0.2s ease;
     }
 
     .btn-ver {
         background: var(--naranja);
-        color: #FFF;
+        color: #FFFFFF;
     }
 
     .btn-ver:hover {
         background: var(--naranja-hover);
+        color: #FFFFFF;
+    }
+
+    .btn-cancelar {
+        background: #FBE9E7;
+        color: #9E3B27;
+        border: 1px solid #E8B4A9;
+    }
+
+    .btn-cancelar:hover {
+        background: #9E3B27;
+        color: #FFFFFF;
+    }
+
+    .estado-cancelada {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        min-height: 32px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: #FBE9E7;
+        color: #9E3B27;
+        border: 1px solid #E8B4A9;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
     }
 
     /* ===== SIN VENTAS ===== */
-
     .sin-ventas {
         text-align: center;
         padding: 40px 20px !important;
@@ -275,7 +317,6 @@ Ventas | MisMary
     }
 
     /* ===== RESPONSIVO ===== */
-
     @media (max-width: 700px) {
         .encabezado {
             flex-direction: column;
@@ -299,13 +340,11 @@ Ventas | MisMary
             padding: 12px 14px;
         }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
-    <!-- ENCABEZADO CON NAVEGACIÓN A LAS 3 PÁGINAS -->
+    <!-- ENCABEZADO -->
     <div class="encabezado">
         <div>
             <h1>Lista de ventas 🛒</h1>
@@ -313,16 +352,23 @@ Ventas | MisMary
         </div>
 
         <div class="acciones">
-            <a href="{% url 'ventas_pendientes' %}" class="btn-mismary btn-secundario">
-                ⏳ Ventas pendientes
+            <a href="{% url 'ventas_pendientes' %}"
+               class="btn-mismary btn-secundario">
+                ⏳ Deudas pendientes
             </a>
-            <a href="{% url 'consultar_por_fecha' %}" class="btn-mismary btn-secundario">
+
+            <a href="{% url 'consultar_por_fecha' %}"
+               class="btn-mismary btn-secundario">
                 📅 Consultar por fecha
             </a>
-            <a href="{% url 'lista_abonos' %}" class="btn-mismary btn-secundario">
+
+            <a href="{% url 'lista_abonos' %}"
+               class="btn-mismary btn-secundario">
                 💵 Abonos
             </a>
-            <a href="{% url 'register_venta' %}" class="btn-mismary">
+
+            <a href="{% url 'register_venta' %}"
+               class="btn-mismary">
                 + Registrar venta
             </a>
         </div>
@@ -331,7 +377,9 @@ Ventas | MisMary
     <!-- MENSAJES -->
     {% if messages %}
         {% for message in messages %}
-            <div class="mensaje-exito">{{ message }}</div>
+            <div class="mensaje-exito">
+                {{ message }}
+            </div>
         {% endfor %}
     {% endif %}
 
@@ -344,7 +392,9 @@ Ventas | MisMary
             value="{{ buscar|default:'' }}"
         >
 
-        <button type="submit" class="btn-mismary">Buscar</button>
+        <button type="submit" class="btn-mismary">
+            Buscar
+        </button>
     </form>
 
     <!-- TÍTULO DE RESULTADOS -->
@@ -357,7 +407,9 @@ Ventas | MisMary
             {% endif %}
         </h2>
 
-        <span class="chip-mismary">{{ ventas|length }} venta{{ ventas|length|pluralize }}</span>
+        <span class="chip-mismary">
+            {{ ventas|length }} venta{{ ventas|length|pluralize }}
+        </span>
     </div>
 
     <!-- TABLA DE VENTAS -->
@@ -375,26 +427,52 @@ Ventas | MisMary
             </thead>
 
             <tbody>
-
                 {% for venta in ventas %}
                     <tr>
-                        <td class="nombre-venta">#{{ venta.id }}</td>
-
-                        <td>
-                            <span class="chip-tabla">{{ venta.cliente.nombre }}</span>
+                        <td class="nombre-venta">
+                            #{{ venta.id }}
                         </td>
 
-                        <td class="col-numero precio">$ {{ venta.valor_total|floatformat:0|intcomma }}</td>
+                        <td>
+                            <span class="chip-tabla">
+                                {{ venta.cliente.nombre }}
+                            </span>
+                        </td>
+
+                        <td class="col-numero precio">
+                            $ {{ venta.valor_total|floatformat:0|intcomma }}
+                        </td>
 
                         <td>{{ venta.fecha }}</td>
 
                         <td class="col-acciones">
-                            <a href="{% url 'details_venta' venta.id %}" class="btn-tabla btn-ver">Ver información</a>
+                            <div class="grupo-botones">
+
+                                <a
+                                    href="{% url 'details_venta' venta.id %}"
+                                    class="btn-tabla btn-ver"
+                                >
+                                    Ver información
+                                </a>
+
+                                {% if venta.estado != 'Cancelada' %}
+                                    <a
+                                        href="{% url 'cancelar_venta' venta.id %}"
+                                        class="btn-tabla btn-cancelar"
+                                    >
+                                        Reembolso
+                                    </a>
+                                {% else %}
+                                    <span class="estado-cancelada">
+                                        Reembolsada
+                                    </span>
+                                {% endif %}
+
+                            </div>
                         </td>
                     </tr>
 
                 {% empty %}
-
                     <tr>
                         <td colspan="5" class="sin-ventas">
                             {% if buscar %}
@@ -404,10 +482,9 @@ Ventas | MisMary
                             {% endif %}
                         </td>
                     </tr>
-
                 {% endfor %}
-
             </tbody>
+
         </table>
     </div>
 

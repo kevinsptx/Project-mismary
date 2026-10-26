@@ -447,7 +447,8 @@ Productos | MisMary
                 <tr>
                     <th>Producto</th>
                     <th>Categoría</th>
-                    <th class="col-numero">Precio</th>
+                    <th class="col-numero">Precio Compra</th>
+                    <th class="col-numero">Precio Venta</th>
                     <th class="col-numero">Cantidad</th>
                     <th>Estado</th>
                     <th class="col-acciones">Acciones</th>
@@ -464,6 +465,13 @@ Productos | MisMary
                             <span class="chip-tabla">{{ producto.categoria.nombre }}</span>
                         </td>
 
+                        <td class="col-numero">
+                            {% if producto.precio_compra > 0 %}
+                                $ {{ producto.precio_compra|floatformat:0|intcomma }}
+                            {% else %}
+                                <span title="Se completa al registrar un pedido">—</span>
+                            {% endif %}
+                        </td>
                         <td class="col-numero precio">$ {{ producto.precio_venta|floatformat:0|intcomma }}</td>
 
                         <td class="col-numero">{{ producto.cantidad_disponible }}</td>
@@ -485,7 +493,7 @@ Productos | MisMary
                 {% empty %}
 
                     <tr>
-                        <td colspan="6" class="sin-productos">
+                        <td colspan="7" class="sin-productos">
                             {% if buscar and categoria_id %}
                                 No se encontraron productos que coincidan con "{{ buscar }}" en la categoría seleccionada.
                             {% elif buscar %}

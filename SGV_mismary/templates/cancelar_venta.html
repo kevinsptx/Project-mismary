@@ -1,0 +1,159 @@
+{% extends 'layout/base.html' %}
+{% load humanize %}
+
+{% block title %}
+Cancelar venta | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .cancelar-contenedor {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+
+    .cancelar-tarjeta {
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        color: #4A2C1B;
+    }
+
+    .cancelar-tarjeta h1 {
+        margin-top: 0;
+        color: #9E3B27;
+        font-size: 25px;
+    }
+
+    .dato-venta {
+        background: #F5EFE3;
+        padding: 15px;
+        border-radius: 14px;
+        margin: 20px 0;
+        line-height: 2;
+    }
+
+    .botones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .btn-cancelar,
+    .btn-volver {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 999px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        text-align: center;
+        transition: background 0.2s ease;
+    }
+
+    .btn-cancelar {
+        background: #9E3B27;
+        color: #FFFFFF;
+    }
+
+    .btn-cancelar:hover {
+        background: #7D2D20;
+    }
+
+    .btn-volver {
+        background: #F5EFE3;
+        color: #4A2C1B;
+        border: 1px solid #E8DFC8;
+    }
+
+    .btn-volver:hover {
+        background: #E8DFC8;
+    }
+
+    .aviso {
+        font-size: 14px;
+        color: #6C5243;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+        .cancelar-contenedor {
+            margin: 20px auto;
+            padding: 15px;
+        }
+
+        .cancelar-tarjeta {
+            padding: 22px;
+        }
+
+        .botones {
+            flex-direction: column;
+        }
+
+        .btn-cancelar,
+        .btn-volver {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<div class="cancelar-contenedor">
+    <div class="cancelar-tarjeta">
+
+        <h1>Cancelar venta</h1>
+
+        <p>
+            ¿Estás segura de que deseas cancelar esta venta?
+            Revisa la información antes de continuar.
+        </p>
+
+        <div class="dato-venta">
+            <strong>Venta:</strong> #{{ venta.id }}<br>
+
+            <strong>Cliente:</strong>
+            {{ venta.cliente.nombre }}<br>
+
+            <strong>Valor total:</strong>
+            $ {{ venta.valor_total|floatformat:0|intcomma }}<br>
+
+            <strong>Fecha:</strong>
+            {{ venta.fecha }}<br>
+
+            <strong>Estado:</strong>
+            {{ venta.estado }}
+        </div>
+
+        <p class="aviso">
+            La venta quedará registrada como cancelada.
+            Esta acción no devuelve dinero automáticamente.
+            Si el cliente ya pagó, el reembolso debe gestionarse
+            por separado.
+        </p>
+
+        <div class="botones">
+            <form method="POST">
+                {% csrf_token %}
+
+                <button type="submit" class="btn-cancelar">
+                    Sí, cancelar venta
+                </button>
+            </form>
+
+            <a href="{% url 'list_venta' %}" class="btn-volver">
+                Volver 
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

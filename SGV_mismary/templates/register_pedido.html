@@ -108,6 +108,41 @@ Registrar Pedido | MisMary
         border-color: var(--terracota);
     }
 
+    /* ===== ENLACE "NUEVO PROVEEDOR" ===== */
+
+    .enlace-nuevo {
+        display: inline-block;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--terracota);
+        text-decoration: none;
+    }
+
+    .enlace-nuevo:hover {
+        color: var(--naranja-hover);
+        text-decoration: underline;
+    }
+
+    .aviso-sin-proveedores {
+        background: var(--arena-suave);
+        border: 1px dashed var(--terracota);
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: var(--cafe-tostado);
+    }
+
+    .aviso-sin-proveedores a {
+        color: var(--terracota);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .aviso-sin-proveedores a:hover {
+        text-decoration: underline;
+    }
+
     /* ===== CONTENEDOR DE MULTIPLES PRODUCTOS ===== */
 
     .filas-productos {
@@ -118,9 +153,19 @@ Registrar Pedido | MisMary
         margin-bottom: 16px;
     }
 
+    .fila-encabezado {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 42px;
+        gap: 12px;
+        margin: 6px 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: #9E3B27;
+    }
+
     .fila-item {
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr 42px;
+        grid-template-columns: 2fr 1fr 1fr 1fr 42px;
         gap: 12px;
         margin-bottom: 12px;
         align-items: center;
@@ -220,6 +265,10 @@ Registrar Pedido | MisMary
             grid-template-columns: 1fr;
         }
 
+        .fila-encabezado {
+            display: none;
+        }
+
         .fila-item {
             grid-template-columns: 1fr;
             background: var(--blanco);
@@ -262,7 +311,25 @@ Registrar Pedido | MisMary
             <div class="grid-proveedor">
                 <div class="form-group" style="margin-bottom:0;">
                     <label for="proveedor">Proveedor</label>
-                    <input type="text" id="proveedor" name="proveedor" placeholder="Ej: Distribuidora Belleza" required>
+
+                    {% if proveedores %}
+                        <select id="proveedor" name="proveedor" required>
+                            <option value="">-- Seleccionar proveedor --</option>
+                            {% for prov in proveedores %}
+                                <option value="{{ prov.id }}">{{ prov.nombre }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <a href="{% url 'register_proveedor' %}?next=pedido" class="enlace-nuevo">
+                            + Registrar nuevo proveedor
+                        </a>
+                    {% else %}
+                        <div class="aviso-sin-proveedores">
+                            Aún no tienes proveedores registrados.
+                            <a href="{% url 'register_proveedor' %}?next=pedido">Registra el primero</a>
+                            para poder crear el pedido.
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group" style="margin-bottom:0;">
@@ -273,19 +340,29 @@ Registrar Pedido | MisMary
 
             <!-- SECCIÓN DE PRODUCTOS SOLICITADOS -->
             <label style="margin-top: 15px;">Productos a solicitar</label>
-            
+
+            <div class="fila-encabezado">
+                <span>Producto</span>
+                <span>Cantidad</span>
+                <span>Precio de compra</span>
+                <span>Precio de venta</span>
+                <span></span>
+            </div>
             <div class="filas-productos" id="contenedor-items">
                 <div class="fila-item">
                     <select name="producto_id[]" required>
                         <option value="">-- Seleccionar producto --</option>
                         {% for p in productos %}
-                            <option value="{{ p.id }}">{{ p.nombre }} (Stock actual: {{ p.cantidad_disponible }})</option>
+                            <option value="{{ p.id }}"
+                                data-precio-compra="{{ p.precio_compra|floatformat:0 }}"
+                                data-precio-venta="{{ p.precio_venta|floatformat:0 }}">{{ p.nombre }} (Stock actual: {{ p.cantidad_disponible }})</option>
                         {% endfor %}
                     </select>
 
                     <input type="number" name="cantidad[]" placeholder="Cantidad" min="1" required>
 
-                    <input type="number" step="1" name="costo_unitario[]" placeholder="Costo C/U ($ COP)" required>
+                    <input type="number" step="1" min="0" name="costo_unitario[]" placeholder="Precio de compra C/U ($ COP)" required>
+                    <input type="number" step="1" min="1" name="precio_venta[]" placeholder="Precio de venta C/U ($ COP)" required>
 
                     <button type="button" class="btn-quitar" onclick="eliminarFila(this)" title="Quitar producto">✕</button>
                 </div>
@@ -301,7 +378,7 @@ Registrar Pedido | MisMary
                     Volver
                 </a>
 
-                <button type="submit" class="btn-mismary">
+                <button type="submit" class="btn-mismary"{% if not proveedores %} disabled style="opacity:.5; cursor:not-allowed;"{% endif %}>
                     Guardar Pedido
                 </button>
             </div>
@@ -327,6 +404,18 @@ Registrar Pedido | MisMary
         contenedor.appendChild(nuevaFila);
     }
 
+    // Al elegir un producto se rellenan sus precios actuales (se pueden cambiar)
+    document.getElementById('contenedor-items').addEventListener('change', function (e) {
+        if (!e.target.matches('select[name="producto_id[]"]')) return;
+        const fila = e.target.closest('.fila-item');
+        const opcion = e.target.selectedOptions[0];
+        const compra = fila.querySelector('input[name="costo_unitario[]"]');
+        const venta = fila.querySelector('input[name="precio_venta[]"]');
+        const pc = opcion ? opcion.dataset.precioCompra : '';
+        const pv = opcion ? opcion.dataset.precioVenta : '';
+        compra.value = (pc && Number(pc) > 0) ? pc : '';
+        venta.value = (pv && Number(pv) > 0) ? pv : '';
+    });
     function eliminarFila(boton) {
         const contenedor = document.getElementById('contenedor-items');
         // Mantener mínimo una fila
@@ -334,6 +423,17 @@ Registrar Pedido | MisMary
             boton.closest('.fila-item').remove();
         }
     }
+
+    // La fecha del pedido empieza en el día de hoy
+    (function () {
+        const campoFecha = document.getElementById('fecha');
+        if (campoFecha && !campoFecha.value) {
+            const hoy = new Date();
+            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoy.getDate()).padStart(2, '0');
+            campoFecha.value = hoy.getFullYear() + '-' + mes + '-' + dia;
+        }
+    })();
 
 </script>
 

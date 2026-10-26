@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load humanize %}
 
 {% block title %}
 Registrar abono | MisMary
@@ -355,10 +356,10 @@ Registrar abono | MisMary
 
         <div class="saldo">
             <p>Saldo pendiente actual</p>
-            <strong>${{ deuda.saldo|floatformat:"0" }}</strong>
+            <strong>$ {{ deuda.saldo|floatformat:"0"|intcomma }}</strong>
         </div>
 
-        <form method="POST" class="formulario">
+        <form method="POST" class="formulario" id="form-abono">
 
             {% csrf_token %}
 
@@ -374,5 +375,59 @@ Registrar abono | MisMary
     </div>
 
 </div>
+
+<script>
+
+    const formAbono = document.getElementById('form-abono');
+
+    // Campo del valor del abono (cambia "valor" si tu campo se llama distinto)
+    const campoValor = formAbono.querySelector('input[name="valor"]') ||
+                       document.getElementById('id_valor');
+
+    if (campoValor) {
+
+        // Pone un punto cada 3 cifras: 3000 -> 3.000 | 1500000 -> 1.500.000
+        function conPuntos(digitos) {
+            return String(digitos).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Un input number no puede mostrar puntos, lo pasamos a texto
+        campoValor.type = 'text';
+        campoValor.inputMode = 'numeric';
+        campoValor.autocomplete = 'off';
+        campoValor.removeAttribute('min');
+        campoValor.removeAttribute('max');
+        campoValor.removeAttribute('step');
+
+        // Si ya trae un valor (por ejemplo tras un error), formatearlo
+        const inicial = campoValor.value.split(/[.,]/)[0].replace(/\D/g, '');
+        campoValor.value = inicial ? conPuntos(inicial) : '';
+
+        campoValor.addEventListener('input', function () {
+            const pos = this.selectionStart;
+
+            // cuántos dígitos había antes del cursor
+            const digitosAntes = this.value.slice(0, pos).replace(/\D/g, '').length;
+
+            // dejar solo números y quitar ceros a la izquierda
+            const digitos = this.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+            this.value = digitos ? conPuntos(digitos) : '';
+
+            // devolver el cursor a su lugar
+            let nuevaPos = 0, contados = 0;
+            while (nuevaPos < this.value.length && contados < digitosAntes) {
+                if (/\d/.test(this.value[nuevaPos])) contados++;
+                nuevaPos++;
+            }
+            this.setSelectionRange(nuevaPos, nuevaPos);
+        });
+
+        // Al enviar, quitar los puntos para que Django reciba 3000 y no 3.000
+        formAbono.addEventListener('submit', function () {
+            campoValor.value = campoValor.value.replace(/\./g, '');
+        });
+    }
+
+</script>
 
 {% endblock %}

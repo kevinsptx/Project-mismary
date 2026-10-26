@@ -1,28 +1,29 @@
 {% extends 'layout/base.html' %}
 
 {% block title %}
-Editar Producto | MisMary
+Actualizar Producto | MisMary
 {% endblock %}
 
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que el home) ===== */
-
+    /* ===== PALETA Y BASE DE MISMARRY ===== */
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
 
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --cafe-medio:    #8A5A3C;
-        --sombra-caja:   0 18px 36px -8px rgba(74, 44, 27, 0.28), 0 4px 10px rgba(74, 44, 27, 0.10);
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
+
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
     body {
@@ -35,23 +36,13 @@ Editar Producto | MisMary
     }
 
     .wrap-mismary {
-        max-width: 700px;
+        max-width: 620px;
         margin: 0 auto;
         padding: 30px 20px;
     }
 
-    .wrap-mismary * {
-        box-sizing: border-box;
-    }
-
     /* ===== ENCABEZADO ===== */
-
     .encabezado {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        flex-wrap: wrap;
         margin-bottom: 25px;
     }
 
@@ -63,19 +54,41 @@ Editar Producto | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
 
-    /* ===== FORMULARIO ===== */
+    /* ===== MENSAJES ===== */
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
 
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5B7AB;
+        color: var(--terracota);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== FORMULARIO ===== */
     .formulario {
         background: var(--blanco);
-        border: 2px solid var(--cafe-medio);
+        border: 1px solid var(--arena);
         border-radius: 24px;
         padding: 30px;
-        box-shadow: var(--sombra-caja);
+        box-shadow: var(--sombra-suave);
     }
 
     .campo {
@@ -84,22 +97,23 @@ Editar Producto | MisMary
 
     .campo label {
         display: block;
+        margin-bottom: 7px;
         font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 8px;
+        font-weight: 700;
         color: var(--cafe-tostado);
     }
 
     .campo input,
     .campo select {
         width: 100%;
-        padding: 12px 18px;
+        box-sizing: border-box;
+        padding: 12px 20px;
         border: 1px solid var(--arena);
         border-radius: 999px;
-        background: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: inherit;
         font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -107,36 +121,28 @@ Editar Producto | MisMary
     .campo select:focus {
         outline: none;
         border-color: var(--terracota);
-        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+        box-shadow: var(--sombra-suave);
     }
 
-    /* Errores de cada campo (Django los pinta como <ul class="errorlist">) */
-
-    .campo .errorlist {
-        list-style: none;
-        margin: 8px 0 0 0;
-        padding: 0;
-        font-size: 13px;
-        color: var(--terracota);
+    .ayuda {
+        display: block;
+        margin: 7px 0 0 12px;
+        font-size: 12px;
+        color: #806653;
     }
 
-    .errores {
-        background: #FBE9E7;
-        border: 1px solid #F4B8AE;
+    .error-campo {
         color: var(--terracota);
-        padding: 12px 18px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 12px;
+        margin-top: 6px;
     }
 
     /* ===== BOTONES ===== */
-
-    .botones {
+    .acciones-form {
         display: flex;
         gap: 10px;
-        margin-top: 26px;
+        flex-wrap: wrap;
+        margin-top: 10px;
     }
 
     .btn-mismary {
@@ -147,18 +153,19 @@ Editar Producto | MisMary
         background: var(--naranja);
         color: #FFF;
         text-decoration: none;
-        padding: 11px 22px;
+        padding: 10px 22px;
         border-radius: 999px;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         border: none;
         cursor: pointer;
         font-family: inherit;
-        transition: background 0.2s ease;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
 
     .btn-mismary:hover {
         background: var(--terracota);
+        color: #FFF;
     }
 
     .btn-secundario {
@@ -174,95 +181,125 @@ Editar Producto | MisMary
     }
 
     /* ===== RESPONSIVO ===== */
-
-    @media (max-width: 600px) {
-        .encabezado {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
+    @media (max-width: 700px) {
         .formulario {
             padding: 22px 18px;
         }
 
-        .botones {
-            flex-direction: column;
-        }
-
-        .botones .btn-mismary {
-            width: 100%;
+        .acciones-form .btn-mismary {
+            flex: 1 1 100%;
         }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
     <!-- ENCABEZADO -->
     <div class="encabezado">
-        <div>
-            <h1>Editar producto ✏️</h1>
-            <p>Modifica la información del producto seleccionado</p>
-        </div>
-
-        <a href="{% url 'list_producto' %}" class="btn-mismary btn-secundario">
-            ← Regresar a productos
-        </a>
+        <h1>Actualizar producto ✏️</h1>
+        <p>Modifica la información del producto</p>
     </div>
 
-    <!-- FORMULARIO -->
-    <form method="POST" class="formulario">
+    <!-- MENSAJES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
+    <!-- FORMULARIO -->
+    <form method="POST" class="formulario" id="formEditarProducto">
         {% csrf_token %}
 
-        {% if form.errors %}
-            <div class="errores">
-                Por favor, corrige los errores del formulario.
-            </div>
-        {% endif %}
-
-        <!-- NOMBRE -->
         <div class="campo">
-            {{ form.nombre.label_tag }}
+            <label for="{{ form.nombre.id_for_label }}">Nombre del producto</label>
             {{ form.nombre }}
-            {{ form.nombre.errors }}
+            {% if form.nombre.errors %}
+                <div class="error-campo">{{ form.nombre.errors }}</div>
+            {% endif %}
         </div>
 
-        <!-- PRECIO -->
         <div class="campo">
-            {{ form.precio_venta.label_tag }}
-            {{ form.precio_venta }}
-            {{ form.precio_venta.errors }}
+            <label for="id_precio_venta">Precio de venta</label>
+            <input
+                type="text"
+                name="{{ form.precio_venta.html_name }}"
+                id="id_precio_venta"
+                value="{{ producto.precio_venta|floatformat:0 }}"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="Ejemplo: 15.000"
+                required
+            >
+            <small class="ayuda">Escribe el precio en pesos colombianos (COP).</small>
+            {% if form.precio_venta.errors %}
+                <div class="error-campo">{{ form.precio_venta.errors }}</div>
+            {% endif %}
         </div>
 
-        <!-- CANTIDAD DISPONIBLE -->
         <div class="campo">
-            {{ form.cantidad_disponible.label_tag }}
+            <label for="{{ form.cantidad_disponible.id_for_label }}">Cantidad disponible</label>
             {{ form.cantidad_disponible }}
-            {{ form.cantidad_disponible.errors }}
+            {% if form.cantidad_disponible.errors %}
+                <div class="error-campo">{{ form.cantidad_disponible.errors }}</div>
+            {% endif %}
         </div>
 
-        <!-- CATEGORÍA -->
         <div class="campo">
-            {{ form.categoria.label_tag }}
+            <label for="{{ form.categoria.id_for_label }}">Categoría</label>
             {{ form.categoria }}
-            {{ form.categoria.errors }}
+            {% if form.categoria.errors %}
+                <div class="error-campo">{{ form.categoria.errors }}</div>
+            {% endif %}
         </div>
 
-        <!-- BOTONES -->
-        <div class="botones">
+        <div class="acciones-form">
             <button type="submit" class="btn-mismary">
-                Guardar cambios
+                Actualizar producto
             </button>
 
             <a href="{% url 'list_producto' %}" class="btn-mismary btn-secundario">
-                Cancelar
+                Volver a productos
             </a>
         </div>
-
     </form>
 
 </div>
+
+<script>
+    const precioInput = document.getElementById('id_precio_venta');
+    const formulario = document.getElementById('formEditarProducto');
+
+    // Quita puntos y otros caracteres que no sean números.
+    function obtenerNumeros(valor) {
+        return String(valor ?? '').replace(/\D/g, '');
+    }
+
+    // Agrega puntos para separar los miles.
+    function formatearPesos(valor) {
+        const numeros = obtenerNumeros(valor);
+
+        if (numeros === '') {
+            return '';
+        }
+
+        return numeros.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Muestra el precio guardado con separador de miles.
+    precioInput.value = formatearPesos(precioInput.value);
+
+    // Formatea el precio mientras se escribe.
+    precioInput.addEventListener('input', function () {
+        this.value = formatearPesos(this.value);
+    });
+
+    // Envía el valor sin puntos para que Django lo pueda guardar.
+    formulario.addEventListener('submit', function () {
+        precioInput.value = obtenerNumeros(precioInput.value);
+    });
+</script>
 
 {% endblock %}

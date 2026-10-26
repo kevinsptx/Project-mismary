@@ -1,3 +1,4 @@
+
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -26,8 +27,6 @@ Registrar Producto | MisMary
         color: var(--cafe-tostado);
         font-family: 'Fredoka', 'Quicksand', sans-serif;
     }
-
-    /* ENCABEZADO */
 
     .encabezado-registro {
         display: flex;
@@ -60,8 +59,6 @@ Registrar Producto | MisMary
         white-space: nowrap;
     }
 
-    /* TARJETA DEL FORMULARIO */
-
     .panel-registro {
         padding: 28px;
         background: var(--blanco);
@@ -84,8 +81,6 @@ Registrar Producto | MisMary
         line-height: 1.6;
     }
 
-    /* MENSAJE INFORMATIVO */
-
     .informacion {
         padding: 13px 16px;
         margin-bottom: 25px;
@@ -101,8 +96,6 @@ Registrar Producto | MisMary
         color: var(--terracota);
         font-weight: 700;
     }
-
-    /* CAMPOS */
 
     .campo {
         min-width: 0;
@@ -144,8 +137,6 @@ Registrar Producto | MisMary
         color: #947D6E;
     }
 
-    /* DOS COLUMNAS ALINEADAS */
-
     .campos-fila {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -153,12 +144,9 @@ Registrar Producto | MisMary
         align-items: start;
     }
 
-    /* AJUSTE PARA SUBIR EL PRECIO DE VENTA */
     .campo-precio-ajustado {
-        padding-top: 15px; /* Compensa la altura del recuadro vecino */
+        padding-top: 15px;
     }
-
-    /* TARJETA SOLO PARA CANTIDAD */
 
     .campo-cantidad-tarjeta {
         padding: 15px;
@@ -171,8 +159,6 @@ Registrar Producto | MisMary
     .campo-cantidad-tarjeta input {
         background: var(--blanco);
     }
-
-    /* ERRORES */
 
     .errores {
         margin-top: 8px;
@@ -198,8 +184,6 @@ Registrar Producto | MisMary
         color: #A63830;
         font-size: 13px;
     }
-
-    /* BOTONES */
 
     .acciones-registro {
         display: flex;
@@ -251,8 +235,6 @@ Registrar Producto | MisMary
         color: var(--cafe-tostado);
     }
 
-    /* RESPONSIVE */
-
     @media (max-width: 650px) {
         .wrap-registro {
             padding: 22px 12px;
@@ -294,8 +276,6 @@ Registrar Producto | MisMary
 
 <div class="wrap-registro">
 
-    <!-- ENCABEZADO -->
-
     <div class="encabezado-registro">
         <div>
             <h1>Registrar producto</h1>
@@ -306,8 +286,6 @@ Registrar Producto | MisMary
             {% now "d/m/Y" %}
         </div>
     </div>
-
-    <!-- FORMULARIO -->
 
     <section class="panel-registro">
 
@@ -331,10 +309,8 @@ Registrar Producto | MisMary
             </div>
         {% endif %}
 
-        <form method="POST">
+        <form method="POST" id="formulario-producto">
             {% csrf_token %}
-
-            <!-- NOMBRE -->
 
             <div class="campo">
                 <label for="{{ form.nombre.id_for_label }}">
@@ -351,8 +327,6 @@ Registrar Producto | MisMary
                 {% endif %}
             </div>
 
-            <!-- PRECIO Y CANTIDAD ALINEADOS PERFECTAMENTE -->
-
             <div class="campos-fila">
 
                 <div class="campo campo-precio-ajustado">
@@ -361,7 +335,16 @@ Registrar Producto | MisMary
                         <span class="obligatorio">*</span>
                     </label>
 
-                    {{ form.precio_venta }}
+                    <input
+                        type="text"
+                        name="{{ form.precio_venta.html_name }}"
+                        id="{{ form.precio_venta.id_for_label }}"
+                        value="{{ form.precio_venta.value|default_if_none:'' }}"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="Ej. 3.000"
+                        required
+                    >
 
                     {% if form.precio_venta.errors %}
                         <div class="errores">
@@ -387,8 +370,6 @@ Registrar Producto | MisMary
 
             </div>
 
-            <!-- CATEGORÍA -->
-
             <div class="campo">
                 <label for="{{ form.categoria.id_for_label }}">
                     Categoría
@@ -403,8 +384,6 @@ Registrar Producto | MisMary
                     </div>
                 {% endif %}
             </div>
-
-            <!-- BOTONES -->
 
             <div class="acciones-registro">
 
@@ -423,5 +402,56 @@ Registrar Producto | MisMary
     </section>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const precio = document.getElementById(
+        '{{ form.precio_venta.id_for_label }}'
+    );
+
+    const formulario = document.getElementById('formulario-producto');
+
+    if (!precio || !formulario) {
+        return;
+    }
+
+    function formatearPrecio(valor) {
+        const numeros = valor.replace(/\D/g, '');
+        return numeros.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    precio.addEventListener('input', function () {
+        const inicio = precio.selectionStart;
+        const valorAnterior = precio.value;
+        const posicionNumeros = valorAnterior
+            .slice(0, inicio)
+            .replace(/\D/g, '').length;
+
+        precio.value = formatearPrecio(valorAnterior);
+
+        let nuevaPosicion = 0;
+        let numerosContados = 0;
+
+        while (
+            nuevaPosicion < precio.value.length &&
+            numerosContados < posicionNumeros
+        ) {
+            if (/\d/.test(precio.value[nuevaPosicion])) {
+                numerosContados++;
+            }
+
+            nuevaPosicion++;
+        }
+
+        precio.setSelectionRange(nuevaPosicion, nuevaPosicion);
+    });
+
+    precio.value = formatearPrecio(precio.value);
+
+    formulario.addEventListener('submit', function () {
+        precio.value = precio.value.replace(/\./g, '');
+    });
+});
+</script>
 
 {% endblock %}

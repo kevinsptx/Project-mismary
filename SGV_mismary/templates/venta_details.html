@@ -1,3 +1,4 @@
+```html
 {% extends 'layout/base.html' %}
 {% load humanize %}
 
@@ -8,26 +9,23 @@ Detalle de Venta | MisMary
 {% block content %}
 
 <style>
-
     /* ===== PALETA Y BASE ===== */
-
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
 
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
 
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
     body {
@@ -46,7 +44,6 @@ Detalle de Venta | MisMary
     }
 
     /* ===== ENCABEZADO ===== */
-
     .encabezado {
         margin-bottom: 25px;
     }
@@ -59,13 +56,12 @@ Detalle de Venta | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
 
     /* ===== MENSAJES ===== */
-
     .mensaje-exito {
         background: var(--verde-fondo);
         border: 1px solid #A5D6A7;
@@ -89,7 +85,6 @@ Detalle de Venta | MisMary
     }
 
     /* ===== TARJETA ===== */
-
     .tarjeta {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -124,8 +119,7 @@ Detalle de Venta | MisMary
         color: var(--cafe-tostado);
     }
 
-    /* ===== DATOS ===== */
-
+    /* ===== DATOS DE LA VENTA ===== */
     .datos {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -158,10 +152,91 @@ Detalle de Venta | MisMary
         color: var(--terracota);
     }
 
-    /* ===== SECCIÓN DE ABONOS Y ESTADO ===== */
+    /* ===== PRODUCTOS COMPRADOS ===== */
+    .productos-venta {
+        margin-top: 24px;
+    }
 
+    .productos-venta h3 {
+        margin: 0 0 14px;
+        font-size: 17px;
+        color: var(--cafe-tostado);
+    }
+
+    .tabla-productos-contenedor {
+        overflow-x: auto;
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        background: var(--blanco);
+    }
+
+    .tabla-productos {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 400px;
+    }
+
+    .tabla-productos th {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 13px 12px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .tabla-productos td {
+        padding: 13px 12px;
+        border-bottom: 1px solid var(--arena-suave);
+        color: var(--cafe-tostado);
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .tabla-productos tr:last-child td {
+        border-bottom: none;
+    }
+
+    .precio-producto {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .mensaje-sin-productos {
+        padding: 15px;
+        background: var(--arena-suave);
+        border-radius: 14px;
+        color: var(--terracota);
+        font-size: 14px;
+    }
+
+    .total-venta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 14px;
+        padding: 17px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+    }
+
+    .total-venta strong {
+        color: var(--cafe-tostado);
+        font-size: 14px;
+    }
+
+    .total-venta span {
+        color: var(--terracota);
+        font-size: 20px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    /* ===== SECCIÓN DE ABONOS Y ESTADO ===== */
     .seccion-estado {
-        margin-top: 18px;
+        margin-top: 22px;
         padding: 18px;
         background: var(--arena-suave);
         border: 1px dashed var(--arena);
@@ -179,7 +254,7 @@ Detalle de Venta | MisMary
     }
 
     .badge-pendiente {
-        background: #FBE9E7;
+        background: var(--rojo-fondo);
         color: var(--terracota);
     }
 
@@ -199,7 +274,6 @@ Detalle de Venta | MisMary
     }
 
     /* ===== BOTONES ===== */
-
     .acciones {
         margin-top: 26px;
         display: flex;
@@ -228,6 +302,7 @@ Detalle de Venta | MisMary
 
     .btn-mismary:hover {
         background: var(--terracota);
+        color: #FFF;
     }
 
     .btn-secundario {
@@ -263,7 +338,6 @@ Detalle de Venta | MisMary
     }
 
     /* ===== RESPONSIVO ===== */
-
     @media (max-width: 600px) {
         .tarjeta {
             padding: 22px 18px;
@@ -276,10 +350,13 @@ Detalle de Venta | MisMary
         .acciones .btn-mismary {
             flex: 1 1 100%;
         }
+
+        .total-venta {
+            align-items: flex-start;
+            flex-direction: column;
+        }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
@@ -292,7 +369,9 @@ Detalle de Venta | MisMary
     <!-- MENSAJES -->
     {% if messages %}
         {% for message in messages %}
-            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">
+                {{ message }}
+            </div>
         {% endfor %}
     {% endif %}
 
@@ -304,6 +383,7 @@ Detalle de Venta | MisMary
             <h2>Venta #{{ venta.id }}</h2>
         </div>
 
+        <!-- DATOS GENERALES -->
         <div class="datos">
 
             <div class="dato">
@@ -318,7 +398,9 @@ Detalle de Venta | MisMary
 
             <div class="dato">
                 <strong>Valor total</strong>
-                <span class="precio">$ {{ venta.valor_total|floatformat:0|intcomma }}</span>
+                <span class="precio">
+                    $ {{ venta.valor_total|floatformat:0|intcomma }}
+                </span>
             </div>
 
             <div class="dato">
@@ -328,24 +410,86 @@ Detalle de Venta | MisMary
 
         </div>
 
+        <!-- PRODUCTOS COMPRADOS -->
+        <div class="productos-venta">
+            <h3>🛍️ Productos comprados</h3>
+
+            {% if detalles %}
+                <div class="tabla-productos-contenedor">
+                    <table class="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio unitario</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for detalle in detalles %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ detalle.producto.nombre }}</strong>
+                                    </td>
+
+                                    <td>{{ detalle.cantidad }}</td>
+
+                                    <td class="precio-producto">
+                                        $ {{ detalle.precio|floatformat:0|intcomma }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="total-venta">
+                    <strong>TOTAL DE LA VENTA</strong>
+                    <span>
+                        $ {{ venta.valor_total|floatformat:0|intcomma }}
+                    </span>
+                </div>
+
+            {% else %}
+                <p class="mensaje-sin-productos">
+                    No hay productos asociados a esta venta.
+                </p>
+            {% endif %}
+        </div>
+
         <!-- INFORMACIÓN DE DEUDA Y ABONOS -->
         <div class="seccion-estado">
+
             {% if deuda and deuda.saldo > 0 %}
-                <span class="estado-badge badge-pendiente">Pendiente de pago</span>
+                <span class="estado-badge badge-pendiente">
+                    Pendiente de pago
+                </span>
+
                 <div class="info-saldo">
-                    Saldo pendiente: <strong>$ {{ deuda.saldo|floatformat:0|intcomma }}</strong>
+                    Saldo pendiente:
+                    <strong>
+                        $ {{ deuda.saldo|floatformat:0|intcomma }}
+                    </strong>
                 </div>
+
             {% else %}
-                <span class="estado-badge badge-pagado">Venta pagada</span>
+                <span class="estado-badge badge-pagado">
+                    Venta pagada
+                </span>
+
                 <div class="info-saldo">
                     Esta venta no tiene saldos pendientes.
                 </div>
             {% endif %}
+
         </div>
 
         <!-- BOTONES DE ACCIÓN -->
         <div class="acciones">
-            <a href="{% url 'list_venta' %}" class="btn-mismary btn-secundario">← Volver</a>
+
+            <a href="{% url 'list_venta' %}" class="btn-mismary btn-secundario">
+                ← Volver
+            </a>
 
             {% if deuda and deuda.saldo > 0 %}
                 <a href="{% url 'registrar_abono' deuda.id %}" class="btn-mismary btn-abono">
@@ -360,10 +504,11 @@ Detalle de Venta | MisMary
             >
                 Eliminar
             </a>
+
         </div>
 
     </div>
-
 </div>
 
 {% endblock %}
+```

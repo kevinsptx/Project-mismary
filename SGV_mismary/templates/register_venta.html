@@ -100,6 +100,21 @@ Registrar Venta | MisMary
         box-shadow: var(--sombra-suave);
     }
 
+    /* CANTIDAD: NÚMERO CENTRADO */
+    .fila-producto .inp-cantidad {
+        text-align: center;
+        font-weight: 600;
+        padding-left: 10px;
+        padding-right: 10px;
+        -moz-appearance: textfield;
+    }
+
+    .fila-producto .inp-cantidad::-webkit-outer-spin-button,
+    .fila-producto .inp-cantidad::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
     .titulo-seccion {
         font-size: 13px;
         font-weight: 700;
@@ -243,16 +258,20 @@ Registrar Venta | MisMary
         </div>
 
         <div class="campo">
-            <label for="valor_pagado">Valor pagado (0 si no ha pagado nada)</label>
+            <label for="valor_pagado_visible">Valor pagado (0 si no ha pagado nada)</label>
+
+            <!-- Campo que ve el usuario: con puntos de miles -->
             <input
-                type="number"
-                id="valor_pagado"
-                name="valor_pagado"
-                min="0"
-                step="1"
+                type="text"
+                id="valor_pagado_visible"
+                inputmode="numeric"
+                autocomplete="off"
                 value="0"
                 placeholder="¿Cuánto ha pagado el cliente?"
             >
+
+            <!-- Campo oculto: el número limpio que se envía a Django -->
+            <input type="hidden" id="valor_pagado" name="valor_pagado" value="0">
         </div>
 
         <div class="falta">
@@ -294,20 +313,63 @@ Registrar Venta | MisMary
 
 <script>
 
-    const lista   = document.getElementById('lista-productos');
-    const plantilla = document.getElementById('tpl-fila');
-    const totalEl = document.getElementById('total');
-    const pagado  = document.getElementById('valor_pagado');
-    const faltaEl = document.getElementById('falta');
-    const fecha   = document.getElementById('fecha');
+    const lista       = document.getElementById('lista-productos');
+    const plantilla   = document.getElementById('tpl-fila');
+    const totalEl     = document.getElementById('total');
+    const pagado      = document.getElementById('valor_pagado');           // oculto (número limpio)
+    const pagadoVis   = document.getElementById('valor_pagado_visible');   // visible (con puntos)
+    const faltaEl     = document.getElementById('falta');
+    const fecha       = document.getElementById('fecha');
 
     fecha.value = new Date().toISOString().slice(0, 10);
 
-    // Función auxiliar para formatear números en Pesos Colombianos (COP) sin decimales
+    // Pone un punto cada 3 cifras: 3000 -> 3.000 | 1500000 -> 1.500.000
+    function conPuntos(digitos) {
+        return String(digitos).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Formato en Pesos Colombianos (COP) sin decimales
     function formatearCOP(valor) {
         const entero = Math.round(valor || 0);
-        return '$ ' + entero.toLocaleString('es-CO');
+        return '$ ' + conPuntos(entero);
     }
+
+    // ===== VALOR PAGADO CON PUNTOS AUTOMÁTICOS =====
+
+    pagadoVis.addEventListener('input', function () {
+        const pos = this.selectionStart;
+
+        // cuántos dígitos había antes del cursor
+        const digitosAntes = this.value.slice(0, pos).replace(/\D/g, '').length;
+
+        // dejar solo números y quitar ceros a la izquierda
+        const digitos = this.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
+
+        pagado.value = digitos || '0';
+        this.value = digitos ? conPuntos(digitos) : '';
+
+        // devolver el cursor a su lugar
+        let nuevaPos = 0, contados = 0;
+        while (nuevaPos < this.value.length && contados < digitosAntes) {
+            if (/\d/.test(this.value[nuevaPos])) contados++;
+            nuevaPos++;
+        }
+        this.setSelectionRange(nuevaPos, nuevaPos);
+
+        calcular();
+    });
+
+    // Al entrar al campo, seleccionar todo (útil cuando está en 0)
+    pagadoVis.addEventListener('focus', function () {
+        this.select();
+    });
+
+    // Si lo deja vacío, volver a mostrar 0
+    pagadoVis.addEventListener('blur', function () {
+        if (this.value === '') this.value = '0';
+    });
+
+    // ===== CÁLCULOS =====
 
     function calcular() {
         let total = 0;
@@ -331,7 +393,13 @@ Registrar Venta | MisMary
 
         totalEl.textContent = formatearCOP(total);
         faltaEl.textContent = formatearCOP(total - p);
-        pagado.max = total;
+
+        // Validación: lo pagado no puede ser mayor al total
+        if (p > total) {
+            pagadoVis.setCustomValidity('El valor pagado no puede ser mayor al total de la venta.');
+        } else {
+            pagadoVis.setCustomValidity('');
+        }
     }
 
     function agregarFila() {
@@ -353,8 +421,6 @@ Registrar Venta | MisMary
             }
         }
     });
-
-    pagado.addEventListener('input', calcular);
 
     agregarFila();
 

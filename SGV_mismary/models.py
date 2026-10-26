@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import MinValueValidator
+from django.utils import timezone
 
 
 class Cliente(models.Model):
@@ -20,6 +22,13 @@ class Categoria(models.Model):
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
 
+    # Se actualiza automáticamente al registrar un pedido a proveedor.
+    precio_compra = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
     precio_venta = models.DecimalField(
         max_digits=10,
         decimal_places=2
@@ -39,7 +48,14 @@ class Producto(models.Model):
         return self.nombre
 
 
+
 class Venta(models.Model):
+
+    ESTADOS = [
+        ("Activa", "Activa"),
+        ("Cancelada", "Cancelada"),
+    ]
+
     cliente = models.ForeignKey(
         Cliente,
         on_delete=models.PROTECT,
@@ -53,10 +69,6 @@ class Venta(models.Model):
 
     fecha = models.DateField()
 
-    def __str__(self):
-        return f"Venta de {self.cliente} - ${self.valor_total}"
-
-
     forma_pago = models.CharField(
         max_length=20,
         choices=[
@@ -67,6 +79,15 @@ class Venta(models.Model):
         ],
         default='Efectivo',
     )
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="Activa"
+    )
+
+    def __str__(self):
+        return f"Venta de {self.cliente} - ${self.valor_total}"
 
 
 class Deuda(models.Model):
@@ -105,7 +126,6 @@ class Deuda(models.Model):
         )
 
 
-
 class Pago(models.Model):
     venta = models.ForeignKey(
         Venta,
@@ -141,7 +161,7 @@ class Abono(models.Model):
     fecha = models.DateTimeField(
         auto_now_add=True
     )
-    
+
     forma_pago = models.CharField(
         max_length=20,
         choices=[
@@ -158,8 +178,6 @@ class Abono(models.Model):
             f"Abono ${self.valor} - "
             f"{self.fecha.strftime('%d/%m/%Y')}"
         )
-
-    
 
 
 class DetalleVenta(models.Model):
@@ -211,21 +229,114 @@ class Gasto(models.Model):
         return f"{self.descripcion} - ${self.valor}"
 
 
+# ===== PROVEEDORES =====
+
+class Proveedor(models.Model):
+    nombre = models.CharField(max_length=150, unique=True)
+    telefono = models.CharField(max_length=20, blank=True)
+    correo = models.EmailField(blank=True)
+    direccion = models.CharField(max_length=200, blank=True)
+    creado = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['nombre']
+        verbose_name_plural = 'proveedores'
+
+    def __str__(self):
+        return self.nombre
+
+
+# ===== PEDIDOS =====
+
 class Pedido(models.Model):
     ESTADOS = [
         ('Pendiente', 'Pendiente'),
         ('Recibido', 'Recibido'),
         ('Cancelado', 'Cancelado'),
     ]
-    
-    proveedor = models.CharField(max_length=150)
+
+    # Campo ANTIGUO (texto): guarda el nombre de los pedidos viejos.
+    # Los pedidos nuevos usan el campo "proveedor" de abajo.
+    proveedor_texto = models.CharField(max_length=150, blank=True)
+
+    # Campo NUEVO: proveedor elegido de la lista
+    proveedor = models.ForeignKey(
+        Proveedor,
+        on_delete=models.PROTECT,
+        related_name='pedidos',
+        null=True,
+        blank=True,
+    )
+
     fecha = models.DateField()
     estado = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
-    costo_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)  # <-- Cambia max_length por max_digits
+    costo_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    def __str__(self):
+        return f"Pedido #{self.id} - {self.proveedor or self.proveedor_texto}"
 
 
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
-    costo_unitario = models.DecimalField(max_digits=12, decimal_places=2)  # <-- Cambia max_length por max_digits
+    costo_unitario = models.DecimalField(max_digits=12, decimal_places=2)
+
+class Reembolso(models.Model):
+
+    ESTADOS = [
+        ("Solicitado", "Solicitado"),
+        ("Pendiente", "Pendiente"),
+        ("Devuelto", "Devuelto"),
+        ("No aplica", "No aplica"),
+    ]
+
+    METODOS = [
+        ("Efectivo", "Efectivo"),
+        ("Transferencia", "Transferencia"),
+        ("Otro", "Otro"),
+    ]
+
+    venta = models.OneToOneField(
+        "SGV_mismary.Venta",
+        on_delete=models.PROTECT,
+        related_name="reembolso"
+    )
+
+    motivo = models.TextField(
+        verbose_name="Motivo de la devolución"
+    )
+
+    monto = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        validators=[MinValueValidator(0)]
+    )
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="Solicitado"
+    )
+
+    metodo = models.CharField(
+        max_length=20,
+        choices=METODOS,
+        default="Efectivo"
+    )
+
+    fecha_solicitud = models.DateTimeField(
+        default=timezone.now
+    )
+
+    fecha_devolucion = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    observaciones = models.TextField(
+        blank=True
+    )
+
+    def __str__(self):
+        return f"Reembolso de venta #{self.venta_id}"

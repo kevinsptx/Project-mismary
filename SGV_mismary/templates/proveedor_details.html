@@ -1,0 +1,524 @@
+```html
+{% extends 'layout/base.html' %}
+{% load humanize %}
+
+{% block title %}
+{{ proveedor.nombre }} | MisMary
+{% endblock %}
+
+{% block content %}
+
+<style>
+    /* ===== PALETA Y BASE ===== */
+    :root {
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo: #B3261E;
+        --rojo-fondo: #FDECEA;
+
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    /* ===== ENCABEZADO Y ACCIONES ===== */
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+        overflow-wrap: anywhere;
+    }
+
+    .encabezado p {
+        margin: 4px 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== BOTONES ===== */
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border: 1px solid var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    .btn-peligro {
+        background: var(--rojo-fondo);
+        color: var(--rojo);
+        border: 1px solid #F5C6C2;
+    }
+
+    .btn-peligro:hover {
+        background: var(--rojo);
+        color: #FFF;
+    }
+
+    .form-inline {
+        display: inline;
+        margin: 0;
+    }
+
+    /* ===== MENSAJES ===== */
+    .mensaje-exito {
+        background: var(--verde-fondo);
+        border: 1px solid #A5D6A7;
+        color: var(--verde);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mensaje-error {
+        background: var(--rojo-fondo);
+        border: 1px solid #F5C6C2;
+        color: var(--rojo);
+        padding: 14px 20px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ===== TARJETA DE DATOS ===== */
+    .tarjeta-datos {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        box-shadow: var(--sombra-suave);
+        padding: 26px;
+        margin-bottom: 28px;
+    }
+
+    .tarjeta-datos h2 {
+        margin: 0 0 24px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    /* Datos sin cuadritos individuales */
+    .datos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        column-gap: 32px;
+        row-gap: 26px;
+    }
+
+    .dato {
+        min-width: 0;
+        padding: 0;
+    }
+
+    .dato small {
+        display: block;
+        font-size: 11px;
+        color: var(--terracota);
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .dato span {
+        display: block;
+        font-size: 13px;
+        line-height: 1.7;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    /* ===== RESULTADOS ===== */
+    .resultados-barra {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .resultados-barra h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .chip-mismary {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    /* ===== TABLA ===== */
+    .tabla-caja {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        box-shadow: var(--sombra-suave);
+        overflow-x: auto;
+    }
+
+    .tabla-pedidos {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .tabla-pedidos thead th {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        text-align: left;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--arena);
+        white-space: nowrap;
+    }
+
+    .tabla-pedidos tbody td {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--arena-suave);
+        vertical-align: middle;
+    }
+
+    .tabla-pedidos tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tabla-pedidos tbody tr:hover {
+        background: var(--marfil-bg);
+    }
+
+    .col-numero {
+        text-align: right !important;
+        white-space: nowrap;
+    }
+
+    .nombre-pedido {
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .precio {
+        font-weight: 700;
+        color: var(--terracota);
+    }
+
+    .chip-tabla {
+        display: inline-block;
+        padding: 4px 12px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .col-acciones {
+        white-space: nowrap;
+        text-align: right !important;
+    }
+
+    .btn-tabla {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-ver {
+        background: var(--naranja);
+        color: #FFF;
+    }
+
+    .btn-ver:hover {
+        background: var(--naranja-hover);
+    }
+
+    .sin-pedidos {
+        text-align: center;
+        padding: 40px 20px !important;
+        color: #6C5243;
+    }
+
+    /* ===== RESPONSIVO ===== */
+    @media (max-width: 700px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .acciones {
+            width: 100%;
+        }
+
+        .acciones .btn-mismary {
+            flex: 1 1 auto;
+        }
+
+        .wrap-mismary {
+            padding: 22px 16px;
+        }
+
+        .tarjeta-datos {
+            padding: 22px;
+        }
+
+        .datos-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 22px;
+            row-gap: 24px;
+        }
+
+        .dato small {
+            font-size: 10px;
+            margin-bottom: 7px;
+        }
+
+        .dato span {
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .tabla-pedidos thead th,
+        .tabla-pedidos tbody td {
+            padding: 12px 14px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .wrap-mismary {
+            padding: 18px 12px;
+        }
+
+        .tarjeta-datos {
+            padding: 18px;
+        }
+
+        .datos-grid {
+            column-gap: 16px;
+            row-gap: 22px;
+        }
+
+        .encabezado h1 {
+            font-size: 23px;
+        }
+
+        .acciones .btn-mismary {
+            padding: 9px 10px;
+            font-size: 11px;
+        }
+    }
+</style>
+
+<div class="wrap-mismary">
+
+    <!-- ENCABEZADO CON ACCIONES -->
+    <div class="encabezado">
+        <div>
+            <h1>{{ proveedor.nombre }} 🚚</h1>
+            <p>Información y pedidos del proveedor</p>
+        </div>
+
+        <div class="acciones">
+            <a href="{% url 'list_proveedor' %}"
+               class="btn-mismary btn-secundario">
+                ← Volver
+            </a>
+
+            <a href="{% url 'proveedor_update' proveedor.id %}"
+               class="btn-mismary btn-secundario">
+                ✏️ Editar
+            </a>
+
+            <form method="POST"
+                  action="{% url 'proveedor_delete' proveedor.id %}"
+                  class="form-inline"
+                  onsubmit="return confirm('¿Seguro que quieres eliminar a este proveedor?');">
+
+                {% csrf_token %}
+
+                <button type="submit" class="btn-mismary btn-peligro">
+                    🗑️ Eliminar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DATOS DEL PROVEEDOR -->
+    <div class="tarjeta-datos">
+        <h2>Datos del proveedor</h2>
+
+        <div class="datos-grid">
+
+            <div class="dato">
+                <small>Teléfono</small>
+                <span>{{ proveedor.telefono|default:"—" }}</span>
+            </div>
+
+            <div class="dato">
+                <small>Correo</small>
+                <span>{{ proveedor.correo|default:"—" }}</span>
+            </div>
+
+            <div class="dato">
+                <small>Dirección</small>
+                <span>{{ proveedor.direccion|default:"—" }}</span>
+            </div>
+
+            <div class="dato">
+                <small>Total de pedidos</small>
+                <span>{{ pedidos|length }}</span>
+            </div>
+
+            <div class="dato">
+                <small>Total comprado (sin cancelados)</small>
+                <span class="precio">
+                    $ {{ total_comprado|floatformat:0|intcomma }}
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TÍTULO DEL HISTORIAL -->
+    <div class="resultados-barra">
+        <h2>Historial de pedidos</h2>
+
+        <span class="chip-mismary">
+            {{ pedidos|length }} pedido{{ pedidos|length|pluralize }}
+        </span>
+    </div>
+
+    <!-- TABLA DE PEDIDOS -->
+    <div class="tabla-caja">
+        <table class="tabla-pedidos">
+
+            <thead>
+                <tr>
+                    <th>Pedido</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th class="col-numero">Costo total</th>
+                    <th class="col-acciones">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for pedido in pedidos %}
+                    <tr>
+                        <td class="nombre-pedido">
+                            #{{ pedido.id }}
+                        </td>
+
+                        <td>{{ pedido.fecha }}</td>
+
+                        <td>
+                            <span class="chip-tabla">
+                                {{ pedido.estado }}
+                            </span>
+                        </td>
+
+                        <td class="col-numero precio">
+                            $ {{ pedido.costo_total|floatformat:0|intcomma }}
+                        </td>
+
+                        <td class="col-acciones">
+                            <a href="{% url 'pedido_details' pedido.id %}"
+                               class="btn-tabla btn-ver">
+                                Ver pedido
+                            </a>
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="sin-pedidos">
+                            Este proveedor aún no tiene pedidos.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
+```

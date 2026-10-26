@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente, Categoria, Producto, Abono, Gasto
+from .models import Cliente, Categoria, Producto, Abono, Gasto,Proveedor
 from django import forms
 from .models import Cliente
 import re
@@ -244,3 +244,48 @@ class GastoForm(forms.ModelForm):
             )
 
         return valor
+
+class ProveedorForm(forms.ModelForm):
+    class Meta:
+        model = Proveedor
+        fields = ['nombre', 'telefono', 'correo', 'direccion']
+ 
+        labels = {
+            'nombre': 'Nombre del proveedor',
+            'telefono': 'Teléfono',
+            'correo': 'Correo',
+            'direccion': 'Dirección',
+        }
+ 
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Distribuidora El Campo'
+            }),
+            'telefono': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: 3001234567'
+            }),
+            'correo': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: ventas@proveedor.com'
+            }),
+            'direccion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Dirección del proveedor'
+            }),
+        }
+ 
+    def clean_nombre(self):
+        nombre = ' '.join(self.cleaned_data.get('nombre', '').split())
+ 
+        existe = Proveedor.objects.filter(nombre__iexact=nombre)
+ 
+        if self.instance.pk:
+            existe = existe.exclude(pk=self.instance.pk)
+ 
+        if existe.exists():
+            raise forms.ValidationError('Ya existe un proveedor con ese nombre.')
+ 
+        return nombre
+ 

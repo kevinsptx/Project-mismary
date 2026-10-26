@@ -1,0 +1,167 @@
+
+{% extends 'layout/base.html' %}
+{% load humanize %}
+
+{% block title %}Solicitar reembolso | MisMary{% endblock %}
+
+{% block content %}
+<style>
+    .formulario-reembolso {
+        max-width: 620px;
+        margin: 40px auto;
+        padding: 30px;
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 24px;
+        color: #4A2C1B;
+        box-shadow: 0 10px 25px -5px rgba(74,44,27,.07);
+    }
+
+    .formulario-reembolso h1 {
+        color: #9E3B27;
+        margin-top: 0;
+    }
+
+    .resumen-venta {
+        background: #F5EFE3;
+        padding: 15px;
+        border-radius: 14px;
+        line-height: 1.9;
+        margin: 20px 0;
+    }
+
+    .formulario-reembolso label {
+        display: block;
+        margin: 16px 0 7px;
+        font-weight: 600;
+    }
+
+    .formulario-reembolso input,
+    .formulario-reembolso select,
+    .formulario-reembolso textarea {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid #E8DFC8;
+        border-radius: 12px;
+        font: inherit;
+        color: #4A2C1B;
+        background: #FFFFFF;
+    }
+
+    .acciones-reembolso {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+    }
+
+    .btn-guardar,
+    .btn-volver {
+        padding: 11px 17px;
+        border: 0;
+        border-radius: 22px;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 600;
+        font: inherit;
+    }
+
+    .btn-guardar {
+        background: #FF6B35;
+        color: #FFFFFF;
+    }
+
+    .btn-volver {
+        background: #F5EFE3;
+        color: #4A2C1B;
+        border: 1px solid #E8DFC8;
+    }
+
+    .aviso-reembolso {
+        font-size: 13px;
+        line-height: 1.6;
+        color: #6C5243;
+    }
+
+    .error-reembolso {
+        background: #FBE9E7;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+</style>
+
+<div class="formulario-reembolso">
+    <h1>Solicitar reembolso</h1>
+    <p>Registra la solicitud correspondiente a la venta cancelada.</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="error-reembolso">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="resumen-venta">
+        <strong>Venta:</strong> #{{ venta.id }}<br>
+        <strong>Cliente:</strong> {{ venta.cliente.nombre }}<br>
+        <strong>Total de la venta:</strong>
+        $ {{ venta.valor_total|floatformat:0|intcomma }}
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="monto">Importe que se devolverá</label>
+        <input
+            type="number"
+            id="monto"
+            name="monto"
+            min="0.01"
+            max="{{ venta.valor_total }}"
+            step="0.01"
+            required
+        >
+
+        <p class="aviso-reembolso">
+            Escribe únicamente el dinero que realmente recibió MisMary
+            y que corresponde devolver. No incluyas saldos que el cliente
+            todavía no había pagado.
+        </p>
+
+        <label for="motivo">Motivo del reembolso</label>
+        <textarea
+            id="motivo"
+            name="motivo"
+            rows="3"
+            required
+            placeholder="Explica por qué se solicita la devolución">
+        </textarea>
+
+        <label for="metodo">Método de devolución</label>
+        <select id="metodo" name="metodo" required>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Otro">Otro</option>
+        </select>
+
+        <label for="observaciones">Observaciones (opcional)</label>
+        <textarea
+            id="observaciones"
+            name="observaciones"
+            rows="2"
+            placeholder="Información adicional">
+        </textarea>
+
+        <div class="acciones-reembolso">
+            <button class="btn-guardar" type="submit">
+                Registrar solicitud
+            </button>
+
+            <a class="btn-volver" href="{% url 'lista_reembolsos' %}">
+                Volver
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

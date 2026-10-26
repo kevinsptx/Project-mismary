@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -21,32 +22,22 @@
             font-family: 'Quicksand', sans-serif;
         }
 
-        /* ===== PALETA: CAFÉ TOSTADO & TERRACOTA ===== */
-
         :root {
-            --cafe:      #4A2C1B;   /* Café Tostado: menú, títulos, estructura */
-            --terracota: #9E3B27;   /* Terracota: banners y estados intermedios */
-            --naranja:   #FF6B35;   /* Naranja Cálido: botones (CTA) */
-            --arena:     #E8DFC8;   /* Arena Suave: tarjetas y contenedores */
-            --marfil:    #F9F6F0;   /* Crema Marfil: fondo */
-
-            --texto:       #2E1D14;
+            --cafe: #4A2C1B;
+            --terracota: #9E3B27;
+            --naranja: #FF6B35;
+            --arena: #E8DFC8;
+            --marfil: #F9F6F0;
+            --texto: #2E1D14;
             --texto-suave: #7A5A48;
-            --borde:       rgba(74, 44, 27, 0.12);
-            --sombra:      rgba(74, 44, 27, 0.14);
+            --borde: rgba(74, 44, 27, 0.12);
+            --sombra: rgba(74, 44, 27, 0.14);
 
-            --principal:      var(--naranja);
-            --acento:         var(--terracota);
-            --tan:            #D8CBAA;
-            --fondo:          var(--marfil);
-            --superficie:     #FFFFFF;
-            --crema:          var(--marfil);
-            --crema-borde:    var(--borde);
-            --cafe-oscuro:    var(--cafe);
-            --cafe-texto:     var(--cafe);
-            --naranja-oscuro: var(--terracota);
+            --principal: var(--naranja);
+            --acento: var(--terracota);
+            --fondo: var(--marfil);
+            --superficie: #FFFFFF;
 
-            /* medidas del menú */
             --ancho-sidebar: 230px;
             --ancho-sidebar-colapsado: 76px;
             --margen-sidebar: 0px;
@@ -60,12 +51,9 @@
             background: var(--marfil);
             min-height: 100vh;
             color: var(--texto);
-
             position: relative;
             overflow-x: hidden;
         }
-
-        /* ===== FONDO DECORATIVO (suave, sobre crema) ===== */
 
         .fondo-decor {
             position: fixed;
@@ -82,7 +70,7 @@
             background-image: radial-gradient(rgba(74, 44, 27, 0.10) 1.5px, transparent 1.6px);
             background-size: 30px 30px;
             -webkit-mask-image: radial-gradient(ellipse at center, transparent 30%, #000 90%);
-                    mask-image: radial-gradient(ellipse at center, transparent 30%, #000 90%);
+            mask-image: radial-gradient(ellipse at center, transparent 30%, #000 90%);
         }
 
         .orbe {
@@ -144,33 +132,29 @@
         }
 
         @keyframes flotar {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(18px, -26px); }
-        }
+            0%, 100% {
+                transform: translate(0, 0);
+            }
 
-        /* ===== BARRA LATERAL ===== */
+            50% {
+                transform: translate(18px, -26px);
+            }
+        }
 
         .sidebar {
             position: fixed;
             top: var(--margen-sidebar);
             left: var(--margen-sidebar);
-
             width: var(--ancho-sidebar);
             height: 100vh;
             height: 100dvh;
-
             background: var(--cafe);
             border-radius: 0 26px 26px 0;
-
             display: flex;
             flex-direction: column;
-
             z-index: 1000;
-
             box-shadow: 6px 0 30px rgba(74, 44, 27, 0.25);
-
             transition: width 0.3s ease;
-
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -183,11 +167,8 @@
             position: fixed;
             inset: 0;
             z-index: 900;
-
             background: rgba(46, 29, 20, 0.45);
-            -webkit-backdrop-filter: blur(2px);
-                    backdrop-filter: blur(2px);
-
+            backdrop-filter: blur(2px);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -198,48 +179,11 @@
             pointer-events: auto;
         }
 
-        /* ===== LOGO EN EL ESPACIO LIBRE DEL MENÚ ===== */
-
-        .logo-contenedor-medio {
-            flex: 1;
-            min-height: 70px;
-
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;   /* pegado abajo, justo encima de la línea punteada */
-
-            padding: 10px 10px 10px; /* el último valor es el espacio de abajo */
-        }
-
-        .logo-img-medio {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid var(--arena);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-            transition: width 0.3s ease, height 0.3s ease, border-width 0.3s ease, transform 0.2s ease;
-        }
-
-        .logo-img-medio:hover {
-            transform: scale(1.05);
-        }
-
-        /* Menú minimizado: logo pequeño */
-        .sidebar.colapsado .logo-img-medio {
-            width: 44px;
-            height: 44px;
-            border-width: 2px;
-        }
-
-        /* ===== CABECERA DEL MENÚ ===== */
-
         .sidebar-top {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px 0;
-
             border-bottom: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
         }
@@ -249,40 +193,49 @@
             padding: 20px;
         }
 
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .logo-mini {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--arena);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        }
+
         .logo-sidebar {
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
             font-size: 22px;
             color: var(--naranja);
-
             white-space: nowrap;
             overflow: hidden;
-
-            transition: opacity 0.2s ease;
         }
 
-        .sidebar.colapsado .logo-sidebar {
+        .sidebar.colapsado .marca {
             display: none;
         }
 
         .toggle-btn {
             flex-shrink: 0;
-
             width: 34px;
             height: 34px;
-
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 4px;
-
             background: transparent;
             border: none;
             border-radius: 10px;
-
             cursor: pointer;
-
             transition: background 0.2s ease;
         }
 
@@ -299,10 +252,8 @@
             display: block;
             width: 18px;
             height: 2px;
-
             background: var(--marfil);
             border-radius: 2px;
-
             transition: transform 0.25s ease, opacity 0.2s ease;
         }
 
@@ -318,12 +269,9 @@
             transform: translateY(-6px) rotate(-45deg);
         }
 
-        /* ===== NAVEGACIÓN ===== */
-
         .sidebar-nav {
             flex: 0 0 auto;
             padding: 18px 12px;
-
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -333,22 +281,15 @@
             display: flex;
             align-items: center;
             gap: 14px;
-
             padding: 11px 14px;
             border-radius: 14px;
-
             text-decoration: none;
             color: var(--marfil);
-
             font-size: 14px;
             font-weight: 600;
-
             white-space: nowrap;
             overflow: hidden;
-
-            transition:
-                background 0.2s ease,
-                color 0.2s ease;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .nav-item:hover {
@@ -362,7 +303,7 @@
 
         .nav-item.activo {
             background: var(--naranja);
-            color: #fff;
+            color: #FFFFFF;
             box-shadow: 0 6px 14px rgba(255, 107, 53, 0.35);
         }
 
@@ -387,9 +328,8 @@
             padding: 11px 0;
         }
 
-        /* ===== PIE DEL MENÚ ===== */
-
         .sidebar-bottom {
+            margin-top: auto;
             padding: 16px 12px 20px;
             border-top: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
@@ -399,13 +339,10 @@
             display: flex;
             align-items: center;
             gap: 12px;
-
             padding: 8px 14px;
             margin-bottom: 10px;
-
             font-size: 13px;
             color: var(--arena);
-
             white-space: nowrap;
             overflow: hidden;
         }
@@ -429,34 +366,23 @@
 
         .logout-btn {
             width: 100%;
-
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-
             padding: 11px 12px;
-
             background: var(--naranja);
-            color: #fff;
-
+            color: #FFFFFF;
             border: none;
             border-radius: 999px;
-
             font-family: 'Quicksand', sans-serif;
             font-size: 14px;
-            font-weight: 600;
-
+            font-weight: 700;
             cursor: pointer;
             white-space: nowrap;
             overflow: hidden;
-
             box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
-
-            transition:
-                transform 0.15s ease,
-                box-shadow 0.2s ease,
-                background 0.25s ease;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.25s ease;
         }
 
         .logout-btn:hover {
@@ -477,26 +403,19 @@
             display: none;
         }
 
-        /* ===== CONTENIDO PRINCIPAL ===== */
-
         .contenido-wrap {
             margin-left: calc(var(--ancho-sidebar-colapsado) + var(--margen-sidebar));
-
             position: relative;
             z-index: 1;
-
             min-height: 100vh;
         }
 
         .contenido {
             width: 100%;
             max-width: 1100px;
-
             margin: 40px auto;
             padding: 0 25px;
         }
-
-        /* ===== TÍTULOS ===== */
 
         .titulo {
             text-align: center;
@@ -518,20 +437,14 @@
             font-weight: 600;
         }
 
-        /* ===== TARJETAS GENERALES ===== */
-
         .contenedor {
             background: #FFFFFF;
             border: 1px solid var(--borde);
             border-radius: 22px;
             padding: 25px;
-
             box-shadow: 0 12px 28px var(--sombra);
-
             color: var(--cafe);
         }
-
-        /* ===== RESPONSIVE ===== */
 
         @media (max-width: 700px) {
             .sidebar {
@@ -563,8 +476,6 @@
 
 <body>
 
-    <!-- FONDO DECORATIVO -->
-
     <div class="fondo-decor" aria-hidden="true">
         <span class="orbe orbe-1"></span>
         <span class="orbe orbe-2"></span>
@@ -573,143 +484,108 @@
         <span class="orbe orbe-5"></span>
     </div>
 
-    <!-- CAPA OSCURA CUANDO EL MENÚ ESTÁ ABIERTO -->
-
     <div class="backdrop" id="backdrop"></div>
-
-    <!-- BARRA LATERAL -->
 
     <aside class="sidebar colapsado" id="sidebar">
 
         <div class="sidebar-top">
-
-            <div class="logo-sidebar">
-                MisMary
+            <div class="marca">
+                <img src="{% static 'logo.jpeg' %}"
+                     alt="Logo MisMary"
+                     class="logo-mini">
+                <div class="logo-sidebar">MisMary</div>
             </div>
 
-            <button
-                type="button"
-                class="toggle-btn"
-                id="toggleBtn"
-                aria-label="Abrir o cerrar menú"
-                aria-expanded="false"
-                aria-controls="sidebar"
-            >
+            <button type="button"
+                    class="toggle-btn"
+                    id="toggleBtn"
+                    aria-label="Abrir o cerrar menú"
+                    aria-expanded="false"
+                    aria-controls="sidebar">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-
         </div>
 
         <nav class="sidebar-nav">
 
-            <!-- HOME / MENÚ PRINCIPAL -->
-            <a
-                href="{% url 'home' %}"
-                class="nav-item{% if request.resolver_match.url_name == 'home' %} activo{% endif %}"
-            >
+            <a href="{% url 'home' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'home' %} activo{% endif %}">
                 <span class="nav-icono">🏠</span>
                 <span class="nav-texto">Home</span>
             </a>
 
-            <!-- PRODUCTOS -->
-            <a
-                href="{% url 'list_producto' %}"
-                class="nav-item{% if request.resolver_match.url_name == 'list_producto' %} activo{% endif %}"
-            >
+            <a href="{% url 'list_producto' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'list_producto' %} activo{% endif %}">
                 <span class="nav-icono">📦</span>
                 <span class="nav-texto">Productos</span>
             </a>
 
-            <!-- CLIENTES -->
-            <a
-                href="{% url 'list_cliente' %}"
-                class="nav-item{% if request.resolver_match.url_name == 'list_cliente' %} activo{% endif %}"
-            >
+            <a href="{% url 'list_cliente' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'list_cliente' %} activo{% endif %}">
                 <span class="nav-icono">👥</span>
                 <span class="nav-texto">Clientes</span>
             </a>
 
-            <!-- VENTAS -->
-            <a
-                href="{% url 'list_venta' %}"
-                class="nav-item{% if request.resolver_match.url_name == 'list_venta' %} activo{% endif %}"
-            >
+            <a href="{% url 'list_venta' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'list_venta' %} activo{% endif %}">
                 <span class="nav-icono">🛒</span>
                 <span class="nav-texto">Ventas</span>
             </a>
 
-            <!-- PEDIDOS -->
-            <a
-                href="{% url 'list_pedido' %}"
-                class="nav-item{% if request.resolver_match.url_name == 'list_pedido' %} activo{% endif %}"
-            >
+            <a href="{% url 'list_pedido' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'list_pedido' %} activo{% endif %}">
                 <span class="nav-icono">📋</span>
                 <span class="nav-texto">Pedidos</span>
             </a>
 
-            <!-- REEMPLAZOS -->
-            <a
-                href="#"
-                class="nav-item{% if request.resolver_match.url_name == 'list_reemplazo' %} activo{% endif %}"
-            >
-                <span class="nav-icono">🔄</span>
-                <span class="nav-texto">Reemplazos</span>
+            <a href="{% url 'list_proveedor' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'list_proveedor' or request.resolver_match.url_name == 'register_proveedor' or request.resolver_match.url_name == 'proveedor_details' or request.resolver_match.url_name == 'proveedor_update' %} activo{% endif %}">
+                <span class="nav-icono">🚚</span>
+                <span class="nav-texto">Proveedores</span>
             </a>
-
-            <!-- REPORTES -->
-            <a
-                href="{% url 'reportes' %}"
-                class="nav-item{% if request.resolver_match.url_name == 'reportes' %} activo{% endif %}"
-            >
-                <span class="nav-icono">📊</span>
-                <span class="nav-texto">Reportes</span>
-            </a>
-
-            <!-- USUARIOS (SOLO SUPERUSUARIO) -->
+            
             {% if user.is_superuser %}
-            <a
-                href="{% url 'list_user' %}"
-                class="nav-item{% if request.resolver_match.url_name == 'list_user' %} activo{% endif %}"
-            >
-                <span class="nav-icono">👤</span>
-                <span class="nav-texto">Usuarios</span>
-            </a>
+                <a href="{% url 'list_grupos' %}"
+                   class="nav-item{% if request.resolver_match.url_name == 'list_grupos' or request.resolver_match.url_name == 'grupo_detalle' %} activo{% endif %}">
+                    <span class="nav-icono">👤</span>
+                    <span class="nav-texto">Grupos</span>
+                </a>
             {% endif %}
+            
+                <a href="{% url 'lista_reembolsos' %}"
+                   class="nav-item{% if request.resolver_match.url_name == 'lista_reembolsos' or request.resolver_match.url_name == 'solicitar_reembolso' or request.resolver_match.url_name == 'details_reembolso' or request.resolver_match.url_name == 'registrar_devolucion' %} activo{% endif %}">
+                    <span class="nav-icono">💸</span>
+                    <span class="nav-texto">Reembolsos</span>
+                </a>
+
+                <a href="{% url 'reportes' %}"
+                   class="nav-item{% if request.resolver_match.url_name == 'reportes' %} activo{% endif %}">
+                    <span class="nav-icono">📊</span>
+                    <span class="nav-texto">Reportes</span>
+                </a>
+
 
         </nav>
 
-        <!-- LOGO EN EL ESPACIO LIBRE (grande abierto, pequeño al minimizar) -->
-        <div class="logo-contenedor-medio">
-            <img src="{% static 'logo.jpeg' %}" alt="Logo MisMary" class="logo-img-medio">
-        </div>
-
         <div class="sidebar-bottom">
 
-            <!-- SECCIÓN DEL USUARIO CON ENLACE -->
-            {% if user.is_superuser %}
-            <a href="{% url 'list_user' %}" class="usuario-sidebar" style="text-decoration: none; cursor: pointer;">
-                <span class="nav-icono">⚙️</span>
-                <span class="nav-texto">
-                    <strong>{{ user.username }}</strong>
-                </span>
-            </a>
-            {% else %}
             <div class="usuario-sidebar">
                 <span class="nav-icono">⚙️</span>
                 <span class="nav-texto">
                     <strong>{{ user.username }}</strong>
+                    {% if user.is_superuser %}
+                        <span> · Superusuario</span>
+                    {% elif user.groups.all %}
+                        <span> · Usuario del sistema</span>
+                    {% endif %}
                 </span>
             </div>
-            {% endif %}
 
-            <!-- BOTÓN CERRAR SESIÓN -->
-            <form
-                method="POST"
-                action="{% url 'logout' %}"
-                class="logout-form"
-            >
+            <form method="POST"
+                  action="{% url 'logout' %}"
+                  class="logout-form">
                 {% csrf_token %}
 
                 <button type="submit" class="logout-btn">
@@ -719,23 +595,60 @@
             </form>
 
         </div>
-
     </aside>
 
-    <!-- CONTENIDO DE CADA PÁGINA -->
-
     <div class="contenido-wrap" id="contenidoWrap">
-
         <main class="contenido">
+            {% if messages %}
+                <div class="mensajes-sistema" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="mensaje-sistema {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <style>
+                    .mensajes-sistema {
+                        display: grid;
+                        gap: 10px;
+                        margin-bottom: 20px;
+                    }
+
+                    .mensaje-sistema {
+                        padding: 13px 17px;
+                        border-radius: 14px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        background: #F5EFE3;
+                        color: #4A2C1B;
+                        border: 1px solid #E8DFC8;
+                    }
+
+                    .mensaje-sistema.success {
+                        background: #EAF5E8;
+                        color: #285B32;
+                        border-color: #C7E4C5;
+                    }
+
+                    .mensaje-sistema.error {
+                        background: #FCEBE7;
+                        color: #9E3B27;
+                        border-color: #F1C8BD;
+                    }
+
+                    .mensaje-sistema.warning {
+                        background: #FFF4D6;
+                        color: #765719;
+                        border-color: #F1DEA8;
+                    }
+                </style>
+            {% endif %}
 
             {% block content %}
             {% endblock %}
-
         </main>
-
     </div>
-
-    <!-- CONTROL DE LA BARRA -->
 
     <script>
         const sidebar = document.getElementById('sidebar');
@@ -756,39 +669,33 @@
             abrirMenu(false);
         });
 
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
                 abrirMenu(false);
             }
         });
-    </script>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
+            function capitalizarNombre(texto) {
+                return texto
+                    .toLocaleLowerCase('es')
+                    .replace(/(^|\s)([a-záéíóúüñ])/gu, function (_, espacio, letra) {
+                        return espacio + letra.toLocaleUpperCase('es');
+                    });
+            }
 
-        function capitalizarNombre(texto) {
-            return texto
-                .toLocaleLowerCase('es')
-                .replace(/(^|\s)([a-záéíóúüñ])/gu, function (_, espacio, letra) {
-                    return espacio + letra.toLocaleUpperCase('es');
+            document.querySelectorAll('.capitalizar-nombre').forEach(function (campo) {
+                campo.addEventListener('input', function () {
+                    const inicio = this.selectionStart;
+                    const fin = this.selectionEnd;
+
+                    this.value = capitalizarNombre(this.value);
+                    this.setSelectionRange(inicio, fin);
                 });
-        }
 
-        document.querySelectorAll('.capitalizar-nombre').forEach(function (campo) {
-
-            campo.addEventListener('input', function () {
-                const inicio = this.selectionStart;
-                const fin = this.selectionEnd;
-
-                this.value = capitalizarNombre(this.value);
-
-                this.setSelectionRange(inicio, fin);
+                campo.value = capitalizarNombre(campo.value);
             });
-
-            campo.value = capitalizarNombre(campo.value);
         });
-
-    });
     </script>
 
 </body>

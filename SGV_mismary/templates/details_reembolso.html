@@ -1,0 +1,201 @@
+
+{% extends 'layout/base.html' %}
+{% load humanize %}
+
+{% block title %}Detalles del reembolso | MisMary{% endblock %}
+
+{% block content %}
+<style>
+    .detalle-reembolso {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px;
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 24px;
+        color: #4A2C1B;
+        box-shadow: 0 10px 25px -5px rgba(74,44,27,.07);
+    }
+
+    .detalle-reembolso h1 {
+        color: #9E3B27;
+        margin-top: 0;
+    }
+
+    .detalle-datos {
+        background: #F5EFE3;
+        border-radius: 15px;
+        padding: 18px;
+        line-height: 2;
+        overflow-wrap: anywhere;
+    }
+
+    .estado-detalle {
+        display: inline-block;
+        background: #F5EFE3;
+        border: 1px solid #E8DFC8;
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-weight: 600;
+    }
+
+    .acciones-detalle {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .btn-detalle {
+        padding: 11px 17px;
+        border: none;
+        border-radius: 22px;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .btn-devolver {
+        background: #FF6B35;
+        color: #FFFFFF;
+    }
+
+    .btn-devolver:hover {
+        background: #9E3B27;
+    }
+
+    .btn-lista {
+        background: #F5EFE3;
+        color: #4A2C1B;
+        border: 1px solid #E8DFC8;
+    }
+
+    .aviso-detalle {
+        color: #6C5243;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-top: 18px;
+    }
+</style>
+
+<div class="detalle-reembolso">
+    <h1>Detalles del reembolso</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <div class="detalle-datos">
+        <strong>Número de reembolso:</strong>
+        #{{ reembolso.id }}<br>
+
+        <strong>Venta relacionada:</strong>
+        #{{ reembolso.venta.id }}<br>
+
+        <strong>Cliente:</strong>
+        {{ reembolso.venta.cliente.nombre }}<br>
+
+        <strong>Total de la venta:</strong>
+        $ {{ reembolso.venta.valor_total|floatformat:0|intcomma }}<br>
+
+        <strong>Importe del reembolso:</strong>
+        $ {{ reembolso.monto|floatformat:2|intcomma }}<br>
+
+        <strong>Motivo:</strong>
+        {{ reembolso.motivo }}<br>
+
+        <strong>Estado:</strong>
+        <span class="estado-detalle">{{ reembolso.estado }}</span><br>
+
+        <strong>Método de devolución:</strong>
+        {{ reembolso.metodo }}<br>
+
+        <strong>Fecha de solicitud:</strong>
+        {{ reembolso.fecha_solicitud|date:"d/m/Y H:i" }}<br>
+
+        <strong>Fecha de devolución:</strong>
+        {% if reembolso.fecha_devolucion %}
+            {{ reembolso.fecha_devolucion|date:"d/m/Y H:i" }}
+        {% else %}
+            Todavía no registrada
+        {% endif %}
+
+        {% if reembolso.observaciones %}
+            <br>
+            <strong>Observaciones:</strong>
+            {{ reembolso.observaciones }}
+        {% endif %}
+    </div>
+
+    {% if reembolso.estado != "Devuelto" %}
+        <p class="aviso-detalle">
+            Confirma que el dinero se haya devuelto realmente al cliente
+            antes de registrar esta operación como completada.
+        </p>
+
+        <form
+            method="POST"
+            action="{% url 'registrar_devolucion' reembolso.id %}">
+
+            {% csrf_token %}
+
+            <label for="metodo">
+                Método utilizado para devolver el dinero
+            </label>
+
+            <select
+                id="metodo"
+                name="metodo"
+                required
+                style="padding: 10px; border: 1px solid #E8DFC8;
+                       border-radius: 10px; margin-top: 8px;">
+
+                <option value="Efectivo"
+                    {% if reembolso.metodo == "Efectivo" %}selected{% endif %}>
+                    Efectivo
+                </option>
+
+                <option value="Transferencia"
+                    {% if reembolso.metodo == "Transferencia" %}selected{% endif %}>
+                    Transferencia
+                </option>
+
+                <option value="Otro"
+                    {% if reembolso.metodo == "Otro" %}selected{% endif %}>
+                    Otro
+                </option>
+            </select>
+
+            <div class="acciones-detalle">
+                <button
+                    type="submit"
+                    class="btn-detalle btn-devolver"
+                    onclick="return confirm('¿Confirmas que la devolución ya se realizó?');">
+                    Registrar devolución realizada
+                </button>
+
+                <a
+                    href="{% url 'lista_reembolsos' %}"
+                    class="btn-detalle btn-lista">
+                    Volver a reembolsos
+                </a>
+            </div>
+        </form>
+    {% else %}
+        <p class="aviso-detalle">
+            Esta devolución ya figura como completada.
+        </p>
+
+        <div class="acciones-detalle">
+            <a
+                href="{% url 'lista_reembolsos' %}"
+                class="btn-detalle btn-lista">
+                Volver a reembolsos
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

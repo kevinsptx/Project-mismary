@@ -1,19 +1,23 @@
-
 import csv
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_http_methods
+from django.utils import timezone
 
-from .forms import ProductoForm, AbonoForm, ClienteForm, GastoForm
+from .forms import (
+    ProductoForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
+)
 from .models import (
     Cliente, Venta, Abono, Deuda, Categoria,
-    Producto, DetalleVenta, Gasto, Pago,DetallePedido,Pedido
+    Producto, DetalleVenta, Gasto, Pago,
+    DetallePedido, Pedido, Proveedor,Reembolso
 )
 
 
@@ -28,6 +32,10 @@ def int_cop(valor):
 def home(request):
     return render(request, 'home.html')
 
+
+# ============================================================
+# CLIENTES
+# ============================================================
 
 @login_required
 def registrar_cliente(request):
@@ -77,13 +85,16 @@ def register_cliente(request):
     return render(request, 'register_cliente.html')
 
 
-
 @login_required
 def cliente_details(request, id):
     cliente = get_object_or_404(Cliente, id=id)
-    tiene_deuda = Deuda.objects.filter(cliente=cliente, estado='Pendiente', saldo__gt=0).exists()
-    return render(request, 'cliente_details.html', {'cliente': cliente, 'tiene_deuda': tiene_deuda})
-
+    tiene_deuda = Deuda.objects.filter(
+        cliente=cliente, estado='Pendiente', saldo__gt=0
+    ).exists()
+    return render(request, 'cliente_details.html', {
+        'cliente': cliente,
+        'tiene_deuda': tiene_deuda
+    })
 
 
 @login_required
@@ -98,7 +109,6 @@ def cliente_update(request, id):
         return redirect('list_cliente')
 
     return render(request, 'cliente_update.html', {'cliente': cliente})
-
 
 
 @login_required
@@ -121,6 +131,10 @@ def cliente_delete(request, id):
     messages.success(request, f'El cliente {cliente.nombre} fue eliminado correctamente.')
     return redirect('list_cliente')
 
+
+# ============================================================
+# PRODUCTOS
+# ============================================================
 
 @login_required
 def register_producto(request):
@@ -158,16 +172,26 @@ def list_producto(request):
     })
 
 
+
 @login_required
 def producto_update(request, id):
     producto = get_object_or_404(Producto, id=id)
 
     if request.method == 'POST':
-        form = ProductoForm(request.POST, instance=producto)
+        datos = request.POST.copy()
+        precio = datos.get('precio_venta', '').strip()
+
+        # Quitar únicamente los puntos usados como separadores de miles.
+        datos['precio_venta'] = precio.replace('.', '')
+
+        form = ProductoForm(datos, instance=producto)
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Producto actualizado correctamente.')
+            messages.success(
+                request,
+                'Producto actualizado correctamente.'
+            )
             return redirect('list_producto')
     else:
         form = ProductoForm(instance=producto)
@@ -176,6 +200,8 @@ def producto_update(request, id):
         'form': form,
         'producto': producto
     })
+
+
 
 
 @login_required
@@ -234,6 +260,10 @@ def productos_mas_vendidos(request):
         'fecha_fin': fecha_fin
     })
 
+
+# ============================================================
+# VENTAS
+# ============================================================
 
 class StockInsuficiente(Exception):
     pass
@@ -392,16 +422,13 @@ def list_venta(request):
 @login_required
 def venta_details(request, id):
     venta = get_object_or_404(Venta, id=id)
-    detalles = venta.detalles.select_related('producto')
-    deuda = Deuda.objects.filter(
-        cliente=venta.cliente,
-        valor_total=venta.valor_total
-    ).last()
+
+    detalles = venta.detalles.select_related('producto').all()
 
     return render(request, 'venta_details.html', {
         'venta': venta,
         'detalles': detalles,
-        'deuda': deuda
+        'deuda': None,
     })
 
 
@@ -471,14 +498,21 @@ def consultar_por_fecha(request):
     })
 
 
+# ============================================================
+# ABONOS Y DEUDAS
+# ============================================================
+
 @login_required
 def lista_abonos(request):
-    abonos = Abono.objects.select_related(
+    abonos = Abono.objects.filter(
+        deuda__saldo__gt=0
+    ).select_related(
         'deuda__cliente'
     ).order_by('-fecha')
 
-    return render(request, 'abonos.html', {'abonos': abonos})
-
+    return render(request, 'abonos.html', {
+        'abonos': abonos
+    })
 
 @login_required
 def registrar_abono(request, deuda_id):
@@ -681,6 +715,10 @@ def cliente_historial(request, id):
         'saldo_pendiente': saldo_pendiente
     })
 
+
+# ============================================================
+# REPORTES
+# ============================================================
 
 def filtrar_por_fecha(consulta, fecha_inicio, fecha_fin):
     if fecha_inicio:
@@ -926,66 +964,115 @@ def descargar_reporte(request):
 
     return response
 
+
+# ============================================================
+# PEDIDOS
+# ============================================================
+
 @login_required
 def list_pedido(request):
     # Trae todos los pedidos ordenados del más reciente al más antiguo
-    pedidos = Pedido.objects.all().order_by('-id')
+    pedidos = Pedido.objects.select_related('proveedor').order_by('-id')
     return render(request, 'list_pedido.html', {'pedidos': pedidos})
 
 
 @login_required
 def register_pedido(request):
     productos = Producto.objects.all()
+    proveedores = Proveedor.objects.order_by('nombre')
 
     if request.method == 'POST':
-        proveedor = request.POST.get('proveedor')
+        proveedor_id = request.POST.get('proveedor')
         fecha = request.POST.get('fecha')
-        
+
+        proveedor = None
+        if proveedor_id and str(proveedor_id).isdigit():
+            proveedor = Proveedor.objects.filter(pk=proveedor_id).first()
+
+        if not proveedor:
+            messages.error(request, 'Debes seleccionar un proveedor.')
+            return redirect('register_pedido')
+
         productos_ids = request.POST.getlist('producto_id[]')
         cantidades = request.POST.getlist('cantidad[]')
         costos = request.POST.getlist('costo_unitario[]')
+        precios_venta = request.POST.getlist('precio_venta[]')
 
-        # 1. Creamos el pedido principal
-        pedido = Pedido.objects.create(
-            proveedor=proveedor,
-            fecha=fecha,
-            estado='Pendiente',
-            costo_total=0
-        )
+        # Se validan todas las filas ANTES de guardar nada.
+        lineas = []
+        try:
+            for i in range(len(productos_ids)):
+                cant = int(cantidades[i])
+                costo = Decimal(costos[i])
+                precio_venta = Decimal(precios_venta[i])
 
-        costo_total_acumulado = 0
+                if cant < 1 or costo < 0 or precio_venta <= 0:
+                    raise ValueError
+                if not costo.is_finite() or not precio_venta.is_finite():
+                    raise ValueError
 
-        # 2. Recorremos los productos agregados
-        for i in range(len(productos_ids)):
-            p_id = productos_ids[i]
-            cant = int(cantidades[i])
-            costo = float(costos[i])
+                lineas.append((productos_ids[i], cant, costo, precio_venta))
+        except (ValueError, InvalidOperation, IndexError):
+            messages.error(
+                request,
+                'Revisa los productos: cantidad, precio de compra y '
+                'precio de venta deben ser valores válidos.'
+            )
+            return redirect('register_pedido')
 
-            costo_total_acumulado += (cant * costo)
+        if not lineas:
+            messages.error(request, 'Agrega al menos un producto al pedido.')
+            return redirect('register_pedido')
 
-            producto = get_object_or_404(Producto, id=p_id)
-            DetallePedido.objects.create(
-                pedido=pedido,
-                producto=producto,
-                cantidad=cant,
-                costo_unitario=costo
+        with transaction.atomic():
+            # 1. Creamos el pedido principal
+            pedido = Pedido.objects.create(
+                proveedor=proveedor,
+                fecha=fecha,
+                estado='Pendiente',
+                costo_total=0
             )
 
-        # 3. Guardamos el costo total del pedido
-        pedido.costo_total = costo_total_acumulado
-        pedido.save()
+            costo_total_acumulado = Decimal('0')
 
-        # 4. Sincronización automática con Gastos (Campos corregidos: descripcion y valor)
-        Gasto.objects.create(
-            descripcion=f"Pedido a proveedor: {proveedor} (Pedido #{pedido.id})",
-            valor=costo_total_acumulado,
-            fecha=fecha
-        )
+            # 2. Recorremos los productos agregados
+            for p_id, cant, costo, precio_venta in lineas:
+                costo_total_acumulado += cant * costo
+
+                producto = get_object_or_404(Producto, id=p_id)
+                DetallePedido.objects.create(
+                    pedido=pedido,
+                    producto=producto,
+                    cantidad=cant,
+                    costo_unitario=costo
+                )
+
+                # El precio de compra y de venta del pedido quedan en el
+                # producto para mostrarlos en la tabla de productos.
+                producto.precio_compra = costo
+                producto.precio_venta = precio_venta
+                producto.save(update_fields=['precio_compra', 'precio_venta'])
+
+            # 3. Guardamos el costo total del pedido
+            pedido.costo_total = costo_total_acumulado
+            pedido.save()
+
+            # 4. Sincronización automática con Gastos
+            Gasto.objects.create(
+                descripcion=f"Pedido a proveedor: {proveedor.nombre} (Pedido #{pedido.id})",
+                valor=costo_total_acumulado,
+                fecha=fecha,
+                tipo='Pedido'
+            )
 
         messages.success(request, 'Pedido registrado y sincronizado en gastos correctamente.')
         return redirect('list_pedido')
 
-    return render(request, 'register_pedido.html', {'productos': productos})
+    return render(request, 'register_pedido.html', {
+        'productos': productos,
+        'proveedores': proveedores,
+    })
+
 
 @login_required
 def pedido_details(request, pedido_id):
@@ -1032,13 +1119,378 @@ def eliminar_pedido(request, pedido_id):
                 detalle.producto.cantidad_disponible -= detalle.cantidad
                 detalle.producto.save()
 
-        # Eliminar el registro del Gasto asociado a este pedido
-        
-        Gasto.objects.filter(descripcion__icontains=f"Pedido #{pedido.id}").delete()
-
+        # Eliminar el gasto asociado a ESTE pedido (endswith evita que
+        # "Pedido #1" borre también los gastos de "Pedido #10", "#11", etc.)
+        Gasto.objects.filter(
+            descripcion__endswith=f"(Pedido #{pedido.id})"
+        ).delete()
 
         pedido.delete()
         messages.success(request, 'Pedido y su gasto asociado eliminados correctamente.')
         return redirect('list_pedido')
 
     return redirect('pedido_details', pedido_id=pedido.id)
+
+
+# ============================================================
+# PROVEEDORES
+# ============================================================
+
+@login_required
+def list_proveedor(request):
+    buscar = request.GET.get('buscar')
+
+    proveedores = Proveedor.objects.annotate(total_pedidos=Count('pedidos'))
+
+    if buscar:
+        proveedores = proveedores.filter(
+            Q(nombre__icontains=buscar)
+            | Q(telefono__icontains=buscar)
+            | Q(correo__icontains=buscar)
+        )
+
+    return render(request, 'list_proveedor.html', {
+        'proveedores': proveedores,
+        'buscar': buscar
+    })
+
+
+@login_required
+def register_proveedor(request):
+    # Si venimos desde "Registrar pedido", al guardar regresamos allá
+    siguiente = request.POST.get('next') or request.GET.get('next')
+
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Proveedor registrado correctamente.')
+
+            if siguiente == 'pedido':
+                return redirect('register_pedido')
+            return redirect('list_proveedor')
+    else:
+        form = ProveedorForm()
+
+    return render(request, 'register_proveedor.html', {
+        'form': form,
+        'siguiente': siguiente,
+    })
+
+
+@login_required
+def proveedor_details(request, proveedor_id):
+    proveedor = get_object_or_404(Proveedor, id=proveedor_id)
+    pedidos = proveedor.pedidos.order_by('-id')
+
+    total_comprado = pedidos.exclude(estado='Cancelado').aggregate(
+        total=Sum('costo_total')
+    )['total'] or 0
+
+    return render(request, 'proveedor_details.html', {
+        'proveedor': proveedor,
+        'pedidos': pedidos,
+        'total_comprado': total_comprado,
+    })
+
+
+@login_required
+def proveedor_update(request, proveedor_id):
+    proveedor = get_object_or_404(Proveedor, id=proveedor_id)
+
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST, instance=proveedor)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Proveedor actualizado correctamente.')
+            return redirect('proveedor_details', proveedor_id=proveedor.id)
+    else:
+        form = ProveedorForm(instance=proveedor)
+
+    return render(request, 'proveedor_update.html', {
+        'form': form,
+        'proveedor': proveedor,
+    })
+
+
+@login_required
+def proveedor_delete(request, proveedor_id):
+    proveedor = get_object_or_404(Proveedor, id=proveedor_id)
+
+    if request.method == 'POST':
+        if proveedor.pedidos.exists():
+            messages.error(
+                request,
+                f'No se puede eliminar a {proveedor.nombre} porque tiene pedidos registrados.'
+            )
+            return redirect('proveedor_details', proveedor_id=proveedor.id)
+
+        nombre = proveedor.nombre
+        proveedor.delete()
+        messages.success(request, f'El proveedor {nombre} fue eliminado correctamente.')
+        return redirect('list_proveedor')
+
+    return redirect('proveedor_details', proveedor_id=proveedor.id)
+
+
+
+# ============================================================
+# CANCELACIÓN DE VENTAS Y REEMBOLSOS
+# ============================================================
+
+def crear_reembolso_automatico(venta):
+    """Crea un reembolso para una venta cancelada si aún no existe."""
+    if venta.estado != 'Cancelada':
+        return None, False
+
+    metodo_pago = getattr(venta, 'forma_pago', 'Otro') or 'Otro'
+
+    if metodo_pago not in ['Efectivo', 'Transferencia', 'Otro']:
+        metodo_pago = 'Otro'
+
+    reembolso, creado = Reembolso.objects.get_or_create(
+        venta=venta,
+        defaults={
+            'motivo': 'Reembolso generado por cancelación de venta',
+            'monto': venta.valor_total,
+            'metodo': metodo_pago,
+            'estado': 'Solicitado',
+            'observaciones': (
+                'Registro generado automáticamente al cancelar la venta.'
+            ),
+        }
+    )
+
+    return reembolso, creado
+
+
+@login_required
+def cancelar_venta(request, venta_id):
+    venta = get_object_or_404(Venta, pk=venta_id)
+
+    if request.method == 'GET':
+        return render(
+            request,
+            'cancelar_venta.html',
+            {'venta': venta}
+        )
+
+    if request.method != 'POST':
+        return redirect('list_venta')
+
+    with transaction.atomic():
+        if venta.estado != 'Cancelada':
+            venta.estado = 'Cancelada'
+            venta.save(update_fields=['estado'])
+
+        reembolso, creado = crear_reembolso_automatico(venta)
+
+    if creado:
+        messages.success(
+            request,
+            f'La venta #{venta.id} fue cancelada y su reembolso quedó registrado.'
+        )
+    else:
+        messages.info(
+            request,
+            f'La venta #{venta.id} ya estaba cancelada o ya tenía un reembolso.'
+        )
+
+    return redirect('list_venta')
+
+
+@login_required
+def lista_reembolsos(request):
+    # Crea los reembolsos que falten para las ventas canceladas anteriormente.
+    ventas_canceladas = Venta.objects.filter(estado='Cancelada')
+
+    for venta in ventas_canceladas.iterator():
+        crear_reembolso_automatico(venta)
+
+    reembolsos = (
+        Reembolso.objects
+        .select_related('venta', 'venta__cliente')
+        .order_by('-fecha_solicitud')
+    )
+
+    return render(
+        request,
+        'list_reembolsos.html',
+        {'reembolsos': reembolsos}
+    )
+
+
+@login_required
+def solicitar_reembolso(request, venta_id):
+    venta = get_object_or_404(
+        Venta,
+        pk=venta_id,
+        estado='Cancelada'
+    )
+
+    existente = Reembolso.objects.filter(venta=venta).first()
+
+    if existente:
+        return redirect(
+            'details_reembolso',
+            reembolso_id=existente.id
+        )
+
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo', '').strip()
+        metodo = request.POST.get('metodo', 'Efectivo')
+        observaciones = request.POST.get('observaciones', '').strip()
+
+        try:
+            monto = Decimal(request.POST.get('monto', '0'))
+        except (InvalidOperation, TypeError, ValueError):
+            monto = Decimal('0')
+
+        metodos_validos = [
+            'Efectivo',
+            'Transferencia',
+            'Otro'
+        ]
+
+        if not motivo:
+            messages.error(
+                request,
+                'Escribe el motivo del reembolso.'
+            )
+
+        elif (
+            not monto.is_finite()
+            or monto <= 0
+            or monto > venta.valor_total
+        ):
+            messages.error(
+                request,
+                'El importe debe ser mayor que cero y no superar el total de la venta.'
+            )
+
+        elif metodo not in metodos_validos:
+            messages.error(
+                request,
+                'Selecciona un método válido.'
+            )
+
+        else:
+            reembolso = Reembolso.objects.create(
+                venta=venta,
+                motivo=motivo,
+                monto=monto,
+                metodo=metodo,
+                observaciones=observaciones,
+                estado='Solicitado'
+            )
+
+            messages.success(
+                request,
+                'La solicitud de reembolso se registró correctamente.'
+            )
+
+            return redirect(
+                'details_reembolso',
+                reembolso_id=reembolso.id
+            )
+
+    return render(
+        request,
+        'solicitar_reembolso.html',
+        {'venta': venta}
+    )
+
+
+@login_required
+def details_reembolso(request, reembolso_id):
+    reembolso = get_object_or_404(
+        Reembolso.objects.select_related(
+            'venta',
+            'venta__cliente'
+        ),
+        pk=reembolso_id
+    )
+
+    return render(
+        request,
+        'details_reembolso.html',
+        {'reembolso': reembolso}
+    )
+
+
+@login_required
+def details_reembolso_venta(request, venta_id):
+    reembolso = get_object_or_404(
+        Reembolso,
+        venta_id=venta_id
+    )
+
+    return redirect(
+        'details_reembolso',
+        reembolso_id=reembolso.id
+    )
+
+
+@login_required
+def registrar_devolucion(request, reembolso_id):
+    reembolso = get_object_or_404(
+        Reembolso,
+        pk=reembolso_id
+    )
+
+    if request.method != 'POST':
+        return redirect(
+            'details_reembolso',
+            reembolso_id=reembolso.id
+        )
+
+    if reembolso.estado == 'Devuelto':
+        messages.info(
+            request,
+            'Este reembolso ya aparece como devuelto.'
+        )
+
+        return redirect(
+            'details_reembolso',
+            reembolso_id=reembolso.id
+        )
+
+    metodo = request.POST.get(
+        'metodo',
+        reembolso.metodo
+    )
+
+    if metodo not in ['Efectivo', 'Transferencia', 'Otro']:
+        messages.error(
+            request,
+            'Selecciona un método válido.'
+        )
+
+        return redirect(
+            'details_reembolso',
+            reembolso_id=reembolso.id
+        )
+
+    reembolso.metodo = metodo
+    reembolso.estado = 'Devuelto'
+    reembolso.fecha_devolucion = timezone.now()
+
+    reembolso.save(
+        update_fields=[
+            'metodo',
+            'estado',
+            'fecha_devolucion'
+        ]
+    )
+
+    messages.success(
+        request,
+        'La devolución quedó registrada.'
+    )
+
+    return redirect(
+        'details_reembolso',
+        reembolso_id=reembolso.id
+    )

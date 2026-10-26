@@ -1,309 +1,430 @@
 {% extends 'layout/base.html' %}
 {% load static %}
 
-{% block title %}
-Menú Principal | MisMary
-{% endblock %}
+{% block title %}Menú Principal | MisMary{% endblock %}
 
 {% block content %}
 
 <style>
+:root {
+    --cafe-tostado: #4A2C1B;
+    --terracota: #9E3B27;
+    --naranja: #FF6B35;
+    --naranja-hover: #E85A26;
+    --arena: #E8DFC8;
+    --arena-suave: #F5EFE3;
+    --marfil-bg: #FCFAF7;
+    --blanco: #FFFFFF;
+    --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
+}
 
-    /* ===== PALETA Y BASE ===== */
+.wrap-mismary {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 20px 0 40px;
+    color: var(--cafe-tostado);
+    font-family: 'Fredoka', 'Quicksand', sans-serif;
+}
 
-    :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
-        --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
+.saludo-caja {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 25px;
+}
 
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+.saludo-texto h1 {
+    margin: 0;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cafe-tostado);
+}
+
+.saludo-texto p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: var(--terracota);
+}
+
+.chip-mismary {
+    background: var(--arena-suave);
+    color: var(--cafe-tostado);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid var(--arena);
+    white-space: nowrap;
+}
+
+.layout-mismary {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.hero-card {
+    background: linear-gradient(135deg, var(--naranja) 0%, var(--terracota) 100%);
+    color: var(--blanco);
+    border-radius: 28px;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    box-shadow: 0 14px 28px rgba(255, 107, 53, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 550px;
+}
+
+.hero-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--blanco);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.hero-content h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 29px;
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: var(--blanco);
+}
+
+.hero-content p {
+    font-size: 15px;
+    margin: 0 0 20px;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--blanco);
+    color: var(--terracota);
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.hero-logo {
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--arena);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+.grid-dos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.card-mediana {
+    background: var(--blanco);
+    border: 1px solid var(--arena);
+    border-radius: 24px;
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-mediana:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-hover);
+    border-color: var(--terracota);
+}
+
+.card-header-flex {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.icono-img {
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: 0 6px 14px rgba(74, 44, 27, 0.15);
+}
+
+.icono-img-grande {
+    width: 84px;
+    height: 84px;
+    border-radius: 22px;
+}
+
+/* Iconos de tarjetas que aún no tienen imagen */
+.icono-emoji {
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    background: var(--arena-suave);
+    border: 1px solid var(--arena);
+    border-radius: 18px;
+    box-shadow: 0 6px 14px rgba(74, 44, 27, 0.10);
+}
+
+.icono-emoji-grande {
+    width: 84px;
+    height: 84px;
+    font-size: 40px;
+    border-radius: 22px;
+}
+
+.card-mediana h3 {
+    margin: 0;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 21px;
+    color: var(--cafe-tostado);
+}
+
+.card-mediana p {
+    font-size: 14px;
+    color: #6C5243;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.btn-mismary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--naranja);
+    color: var(--blanco);
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background 0.2s ease, transform 0.2s ease;
+    align-self: flex-start;
+}
+
+.btn-mismary:hover {
+    background: var(--terracota);
+    transform: translateY(-2px);
+}
+
+/* Tarjeta larga de proveedores */
+.card-larga {
+    background: var(--blanco);
+    border: 1px solid var(--arena);
+    border-radius: 24px;
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card-larga:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-hover);
+    border-color: var(--terracota);
+}
+
+.card-larga-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+}
+
+.card-larga h3 {
+    margin: 0 0 4px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 21px;
+    color: var(--cafe-tostado);
+}
+
+.card-larga p {
+    margin: 0;
+    font-size: 14px;
+    color: #6C5243;
+    line-height: 1.6;
+}
+
+/* Tarjetas pequeñas */
+.grid-tres {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+}
+
+.card-compacta {
+    background: var(--arena-suave);
+    border: 1px solid transparent;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: var(--cafe-tostado);
+    min-width: 0;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card-compacta:hover {
+    background: var(--blanco);
+    border-color: var(--terracota);
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-suave);
+}
+
+.card-compacta-info {
+    min-width: 0;
+}
+
+.card-compacta-info h4 {
+    margin: 0 0 3px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.card-compacta-info span {
+    font-size: 12px;
+    color: var(--terracota);
+    line-height: 1.4;
+}
+
+/* Tarjeta de módulo pendiente */
+.card-compacta-pronto {
+    cursor: default;
+}
+
+.card-compacta-pronto:hover {
+    background: var(--arena-suave);
+    border-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+.etiqueta-pronto {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    background: var(--blanco);
+    border: 1px solid var(--arena);
+    border-radius: 999px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--terracota);
+    vertical-align: middle;
+}
+
+@media (max-width: 850px) {
+    .hero-card {
+        padding: 26px;
     }
 
-    body {
-        background-color: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding-bottom: 60px;
+    .hero-logo {
+        width: 110px;
+        height: 110px;
     }
+}
 
+@media (max-width: 650px) {
     .wrap-mismary {
-        max-width: 1040px;
-        margin: 0 auto;
-        padding: 30px 20px;
+        padding-top: 10px;
     }
-
-    /* ===== SALUDO COMPACTO ===== */
 
     .saludo-caja {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 25px;
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .saludo-texto h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
+        font-size: 24px;
     }
 
-    .saludo-texto p {
-        margin: 4px 0 0 0;
-        font-size: 14px;
-        color: var(--terracota);
+    .grid-dos,
+    .grid-tres {
+        grid-template-columns: 1fr;
     }
-
-    .chip-mismary {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        padding: 6px 16px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        border: 1px solid var(--arena);
-    }
-
-    /* ===== ESTRUCTURA ASIMÉTRICA ===== */
-
-    .layout-mismary {
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    /* 1. TARJETA PROTAGONISTA (HERO) */
 
     .hero-card {
-        background: linear-gradient(135deg, var(--naranja) 0%, var(--terracota) 100%);
-        color: #FFFFFF;
-        border-radius: 28px;
-        padding: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        box-shadow: 0 14px 28px rgba(255, 107, 53, 0.25);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .hero-content {
-        max-width: 550px;
-    }
-
-    .hero-badge {
-        background: rgba(255, 255, 255, 0.2);
-        color: #FFF;
-        padding: 4px 12px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 600;
-        display: inline-block;
-        margin-bottom: 12px;
+        padding: 24px;
     }
 
     .hero-content h2 {
-        font-size: 28px;
-        margin: 0 0 8px 0;
-        font-weight: 700;
-        color: #FFF;
+        font-size: 25px;
     }
-
-    .hero-content p {
-        font-size: 15px;
-        margin: 0 0 20px 0;
-        opacity: 0.92;
-        line-height: 1.4;
-    }
-
-    .btn-hero {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: #FFFFFF;
-        color: var(--terracota);
-        text-decoration: none;
-        padding: 12px 24px;
-        border-radius: 999px;
-        font-size: 14px;
-        font-weight: 700;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn-hero:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
-    }
-
-    /* LOGO EN LA TARJETA PRINCIPAL */
 
     .hero-logo {
-        width: 140px;
-        height: 140px;
-        flex-shrink: 0;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 4px solid var(--arena);
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-    }
-
-    /* 2. FILA MEDIANA (2 COLUMNAS) */
-
-    .grid-dos {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
+        display: none;
     }
 
     .card-mediana {
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        padding: 26px;
-        display: flex;
+        padding: 22px;
+    }
+
+    .card-larga {
         flex-direction: column;
-        justify-content: space-between;
-        box-shadow: var(--sombra-suave);
-        transition: all 0.25s ease;
+        align-items: flex-start;
+        padding: 22px;
     }
+}
 
-    .card-mediana:hover {
-        transform: translateY(-4px);
-        border-color: var(--terracota);
-        box-shadow: var(--sombra-hover);
+@media (prefers-reduced-motion: reduce) {
+    .wrap-mismary *,
+    .wrap-mismary *::before,
+    .wrap-mismary *::after {
+        transition-duration: 0.01ms !important;
     }
-
-    .card-header-flex {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 12px;
-    }
-
-    .icono-img {
-        width: 68px;
-        height: 68px;
-        flex-shrink: 0;
-        object-fit: cover;
-        border-radius: 18px;
-        box-shadow: 0 6px 14px rgba(74, 44, 27, 0.15);
-    }
-
-    .icono-img-grande {
-        width: 84px;
-        height: 84px;
-        border-radius: 22px;
-    }
-
-    .card-mediana h3 {
-        margin: 0;
-        font-size: 20px;
-        color: var(--cafe-tostado);
-    }
-
-    .card-mediana p {
-        font-size: 14px;
-        color: #6C5243;
-        margin: 0 0 20px 0;
-        line-height: 1.4;
-    }
-
-    /* 3. FILA COMPACTA (3 COLUMNAS) */
-
-    .grid-tres {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-    }
-
-    .card-compacta {
-        background: var(--arena-suave);
-        border: 1px solid transparent;
-        border-radius: 20px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        text-decoration: none;
-        color: var(--cafe-tostado);
-        transition: all 0.2s ease;
-    }
-
-    .card-compacta:hover {
-        background: var(--blanco);
-        border-color: var(--terracota);
-        transform: translateY(-3px);
-        box-shadow: var(--sombra-suave);
-    }
-
-    .card-compacta-info h4 {
-        margin: 0 0 2px 0;
-        font-size: 16px;
-        font-weight: 700;
-    }
-
-    .card-compacta-info span {
-        font-size: 12px;
-        color: var(--terracota);
-    }
-
-    /* BOTONES ESTÁNDAR */
-
-    .btn-mismary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--naranja);
-        color: #FFF;
-        text-decoration: none;
-        padding: 10px 18px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        transition: background 0.2s ease;
-    }
-
-    .btn-mismary:hover {
-        background: var(--terracota);
-    }
-
-    /* RESPONSIVO */
-
-    @media (max-width: 850px) {
-        .grid-dos, .grid-tres {
-            grid-template-columns: 1fr;
-        }
-
-        .hero-card {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .hero-logo {
-            display: none;
-        }
-    }
-
+}
 </style>
-
 
 <div class="wrap-mismary">
 
-    <!-- SALUDO -->
     <div class="saludo-caja">
         <div class="saludo-texto">
             <h1>¡Hola, {{ user.username }}! ✨</h1>
-            <p>Bienvenido a tu espacio de trabajo en MisMary</p>
+            <p>Bienvenido a tu espacio de trabajo en MisMary.</p>
         </div>
+
         <div class="chip-mismary">
             {% now "d/m/Y" %}
         </div>
@@ -311,83 +432,149 @@ Menú Principal | MisMary
 
     <div class="layout-mismary">
 
-        <!-- 1. BLOQUE PRINCIPAL (HERO) -->
-        <div class="hero-card">
+        <!-- TARJETA PRINCIPAL -->
+        <section class="hero-card">
             <div class="hero-content">
-                <span class="hero-badge">Acceso Principal</span>
-                <h2>Gestión de Catálogo</h2>
-                <p>Explora todos los productos disponibles, actualiza existencias o añade nuevos artículos a tu tienda.</p>
+                <span class="hero-badge">Acceso principal</span>
+                <h2>Gestión de catálogo</h2>
+                <p>
+                    Consulta los productos disponibles y revisa el catálogo
+                    de tu tienda desde un solo lugar.
+                </p>
+
                 <a href="{% url 'list_producto' %}" class="btn-hero">
                     Ver catálogo completo ➔
                 </a>
             </div>
-            <img src="{% static 'logo.jpeg' %}" alt="Logo MisMary" class="hero-logo">
-        </div>
 
-        <!-- 2. SECCIÓN OPERACIONES DIARIAS (2 COLUMNAS) -->
+            <img src="{% static 'logo.jpeg' %}"
+                 alt="Logo MisMary"
+                 class="hero-logo">
+        </section>
+
+        <!-- VENTAS Y PEDIDOS -->
         <div class="grid-dos">
 
-            <div class="card-mediana">
+            <section class="card-mediana">
                 <div>
                     <div class="card-header-flex">
-                        <img src="{% static 'venta.jpg' %}" alt="Ventas" class="icono-img icono-img-grande">
+                        <img src="{% static 'venta.jpg' %}"
+                             alt="Ventas"
+                             class="icono-img icono-img-grande">
                         <h3>Ventas</h3>
                     </div>
-                    <p>Registra las compras de tus clientes y revisa el historial completo de ventas.</p>
+
+                    <p>
+                        Registra las ventas, consulta su información y revisa
+                        el historial de tus clientes.
+                    </p>
                 </div>
+
                 <a href="{% url 'list_venta' %}" class="btn-mismary">
                     Ir a ventas
                 </a>
-            </div>
+            </section>
 
-            <div class="card-mediana">
+            <section class="card-mediana">
                 <div>
                     <div class="card-header-flex">
-                        <img src="{% static 'pedidos.jpg' %}" alt="Pedidos" class="icono-img icono-img-grande">
+                        <img src="{% static 'pedidos.jpg' %}"
+                             alt="Pedidos"
+                             class="icono-img icono-img-grande">
                         <h3>Pedidos</h3>
                     </div>
-                    <p>Gestiona los encargos pendientes, entregas en camino y estado de solicitudes.</p>
+
+                    <p>
+                        Consulta los pedidos, los productos solicitados
+                        y el estado de las entregas.
+                    </p>
                 </div>
+
                 <a href="{% url 'list_pedido' %}" class="btn-mismary">
                     Ver pedidos
                 </a>
-            </div>
+            </section>
 
         </div>
 
-        <!-- 3. ACCESOS COMPACTOS (3 COLUMNAS) -->
+        <!-- PROVEEDORES -->
+        <section class="card-larga">
+            <div class="card-larga-info">
+                <img src="{% static 'proveedores.jpg' %}"
+                     alt="Proveedores"
+                     class="icono-img icono-img-grande">
+
+                <div>
+                    <h3>Proveedores</h3>
+                    <p>
+                        Registra y consulta tus proveedores, y revisa
+                        el historial de pedidos de cada uno.
+                    </p>
+                </div>
+            </div>
+
+            <a href="{% url 'list_proveedor' %}" class="btn-mismary">
+                Ver proveedores
+            </a>
+        </section>
+
+        <!-- TARJETAS PEQUEÑAS -->
         <div class="grid-tres">
 
+            <!-- CLIENTES -->
             <a href="{% url 'list_cliente' %}" class="card-compacta">
-                <img src="{% static 'clientes.jpg' %}" alt="Clientes" class="icono-img">
+                <img src="{% static 'clientes.jpg' %}"
+                     alt="Clientes"
+                     class="icono-img">
+
                 <div class="card-compacta-info">
                     <h4>Clientes</h4>
                     <span>Directorio y contacto</span>
                 </div>
             </a>
 
+            <!-- REPORTES -->
             <a href="{% url 'reportes' %}" class="card-compacta">
-                <img src="{% static 'reportes.jpg' %}" alt="Reportes" class="icono-img">
+                <img src="{% static 'reportes.jpg' %}"
+                     alt="Reportes"
+                     class="icono-img">
+
                 <div class="card-compacta-info">
                     <h4>Reportes</h4>
                     <span>Resumen y métricas</span>
                 </div>
             </a>
 
+
+<!-- REEMBOLSOS -->
+<a href="{% url 'lista_reembolsos' %}" class="card-compacta">
+    <img src="{% static 'reembolsos.jpg' %}"
+         alt="Reembolsos"
+         class="icono-img">
+
+    <div class="card-compacta-info">
+        <h4>Reembolsos</h4>
+        <span>cancelaciones y devoluciones</span>
+    </div>
+</a>
+
+
+            <!-- GRUPOS: SOLO PARA SUPERUSUARIOS -->
             {% if user.is_superuser %}
-            <a href="{% url 'list_user' %}" class="card-compacta">
-                <img src="{% static 'usuarios.jpg' %}" alt="Usuarios" class="icono-img">
-                <div class="card-compacta-info">
-                    <h4>Usuarios</h4>
-                    <span>Permisos del sistema</span>
-                </div>
-            </a>
+                <a href="{% url 'list_grupos' %}" class="card-compacta">
+                    <img src="{% static 'usuarios.jpg' %}"
+                         alt="Administración de grupos"
+                         class="icono-img">
+
+                    <div class="card-compacta-info">
+                        <h4>Grupos</h4>
+                        <span>Usuarios y permisos del sistema</span>
+                    </div>
+                </a>
             {% endif %}
 
         </div>
-
     </div>
-
 </div>
 
 {% endblock %}

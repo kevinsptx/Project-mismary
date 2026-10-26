@@ -36,6 +36,7 @@ class ProductoAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "nombre",
+        "precio_compra",
         "precio_venta",
         "cantidad_disponible",
         "categoria"

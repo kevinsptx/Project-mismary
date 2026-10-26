@@ -8,26 +8,23 @@ Detalle del Pedido | MisMary
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que detalle cliente) ===== */
-
+    /* ===== PALETA Y BASE ===== */
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
 
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
 
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
     body {
@@ -46,7 +43,6 @@ Detalle del Pedido | MisMary
     }
 
     /* ===== ENCABEZADO ===== */
-
     .encabezado {
         margin-bottom: 25px;
     }
@@ -59,13 +55,12 @@ Detalle del Pedido | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
 
     /* ===== MENSAJES ===== */
-
     .mensaje-exito {
         background: var(--verde-fondo);
         border: 1px solid #A5D6A7;
@@ -89,7 +84,6 @@ Detalle del Pedido | MisMary
     }
 
     /* ===== TARJETA ===== */
-
     .tarjeta {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -123,13 +117,13 @@ Detalle del Pedido | MisMary
         font-size: 20px;
         font-weight: 700;
         color: var(--cafe-tostado);
+        overflow-wrap: anywhere;
     }
 
     /* ===== DATOS ===== */
-
     .datos {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
         margin-bottom: 20px;
     }
@@ -139,6 +133,7 @@ Detalle del Pedido | MisMary
         border: 1px solid var(--arena);
         border-radius: 16px;
         padding: 14px 18px;
+        min-width: 0;
     }
 
     .dato strong {
@@ -153,6 +148,7 @@ Detalle del Pedido | MisMary
         font-size: 14px;
         color: var(--cafe-tostado);
         font-weight: 600;
+        overflow-wrap: anywhere;
     }
 
     .dato .costo-resaltado {
@@ -161,8 +157,7 @@ Detalle del Pedido | MisMary
         font-size: 16px;
     }
 
-    /* ===== TABLA PRODUCTOS SOLICITADOS ===== */
-
+    /* ===== TABLA DE PRODUCTOS ===== */
     .tabla-caja {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -185,6 +180,7 @@ Detalle del Pedido | MisMary
         font-weight: 700;
         padding: 12px 18px;
         border-bottom: 1px solid var(--arena);
+        white-space: nowrap;
     }
 
     .tabla-mismary tbody td {
@@ -199,10 +195,10 @@ Detalle del Pedido | MisMary
 
     .col-numero {
         text-align: right !important;
+        white-space: nowrap;
     }
 
-    /* ===== CAJA CAMBIO DE ESTADO ===== */
-
+    /* ===== CAMBIO DE ESTADO ===== */
     .caja-estado {
         margin-top: 18px;
         padding: 18px;
@@ -221,6 +217,7 @@ Detalle del Pedido | MisMary
 
     .caja-estado select {
         width: 100%;
+        box-sizing: border-box;
         padding: 10px 14px;
         border: 1px solid var(--arena);
         border-radius: 12px;
@@ -232,7 +229,6 @@ Detalle del Pedido | MisMary
     }
 
     /* ===== BOTONES ===== */
-
     .acciones {
         margin-top: 26px;
         display: flex;
@@ -287,8 +283,11 @@ Detalle del Pedido | MisMary
     }
 
     /* ===== RESPONSIVO ===== */
-
     @media (max-width: 600px) {
+        .wrap-mismary {
+            padding: 22px 16px;
+        }
+
         .tarjeta {
             padding: 22px 18px;
         }
@@ -297,13 +296,20 @@ Detalle del Pedido | MisMary
             grid-template-columns: 1fr;
         }
 
+        .dato[style] {
+            grid-column: auto !important;
+        }
+
         .acciones .btn-mismary {
             flex: 1 1 100%;
         }
+
+        .tabla-mismary thead th,
+        .tabla-mismary tbody td {
+            padding: 12px;
+        }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
@@ -316,7 +322,9 @@ Detalle del Pedido | MisMary
     <!-- MENSAJES -->
     {% if messages %}
         {% for message in messages %}
-            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">
+                {{ message }}
+            </div>
         {% endfor %}
     {% endif %}
 
@@ -324,15 +332,29 @@ Detalle del Pedido | MisMary
     <div class="tarjeta">
 
         <div class="proveedor-header">
-            <div class="icono">{{ pedido.proveedor|first|upper }}</div>
-            <h2>{{ pedido.proveedor }}</h2>
+            <div class="icono">
+                {% if pedido.proveedor %}
+                    {{ pedido.proveedor.nombre|default:"P"|slice:":1"|upper }}
+                {% else %}
+                    P
+                {% endif %}
+            </div>
+
+            <h2>
+                {% if pedido.proveedor %}
+                    {{ pedido.proveedor.nombre }}
+                {% else %}
+                    Proveedor no asignado
+                {% endif %}
+            </h2>
         </div>
 
+        <!-- INFORMACIÓN DEL PEDIDO -->
         <div class="datos">
 
             <div class="dato">
                 <strong>Fecha del Pedido</strong>
-                <span>{{ pedido.fecha }}</span>
+                <span>{{ pedido.fecha|date:"d/m/Y"|default:pedido.fecha }}</span>
             </div>
 
             <div class="dato">
@@ -342,14 +364,18 @@ Detalle del Pedido | MisMary
 
             <div class="dato" style="grid-column: span 2;">
                 <strong>Costo Total</strong>
-                <span class="costo-resaltado">$ {{ pedido.costo_total|floatformat:0|intcomma }}</span>
+                <span class="costo-resaltado">
+                    $ {{ pedido.costo_total|floatformat:0|intcomma }}
+                </span>
             </div>
 
         </div>
 
         <!-- PRODUCTOS SOLICITADOS -->
-        <strong style="display: block; margin-bottom: 10px; font-size: 14px; color: var(--cafe-tostado);">Productos Solicitados</strong>
-        
+        <strong style="display: block; margin-bottom: 10px; font-size: 14px; color: var(--cafe-tostado);">
+            Productos Solicitados
+        </strong>
+
         <div class="tabla-caja">
             <table class="tabla-mismary">
                 <thead>
@@ -359,48 +385,79 @@ Detalle del Pedido | MisMary
                         <th class="col-numero">Costo C/U</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {% for detalle in detalles %}
                         <tr>
-                            <td><strong>{{ detalle.producto.nombre }}</strong></td>
+                            <td>
+                                <strong>{{ detalle.producto.nombre }}</strong>
+                            </td>
+
                             <td>{{ detalle.cantidad }}</td>
-                            <td class="col-numero">$ {{ detalle.costo_unitario|floatformat:0|intcomma }}</td>
+
+                            <td class="col-numero">
+                                $ {{ detalle.costo_unitario|floatformat:0|intcomma }}
+                            </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="3" style="text-align: center; color: #6C5243;">No hay productos asociados a este pedido.</td>
+                            <td colspan="3" style="text-align: center; color: #6C5243;">
+                                No hay productos asociados a este pedido.
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        <!-- SECCIÓN DE ACTUALIZAR ESTADO -->
+        <!-- ACTUALIZAR ESTADO -->
         <form method="POST" class="caja-estado">
             {% csrf_token %}
+
             <label for="estado">Actualizar estado del pedido:</label>
+
             <select name="estado" id="estado">
-                <option value="Pendiente" {% if pedido.estado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
-                <option value="Recibido" {% if pedido.estado == 'Recibido' %}selected{% endif %}>Recibido (Suma stock al inventario)</option>
-                <option value="Cancelado" {% if pedido.estado == 'Cancelado' %}selected{% endif %}>Cancelado</option>
+                <option value="Pendiente" {% if pedido.estado == 'Pendiente' %}selected{% endif %}>
+                    Pendiente
+                </option>
+
+                <option value="Recibido" {% if pedido.estado == 'Recibido' %}selected{% endif %}>
+                    Recibido (Suma stock al inventario)
+                </option>
+
+                <option value="Cancelado" {% if pedido.estado == 'Cancelado' %}selected{% endif %}>
+                    Cancelado
+                </option>
             </select>
-            <button type="submit" class="btn-mismary" style="width: 100%;">Guardar Cambio de Estado</button>
+
+            <button type="submit" class="btn-mismary" style="width: 100%;">
+                Guardar Cambio de Estado
+            </button>
         </form>
 
         <!-- BOTONES -->
         <div class="acciones">
-            <a href="{% url 'list_pedido' %}" class="btn-mismary btn-secundario">Volver</a>
 
-            <form method="POST" action="{% url 'eliminar_pedido' pedido.id %}" style="margin: 0;">
+            <a href="{% url 'list_pedido' %}" class="btn-mismary btn-secundario">
+                Volver
+            </a>
+
+            <form
+                method="POST"
+                action="{% url 'eliminar_pedido' pedido.id %}"
+                style="margin: 0;"
+                onsubmit="return confirm('¿Está seguro de que desea eliminar este pedido?');"
+            >
                 {% csrf_token %}
-                <button type="submit" class="btn-mismary btn-eliminar" onclick="return confirm('¿Está seguro de que desea eliminar este pedido?')">
+
+                <button type="submit" class="btn-mismary btn-eliminar">
                     Eliminar
                 </button>
             </form>
+
         </div>
 
     </div>
-
 </div>
 
 {% endblock %}

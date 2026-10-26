@@ -1,0 +1,237 @@
+
+{% extends 'layout/base.html' %}
+
+{% block title %}Grupos | MisMary{% endblock %}
+
+{% block content %}
+<style>
+    .grupos-page {
+        --cafe: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
+        --arena: #E8DFC8;
+        --marfil: #FCFAF7;
+        color: var(--cafe);
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 28px 20px;
+    }
+
+    .grupos-page * { box-sizing: border-box; }
+
+    .grupos-page .cabecera {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+
+    .grupos-page h1 {
+        font-size: 28px;
+        margin: 0 0 5px;
+    }
+
+    .grupos-page p {
+        margin: 0;
+        color: #79563F;
+    }
+
+    .grupos-page .panel {
+        background: white;
+        border: 1px solid var(--arena);
+        border-radius: 20px;
+        padding: 22px;
+        margin-bottom: 22px;
+        box-shadow: 0 8px 24px rgba(74,44,27,.06);
+    }
+
+    .grupos-page h2 {
+        font-size: 19px;
+        margin: 0 0 16px;
+    }
+
+    .grupos-page .form-crear {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .grupos-page input {
+        flex: 1;
+        min-width: 180px;
+        padding: 12px 15px;
+        border: 1px solid var(--arena);
+        border-radius: 30px;
+        background: var(--marfil);
+        color: var(--cafe);
+        font: inherit;
+    }
+
+    .grupos-page input:focus {
+        outline: 2px solid #FFB08F;
+        border-color: var(--terracota);
+    }
+
+    .grupos-page .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 30px;
+        padding: 11px 18px;
+        background: var(--naranja);
+        color: white;
+        text-decoration: none;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .grupos-page .btn:hover { background: var(--terracota); }
+
+    .grupos-page .btn-suave {
+        background: #F5EFE3;
+        color: var(--cafe);
+        border: 1px solid var(--arena);
+    }
+
+    .grupos-page .btn-suave:hover {
+        background: var(--arena);
+        color: var(--cafe);
+    }
+
+    .grupos-page .grupo-lista {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 16px;
+    }
+
+    .grupos-page .grupo {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+        border: 1px solid var(--arena);
+        border-radius: 18px;
+        background: var(--marfil);
+    }
+
+    .grupos-page .grupo h3 {
+        font-size: 18px;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .grupos-page .dato {
+        font-size: 13px;
+        color: #79563F;
+    }
+
+    .grupos-page .acciones {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: auto;
+    }
+
+    .grupos-page .alerta {
+        padding: 12px 15px;
+        margin-bottom: 12px;
+        border-radius: 12px;
+        background: #F5EFE3;
+    }
+
+    .grupos-page .vacio {
+        padding: 25px;
+        text-align: center;
+        color: #79563F;
+        border: 1px dashed var(--arena);
+        border-radius: 16px;
+    }
+</style>
+
+<div class="grupos-page">
+    <div class="cabecera">
+        <div>
+            <h1>Grupos y roles 👥</h1>
+            <p>Crea grupos y organiza los usuarios y sus permisos.</p>
+        </div>
+
+        <a href="{% url 'list_user' %}" class="btn btn-suave">
+            Administrador usuarios
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alerta">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="panel">
+        <h2>Crear un grupo</h2>
+
+        <form method="POST" class="form-crear">
+            {% csrf_token %}
+            <input type="hidden" name="accion" value="crear">
+
+            <input
+                type="text"
+                name="nombre"
+                placeholder="Ej: Administrador, Vendedor..."
+                maxlength="150"
+                required
+            >
+
+            <button class="btn" type="submit">+ Crear grupo</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Grupos creados ({{ grupos|length }})</h2>
+
+        {% if grupos %}
+            <div class="grupo-lista">
+                {% for grupo in grupos %}
+                    <article class="grupo">
+                        <h3>{{ grupo.name }}</h3>
+
+                        <div class="dato">
+                            {{ grupo.user_set.count }} usuario(s)
+                        </div>
+
+                        <div class="dato">
+                            {{ grupo.permissions.count }} permiso(s)
+                        </div>
+
+                        <div class="acciones">
+                            <a href="{% url 'grupo_detalle' grupo.id %}" class="btn">
+                                Abrir grupo →
+                            </a>
+
+                            {% if grupo.name != 'Superadministrador' %}
+                                <form
+                                    method="POST"
+                                    action="{% url 'eliminar_grupo' grupo.id %}"
+                                    onsubmit="return confirm('¿Eliminar este grupo? Los usuarios no se eliminarán, pero perderán los permisos asignados por este grupo.');"
+                                >
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-suave">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="vacio">
+                Todavía no hay grupos. Crea el primero usando el formulario.
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
