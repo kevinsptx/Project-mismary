@@ -1003,8 +1003,13 @@ def register_pedido(request):
         try:
             for i in range(len(productos_ids)):
                 cant = int(cantidades[i])
-                costo = Decimal(costos[i])
-                precio_venta = Decimal(precios_venta[i])
+                # Se quitan los puntos/comas de miles (ej. "5.000" -> 5000)
+                costo = Decimal(
+                    costos[i].replace('.', '').replace(',', '').strip()
+                )
+                precio_venta = Decimal(
+                    precios_venta[i].replace('.', '').replace(',', '').strip()
+                )
 
                 if cant < 1 or costo < 0 or precio_venta <= 0:
                     raise ValueError
