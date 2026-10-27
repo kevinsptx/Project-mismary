@@ -10,28 +10,20 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
-from .forms import (
-    ProductoForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
-)
-from .models import (
-    Cliente, Venta, Abono, Deuda, Categoria,
-    Producto, DetalleVenta, Gasto, Pago,
-    DetallePedido, Pedido, Proveedor, Reembolso
-)
+from .forms import ProductoForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
+from .models import Cliente, Venta, Abono, Deuda, Categoria,Producto, DetalleVenta, Gasto, Pago,DetallePedido, Pedido, Proveedor, Reembolso
 
 METODOS_VALIDOS = ['Efectivo', 'Transferencia', 'Otro']
 ESTADOS_PEDIDO = ['Pendiente', 'Recibido', 'Cancelado']
 
 
 def int_cop(valor):
-    """Convierte un número a pesos colombianos sin decimales. Ej: $ 15,000"""
     if valor is None:
         return "$ 0"
     return f"$ {int(round(float(valor))):,}"
 
 
 def limpiar_numero(texto):
-    """Quita puntos y comas de miles. Ej: '5.000' -> '5000'"""
     return texto.replace('.', '').replace(',', '').strip()
 
 
@@ -52,7 +44,7 @@ def filtrar_por_fecha(consulta, fecha_inicio, fecha_fin):
 
 @login_required
 def home(request):
-    """Página principal."""
+
     return render(request, 'home.html')
 
 
@@ -62,7 +54,7 @@ def home(request):
 
 @login_required
 def registrar_cliente(request):
-    """Registra un cliente usando el formulario de Django."""
+
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
@@ -76,7 +68,7 @@ def registrar_cliente(request):
 
 @login_required
 def register_cliente(request):
-    """Registra un cliente leyendo los datos directamente del formulario HTML."""
+
     if request.method == 'POST':
         Cliente.objects.create(
             nombre=request.POST['nombre'],
@@ -90,7 +82,6 @@ def register_cliente(request):
 
 @login_required
 def list_cliente(request):
-    """Lista los clientes. Se puede buscar por nombre o teléfono."""
     buscar = request.GET.get('buscar')
 
     if buscar:
@@ -108,12 +99,9 @@ def list_cliente(request):
 
 @login_required
 def cliente_details(request, id):
-    """Muestra los datos de un cliente y si tiene deuda pendiente."""
     cliente = get_object_or_404(Cliente, id=id)
 
-    tiene_deuda = Deuda.objects.filter(
-        cliente=cliente, estado='Pendiente', saldo__gt=0
-    ).exists()
+    tiene_deuda = Deuda.objects.filter(cliente=cliente, estado='Pendiente', saldo__gt=0).exists()
 
     return render(request, 'cliente_details.html', {
         'cliente': cliente,
@@ -123,7 +111,6 @@ def cliente_details(request, id):
 
 @login_required
 def cliente_update(request, id):
-    """Edita los datos de un cliente."""
     cliente = get_object_or_404(Cliente, id=id)
 
     if request.method == 'POST':
@@ -138,7 +125,6 @@ def cliente_update(request, id):
 
 @login_required
 def cliente_delete(request, id):
-    """Elimina un cliente, solo si no tiene ventas ni deudas."""
     cliente = get_object_or_404(Cliente, id=id)
 
     if cliente.ventas.exists():
@@ -170,7 +156,6 @@ def cliente_delete(request, id):
 
 @login_required
 def cliente_historial(request, id):
-    """Muestra las ventas, abonos y saldo pendiente de un cliente."""
     cliente = get_object_or_404(Cliente, id=id)
 
     ventas = Venta.objects.filter(cliente=cliente).order_by('-fecha')
@@ -195,7 +180,7 @@ def cliente_historial(request, id):
 
 @login_required
 def register_producto(request):
-    """Registra un producto nuevo."""
+
     if request.method == 'POST':
         form = ProductoForm(request.POST)
 
@@ -210,7 +195,7 @@ def register_producto(request):
 
 @login_required
 def list_producto(request):
-    """Lista los productos. Se puede buscar por nombre y filtrar por categoría."""
+
     buscar = request.GET.get('buscar')
     categoria_id = request.GET.get('categoria')
 
@@ -233,13 +218,13 @@ def list_producto(request):
 
 @login_required
 def producto_update(request, id):
-    """Edita un producto."""
+
     producto = get_object_or_404(Producto, id=id)
 
     if request.method == 'POST':
         datos = request.POST.copy()
 
-        # Quitamos los puntos de miles del precio (ej. "5.000" -> "5000")
+
         precio = datos.get('precio_venta', '').strip()
         datos['precio_venta'] = precio.replace('.', '')
 
@@ -260,13 +245,11 @@ def producto_update(request, id):
 
 @login_required
 def producto_delete(request, id):
-    """Elimina un producto junto con su historial de ventas."""
     producto = get_object_or_404(Producto, id=id)
 
     if request.method == 'POST':
         nombre_producto = producto.nombre
 
-        # atomic = o se hace todo, o no se hace nada
         with transaction.atomic():
             DetalleVenta.objects.filter(producto=producto).delete()
             producto.delete()
@@ -282,13 +265,13 @@ def producto_delete(request, id):
 
 @login_required
 def productos_mas_vendidos(request):
-    """Muestra los productos ordenados del más vendido al menos vendido."""
+
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
     productos_vendidos = DetalleVenta.objects.all()
 
-    # Validamos que el rango de fechas tenga sentido
+
     if fecha_inicio and fecha_fin and fecha_inicio > fecha_fin:
         messages.error(
             request,
@@ -302,7 +285,7 @@ def productos_mas_vendidos(request):
         if fecha_fin:
             productos_vendidos = productos_vendidos.filter(venta__fecha__lte=fecha_fin)
 
-        # Agrupa por producto y suma las cantidades vendidas
+
         productos_vendidos = (
             productos_vendidos.values('producto__nombre')
             .annotate(total_vendido=Sum('cantidad'))
@@ -467,7 +450,7 @@ def register_venta(request):
 
 @login_required
 def list_venta(request):
-    """Lista las ventas. Se puede buscar por nombre del cliente."""
+
     buscar = request.GET.get('buscar')
 
     if buscar:
@@ -744,11 +727,9 @@ def registrar_gasto(request):
 # 9. REPORTES
 # ============================================================
 
-# ---------- Funciones que calculan los datos de los reportes ----------
 
 def datos_ingresos(fecha_inicio, fecha_fin):
-    """Devuelve (ingresos por día, total). Suma pagos + abonos."""
-    # Pagos
+
     pagos = Pago.objects.all()
 
     if fecha_inicio:
@@ -763,7 +744,6 @@ def datos_ingresos(fecha_inicio, fecha_fin):
         .order_by('dia')
     )
 
-    # Abonos
     abonos = Abono.objects.all()
 
     if fecha_inicio:
@@ -1173,7 +1153,6 @@ def eliminar_pedido(request, pedido_id):
 
 @login_required
 def list_proveedor(request):
-    """Lista los proveedores. Se puede buscar por nombre, teléfono o correo."""
     buscar = request.GET.get('buscar')
 
     proveedores = Proveedor.objects.annotate(total_pedidos=Count('pedidos'))
@@ -1193,7 +1172,6 @@ def list_proveedor(request):
 
 @login_required
 def register_proveedor(request):
-    """Registra un proveedor. Si viene desde 'Registrar pedido', regresa allá."""
     siguiente = request.POST.get('next') or request.GET.get('next')
 
     if request.method == 'POST':
@@ -1217,11 +1195,9 @@ def register_proveedor(request):
 
 @login_required
 def proveedor_details(request, proveedor_id):
-    """Muestra un proveedor, sus pedidos y el total comprado."""
     proveedor = get_object_or_404(Proveedor, id=proveedor_id)
     pedidos = proveedor.pedidos.order_by('-id')
 
-    # El total no cuenta los pedidos cancelados
     total_comprado = pedidos.exclude(estado='Cancelado').aggregate(
         total=Sum('costo_total')
     )['total'] or 0
@@ -1235,7 +1211,7 @@ def proveedor_details(request, proveedor_id):
 
 @login_required
 def proveedor_update(request, proveedor_id):
-    """Edita un proveedor."""
+
     proveedor = get_object_or_404(Proveedor, id=proveedor_id)
 
     if request.method == 'POST':
@@ -1256,7 +1232,7 @@ def proveedor_update(request, proveedor_id):
 
 @login_required
 def proveedor_delete(request, proveedor_id):
-    """Elimina un proveedor, solo si no tiene pedidos."""
+
     proveedor = get_object_or_404(Proveedor, id=proveedor_id)
 
     if request.method == 'POST':
@@ -1280,7 +1256,7 @@ def proveedor_delete(request, proveedor_id):
 # ============================================================
 
 def crear_reembolso_automatico(venta):
-    """Crea el reembolso de una venta cancelada (si todavía no existe)."""
+
     if venta.estado != 'Cancelada':
         return None, False
 
@@ -1289,7 +1265,7 @@ def crear_reembolso_automatico(venta):
     if metodo_pago not in METODOS_VALIDOS:
         metodo_pago = 'Otro'
 
-    # get_or_create: si ya existe lo busca, si no existe lo crea
+
     reembolso, creado = Reembolso.objects.get_or_create(
         venta=venta,
         defaults={
@@ -1306,17 +1282,14 @@ def crear_reembolso_automatico(venta):
 
 @login_required
 def cancelar_venta(request, venta_id):
-    """Cancela una venta y crea su reembolso."""
     venta = get_object_or_404(Venta, pk=venta_id)
 
-    # GET: mostramos la pantalla de confirmación
     if request.method == 'GET':
         return render(request, 'cancelar_venta.html', {'venta': venta})
 
     if request.method != 'POST':
         return redirect('list_venta')
 
-    # POST: cancelamos
     with transaction.atomic():
         if venta.estado != 'Cancelada':
             venta.estado = 'Cancelada'
@@ -1340,7 +1313,6 @@ def cancelar_venta(request, venta_id):
 
 @login_required
 def lista_reembolsos(request):
-    """Lista los reembolsos (crea los que falten de ventas ya canceladas)."""
     for venta in Venta.objects.filter(estado='Cancelada').iterator():
         crear_reembolso_automatico(venta)
 
@@ -1355,10 +1327,9 @@ def lista_reembolsos(request):
 
 @login_required
 def solicitar_reembolso(request, venta_id):
-    """Crea manualmente la solicitud de reembolso de una venta cancelada."""
+
     venta = get_object_or_404(Venta, pk=venta_id, estado='Cancelada')
 
-    # Si ya existe un reembolso, vamos directo a verlo
     existente = Reembolso.objects.filter(venta=venta).first()
 
     if existente:
@@ -1404,7 +1375,7 @@ def solicitar_reembolso(request, venta_id):
 
 @login_required
 def details_reembolso(request, reembolso_id):
-    """Muestra el detalle de un reembolso."""
+
     reembolso = get_object_or_404(
         Reembolso.objects.select_related('venta', 'venta__cliente'),
         pk=reembolso_id
@@ -1415,7 +1386,7 @@ def details_reembolso(request, reembolso_id):
 
 @login_required
 def details_reembolso_venta(request, venta_id):
-    """Busca el reembolso de una venta y redirige a su detalle."""
+
     reembolso = get_object_or_404(Reembolso, venta_id=venta_id)
 
     return redirect('details_reembolso', reembolso_id=reembolso.id)
@@ -1423,7 +1394,7 @@ def details_reembolso_venta(request, venta_id):
 
 @login_required
 def registrar_devolucion(request, reembolso_id):
-    """Marca un reembolso como devuelto (ya se le entregó el dinero al cliente)."""
+
     reembolso = get_object_or_404(Reembolso, pk=reembolso_id)
 
     if request.method != 'POST':

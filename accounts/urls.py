@@ -16,6 +16,4 @@ urlpatterns = [
 
 
     path('grupos/', views.list_grupos, name='list_grupos'),
-    path('grupos/<int:id>/', views.grupo_detalle, name='grupo_detalle'),
-    path('grupos/<int:id>/eliminar/', views.eliminar_grupo, name='eliminar_grupo'),
 ]

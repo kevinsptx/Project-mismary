@@ -136,134 +136,44 @@ def usuario_delete(request, id):
 # GRUPOS
 # =========================
 
-@solo_superusuario
 def list_grupos(request):
     if request.method == 'POST':
         accion = request.POST.get('accion')
-
+        nombre = request.POST.get('nombre', '').strip()
+ 
         if accion == 'crear':
-            nombre = request.POST.get('nombre', '').strip()
-
             if not nombre:
                 messages.error(request, 'Escribe el nombre del grupo.')
             elif Group.objects.filter(name__iexact=nombre).exists():
                 messages.error(request, 'Ya existe un grupo con ese nombre.')
             else:
-                grupo = Group.objects.create(name=nombre)
-                messages.success(request, f'El grupo "{grupo.name}" fue creado.')
+                Group.objects.create(name=nombre)
+                messages.success(request, f'El grupo "{nombre}" fue creado.')
                 return redirect('list_grupos')
-
+ 
         elif accion == 'crear_rol':
-            nombre = request.POST.get('nombre', '').strip()
-
             if nombre not in ['Administrador', 'Usuario']:
                 messages.error(request, 'Ese rol no es válido.')
             else:
                 grupo, creado = Group.objects.get_or_create(name=nombre)
-
                 if creado:
                     messages.success(request, f'Se creó el grupo {nombre}.')
                 else:
                     messages.info(request, f'El grupo {nombre} ya existe.')
-
                 return redirect('list_grupos')
-
+ 
     grupos = Group.objects.all().order_by('name')
-
-    return render(request, 'grupos.html', {
-        'grupos': grupos
-    })
-
-
-@solo_superusuario
-def grupo_detalle(request, id):
-    grupo = get_object_or_404(Group, id=id)
-
-    if request.method == 'POST':
-        accion = request.POST.get('accion')
-
-        if accion == 'agregar_usuario':
-            user_id = request.POST.get('user_id')
-            usuario = get_object_or_404(User, id=user_id)
-
-            if usuario.is_superuser:
-                messages.error(request, 'El superadministrador no necesita agregarse a un grupo.')
-            else:
-                grupo.user_set.add(usuario)
-                messages.success(request, f'{usuario.username} fue agregado al grupo.')
-
-            return redirect('grupo_detalle', id=grupo.id)
-
-        elif accion == 'quitar_usuario':
-            user_id = request.POST.get('user_id')
-            usuario = get_object_or_404(User, id=user_id)
-
-            if usuario.is_superuser:
-                messages.error(request, 'No puedes quitar al superadministrador.')
-            else:
-                grupo.user_set.remove(usuario)
-                messages.success(request, f'{usuario.username} fue retirado del grupo.')
-
-            return redirect('grupo_detalle', id=grupo.id)
-
-        elif accion == 'guardar_permisos':
-            permisos_ids = request.POST.getlist('permisos')
-            permisos = Permission.objects.filter(id__in=permisos_ids)
-            grupo.permissions.set(permisos)
-
-            messages.success(request, 'Los permisos del grupo fueron actualizados.')
-            return redirect('grupo_detalle', id=grupo.id)
-
-    busqueda = request.GET.get('q', '').strip()
-
-    integrantes = grupo.user_set.all().order_by('username')
-    disponibles = User.objects.filter(is_superuser=False).exclude(
-        groups=grupo
-    ).distinct().order_by('username')
-
-    if busqueda:
-        integrantes = integrantes.filter(
-            Q(username__icontains=busqueda) |
-            Q(first_name__icontains=busqueda) |
-            Q(last_name__icontains=busqueda) |
-            Q(email__icontains=busqueda)
-        )
-
-        disponibles = disponibles.filter(
-            Q(username__icontains=busqueda) |
-            Q(first_name__icontains=busqueda) |
-            Q(last_name__icontains=busqueda) |
-            Q(email__icontains=busqueda)
-        )
-
-    permisos = Permission.objects.select_related(
-        'content_type'
-    ).order_by('content_type__app_label', 'content_type__model', 'codename')
-
-    permisos_asignados = set(
-        grupo.permissions.values_list('id', flat=True)
+    return render(request, 'grupos.html', {'grupos': grupos})
+ 
+ 
+def buscar_usuarios(usuarios, texto):
+    """Filtra usuarios por nombre, apellido, usuario o correo."""
+    if not texto:
+        return usuarios
+    return usuarios.filter(
+        Q(username__icontains=texto) |
+        Q(first_name__icontains=texto) |
+        Q(last_name__icontains=texto) |
+        Q(email__icontains=texto)
     )
-
-    return render(request, 'grupo_detalle.html', {
-        'grupo': grupo,
-        'integrantes': integrantes,
-        'disponibles': disponibles,
-        'busqueda': busqueda,
-        'permisos': permisos,
-        'permisos_asignados': permisos_asignados,
-    })
-
-
-@solo_superusuario
-def eliminar_grupo(request, id):
-    grupo = get_object_or_404(Group, id=id)
-
-    if request.method == 'POST':
-        if grupo.name == 'Superadministrador':
-            messages.error(request, 'El superadministrador no se administra como grupo.')
-        else:
-            nombre = grupo.name
-            grupo.delete()
-            messages.success(request, f'El grupo "{nombre}" fue eliminado.')
-
-    return redirect('list_grupos')
+ 

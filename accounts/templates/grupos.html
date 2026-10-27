@@ -207,14 +207,14 @@
                         </div>
 
                         <div class="acciones">
-                            <a href="{% url 'grupo_detalle' grupo.id %}" class="btn">
+                            <a href="#" class="btn">
                                 Abrir grupo →
                             </a>
 
                             {% if grupo.name != 'Superadministrador' %}
                                 <form
                                     method="POST"
-                                    action="{% url 'eliminar_grupo' grupo.id %}"
+                                    action="#"
                                     onsubmit="return confirm('¿Eliminar este grupo? Los usuarios no se eliminarán, pero perderán los permisos asignados por este grupo.');"
                                 >
                                     {% csrf_token %}
