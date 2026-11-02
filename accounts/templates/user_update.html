@@ -1,235 +1,104 @@
 {% extends 'layout/base.html' %}
 
-{% block title %}
-Editar Usuario | MisMary
-{% endblock %}
-
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
-
-    :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
-        --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
-
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
-
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
-    }
-
-    body {
-        background-color: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding-bottom: 60px;
-    }
-
-    .wrap-mismary {
-        max-width: 620px;
-        margin: 0 auto;
-        padding: 30px 20px;
-    }
-
-    /* ===== ENCABEZADO ===== */
-
-    .encabezado {
-        margin-bottom: 25px;
-    }
-
-    .encabezado h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .encabezado p {
-        margin: 4px 0 0 0;
-        font-size: 14px;
-        color: var(--terracota);
-    }
-
-    /* ===== MENSAJES ===== */
-
-    .mensaje-exito {
-        background: var(--verde-fondo);
-        border: 1px solid #A5D6A7;
-        color: var(--verde);
-        padding: 14px 20px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .mensaje-error {
-        background: var(--rojo-fondo);
-        border: 1px solid #F5B7AB;
-        color: var(--terracota);
-        padding: 14px 20px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    /* ===== FORMULARIO ===== */
-
-    .formulario {
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
+    .editar-contenedor {
+        max-width: 650px;
+        margin: auto;
+        background: white;
         padding: 30px;
-        box-shadow: var(--sombra-suave);
+        border-radius: 18px;
+        border: 1px solid #E8DFC8;
+        color: #4A2C1B;
     }
 
-    .campo {
-        margin-bottom: 20px;
+    .editar-contenedor h2 {
+        color: #4A2C1B;
     }
 
-    .campo label {
+    .editar-contenedor label {
         display: block;
-        margin-bottom: 7px;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
+        margin: 15px 0 6px;
+        font-weight: bold;
     }
 
-    .campo input {
+    .editar-contenedor input,
+    .editar-contenedor select {
         width: 100%;
+        padding: 12px;
+        border: 1px solid #E8DFC8;
+        border-radius: 10px;
+        font-size: 15px;
         box-sizing: border-box;
-        padding: 12px 20px;
-        border: 1px solid var(--arena);
-        border-radius: 999px;
-        font-size: 14px;
-        font-family: inherit;
-        color: var(--cafe-tostado);
-        background: var(--blanco);
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .campo input:focus {
-        outline: none;
-        border-color: var(--terracota);
-        box-shadow: var(--sombra-suave);
-    }
-
-    /* ===== BOTONES ===== */
-
-    .acciones-form {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-    }
-
-    .btn-mismary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        background: var(--naranja);
-        color: #FFF;
-        text-decoration: none;
-        padding: 10px 22px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
+    .editar-contenedor button,
+    .editar-contenedor a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 18px;
         border: none;
+        border-radius: 20px;
+        background: #FF6B35;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
         cursor: pointer;
-        font-family: inherit;
-        transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .btn-mismary:hover {
-        background: var(--terracota);
+    .editar-contenedor .volver {
+        background: #9E3B27;
     }
 
-    .btn-secundario {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        border: 1px solid var(--arena);
+    .editar-mensaje {
+        padding: 12px;
+        background: #f8e9df;
+        border-radius: 10px;
+        margin: 10px 0;
     }
-
-    .btn-secundario:hover {
-        background: var(--blanco);
-        border-color: var(--terracota);
-        color: var(--terracota);
-    }
-
-    /* ===== RESPONSIVO ===== */
-
-    @media (max-width: 700px) {
-        .formulario {
-            padding: 22px 18px;
-        }
-
-        .acciones-form .btn-mismary {
-            flex: 1 1 100%;
-        }
-    }
-
 </style>
 
+<div class="editar-contenedor">
 
-<div class="wrap-mismary">
+    <h2>Editar usuario</h2>
+    <p>Modifica la información y el grupo asignado al usuario.</p>
 
-    <!-- ENCABEZADO -->
-    <div class="encabezado">
-        <h1>Editar usuario ✏️</h1>
-        <p>Modifica la información del usuario</p>
-    </div>
-
-    <!-- MENSAJES -->
     {% if messages %}
         {% for message in messages %}
-            <div class="{% if message.tags == 'error' %}mensaje-error{% else %}mensaje-exito{% endif %}">{{ message }}</div>
+            <div class="editar-mensaje">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
-    <!-- FORMULARIO -->
-    <form method="POST" class="formulario">
-
+    <form method="POST">
         {% csrf_token %}
 
-        <div class="campo">
-            <label for="username">Usuario</label>
-            <input type="text" id="username" name="username" value="{{ usuario.username }}" required>
-        </div>
+        <label for="username">Nombre de usuario</label>
+        <input type="text" id="username" name="username" value="{{ usuario.username }}" required>
 
-        <div class="campo">
-            <label for="first_name">Nombre</label>
-            <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}" required>
-        </div>
+        <label for="first_name">Nombres</label>
+        <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}">
 
-        <div class="campo">
-            <label for="last_name">Apellido</label>
-            <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}" required>
-        </div>
+        <label for="last_name">Apellidos</label>
+        <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}">
 
-        <div class="campo">
-            <label for="email">Correo</label>
-            <input type="email" id="email" name="email" value="{{ usuario.email }}" required>
-        </div>
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" value="{{ usuario.email }}" required>
 
-        <div class="acciones-form">
-            <button type="submit" class="btn-mismary">Guardar cambios</button>
-            <a href="{% url 'list_user' %}" class="btn-mismary btn-secundario">Cancelar</a>
-        </div>
+        <label for="grupo_id">Rol o grupo</label>
+        <select id="grupo_id" name="grupo_id" required>
+            <option value="">Selecciona un grupo</option>
+
+            {% for grupo in grupos %}
+                <option value="{{ grupo.id }}"
+                    {% if grupo_actual and grupo_actual.id == grupo.id %}selected{% endif %}>
+                    {{ grupo.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Guardar cambios</button>
+        <a class="volver" href="{% url 'list_user' %}">Volver</a>
 
     </form>
 

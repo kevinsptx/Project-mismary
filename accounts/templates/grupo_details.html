@@ -1,0 +1,127 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+
+<style>
+    .permisos-contenedor {
+        max-width: 1000px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border: 1px solid #E8DFC8;
+        border-radius: 18px;
+        color: #4A2C1B;
+    }
+
+    .permisos-contenedor h2 {
+        color: #4A2C1B;
+    }
+
+    .permiso-modelo {
+        border: 1px solid #E8DFC8;
+        border-radius: 14px;
+        padding: 16px;
+        margin: 14px 0;
+    }
+
+    .permiso-modelo h3 {
+        color: #9E3B27;
+    }
+
+    .permiso-checkbox {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        margin: 9px 18px 9px 0;
+    }
+
+    .permisos-contenedor button,
+    .permisos-contenedor a {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 20px;
+        background: #FF6B35;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .permisos-contenedor .secundario {
+        background: #9E3B27;
+    }
+
+    .permisos-mensaje {
+        padding: 12px;
+        background: #f8e9df;
+        border-radius: 10px;
+        margin: 8px 0;
+    }
+</style>
+
+<div class="permisos-contenedor">
+
+    <h2>Permisos: {{ grupo.name }}</h2>
+
+    <p>
+        Selecciona los permisos que tendrá este grupo dentro del sistema de negocio.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="permisos-mensaje">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% regroup permisos by content_type.model as permisos_por_modelo %}
+
+        {% for bloque in permisos_por_modelo %}
+
+            <section class="permiso-modelo">
+
+                <h3>{{ bloque.grouper|title }}</h3>
+
+                {% for permiso in bloque.list %}
+
+                    <label class="permiso-checkbox">
+
+                        <input
+                            type="checkbox"
+                            name="permisos"
+                            value="{{ permiso.id }}"
+                            {% if permiso.id in permisos_asignados %}checked{% endif %}
+                        >
+
+                        {{ permiso.name }}
+
+                    </label>
+
+                {% endfor %}
+
+            </section>
+
+        {% empty %}
+
+            <p>
+                No se encontraron permisos de la aplicación de negocio.
+                Verifica INSTALLED_APPS y ejecuta las migraciones.
+            </p>
+
+        {% endfor %}
+
+        <button type="submit">Guardar permisos</button>
+
+        <a class="secundario" href="{% url 'list_grupos' %}">
+            Volver a grupos
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

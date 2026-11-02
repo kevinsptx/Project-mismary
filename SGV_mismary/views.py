@@ -3,18 +3,52 @@ from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from functools import wraps
 from django.db import transaction
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from .forms import ProductoForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
 from .models import Cliente, Venta, Abono, Deuda, Categoria,Producto, DetalleVenta, Gasto, Pago,DetallePedido, Pedido, Proveedor, Reembolso
 
 METODOS_VALIDOS = ['Efectivo', 'Transferencia', 'Otro']
 ESTADOS_PEDIDO = ['Pendiente', 'Recibido', 'Cancelado']
+
+
+def requiere_permisos(*permisos):
+    def decorador(vista):
+        @wraps(vista)
+        def envoltura(request, *args, **kwargs):
+            if not request.user.is_authenticated:
+                raise PermissionDenied
+            if request.user.is_superuser:
+                return vista(request, *args, **kwargs)
+            app_label = Cliente._meta.app_label
+            permisos_completos = [f"{app_label}.{permiso}" for permiso in permisos]
+            if not request.user.has_perms(permisos_completos):
+                raise PermissionDenied
+            return vista(request, *args, **kwargs)
+        return envoltura
+    return decorador
+
+
+def permiso_pedido(vista):
+    @wraps(vista)
+    def envoltura(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise PermissionDenied
+        if not request.user.is_superuser:
+            app_label = Pedido._meta.app_label
+            permiso = 'change_pedido' if request.method == 'POST' else 'view_pedido'
+            if not request.user.has_perm(f'{app_label}.{permiso}'):
+                raise PermissionDenied
+        return vista(request, *args, **kwargs)
+    return envoltura
 
 
 def int_cop(valor):
@@ -53,6 +87,7 @@ def home(request):
 # ============================================================
 
 @login_required
+@requiere_permisos('add_cliente')
 def registrar_cliente(request):
 
     if request.method == 'POST':
@@ -67,6 +102,7 @@ def registrar_cliente(request):
 
 
 @login_required
+@requiere_permisos('add_cliente')
 def register_cliente(request):
 
     if request.method == 'POST':
@@ -81,6 +117,7 @@ def register_cliente(request):
 
 
 @login_required
+@requiere_permisos('view_cliente')
 def list_cliente(request):
     buscar = request.GET.get('buscar')
 
@@ -98,6 +135,7 @@ def list_cliente(request):
 
 
 @login_required
+@requiere_permisos('view_cliente')
 def cliente_details(request, id):
     cliente = get_object_or_404(Cliente, id=id)
 
@@ -110,6 +148,7 @@ def cliente_details(request, id):
 
 
 @login_required
+@requiere_permisos('change_cliente')
 def cliente_update(request, id):
     cliente = get_object_or_404(Cliente, id=id)
 
@@ -124,6 +163,8 @@ def cliente_update(request, id):
 
 
 @login_required
+@require_POST
+@requiere_permisos('delete_cliente')
 def cliente_delete(request, id):
     cliente = get_object_or_404(Cliente, id=id)
 
@@ -155,6 +196,7 @@ def cliente_delete(request, id):
 
 
 @login_required
+@requiere_permisos('view_cliente', 'view_venta', 'view_abono', 'view_deuda')
 def cliente_historial(request, id):
     cliente = get_object_or_404(Cliente, id=id)
 
@@ -179,6 +221,7 @@ def cliente_historial(request, id):
 # ============================================================
 
 @login_required
+@requiere_permisos('add_producto', 'view_categoria')
 def register_producto(request):
 
     if request.method == 'POST':
@@ -194,6 +237,7 @@ def register_producto(request):
 
 
 @login_required
+@requiere_permisos('view_producto', 'view_categoria')
 def list_producto(request):
 
     buscar = request.GET.get('buscar')
@@ -217,6 +261,7 @@ def list_producto(request):
 
 
 @login_required
+@requiere_permisos('change_producto')
 def producto_update(request, id):
 
     producto = get_object_or_404(Producto, id=id)
@@ -244,6 +289,7 @@ def producto_update(request, id):
 
 
 @login_required
+@requiere_permisos('delete_producto')
 def producto_delete(request, id):
     producto = get_object_or_404(Producto, id=id)
 
@@ -264,6 +310,7 @@ def producto_delete(request, id):
 
 
 @login_required
+@requiere_permisos('view_detalleventa')
 def productos_mas_vendidos(request):
 
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -309,6 +356,7 @@ class ErrorEnVenta(Exception):
 
 
 @login_required
+@requiere_permisos('add_venta', 'add_detalleventa', 'add_pago', 'add_deuda', 'add_abono', 'view_cliente', 'view_producto')
 def register_venta(request):
     """Registra una venta: descuenta stock, guarda pago y crea la deuda si hace falta."""
     if request.method == 'POST':
@@ -449,6 +497,7 @@ def register_venta(request):
 
 
 @login_required
+@requiere_permisos('view_venta')
 def list_venta(request):
 
     buscar = request.GET.get('buscar')
@@ -465,6 +514,7 @@ def list_venta(request):
 
 
 @login_required
+@requiere_permisos('view_venta', 'view_detalleventa')
 def venta_details(request, id):
     """Muestra el detalle de una venta (productos vendidos)."""
     venta = get_object_or_404(Venta, id=id)
@@ -478,6 +528,8 @@ def venta_details(request, id):
 
 
 @login_required
+@require_POST
+@requiere_permisos('delete_venta')
 def venta_delete(request, id):
     """Elimina una venta, devuelve el stock y borra su deuda y abonos."""
     venta = get_object_or_404(Venta, id=id)
@@ -509,6 +561,7 @@ def venta_delete(request, id):
 
 
 @login_required
+@requiere_permisos('view_deuda')
 def ventas_pendientes(request):
     """Lista las deudas que todavía están pendientes."""
     deudas = Deuda.objects.filter(estado='Pendiente').select_related('cliente')
@@ -521,6 +574,7 @@ def ventas_pendientes(request):
 # ============================================================
 
 @login_required
+@requiere_permisos('view_abono')
 def lista_abonos(request):
     """Lista los abonos de las deudas que aún tienen saldo."""
     abonos = Abono.objects.filter(
@@ -531,6 +585,7 @@ def lista_abonos(request):
 
 
 @login_required
+@requiere_permisos('add_abono', 'view_deuda')
 def registrar_abono(request, deuda_id):
     """Registra un abono a una deuda y le resta el valor al saldo."""
     deuda = get_object_or_404(Deuda, id=deuda_id)
@@ -567,6 +622,7 @@ def registrar_abono(request, deuda_id):
 
 
 @login_required
+@requiere_permisos('change_abono')
 def editar_abono(request, abono_id):
     """Cambia el valor de un abono y ajusta el saldo de la deuda."""
     abono = get_object_or_404(Abono, id=abono_id)
@@ -612,6 +668,8 @@ def editar_abono(request, abono_id):
 
 
 @login_required
+@require_POST
+@requiere_permisos('delete_abono')
 def eliminar_abono(request, abono_id):
     """Elimina un abono y le devuelve ese valor al saldo de la deuda."""
     abono = get_object_or_404(Abono, id=abono_id)
@@ -631,6 +689,7 @@ def eliminar_abono(request, abono_id):
 
 
 @login_required
+@requiere_permisos('view_deuda', 'view_abono')
 def detalle_deuda(request, deuda_id):
     """Muestra una deuda con todos sus abonos."""
     deuda = get_object_or_404(Deuda, id=deuda_id)
@@ -643,6 +702,7 @@ def detalle_deuda(request, deuda_id):
 
 
 @login_required
+@requiere_permisos('view_deuda', 'view_abono')
 def detalle_pendiente(request, deuda_id):
     """Muestra una deuda pendiente con sus abonos (incluye datos del cliente)."""
     deuda = get_object_or_404(
@@ -658,6 +718,7 @@ def detalle_pendiente(request, deuda_id):
 
 
 @login_required
+@requiere_permisos('add_abono')
 def marcar_pagada(request, deuda_id):
     """Marca una deuda como pagada (saldo en 0)."""
     deuda = get_object_or_404(Deuda, id=deuda_id)
@@ -674,6 +735,8 @@ def marcar_pagada(request, deuda_id):
 
 
 @login_required
+@require_POST
+@requiere_permisos('delete_deuda')
 def eliminar_pendiente(request, deuda_id):
     """Elimina una deuda, su venta, sus abonos y devuelve el stock."""
     deuda = get_object_or_404(Deuda, id=deuda_id)
@@ -708,6 +771,7 @@ def eliminar_pendiente(request, deuda_id):
 # ============================================================
 
 @login_required
+@requiere_permisos('add_gasto')
 def registrar_gasto(request):
     """Registra un gasto."""
     if request.method == 'POST':
@@ -814,12 +878,14 @@ def datos_clientes_deuda():
 # ---------- Pantallas de reportes ----------
 
 @login_required
+@requiere_permisos('view_pago', 'view_gasto', 'view_deuda')
 def reportes(request):
     """Menú principal de reportes."""
     return render(request, 'reportes.html')
 
 
 @login_required
+@requiere_permisos('view_pago', 'view_abono')
 def reporte_ingresos(request):
     """Reporte de ingresos por fecha."""
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -836,6 +902,7 @@ def reporte_ingresos(request):
 
 
 @login_required
+@requiere_permisos('view_gasto')
 def reporte_gastos(request):
     """Reporte de gastos por fecha."""
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -852,6 +919,7 @@ def reporte_gastos(request):
 
 
 @login_required
+@requiere_permisos('view_cliente', 'view_deuda')
 def reporte_clientes_deuda(request):
     """Reporte de clientes que deben dinero."""
     clientes, total_deuda = datos_clientes_deuda()
@@ -863,6 +931,7 @@ def reporte_clientes_deuda(request):
 
 
 @login_required
+@requiere_permisos('view_pago', 'view_abono', 'view_gasto')
 def reporte_balance(request):
     """Balance = ingresos - gastos."""
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -882,6 +951,7 @@ def reporte_balance(request):
 
 
 @login_required
+@requiere_permisos('view_venta', 'view_abono')
 def consultar_por_fecha(request):
     """Muestra las ventas y abonos entre dos fechas."""
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -910,6 +980,7 @@ def consultar_por_fecha(request):
 
 
 @login_required
+@requiere_permisos('view_pago', 'view_abono', 'view_gasto', 'view_cliente', 'view_deuda')
 def descargar_reporte(request):
     """Descarga un reporte en formato CSV (se abre en Excel)."""
     tipo = request.GET.get('tipo')
@@ -972,6 +1043,7 @@ def descargar_reporte(request):
 # ============================================================
 
 @login_required
+@requiere_permisos('view_pedido')
 def list_pedido(request):
     """Lista los pedidos, del más reciente al más antiguo."""
     pedidos = Pedido.objects.select_related('proveedor').order_by('-id')
@@ -980,6 +1052,7 @@ def list_pedido(request):
 
 
 @login_required
+@requiere_permisos('add_pedido', 'add_detallepedido', 'add_gasto', 'view_producto', 'view_proveedor')
 def register_pedido(request):
     """Registra un pedido a un proveedor y crea el gasto automáticamente."""
     productos = Producto.objects.all()
@@ -1081,6 +1154,7 @@ def register_pedido(request):
 
 
 @login_required
+@permiso_pedido
 def pedido_details(request, pedido_id):
     """Muestra un pedido y permite cambiar su estado (actualiza el stock)."""
     pedido = get_object_or_404(Pedido, id=pedido_id)
@@ -1119,6 +1193,8 @@ def pedido_details(request, pedido_id):
 
 
 @login_required
+@require_POST
+@requiere_permisos('delete_pedido')
 def eliminar_pedido(request, pedido_id):
     """Elimina un pedido y su gasto. Si ya estaba recibido, resta el stock."""
     pedido = get_object_or_404(Pedido, id=pedido_id)
@@ -1152,6 +1228,7 @@ def eliminar_pedido(request, pedido_id):
 # ============================================================
 
 @login_required
+@requiere_permisos('view_proveedor')
 def list_proveedor(request):
     buscar = request.GET.get('buscar')
 
@@ -1171,6 +1248,7 @@ def list_proveedor(request):
 
 
 @login_required
+@requiere_permisos('add_proveedor')
 def register_proveedor(request):
     siguiente = request.POST.get('next') or request.GET.get('next')
 
@@ -1194,6 +1272,7 @@ def register_proveedor(request):
 
 
 @login_required
+@requiere_permisos('view_proveedor', 'view_pedido')
 def proveedor_details(request, proveedor_id):
     proveedor = get_object_or_404(Proveedor, id=proveedor_id)
     pedidos = proveedor.pedidos.order_by('-id')
@@ -1210,6 +1289,7 @@ def proveedor_details(request, proveedor_id):
 
 
 @login_required
+@requiere_permisos('change_proveedor')
 def proveedor_update(request, proveedor_id):
 
     proveedor = get_object_or_404(Proveedor, id=proveedor_id)
@@ -1231,6 +1311,7 @@ def proveedor_update(request, proveedor_id):
 
 
 @login_required
+@requiere_permisos('delete_proveedor')
 def proveedor_delete(request, proveedor_id):
 
     proveedor = get_object_or_404(Proveedor, id=proveedor_id)
@@ -1281,6 +1362,7 @@ def crear_reembolso_automatico(venta):
 
 
 @login_required
+@requiere_permisos('change_venta')
 def cancelar_venta(request, venta_id):
     venta = get_object_or_404(Venta, pk=venta_id)
 
@@ -1312,10 +1394,8 @@ def cancelar_venta(request, venta_id):
 
 
 @login_required
+@requiere_permisos('view_reembolso')
 def lista_reembolsos(request):
-    for venta in Venta.objects.filter(estado='Cancelada').iterator():
-        crear_reembolso_automatico(venta)
-
     reembolsos = (
         Reembolso.objects
         .select_related('venta', 'venta__cliente')
@@ -1326,6 +1406,7 @@ def lista_reembolsos(request):
 
 
 @login_required
+@requiere_permisos('add_reembolso', 'view_venta')
 def solicitar_reembolso(request, venta_id):
 
     venta = get_object_or_404(Venta, pk=venta_id, estado='Cancelada')
@@ -1374,6 +1455,7 @@ def solicitar_reembolso(request, venta_id):
 
 
 @login_required
+@requiere_permisos('view_reembolso')
 def details_reembolso(request, reembolso_id):
 
     reembolso = get_object_or_404(
@@ -1385,6 +1467,7 @@ def details_reembolso(request, reembolso_id):
 
 
 @login_required
+@requiere_permisos('view_reembolso')
 def details_reembolso_venta(request, venta_id):
 
     reembolso = get_object_or_404(Reembolso, venta_id=venta_id)
@@ -1393,6 +1476,7 @@ def details_reembolso_venta(request, venta_id):
 
 
 @login_required
+@requiere_permisos('change_reembolso')
 def registrar_devolucion(request, reembolso_id):
 
     reembolso = get_object_or_404(Reembolso, pk=reembolso_id)

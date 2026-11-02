@@ -53,7 +53,7 @@
             overflow: hidden;
         }
 
-        /* ===== GATITOS ANIMADOS DE FONDO ===== */
+        /* ===== BOLITAS ANIMADAS DE FONDO ===== */
 
         .gatos {
             position: fixed;
@@ -69,54 +69,66 @@
         }
 
         .gatos svg:nth-child(1) {
-            width: 170px; height: 170px;
+            width: 170px;
+            height: 170px;
             color: var(--naranja);
             opacity: 0.22;
-            top: 8%; left: 6%;
+            top: 8%;
+            left: 6%;
             animation-duration: 24s;
         }
 
         .gatos svg:nth-child(2) {
-            width: 90px; height: 90px;
+            width: 90px;
+            height: 90px;
             color: var(--terracota);
             opacity: 0.18;
-            top: 20%; right: 12%;
+            top: 20%;
+            right: 12%;
             animation-duration: 19s;
             animation-delay: -5s;
         }
 
         .gatos svg:nth-child(3) {
-            width: 230px; height: 230px;
+            width: 230px;
+            height: 230px;
             color: var(--arena);
             opacity: 0.85;
-            bottom: 5%; right: 5%;
+            bottom: 5%;
+            right: 5%;
             animation-duration: 28s;
             animation-delay: -10s;
         }
 
         .gatos svg:nth-child(4) {
-            width: 120px; height: 120px;
+            width: 120px;
+            height: 120px;
             color: var(--naranja);
             opacity: 0.16;
-            bottom: 16%; left: 12%;
+            bottom: 16%;
+            left: 12%;
             animation-duration: 21s;
             animation-delay: -3s;
         }
 
         .gatos svg:nth-child(5) {
-            width: 70px; height: 70px;
+            width: 70px;
+            height: 70px;
             color: var(--cafe-tostado);
             opacity: 0.12;
-            top: 58%; left: 46%;
+            top: 58%;
+            left: 46%;
             animation-duration: 17s;
             animation-delay: -8s;
         }
 
         .gatos svg:nth-child(6) {
-            width: 140px; height: 140px;
+            width: 140px;
+            height: 140px;
             color: var(--arena);
             opacity: 0.9;
-            top: 5%; left: 55%;
+            top: 5%;
+            left: 55%;
             animation-duration: 26s;
             animation-delay: -12s;
         }
@@ -130,7 +142,9 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .gatos svg { animation: none; }
+            .gatos svg {
+                animation: none;
+            }
         }
 
         /* ===== TARJETA ===== */
@@ -151,8 +165,15 @@
         }
 
         @keyframes aparecer {
-            from { opacity: 0; transform: translateY(14px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===== ENCABEZADO ===== */
@@ -273,6 +294,7 @@
             .login {
                 padding: 32px 24px 28px;
             }
+
             .logo {
                 width: 120px;
                 height: 120px;
@@ -283,54 +305,53 @@
 
 </head>
 
-
 <body>
 
-    <!-- DEFINICIÓN DEL GATITO (se reutiliza 6 veces) -->
+    <!-- DEFINICIÓN DE LA BOLITA -->
+
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-        <symbol id="gato" viewBox="0 0 100 100">
-            <!-- orejas -->
-            <polygon points="14,46 18,6 48,26" fill="currentColor"/>
-            <polygon points="86,46 82,6 52,26" fill="currentColor"/>
-            <!-- cabeza -->
-            <circle cx="50" cy="58" r="38" fill="currentColor"/>
-            <!-- ojos -->
-            <ellipse cx="35" cy="54" rx="5" ry="7" fill="#FCFAF7"/>
-            <ellipse cx="65" cy="54" rx="5" ry="7" fill="#FCFAF7"/>
-            <!-- nariz -->
-            <polygon points="45,67 55,67 50,73" fill="#FCFAF7"/>
-            <!-- bigotes -->
-            <g stroke="#FCFAF7" stroke-width="1.8" stroke-linecap="round" fill="none">
-                <line x1="8"  y1="66" x2="30" y2="70"/>
-                <line x1="8"  y1="76" x2="30" y2="75"/>
-                <line x1="92" y1="66" x2="70" y2="70"/>
-                <line x1="92" y1="76" x2="70" y2="75"/>
-            </g>
+        <symbol id="bolita" viewBox="0 0 100 100">
+            <circle
+                cx="50"
+                cy="50"
+                r="42"
+                fill="currentColor"
+            />
         </symbol>
     </svg>
 
-    <!-- GATITOS DE FONDO -->
+    <!-- BOLITAS DE FONDO -->
+
     <div class="gatos">
-        <svg viewBox="0 0 100 100"><use href="#gato"/></svg>
-        <svg viewBox="0 0 100 100"><use href="#gato"/></svg>
-        <svg viewBox="0 0 100 100"><use href="#gato"/></svg>
-        <svg viewBox="0 0 100 100"><use href="#gato"/></svg>
-        <svg viewBox="0 0 100 100"><use href="#gato"/></svg>
-        <svg viewBox="0 0 100 100"><use href="#gato"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#bolita"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#bolita"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#bolita"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#bolita"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#bolita"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#bolita"/></svg>
     </div>
 
     <div class="login">
 
         <!-- ENCABEZADO -->
+
         <div class="encabezado">
+
             <div class="logo">
-                <img src="{% static 'logo.jpeg' %}" alt="Logo MisMary" style="width: 100%; height: 100%; object-fit: cover;">
+                <img
+                    src="{% static 'logo.jpeg' %}"
+                    alt="Logo MisMary"
+                    style="width: 100%; height: 100%; object-fit: cover;"
+                >
             </div>
+
             <h1>MisMary</h1>
             <p>Sistema de Gestión de Ventas por Catálogo</p>
+
         </div>
 
         <!-- ERROR -->
+
         {% if form.errors %}
             <div class="mensaje-error">
                 Usuario o contraseña incorrectos
@@ -338,12 +359,15 @@
         {% endif %}
 
         <!-- FORMULARIO -->
+
         <form method="POST">
 
             {% csrf_token %}
 
             <div class="campo">
+
                 <label for="username">Usuario</label>
+
                 <input
                     type="text"
                     id="username"
@@ -351,10 +375,13 @@
                     placeholder="Ingrese su usuario"
                     required
                 >
+
             </div>
 
             <div class="campo">
+
                 <label for="password">Contraseña</label>
+
                 <input
                     type="password"
                     id="password"
@@ -362,9 +389,12 @@
                     placeholder="Ingrese su contraseña"
                     required
                 >
+
             </div>
 
-            <button type="submit" class="btn-mismary">Iniciar sesión →</button>
+            <button type="submit" class="btn-mismary">
+                Iniciar sesión →
+            </button>
 
         </form>
 
