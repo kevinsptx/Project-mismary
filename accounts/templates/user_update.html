@@ -1,104 +1,304 @@
 {% extends 'layout/base.html' %}
 
+{% block title %}
+Editar Usuario | MisMary
+{% endblock %}
+
 {% block content %}
 
 <style>
-    .editar-contenedor {
-        max-width: 650px;
-        margin: auto;
-        background: white;
-        padding: 30px;
-        border-radius: 18px;
-        border: 1px solid #E8DFC8;
-        color: #4A2C1B;
+
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --cafe-medio:    #8A5A3C;
+        --sombra-caja:   0 18px 36px -8px rgba(74, 44, 27, 0.28), 0 4px 10px rgba(74, 44, 27, 0.10);
     }
 
-    .editar-contenedor h2 {
-        color: #4A2C1B;
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
     }
 
-    .editar-contenedor label {
-        display: block;
-        margin: 15px 0 6px;
-        font-weight: bold;
+    .wrap-mismary {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px 20px;
     }
 
-    .editar-contenedor input,
-    .editar-contenedor select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #E8DFC8;
-        border-radius: 10px;
-        font-size: 15px;
+    .wrap-mismary * {
         box-sizing: border-box;
     }
 
-    .editar-contenedor button,
-    .editar-contenedor a {
-        display: inline-block;
-        margin-top: 20px;
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== FORMULARIO ===== */
+
+    .formulario {
+        background: var(--blanco);
+        border: 2px solid var(--cafe-medio);
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: var(--sombra-caja);
+    }
+
+    .campo {
+        margin-bottom: 20px;
+    }
+
+    .campo label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--cafe-tostado);
+    }
+
+    .campo input,
+    .campo select {
+        width: 100%;
         padding: 12px 18px;
-        border: none;
-        border-radius: 20px;
-        background: #FF6B35;
-        color: white;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        background: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: inherit;
+        font-size: 14px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .campo input::placeholder {
+        color: #A8978A;
+    }
+
+    .campo input:focus,
+    .campo select:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+    }
+
+    .campos-fila {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    /* ===== BOTONES ===== */
+
+    .botones {
+        display: flex;
+        gap: 10px;
+        margin-top: 26px;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
-        font-weight: bold;
+        padding: 11px 22px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid transparent;
         cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease;
     }
 
-    .editar-contenedor .volver {
-        background: #9E3B27;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    .editar-mensaje {
-        padding: 12px;
-        background: #f8e9df;
-        border-radius: 10px;
-        margin: 10px 0;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
     }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 600px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .formulario {
+            padding: 22px 18px;
+        }
+
+        .campos-fila {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .botones {
+            flex-direction: column;
+        }
+
+        .botones .btn-mismary {
+            width: 100%;
+        }
+    }
+
 </style>
 
-<div class="editar-contenedor">
 
-    <h2>Editar usuario</h2>
-    <p>Modifica la información y el grupo asignado al usuario.</p>
+<div class="wrap-mismary">
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="editar-mensaje">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Editar usuario 💛</h1>
+            <p>Modifica la información y el grupo asignado al usuario</p>
+        </div>
 
-    <form method="POST">
+        <a href="{% url 'list_user' %}" class="btn-mismary btn-secundario">
+            ← Regresar a usuarios
+        </a>
+    </div>
+
+    <!-- FORMULARIO -->
+    <form method="POST" class="formulario">
         {% csrf_token %}
 
-        <label for="username">Nombre de usuario</label>
-        <input type="text" id="username" name="username" value="{{ usuario.username }}" required>
+        <!-- USUARIO -->
+        <div class="campo">
+            <label for="username">Nombre de usuario</label>
 
-        <label for="first_name">Nombres</label>
-        <input type="text" id="first_name" name="first_name" value="{{ usuario.first_name }}">
+            <input
+                type="text"
+                required
+                maxlength="150"
+                id="username"
+                name="username"
+                placeholder="Ingrese el nombre de usuario"
+                value="{{ usuario.username }}"
+                autocomplete="username"
+            >
+        </div>
 
-        <label for="last_name">Apellidos</label>
-        <input type="text" id="last_name" name="last_name" value="{{ usuario.last_name }}">
+        <!-- NOMBRES Y APELLIDOS -->
+        <div class="campos-fila">
+            <div class="campo">
+                <label for="first_name">Nombres</label>
 
-        <label for="email">Correo electrónico</label>
-        <input type="email" id="email" name="email" value="{{ usuario.email }}" required>
+                <input
+                    type="text"
+                    maxlength="150"
+                    id="first_name"
+                    name="first_name"
+                    class="capitalizar-nombre"
+                    placeholder="Ingrese los nombres"
+                    value="{{ usuario.first_name }}"
+                    autocomplete="given-name"
+                >
+            </div>
 
-        <label for="grupo_id">Rol o grupo</label>
-        <select id="grupo_id" name="grupo_id" required>
-            <option value="">Selecciona un grupo</option>
+            <div class="campo">
+                <label for="last_name">Apellidos</label>
 
-            {% for grupo in grupos %}
-                <option value="{{ grupo.id }}"
-                    {% if grupo_actual and grupo_actual.id == grupo.id %}selected{% endif %}>
-                    {{ grupo.name }}
-                </option>
-            {% endfor %}
-        </select>
+                <input
+                    type="text"
+                    maxlength="150"
+                    id="last_name"
+                    name="last_name"
+                    class="capitalizar-nombre"
+                    placeholder="Ingrese los apellidos"
+                    value="{{ usuario.last_name }}"
+                    autocomplete="family-name"
+                >
+            </div>
+        </div>
 
-        <button type="submit">Guardar cambios</button>
-        <a class="volver" href="{% url 'list_user' %}">Volver</a>
+        <!-- CORREO -->
+        <div class="campo">
+            <label for="email">Correo electrónico</label>
+
+            <input
+                type="email"
+                required
+                id="email"
+                name="email"
+                placeholder="Ingrese el correo electrónico"
+                value="{{ usuario.email }}"
+                autocomplete="email"
+            >
+        </div>
+
+        <!-- GRUPO -->
+        <div class="campo">
+            <label for="grupo_id">Rol o grupo</label>
+
+            <select id="grupo_id" name="grupo_id" required>
+                <option value="">Selecciona un grupo</option>
+
+                {% for grupo in grupos %}
+                    <option value="{{ grupo.id }}"
+                        {% if grupo_actual and grupo_actual.id == grupo.id %}selected{% endif %}>
+                        {{ grupo.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="botones">
+            <button type="submit" class="btn-mismary">
+                Guardar cambios
+            </button>
+
+            <a href="{% url 'list_user' %}" class="btn-mismary btn-secundario">
+                Cancelar
+            </a>
+        </div>
 
     </form>
 

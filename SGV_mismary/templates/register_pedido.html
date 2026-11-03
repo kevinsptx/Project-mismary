@@ -304,7 +304,7 @@ Registrar Pedido | MisMary
     <!-- TARJETA DEL FORMULARIO -->
     <div class="tarjeta">
 
-        <form method="POST">
+        <form method="POST" id="formPedido">
             {% csrf_token %}
 
             <!-- PROVEEDOR Y FECHA -->
@@ -354,15 +354,15 @@ Registrar Pedido | MisMary
                         <option value="">-- Seleccionar producto --</option>
                         {% for p in productos %}
                             <option value="{{ p.id }}"
-                                data-precio-compra="{{ p.precio_compra|floatformat:0 }}"
-                                data-precio-venta="{{ p.precio_venta|floatformat:0 }}">{{ p.nombre }} (Stock actual: {{ p.cantidad_disponible }})</option>
+                                data-precio-compra="{{ p.precio_compra|floatformat:'0u' }}"
+                                data-precio-venta="{{ p.precio_venta|floatformat:'0u' }}">{{ p.nombre }} (Stock actual: {{ p.cantidad_disponible }})</option>
                         {% endfor %}
                     </select>
 
                     <input type="number" name="cantidad[]" placeholder="Cantidad" min="1" required>
 
-                    <input type="number" step="1" min="0" name="costo_unitario[]" placeholder="Precio de compra C/U ($ COP)" required>
-                    <input type="number" step="1" min="1" name="precio_venta[]" placeholder="Precio de venta C/U ($ COP)" required>
+                    <input type="text" inputmode="numeric" autocomplete="off" class="precio-cop" name="costo_unitario[]" placeholder="Precio de compra C/U ($ COP)" required>
+                    <input type="text" inputmode="numeric" autocomplete="off" class="precio-cop" name="precio_venta[]" placeholder="Precio de venta C/U ($ COP)" required>
 
                     <button type="button" class="btn-quitar" onclick="eliminarFila(this)" title="Quitar producto">✕</button>
                 </div>
@@ -404,6 +404,44 @@ Registrar Pedido | MisMary
         contenedor.appendChild(nuevaFila);
     }
 
+    // ===== FORMATO DE PESOS COLOMBIANOS (15000 -> 15.000) =====
+
+    function soloNumeros(valor) {
+        return String(valor ?? '').replace(/\D/g, '');
+    }
+
+    function formatearPesos(valor) {
+        const numeros = soloNumeros(valor);
+        if (numeros === '') return '';
+        return numeros.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Formatea mientras se escribe, manteniendo el cursor en su lugar
+    document.getElementById('contenedor-items').addEventListener('input', function (e) {
+        if (!e.target.matches('input.precio-cop')) return;
+
+        const campo = e.target;
+        const inicio = campo.selectionStart;
+        const digitosAntes = soloNumeros(campo.value.slice(0, inicio)).length;
+
+        campo.value = formatearPesos(campo.value);
+
+        let posicion = 0;
+        let contados = 0;
+        while (posicion < campo.value.length && contados < digitosAntes) {
+            if (/\d/.test(campo.value[posicion])) contados++;
+            posicion++;
+        }
+        campo.setSelectionRange(posicion, posicion);
+    });
+
+    // Al enviar, se mandan los precios sin puntos para que Django los guarde bien
+    document.getElementById('formPedido').addEventListener('submit', function () {
+        document.querySelectorAll('input.precio-cop').forEach(function (campo) {
+            campo.value = soloNumeros(campo.value);
+        });
+    });
+
     // Al elegir un producto se rellenan sus precios actuales (se pueden cambiar)
     document.getElementById('contenedor-items').addEventListener('change', function (e) {
         if (!e.target.matches('select[name="producto_id[]"]')) return;
@@ -413,8 +451,8 @@ Registrar Pedido | MisMary
         const venta = fila.querySelector('input[name="precio_venta[]"]');
         const pc = opcion ? opcion.dataset.precioCompra : '';
         const pv = opcion ? opcion.dataset.precioVenta : '';
-        compra.value = (pc && Number(pc) > 0) ? pc : '';
-        venta.value = (pv && Number(pv) > 0) ? pv : '';
+        compra.value = (pc && Number(pc) > 0) ? formatearPesos(pc) : '';
+        venta.value = (pv && Number(pv) > 0) ? formatearPesos(pv) : '';
     });
     function eliminarFila(boton) {
         const contenedor = document.getElementById('contenedor-items');

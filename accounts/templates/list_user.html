@@ -1,136 +1,514 @@
 {% extends 'layout/base.html' %}
 
+{% block title %}
+Usuarios | MisMary
+{% endblock %}
+
 {% block content %}
 
 <style>
-    .usuarios-contenedor {
-        background: #fff;
-        padding: 30px;
-        border-radius: 18px;
-        color: #4A2C1B;
-        border: 1px solid #E8DFC8;
-        overflow-x: auto;
+
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
     }
 
-    .usuarios-contenedor h2 {
-        color: #4A2C1B;
-        margin-bottom: 10px;
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
     }
 
-    .usuarios-acciones {
+    .wrap-mismary {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .wrap-mismary * {
+        box-sizing: border-box;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .encabezado-botones {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
-        margin: 20px 0;
     }
 
-    .usuarios-contenedor a,
-    .usuarios-contenedor button {
-        display: inline-block;
-        padding: 10px 16px;
-        border: none;
-        border-radius: 20px;
-        background: #FF6B35;
-        color: white;
+    /* ===== BOTONES ===== */
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
         text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
         cursor: pointer;
-        font-weight: bold;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: background 0.2s ease;
     }
 
-    .usuarios-contenedor .secundario {
-        background: #9E3B27;
+    .btn-mismary:hover {
+        background: var(--terracota);
     }
 
-    .usuarios-contenedor .eliminar {
-        background: #9b2828;
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
     }
 
-    .usuarios-contenedor table {
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== BARRA DE RESULTADOS ===== */
+
+    .resultados-barra {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .resultados-barra h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .chip-mismary {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    /* ===== TABLA ===== */
+
+    .tabla-caja {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        box-shadow: var(--sombra-suave);
+        overflow-x: auto;
+    }
+
+    .tabla-usuarios {
         width: 100%;
         border-collapse: collapse;
-        min-width: 650px;
+        font-size: 14px;
     }
 
-    .usuarios-contenedor th,
-    .usuarios-contenedor td {
-        padding: 13px;
+    .tabla-usuarios thead th {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
         text-align: left;
-        border-bottom: 1px solid #E8DFC8;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--arena);
+        white-space: nowrap;
     }
 
-    .usuarios-contenedor th {
-        color: #9E3B27;
+    .tabla-usuarios tbody td {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--arena-suave);
+        vertical-align: middle;
     }
 
-    .usuarios-mensaje {
-        padding: 12px;
-        border-radius: 10px;
-        background: #f8e9df;
+    .tabla-usuarios tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tabla-usuarios tbody tr:hover {
+        background: var(--marfil-bg);
+    }
+
+    .nombre-usuario {
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .chip-rol {
+        display: inline-block;
+        background: var(--arena-suave);
+        color: var(--terracota);
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    .col-acciones {
+        text-align: right !important;
+        white-space: nowrap;
+    }
+
+    .col-acciones form {
+        display: inline;
+        margin: 0;
+    }
+
+    .btn-tabla {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-info {
+        background: var(--naranja);
+        color: #FFF;
+        border: 1px solid transparent;
+    }
+
+    .btn-info:hover {
+        background: var(--naranja-hover);
+    }
+
+    .btn-outline {
+        background: var(--blanco);
+        color: var(--terracota);
+        border: 1px solid var(--terracota);
+        margin-left: 4px;
+    }
+
+    .btn-outline:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    /* ===== SIN USUARIOS ===== */
+
+    .sin-usuarios {
+        padding: 40px 20px;
+        text-align: center;
+        color: #6C5243;
+        font-size: 14px;
+        background: var(--arena-suave);
+        border: 1px dashed var(--arena);
+        border-radius: 24px;
+    }
+
+    /* ===== MODAL ELIMINAR ===== */
+
+    .modal-fondo {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(35, 23, 16, 0.58);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-fondo.visible {
+        display: flex;
+    }
+
+    .modal-contenido {
+        background: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        width: 100%;
+        max-width: 420px;
+        padding: 30px 25px;
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        animation: modalEntrada 0.22s ease-out;
+    }
+
+    .modal-icono {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--rojo-fondo);
+        border-radius: 50%;
+        font-size: 32px;
+    }
+
+    .modal-contenido h3 {
+        font-size: 22px;
+        margin: 0 0 12px;
+    }
+
+    .modal-contenido p {
+        font-size: 14px;
+        line-height: 1.6;
         margin: 10px 0;
     }
+
+    .modal-acciones {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 22px;
+        flex-wrap: wrap;
+    }
+
+    .btn-eliminar {
+        background: var(--blanco);
+        color: var(--terracota);
+        border-color: var(--terracota);
+    }
+
+    .btn-eliminar:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    body.modal-abierto {
+        overflow: hidden;
+    }
+
+    @keyframes modalEntrada {
+        from {
+            opacity: 0;
+            transform: scale(0.94);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 700px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .tabla-usuarios thead th,
+        .tabla-usuarios tbody td {
+            padding: 12px 14px;
+        }
+    }
+
 </style>
 
-<div class="usuarios-contenedor">
 
-    <h2>Usuarios de MisMary</h2>
-    <p>Administra las cuentas que pueden ingresar al sistema.</p>
+<div class="wrap-mismary">
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="usuarios-mensaje">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Usuarios de MisMary 💛</h1>
+            <p>Administra las cuentas que pueden ingresar al sistema</p>
+        </div>
 
-    <div class="usuarios-acciones">
-        <a href="{% url 'register_user' %}">Crear usuario</a>
-        <a class="secundario" href="{% url 'list_grupos' %}">Administrar grupos</a>
+        <div class="encabezado-botones">
+            <a href="{% url 'list_grupos' %}" class="btn-mismary btn-secundario">
+                Administrar grupos
+            </a>
+
+            <a href="{% url 'register_user' %}" class="btn-mismary">
+                + Crear usuario
+            </a>
+        </div>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
+    <!-- BARRA DE RESULTADOS -->
+    <div class="resultados-barra">
+        <h2>Usuarios registrados</h2>
 
-        <tbody>
-            {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.username }}</td>
-                    <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
-                    <td>{{ usuario.email }}</td>
-                    <td>
-                        {% for grupo in usuario.groups.all %}
-                            {{ grupo.name }}
-                        {% empty %}
-                            Sin grupo
-                        {% endfor %}
-                    </td>
-                    <td>
-                        <a class="secundario" href="{% url 'user_details' usuario.id %}">Ver</a>
+        {% if usuarios %}
+            <span class="chip-mismary">{{ usuarios|length }} usuario{{ usuarios|length|pluralize }}</span>
+        {% endif %}
+    </div>
 
-                        <a class="secundario" href="{% url 'user_update' usuario.id %}">Editar</a>
+    <!-- TABLA DE USUARIOS -->
+    {% if usuarios %}
+        <div class="tabla-caja">
+            <table class="tabla-usuarios">
 
-                        <form method="POST" action="{% url 'user_delete' usuario.id %}" style="display:inline">
-                            {% csrf_token %}
-                            <button class="eliminar" type="submit" onclick="return confirm('¿Deseas eliminar este usuario?')">
-                                Eliminar
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5">Todavía no hay usuarios registrados.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th class="col-acciones">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for usuario in usuarios %}
+                        <tr>
+                            <td class="nombre-usuario">{{ usuario.username }}</td>
+
+                            <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+
+                            <td>{{ usuario.email|default:"No registrado" }}</td>
+
+                            <td>
+                                {% for grupo in usuario.groups.all %}
+                                    <span class="chip-rol">{{ grupo.name }}</span>
+                                {% empty %}
+                                    <span class="chip-rol">Sin grupo</span>
+                                {% endfor %}
+                            </td>
+
+                            <td class="col-acciones">
+                                <a href="{% url 'user_details' usuario.id %}" class="btn-tabla btn-info">
+                                    Ver
+                                </a>
+
+                                <a href="{% url 'user_update' usuario.id %}" class="btn-tabla btn-outline">
+                                    Editar
+                                </a>
+
+                                <form method="POST" action="{% url 'user_delete' usuario.id %}">
+                                    {% csrf_token %}
+                                    <button type="button"
+                                            class="btn-tabla btn-outline"
+                                            onclick="mostrarAviso(this.form, '{{ usuario.username|escapejs }}')">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    {% else %}
+        <div class="sin-usuarios">
+            Todavía no hay usuarios registrados.
+        </div>
+    {% endif %}
 
 </div>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div id="modalEliminar" class="modal-fondo" role="dialog"
+     aria-modal="true" aria-labelledby="modalTitulo">
+
+    <div class="modal-contenido">
+        <div class="modal-icono">⚠️</div>
+
+        <h3 id="modalTitulo">¿Eliminar usuario?</h3>
+
+        <p>
+            Vas a eliminar a <strong id="modalNombre"></strong>.
+            Esta acción no se puede deshacer.
+        </p>
+
+        <div class="modal-acciones">
+            <button type="button" class="btn-mismary btn-secundario" onclick="cerrarModal()">
+                Cancelar
+            </button>
+
+            <button type="button" class="btn-mismary" onclick="confirmarEliminar()">
+                Sí, eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let formularioPendiente = null;
+
+    function mostrarAviso(formulario, nombre) {
+        formularioPendiente = formulario;
+        document.getElementById('modalNombre').textContent = nombre;
+        document.getElementById('modalEliminar').classList.add('visible');
+        document.body.classList.add('modal-abierto');
+    }
+
+    function cerrarModal() {
+        formularioPendiente = null;
+        document.getElementById('modalEliminar').classList.remove('visible');
+        document.body.classList.remove('modal-abierto');
+    }
+
+    function confirmarEliminar() {
+        if (formularioPendiente) {
+            formularioPendiente.submit();
+        }
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            cerrarModal();
+        }
+    });
+
+    document.getElementById('modalEliminar').addEventListener('click', function (e) {
+        if (e.target === this) {
+            cerrarModal();
+        }
+    });
+</script>
 
 {% endblock %}

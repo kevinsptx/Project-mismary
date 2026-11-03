@@ -1,80 +1,218 @@
 {% extends 'layout/base.html' %}
 
+{% block title %}
+Permisos del Grupo | MisMary
+{% endblock %}
+
 {% block content %}
 
 <style>
-    .permisos-contenedor {
-        max-width: 1000px;
-        margin: auto;
-        background: white;
-        padding: 30px;
-        border: 1px solid #E8DFC8;
-        border-radius: 18px;
-        color: #4A2C1B;
+
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
     }
 
-    .permisos-contenedor h2 {
-        color: #4A2C1B;
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
     }
+
+    .wrap-mismary {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .wrap-mismary * {
+        box-sizing: border-box;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== BOTONES ===== */
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 11px 22px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    .botones {
+        display: flex;
+        gap: 10px;
+        margin-top: 26px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== BLOQUES DE PERMISOS ===== */
 
     .permiso-modelo {
-        border: 1px solid #E8DFC8;
-        border-radius: 14px;
-        padding: 16px;
-        margin: 14px 0;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 22px 26px;
+        margin-bottom: 16px;
+        box-shadow: var(--sombra-suave);
     }
 
     .permiso-modelo h3 {
-        color: #9E3B27;
+        margin: 0 0 14px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--terracota);
+    }
+
+    .permisos-lista {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
     .permiso-checkbox {
         display: inline-flex;
-        gap: 8px;
         align-items: center;
-        margin: 9px 18px 9px 0;
+        gap: 8px;
+        padding: 8px 16px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--cafe-tostado);
+        cursor: pointer;
+        transition: border-color 0.2s ease, background 0.2s ease;
     }
 
-    .permisos-contenedor button,
-    .permisos-contenedor a {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 12px 18px;
-        border: none;
-        border-radius: 20px;
-        background: #FF6B35;
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
+    .permiso-checkbox:hover {
+        border-color: var(--terracota);
+        background: var(--blanco);
+    }
+
+    .permiso-checkbox input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--naranja);
         cursor: pointer;
     }
 
-    .permisos-contenedor .secundario {
-        background: #9E3B27;
+    /* ===== SIN PERMISOS ===== */
+
+    .sin-permisos {
+        padding: 40px 20px;
+        text-align: center;
+        color: #6C5243;
+        font-size: 14px;
+        background: var(--arena-suave);
+        border: 1px dashed var(--arena);
+        border-radius: 24px;
     }
 
-    .permisos-mensaje {
-        padding: 12px;
-        background: #f8e9df;
-        border-radius: 10px;
-        margin: 8px 0;
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 700px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .permiso-modelo {
+            padding: 18px;
+        }
+
+        .botones {
+            flex-direction: column;
+        }
+
+        .botones .btn-mismary {
+            width: 100%;
+        }
     }
+
 </style>
 
-<div class="permisos-contenedor">
 
-    <h2>Permisos: {{ grupo.name }}</h2>
+<div class="wrap-mismary">
 
-    <p>
-        Selecciona los permisos que tendrá este grupo dentro del sistema de negocio.
-    </p>
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Permisos: {{ grupo.name }} 💛</h1>
+            <p>Selecciona los permisos que tendrá este grupo dentro del sistema</p>
+        </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="permisos-mensaje">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+        <a href="{% url 'list_grupos' %}" class="btn-mismary btn-secundario">
+            ← Regresar a grupos
+        </a>
+    </div>
 
+    <!-- FORMULARIO DE PERMISOS -->
     <form method="POST">
         {% csrf_token %}
 
@@ -86,39 +224,46 @@
 
                 <h3>{{ bloque.grouper|title }}</h3>
 
-                {% for permiso in bloque.list %}
+                <div class="permisos-lista">
+                    {% for permiso in bloque.list %}
 
-                    <label class="permiso-checkbox">
+                        <label class="permiso-checkbox">
 
-                        <input
-                            type="checkbox"
-                            name="permisos"
-                            value="{{ permiso.id }}"
-                            {% if permiso.id in permisos_asignados %}checked{% endif %}
-                        >
+                            <input
+                                type="checkbox"
+                                name="permisos"
+                                value="{{ permiso.id }}"
+                                {% if permiso.id in permisos_asignados %}checked{% endif %}
+                            >
 
-                        {{ permiso.name }}
+                            {{ permiso.name }}
 
-                    </label>
+                        </label>
 
-                {% endfor %}
+                    {% endfor %}
+                </div>
 
             </section>
 
         {% empty %}
 
-            <p>
+            <div class="sin-permisos">
                 No se encontraron permisos de la aplicación de negocio.
                 Verifica INSTALLED_APPS y ejecuta las migraciones.
-            </p>
+            </div>
 
         {% endfor %}
 
-        <button type="submit">Guardar permisos</button>
+        <!-- BOTONES -->
+        <div class="botones">
+            <button type="submit" class="btn-mismary">
+                Guardar permisos
+            </button>
 
-        <a class="secundario" href="{% url 'list_grupos' %}">
-            Volver a grupos
-        </a>
+            <a href="{% url 'list_grupos' %}" class="btn-mismary btn-secundario">
+                Cancelar
+            </a>
+        </div>
 
     </form>
 

@@ -1,4 +1,3 @@
-
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -292,7 +291,7 @@ Registrar Producto | MisMary
         <h2 class="panel-titulo">Información del producto</h2>
 
         <p class="panel-descripcion">
-            Completa los datos para registrar el producto en el inventario.
+            Solo necesitas el nombre y la categoría. El precio y el stock se agregan al registrar un pedido.
         </p>
 
         {% if messages %}
@@ -327,49 +326,6 @@ Registrar Producto | MisMary
                 {% endif %}
             </div>
 
-            <div class="campos-fila">
-
-                <div class="campo campo-precio-ajustado">
-                    <label for="{{ form.precio_venta.id_for_label }}">
-                        Precio de venta
-                        <span class="obligatorio">*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="{{ form.precio_venta.html_name }}"
-                        id="{{ form.precio_venta.id_for_label }}"
-                        value="{{ form.precio_venta.value|default_if_none:'' }}"
-                        inputmode="numeric"
-                        autocomplete="off"
-                        placeholder="Ej. 3.000"
-                        required
-                    >
-
-                    {% if form.precio_venta.errors %}
-                        <div class="errores">
-                            {{ form.precio_venta.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="campo campo-cantidad-tarjeta">
-                    <label for="{{ form.cantidad_disponible.id_for_label }}">
-                        Cantidad disponible
-                        <span class="obligatorio">*</span>
-                    </label>
-
-                    {{ form.cantidad_disponible }}
-
-                    {% if form.cantidad_disponible.errors %}
-                        <div class="errores">
-                            {{ form.cantidad_disponible.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-
-            </div>
-
             <div class="campo">
                 <label for="{{ form.categoria.id_for_label }}">
                     Categoría
@@ -402,56 +358,5 @@ Registrar Producto | MisMary
     </section>
 
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const precio = document.getElementById(
-        '{{ form.precio_venta.id_for_label }}'
-    );
-
-    const formulario = document.getElementById('formulario-producto');
-
-    if (!precio || !formulario) {
-        return;
-    }
-
-    function formatearPrecio(valor) {
-        const numeros = valor.replace(/\D/g, '');
-        return numeros.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-
-    precio.addEventListener('input', function () {
-        const inicio = precio.selectionStart;
-        const valorAnterior = precio.value;
-        const posicionNumeros = valorAnterior
-            .slice(0, inicio)
-            .replace(/\D/g, '').length;
-
-        precio.value = formatearPrecio(valorAnterior);
-
-        let nuevaPosicion = 0;
-        let numerosContados = 0;
-
-        while (
-            nuevaPosicion < precio.value.length &&
-            numerosContados < posicionNumeros
-        ) {
-            if (/\d/.test(precio.value[nuevaPosicion])) {
-                numerosContados++;
-            }
-
-            nuevaPosicion++;
-        }
-
-        precio.setSelectionRange(nuevaPosicion, nuevaPosicion);
-    });
-
-    precio.value = formatearPrecio(precio.value);
-
-    formulario.addEventListener('submit', function () {
-        precio.value = precio.value.replace(/\./g, '');
-    });
-});
-</script>
 
 {% endblock %}

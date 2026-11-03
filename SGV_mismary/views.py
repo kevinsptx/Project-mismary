@@ -13,7 +13,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .forms import ProductoForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
+from .forms import ProductoForm, ProductoRegistroForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
 from .models import Cliente, Venta, Abono, Deuda, Categoria,Producto, DetalleVenta, Gasto, Pago,DetallePedido, Pedido, Proveedor, Reembolso
 
 METODOS_VALIDOS = ['Efectivo', 'Transferencia', 'Otro']
@@ -225,13 +225,17 @@ def cliente_historial(request, id):
 def register_producto(request):
 
     if request.method == 'POST':
-        form = ProductoForm(request.POST)
+        form = ProductoRegistroForm(request.POST)
 
         if form.is_valid():
             form.save()
+            messages.success(
+                request,
+                'Producto registrado. Agrega su precio y stock al registrar un pedido.'
+            )
             return redirect('list_producto')
     else:
-        form = ProductoForm()
+        form = ProductoRegistroForm()
 
     return render(request, 'register_producto.html', {'form': form})
 

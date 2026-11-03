@@ -29,11 +29,15 @@ class Producto(models.Model):
         default=0
     )
 
+    # Se define al registrar un pedido a proveedor (también se puede
+    # cambiar desde "Editar producto"). Empieza en 0 al registrar.
     precio_venta = models.DecimalField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        default=0
     )
 
+    # Empieza en 0 y se actualiza con los pedidos y las ventas.
     cantidad_disponible = models.PositiveIntegerField(
         default=0
     )

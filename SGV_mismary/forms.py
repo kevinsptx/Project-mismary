@@ -95,7 +95,37 @@ class CategoriaForm(forms.ModelForm):
         return formato_nombre(nombre)
 
 
-# ===== FORMULARIO DE PRODUCTOS =====
+# ===== FORMULARIO DE REGISTRO DE PRODUCTOS =====
+# Al registrar solo se piden el nombre y la categoría. El precio de compra,
+# el precio de venta y el stock se llenan al registrar un pedido.
+
+class ProductoRegistroForm(forms.ModelForm):
+    class Meta:
+        model = Producto
+        fields = ['nombre', 'categoria']
+
+        labels = {
+            'nombre': 'Nombre del producto',
+            'categoria': 'Categoría',
+        }
+
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: Labial Mate Rojo'
+            }),
+
+            'categoria': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+        }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre', '')
+        return formato_nombre(nombre)
+
+
+# ===== FORMULARIO DE PRODUCTOS (EDICIÓN) =====
 
 class ProductoForm(forms.ModelForm):
     class Meta:
@@ -288,4 +318,3 @@ class ProveedorForm(forms.ModelForm):
             raise forms.ValidationError('Ya existe un proveedor con ese nombre.')
  
         return nombre
- 

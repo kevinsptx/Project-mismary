@@ -1,84 +1,257 @@
 {% extends 'layout/base.html' %}
 
+{% block title %}Detalle Usuario | MisMary{% endblock %}
+
 {% block content %}
 
 <style>
+    :root {
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+    }
+
     .detalle-usuario {
-        max-width: 650px;
-        margin: auto;
-        background: white;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 30px 20px;
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado {
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .tarjeta {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
         padding: 30px;
-        border-radius: 18px;
-        border: 1px solid #E8DFC8;
-        color: #4A2C1B;
+        box-shadow: var(--sombra-suave);
     }
 
-    .detalle-usuario h2 {
-        color: #4A2C1B;
-        margin-bottom: 20px;
+    .usuario {
+        text-align: center;
+        margin-bottom: 26px;
     }
 
-    .detalle-dato {
-        padding: 15px 0;
-        border-bottom: 1px solid #E8DFC8;
+    .icono {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 14px;
+        background: var(--naranja);
+        color: #FFF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: 700;
     }
 
-    .detalle-usuario a {
+    .usuario h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .estado {
         display: inline-block;
-        margin-top: 20px;
-        padding: 12px 18px;
-        border-radius: 20px;
-        background: #FF6B35;
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
+        margin-top: 10px;
+        padding: 5px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
     }
 
-    .detalle-usuario .volver {
-        background: #9E3B27;
+    .estado-activo {
+        background: var(--verde-fondo);
+        color: var(--verde);
+    }
+
+    .estado-inactivo {
+        background: var(--rojo-fondo);
+        color: var(--terracota);
+    }
+
+    .datos {
+        display: grid;
+        gap: 14px;
+    }
+
+    .dato {
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 14px 18px;
+    }
+
+    .dato strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+        color: var(--terracota);
+    }
+
+    .dato span {
+        font-size: 14px;
+        overflow-wrap: anywhere;
+    }
+
+    .chip-rol {
+        display: inline-block;
+        background: var(--blanco);
+        color: var(--terracota);
+        padding: 4px 12px;
+        margin: 2px 4px 2px 0;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    .acciones {
+        margin-top: 26px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    @media (max-width: 600px) {
+        .detalle-usuario {
+            padding: 22px 14px;
+        }
+
+        .tarjeta {
+            padding: 22px 18px;
+        }
+
+        .encabezado h1 {
+            font-size: 23px;
+        }
+
+        .acciones .btn-mismary {
+            flex: 1 1 100%;
+        }
     }
 </style>
 
 <div class="detalle-usuario">
 
-    <h2>Detalle del usuario</h2>
-
-    <div class="detalle-dato">
-        <strong>Usuario:</strong>
-        {{ usuario.username }}
+    <div class="encabezado">
+        <h1>Detalle del usuario 💛</h1>
+        <p>Consulta la información de la cuenta</p>
     </div>
 
-    <div class="detalle-dato">
-        <strong>Nombre:</strong>
-        {{ usuario.first_name }} {{ usuario.last_name }}
+    <div class="tarjeta">
+
+        <div class="usuario">
+            <div class="icono">{{ usuario.username|first|upper }}</div>
+
+            <h2>{{ usuario.username }}</h2>
+
+            {% if usuario.is_active %}
+                <span class="estado estado-activo">Activo</span>
+            {% else %}
+                <span class="estado estado-inactivo">Inactivo</span>
+            {% endif %}
+        </div>
+
+        <div class="datos">
+
+            <div class="dato">
+                <strong>Nombre</strong>
+                <span>{{ usuario.first_name }} {{ usuario.last_name }}</span>
+            </div>
+
+            <div class="dato">
+                <strong>Correo electrónico</strong>
+                <span>{{ usuario.email|default:"No registrado" }}</span>
+            </div>
+
+            <div class="dato">
+                <strong>Grupos asignados</strong>
+                <span>
+                    {% for grupo in grupos %}
+                        <span class="chip-rol">{{ grupo.name }}</span>
+                    {% empty %}
+                        Sin grupo asignado
+                    {% endfor %}
+                </span>
+            </div>
+
+        </div>
+
+        <div class="acciones">
+            <a href="{% url 'list_user' %}" class="btn-mismary btn-secundario">
+                ← Volver
+            </a>
+
+            <a href="{% url 'user_update' usuario.id %}" class="btn-mismary">
+                Editar usuario
+            </a>
+        </div>
+
     </div>
-
-    <div class="detalle-dato">
-        <strong>Correo electrónico:</strong>
-        {{ usuario.email }}
-    </div>
-
-    <div class="detalle-dato">
-        <strong>Estado:</strong>
-        {% if usuario.is_active %}
-            Activo
-        {% else %}
-            Inactivo
-        {% endif %}
-    </div>
-
-    <div class="detalle-dato">
-        <strong>Grupos asignados:</strong>
-
-        {% for grupo in grupos %}
-            {{ grupo.name }}
-        {% empty %}
-            Sin grupo asignado
-        {% endfor %}
-    </div>
-
-    <a href="{% url 'user_update' usuario.id %}">Editar usuario</a>
-    <a class="volver" href="{% url 'list_user' %}">Volver</a>
 
 </div>
 

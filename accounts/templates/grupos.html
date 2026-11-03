@@ -1,137 +1,513 @@
 {% extends 'layout/base.html' %}
 
+{% block title %}
+Grupos | MisMary
+{% endblock %}
+
 {% block content %}
 
 <style>
-    .grupos-contenedor {
-        background: white;
-        padding: 30px;
-        border-radius: 18px;
-        border: 1px solid #E8DFC8;
-        color: #4A2C1B;
+
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --rojo-fondo:    #FBE9E7;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
     }
 
-    .grupos-contenedor h2 {
-        color: #4A2C1B;
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
     }
 
-    .grupos-crear {
+    .wrap-mismary {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .wrap-mismary * {
+        box-sizing: border-box;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    /* ===== BOTONES ===== */
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    .btn-eliminar {
+        background: var(--blanco);
+        color: var(--terracota);
+        border-color: var(--terracota);
+    }
+
+    .btn-eliminar:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    /* ===== CREAR GRUPO ===== */
+
+    .buscador {
         display: flex;
         gap: 10px;
-        flex-wrap: wrap;
-        margin: 20px 0;
+        margin-bottom: 26px;
     }
 
-    .grupos-crear input {
+    .buscador input[type="text"] {
         flex: 1;
-        min-width: 180px;
-        padding: 12px;
-        border: 1px solid #E8DFC8;
-        border-radius: 10px;
+        min-width: 0;
+        padding: 12px 20px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--cafe-tostado);
+        background: var(--blanco);
+        box-shadow: var(--sombra-suave);
     }
 
-    .grupos-contenedor button,
-    .grupos-contenedor a {
-        display: inline-block;
-        padding: 11px 16px;
-        border: none;
-        border-radius: 20px;
-        background: #FF6B35;
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
+    .buscador input[type="text"]::placeholder {
+        color: #A8978A;
     }
 
-    .grupos-contenedor .secundario {
-        background: #9E3B27;
+    .buscador input[type="text"]:focus {
+        outline: none;
+        border-color: var(--terracota);
     }
 
-    .grupos-contenedor .eliminar {
-        background: #9b2828;
+    /* ===== BARRA DE RESULTADOS ===== */
+
+    .resultados-barra {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .resultados-barra h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .chip-mismary {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    /* ===== TARJETAS DE GRUPO ===== */
+
+    .lista-grupos {
+        display: grid;
+        gap: 14px;
     }
 
     .grupo-tarjeta {
-        border: 1px solid #E8DFC8;
-        border-radius: 15px;
-        padding: 18px;
-        margin: 12px 0;
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 20px 24px;
+        box-shadow: var(--sombra-suave);
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: 15px;
+        transition: box-shadow 0.2s ease;
     }
 
-    .grupo-mensaje {
-        padding: 12px;
-        background: #f8e9df;
-        border-radius: 10px;
+    .grupo-tarjeta:hover {
+        box-shadow: var(--sombra-hover);
+    }
+
+    .grupo-nombre {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .grupo-datos {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .grupo-acciones {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .grupo-acciones form {
+        margin: 0;
+    }
+
+    .btn-tabla {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-info {
+        background: var(--naranja);
+        color: #FFF;
+        border: 1px solid transparent;
+    }
+
+    .btn-info:hover {
+        background: var(--naranja-hover);
+    }
+
+    .btn-outline {
+        background: var(--blanco);
+        color: var(--terracota);
+        border: 1px solid var(--terracota);
+    }
+
+    .btn-outline:hover {
+        background: var(--terracota);
+        color: #FFF;
+    }
+
+    /* ===== SIN GRUPOS ===== */
+
+    .sin-grupos {
+        padding: 40px 20px;
+        text-align: center;
+        color: #6C5243;
+        font-size: 14px;
+        background: var(--arena-suave);
+        border: 1px dashed var(--arena);
+        border-radius: 24px;
+    }
+
+    /* ===== MODAL ELIMINAR ===== */
+
+    .modal-fondo {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(35, 23, 16, 0.58);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-fondo.visible {
+        display: flex;
+    }
+
+    .modal-contenido {
+        background: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        width: 100%;
+        max-width: 420px;
+        padding: 30px 25px;
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        animation: modalEntrada 0.22s ease-out;
+    }
+
+    .modal-icono {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--rojo-fondo);
+        border-radius: 50%;
+        font-size: 32px;
+    }
+
+    .modal-contenido h3 {
+        font-size: 22px;
+        margin: 0 0 12px;
+    }
+
+    .modal-contenido p {
+        font-size: 14px;
+        line-height: 1.6;
         margin: 10px 0;
     }
+
+    .modal-acciones {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 22px;
+        flex-wrap: wrap;
+    }
+
+    body.modal-abierto {
+        overflow: hidden;
+    }
+
+    @keyframes modalEntrada {
+        from {
+            opacity: 0;
+            transform: scale(0.94);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 700px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .buscador {
+            flex-direction: column;
+        }
+
+        .grupo-tarjeta {
+            padding: 18px;
+        }
+    }
+
 </style>
 
-<div class="grupos-contenedor">
 
-    <h2>Grupos y roles</h2>
-    <p>Los grupos determinan qué acciones puede realizar cada usuario dentro del sistema.</p>
+<div class="wrap-mismary">
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="grupo-mensaje">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>Grupos y roles 💛</h1>
+            <p>Los grupos determinan qué acciones puede realizar cada usuario</p>
+        </div>
 
-    <form class="grupos-crear" method="POST">
+        <a href="{% url 'list_user' %}" class="btn-mismary btn-secundario">
+            ← Volver a usuarios
+        </a>
+    </div>
+
+    <!-- CREAR GRUPO -->
+    <form method="POST" class="buscador">
         {% csrf_token %}
 
-        <input type="text" name="nombre" placeholder="Nombre del nuevo grupo" required>
+        <input
+            type="text"
+            name="nombre"
+            maxlength="150"
+            placeholder="Nombre del nuevo grupo"
+            required
+        >
 
-        <button type="submit">Crear grupo</button>
-
-        <a class="secundario" href="{% url 'list_user' %}">Volver a usuarios</a>
+        <button type="submit" class="btn-mismary">+ Crear grupo</button>
     </form>
 
-    {% for grupo in grupos %}
+    <!-- BARRA DE RESULTADOS -->
+    <div class="resultados-barra">
+        <h2>Grupos registrados</h2>
 
-        <section class="grupo-tarjeta">
+        {% if grupos %}
+            <span class="chip-mismary">{{ grupos|length }} grupo{{ grupos|length|pluralize }}</span>
+        {% endif %}
+    </div>
 
-            <div>
-                <strong>{{ grupo.name }}</strong>
-                <p>
-                    {{ grupo.user_set.count }} usuario(s)
-                    ·
-                    {{ grupo.permissions.count }} permiso(s)
-                </p>
-            </div>
+    <!-- LISTA DE GRUPOS -->
+    {% if grupos %}
+        <div class="lista-grupos">
 
-            <div>
-                <a href="{% url 'grupo_details' grupo.id %}">
-                    Administrar permisos
-                </a>
+            {% for grupo in grupos %}
+                <section class="grupo-tarjeta">
 
-                {% if grupo.name != 'Administrador' and grupo.name != 'Usuario' and grupo.name != 'Superadministrador' %}
+                    <div>
+                        <div class="grupo-nombre">{{ grupo.name }}</div>
 
-                    <form method="POST" action="{% url 'grupo_delete' grupo.id %}" style="display:inline">
-                        {% csrf_token %}
+                        <div class="grupo-datos">
+                            <span class="chip-mismary">{{ grupo.user_set.count }} usuario{{ grupo.user_set.count|pluralize }}</span>
+                            <span class="chip-mismary">{{ grupo.permissions.count }} permiso{{ grupo.permissions.count|pluralize }}</span>
+                        </div>
+                    </div>
 
-                        <button class="eliminar" type="submit"
-                            onclick="return confirm('¿Eliminar este grupo?')">
-                            Eliminar
-                        </button>
-                    </form>
+                    <div class="grupo-acciones">
+                        <a href="{% url 'grupo_details' grupo.id %}" class="btn-tabla btn-info">
+                            Administrar permisos
+                        </a>
 
-                {% endif %}
-            </div>
+                        {% if grupo.name != 'Administrador' and grupo.name != 'Usuario' and grupo.name != 'Superadministrador' %}
+                            <form method="POST" action="{% url 'grupo_delete' grupo.id %}">
+                                {% csrf_token %}
+                                <button type="button"
+                                        class="btn-tabla btn-outline"
+                                        onclick="mostrarAviso(this.form, '{{ grupo.name|escapejs }}')">
+                                    Eliminar
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
 
-        </section>
+                </section>
+            {% endfor %}
 
-    {% empty %}
+        </div>
 
-        <p>No hay grupos registrados.</p>
-
-    {% endfor %}
+    {% else %}
+        <div class="sin-grupos">
+            No hay grupos registrados.
+        </div>
+    {% endif %}
 
 </div>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div id="modalEliminar" class="modal-fondo" role="dialog"
+     aria-modal="true" aria-labelledby="modalTitulo">
+
+    <div class="modal-contenido">
+        <div class="modal-icono">⚠️</div>
+
+        <h3 id="modalTitulo">¿Eliminar grupo?</h3>
+
+        <p>
+            Vas a eliminar el grupo <strong id="modalNombre"></strong>.
+            Esta acción no se puede deshacer.
+        </p>
+
+        <div class="modal-acciones">
+            <button type="button" class="btn-mismary btn-secundario" onclick="cerrarModal()">
+                Cancelar
+            </button>
+
+            <button type="button" class="btn-mismary" onclick="confirmarEliminar()">
+                Sí, eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let formularioPendiente = null;
+
+    function mostrarAviso(formulario, nombre) {
+        formularioPendiente = formulario;
+        document.getElementById('modalNombre').textContent = nombre;
+        document.getElementById('modalEliminar').classList.add('visible');
+        document.body.classList.add('modal-abierto');
+    }
+
+    function cerrarModal() {
+        formularioPendiente = null;
+        document.getElementById('modalEliminar').classList.remove('visible');
+        document.body.classList.remove('modal-abierto');
+    }
+
+    function confirmarEliminar() {
+        if (formularioPendiente) {
+            formularioPendiente.submit();
+        }
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            cerrarModal();
+        }
+    });
+
+    document.getElementById('modalEliminar').addEventListener('click', function (e) {
+        if (e.target === this) {
+            cerrarModal();
+        }
+    });
+</script>
 
 {% endblock %}
