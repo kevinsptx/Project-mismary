@@ -1,406 +1,146 @@
-{% extends 'layout/base.html' %}
-{% load humanize %}
-${{ fila.total|floatformat:0|intcomma }}
-<strong>${{ total_ingresos|default:0|floatformat:0|intcomma }}</strong>
+{% extends 'layout/reportes_base.html' %}
 
 {% block title %}
 Ingresos | MisMary
 {% endblock %}
 
-{% block content %}
+{% block rep_titulo %}Reporte de ingresos 💰{% endblock %}
 
-<style>
-    :root {
-        --cafe-tostado: #4A2C1B;
-        --terracota: #9E3B27;
-        --naranja: #FF6B35;
-        --naranja-hover: #E85A26;
-        --arena: #E8DFC8;
-        --arena-suave: #F5EFE3;
-        --marfil-bg: #FCFAF7;
-        --blanco: #FFFFFF;
-        --verde: #2E7D32;
-        --verde-fondo: #E8F5E9;
-        --rojo-fondo: #FBE9E7;
-        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
-    }
+{% block rep_subtitulo %}Solo el dinero que ya entró, sin contar lo que los clientes todavía deben{% endblock %}
 
-    body {
-        background-color: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding-bottom: 60px;
-    }
+{% block rep_cuerpo %}
 
-    .wrap-mismary {
-        max-width: 1040px;
-        margin: 0 auto;
-        padding: 30px 20px;
-    }
+    <!-- RESUMEN -->
+    <section class="resumen">
 
-    .encabezado {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-bottom: 25px;
-    }
-
-    .encabezado h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .encabezado p {
-        margin: 4px 0 0;
-        font-size: 14px;
-        color: var(--terracota);
-    }
-
-    .acciones {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .btn-mismary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        background: var(--naranja);
-        color: #FFF;
-        text-decoration: none;
-        padding: 10px 18px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        font-family: inherit;
-        transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .btn-mismary:hover {
-        background: var(--terracota);
-    }
-
-    .btn-secundario {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        border: 1px solid var(--arena);
-    }
-
-    .btn-secundario:hover {
-        background: var(--blanco);
-        border-color: var(--terracota);
-        color: var(--terracota);
-    }
-
-    .filtro {
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        padding: 20px 24px;
-        margin-bottom: 26px;
-        box-shadow: var(--sombra-suave);
-    }
-
-    .filtro form {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-end;
-        gap: 14px;
-    }
-
-    .filtro label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .filtro input {
-        padding: 12px 20px;
-        border: 1px solid var(--arena);
-        border-radius: 999px;
-        font-size: 14px;
-        font-family: inherit;
-        color: var(--cafe-tostado);
-        background: var(--blanco);
-    }
-
-    .filtro input:focus {
-        outline: none;
-        border-color: var(--terracota);
-    }
-
-    .resultados-barra {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-    }
-
-    .resultados-barra h2 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .chip-mismary {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        padding: 6px 16px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        border: 1px solid var(--arena);
-    }
-
-    .tabla-caja {
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        box-shadow: var(--sombra-suave);
-        overflow-x: auto;
-        margin-bottom: 22px;
-    }
-
-    .tabla-ingresos {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-    .tabla-ingresos thead th {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        text-align: left;
-        font-size: 13px;
-        font-weight: 700;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--arena);
-        white-space: nowrap;
-    }
-
-    .tabla-ingresos tbody td {
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--arena-suave);
-        vertical-align: middle;
-    }
-
-    .tabla-ingresos tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .tabla-ingresos tbody tr:hover {
-        background: var(--marfil-bg);
-    }
-
-    .col-numero {
-        text-align: right !important;
-        white-space: nowrap;
-    }
-
-    .precio {
-        font-weight: 700;
-        color: var(--verde);
-    }
-
-    .sin-registros {
-        text-align: center;
-        padding: 40px 20px !important;
-        color: #6C5243;
-    }
-
-    .total-reporte {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        padding: 20px 28px;
-        box-shadow: var(--sombra-suave);
-    }
-
-    .total-reporte span {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--terracota);
-    }
-
-    .total-reporte strong {
-        font-size: 28px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    @media (max-width: 600px) {
-        .encabezado {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .filtro form {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filtro button {
-            width: 100%;
-        }
-
-        .total-reporte {
-            justify-content: center;
-            text-align: center;
-        }
-
-        .tabla-ingresos thead th,
-        .tabla-ingresos tbody td {
-            padding: 12px 14px;
-        }
-    }
-
-    @media print {
-        .filtro,
-        .acciones {
-            display: none;
-        }
-
-        body {
-            background: #FFFFFF;
-        }
-
-        .wrap-mismary {
-            max-width: 100%;
-            padding: 0;
-        }
-
-        .tabla-caja,
-        .total-reporte {
-            box-shadow: none;
-        }
-    }
-</style>
-
-<div class="wrap-mismary">
-
-    <!-- ENCABEZADO -->
-    <div class="encabezado">
-        <div>
-            <h1>Reporte de ingresos 💰</h1>
-            <p>Consulta los ingresos recibidos por fecha y el total acumulado.</p>
+        <div class="stat stat-positivo">
+            <span class="etiqueta">Ingreso neto recibido</span>
+            <span class="valor">$ {{ ingresos.total_neto|floatformat:"0g" }}</span>
+            <span class="nota">Dinero recibido menos devoluciones</span>
         </div>
 
-        <div class="acciones">
-            <button type="button"
-                    onclick="window.print()"
-                    class="btn-mismary">
-                🖨️ Imprimir reporte
-            </button>
-
-            <a href="{% url 'reportes' %}"
-               class="btn-mismary btn-secundario">
-                ← Volver a reportes
-            </a>
+        <div class="stat">
+            <span class="etiqueta">Dinero recibido</span>
+            <span class="valor">$ {{ ingresos.total_recibido|floatformat:"0g" }}</span>
+            <span class="nota">Pagos y abonos de clientes</span>
         </div>
-    </div>
 
-    <!-- FILTRO POR FECHA -->
-    <section class="filtro">
-        <form method="GET">
-            <div>
-                <label for="fecha_inicio">Desde</label>
-                <input
-                    type="date"
-                    id="fecha_inicio"
-                    name="fecha_inicio"
-                    value="{{ fecha_inicio|default:'' }}"
-                    max="{{ fecha_fin|default:'' }}"
-                >
-            </div>
+        <div class="stat">
+            <span class="etiqueta">Devoluciones</span>
+            <span class="valor">$ {{ ingresos.total_devuelto|floatformat:"0g" }}</span>
+            <span class="nota">Reembolsos ya devueltos</span>
+        </div>
 
-            <div>
-                <label for="fecha_fin">Hasta</label>
-                <input
-                    type="date"
-                    id="fecha_fin"
-                    name="fecha_fin"
-                    value="{{ fecha_fin|default:'' }}"
-                    min="{{ fecha_inicio|default:'' }}"
-                >
-            </div>
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Vendido en este período</span>
+            <span class="valor">$ {{ ingresos.total_vendido|floatformat:"0g" }}</span>
+            <span class="nota">Ventas registradas (sin canceladas). No es plata recibida todavía.</span>
+        </div>
 
-            <button type="submit" class="btn-mismary">
-                Filtrar ingresos
-            </button>
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Por cobrar hoy</span>
+            <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
+            <span class="nota">Lo que los clientes aún deben. <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver clientes</a></span>
+        </div>
 
-            <a href="{% url 'reporte_ingresos' %}"
-               class="btn-mismary btn-secundario">
-                Limpiar filtros
-            </a>
-        </form>
     </section>
 
-    <!-- RESULTADOS -->
-    <div class="resultados-barra">
-        <h2>Ingresos por fecha</h2>
-
-        <span class="chip-mismary">
-            {{ ingresos_por_fecha|length }}
-            fecha{{ ingresos_por_fecha|length|pluralize }}
+    <div class="aviso">
+        <span>ℹ️</span>
+        <span>
+            <strong>Cómo se cuenta:</strong> si un cliente compra por $3.000 y solo paga $1.000,
+            en ingresos aparecen <strong>$1.000</strong>. Los otros $2.000 quedan en
+            “Por cobrar” y entran a ingresos el día que el cliente los pague.
         </span>
     </div>
 
-    <!-- TABLA DE INGRESOS -->
+    <!-- INGRESOS POR DÍA -->
+    <div class="resultados-barra">
+        <h2>Ingresos por día</h2>
+
+        <span class="chip-mismary">
+            {{ ingresos.filas|length }} día{{ ingresos.filas|length|pluralize }}
+        </span>
+    </div>
+
     <div class="tabla-caja">
-        <table class="tabla-ingresos">
+        <table class="tabla-reporte">
+
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th class="col-numero">Total de ingresos</th>
+                    <th class="col-numero">Recibido</th>
+                    <th class="col-numero">Devoluciones</th>
+                    <th class="col-numero">Ingreso neto</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for fila in ingresos_por_fecha %}
+                {% for fila in ingresos.filas %}
                     <tr>
-                        <td>{{ fila.fecha|date:"d/m/Y" }}</td>
-                        <td class="col-numero precio">
-                            ${{ fila.total|floatformat:0 }}
+                        <td class="nombre-fuerte">{{ fila.fecha|date:"d/m/Y" }}</td>
+                        <td class="col-numero">$ {{ fila.recibido|floatformat:"0g" }}</td>
+                        <td class="col-numero">
+                            {% if fila.devuelto > 0 %}
+                                <span class="monto-negativo">- $ {{ fila.devuelto|floatformat:"0g" }}</span>
+                            {% else %}
+                                —
+                            {% endif %}
                         </td>
+                        <td class="col-numero monto-positivo">$ {{ fila.neto|floatformat:"0g" }}</td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="2" class="sin-registros">
-                            No hay ingresos registrados para el período seleccionado.
+                        <td colspan="4" class="sin-registros">
+                            No hay dinero recibido en ese rango de fechas.
                         </td>
                     </tr>
                 {% endfor %}
             </tbody>
+
+            {% if ingresos.filas %}
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td class="col-numero">$ {{ ingresos.total_recibido|floatformat:"0g" }}</td>
+                        <td class="col-numero">$ {{ ingresos.total_devuelto|floatformat:"0g" }}</td>
+                        <td class="col-numero">$ {{ ingresos.total_neto|floatformat:"0g" }}</td>
+                    </tr>
+                </tfoot>
+            {% endif %}
+
         </table>
     </div>
 
-    <!-- TOTAL ACUMULADO -->
-    <div class="total-reporte">
-        <span>Total de ingresos del período</span>
-        <strong>${{ total_ingresos|default:0|floatformat:0 }}</strong>
-    </div>
+    <!-- POR FORMA DE PAGO -->
+    {% if ingresos.por_forma_pago %}
+        <div class="resultados-barra">
+            <h2>Dinero recibido por forma de pago</h2>
+        </div>
 
-</div>
+        <div class="tabla-caja">
+            <table class="tabla-reporte">
+
+                <thead>
+                    <tr>
+                        <th>Forma de pago</th>
+                        <th class="col-numero">Pagos</th>
+                        <th class="col-numero">Total recibido</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for fila in ingresos.por_forma_pago %}
+                        <tr>
+                            <td class="nombre-fuerte">{{ fila.forma_pago }}</td>
+                            <td class="col-numero">{{ fila.cantidad }}</td>
+                            <td class="col-numero">$ {{ fila.total|floatformat:"0g" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    {% endif %}
 
 {% endblock %}

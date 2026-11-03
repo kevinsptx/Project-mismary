@@ -401,22 +401,26 @@
                 ← Volver
             </a>
 
-            <a href="{% url 'proveedor_update' proveedor.id %}"
-               class="btn-mismary btn-secundario">
-                ✏️ Editar
-            </a>
+            {% if perms.SGV_mismary.change_proveedor %}
+                <a href="{% url 'proveedor_update' proveedor.id %}"
+                   class="btn-mismary btn-secundario">
+                    ✏️ Editar
+                </a>
+            {% endif %}
 
-            <form method="POST"
-                  action="{% url 'proveedor_delete' proveedor.id %}"
-                  class="form-inline"
-                  onsubmit="return confirm('¿Seguro que quieres eliminar a este proveedor?');">
+            {% if perms.SGV_mismary.delete_proveedor %}
+                <form method="POST"
+                      action="{% url 'proveedor_delete' proveedor.id %}"
+                      class="form-inline"
+                      onsubmit="return confirm('¿Seguro que quieres eliminar a este proveedor?');">
 
-                {% csrf_token %}
+                    {% csrf_token %}
 
-                <button type="submit" class="btn-mismary btn-peligro">
-                    🗑️ Eliminar
-                </button>
-            </form>
+                    <button type="submit" class="btn-mismary btn-peligro">
+                        🗑️ Eliminar
+                    </button>
+                </form>
+            {% endif %}
         </div>
     </div>
 

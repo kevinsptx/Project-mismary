@@ -396,7 +396,9 @@ Proveedores | MisMary
 
                         <td class="col-acciones">
                             <a href="{% url 'proveedor_details' proveedor.id %}" class="btn-tabla btn-ver">Ver información</a>
-                            <a href="{% url 'proveedor_update' proveedor.id %}" class="btn-tabla btn-editar">Editar</a>
+                            {% if perms.SGV_mismary.change_proveedor %}
+                                <a href="{% url 'proveedor_update' proveedor.id %}" class="btn-tabla btn-editar">Editar</a>
+                            {% endif %}
                         </td>
                     </tr>
 

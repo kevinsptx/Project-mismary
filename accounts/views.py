@@ -44,7 +44,18 @@ def obtener_permisos_negocio():
     ).select_related('content_type').order_by('content_type__model', 'codename')
 
 
-def crear_roles_base():
+def crear_roles_base(forzar=False):
+    """
+    Deja los roles base con los permisos que les corresponden:
+
+      - Administrador: TODOS los permisos del negocio.
+      - Usuario: solo ver y crear (view_ y add_). No edita ni elimina.
+
+    Sin `forzar`, solo llena un rol que esté vacío (así se respeta lo que
+    se configure a mano). Con `forzar=True` (lo que hace `migrate`) agrega
+    los permisos que falten, por ejemplo los de modelos nuevos, y al rol
+    "Usuario" le quita cualquier permiso de editar o eliminar.
+    """
     app = obtener_app_negocio()
     if app is None:
         return
@@ -63,7 +74,17 @@ def crear_roles_base():
         permisos_actuales = grupo.permissions.filter(
             content_type__app_label=app.label
         )
-        if not permisos_actuales.exists():
+
+        if forzar:
+            # Agrega lo que falte
+            grupo.permissions.add(*permisos_base)
+
+            # "Usuario" nunca debe poder editar ni eliminar
+            if nombre == 'Usuario':
+                grupo.permissions.remove(*permisos_actuales.exclude(
+                    id__in=permisos_base.values_list('id', flat=True)
+                ))
+        elif not permisos_actuales.exists():
             grupo.permissions.add(*permisos_base)
 
 

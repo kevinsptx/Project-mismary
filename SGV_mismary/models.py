@@ -274,6 +274,11 @@ class Pedido(models.Model):
 
     fecha = models.DateField()
     estado = models.CharField(max_length=20, choices=ESTADOS, default='Pendiente')
+
+    # Día en que el pedido llegó (se llena al marcarlo como "Recibido").
+    # Los reportes de costos cuentan el pedido desde esta fecha.
+    fecha_recepcion = models.DateField(null=True, blank=True)
+
     costo_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     def __str__(self):

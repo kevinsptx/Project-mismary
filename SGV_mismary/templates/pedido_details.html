@@ -410,7 +410,8 @@ Detalle del Pedido | MisMary
             </table>
         </div>
 
-        <!-- ACTUALIZAR ESTADO -->
+        <!-- ACTUALIZAR ESTADO (solo quien puede editar pedidos) -->
+        {% if perms.SGV_mismary.change_pedido %}
         <form method="POST" class="caja-estado">
             {% csrf_token %}
 
@@ -434,6 +435,7 @@ Detalle del Pedido | MisMary
                 Guardar Cambio de Estado
             </button>
         </form>
+        {% endif %}
 
         <!-- BOTONES -->
         <div class="acciones">
@@ -442,18 +444,20 @@ Detalle del Pedido | MisMary
                 Volver
             </a>
 
-            <form
-                method="POST"
-                action="{% url 'eliminar_pedido' pedido.id %}"
-                style="margin: 0;"
-                onsubmit="return confirm('¿Está seguro de que desea eliminar este pedido?');"
-            >
-                {% csrf_token %}
+            {% if perms.SGV_mismary.delete_pedido %}
+                <form
+                    method="POST"
+                    action="{% url 'eliminar_pedido' pedido.id %}"
+                    style="margin: 0;"
+                    onsubmit="return confirm('¿Está seguro de que desea eliminar este pedido?');"
+                >
+                    {% csrf_token %}
 
-                <button type="submit" class="btn-mismary btn-eliminar">
-                    Eliminar
-                </button>
-            </form>
+                    <button type="submit" class="btn-mismary btn-eliminar">
+                        Eliminar
+                    </button>
+                </form>
+            {% endif %}
 
         </div>
 

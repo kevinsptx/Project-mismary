@@ -485,8 +485,12 @@ Productos | MisMary
                         </td>
 
                         <td class="col-acciones">
-                            <a href="{% url 'producto_update' producto.id %}" class="btn-tabla btn-editar">Editar</a>
-                            <a href="{% url 'producto_delete' producto.id %}" class="btn-tabla btn-eliminar">Eliminar</a>
+                            {% if perms.SGV_mismary.change_producto %}
+                                <a href="{% url 'producto_update' producto.id %}" class="btn-tabla btn-editar">Editar</a>
+                            {% endif %}
+                            {% if perms.SGV_mismary.delete_producto %}
+                                <a href="{% url 'producto_delete' producto.id %}" class="btn-tabla btn-eliminar">Eliminar</a>
+                            {% endif %}
                         </td>
                     </tr>
 

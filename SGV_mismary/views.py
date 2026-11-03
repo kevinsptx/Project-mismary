@@ -1,4 +1,5 @@
 import csv
+from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
@@ -7,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from functools import wraps
 from django.db import transaction
 from django.db.models import Sum, Count, Q
-from django.db.models.functions import TruncDate
+from django.db.models.functions import Coalesce, TruncDate
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -320,7 +321,7 @@ def productos_mas_vendidos(request):
     fecha_inicio = request.GET.get('fecha_inicio')
     fecha_fin = request.GET.get('fecha_fin')
 
-    productos_vendidos = DetalleVenta.objects.all()
+    productos_vendidos = DetalleVenta.objects.exclude(venta__estado='Cancelada')
 
 
     if fecha_inicio and fecha_fin and fecha_inicio > fecha_fin:
@@ -728,9 +729,15 @@ def marcar_pagada(request, deuda_id):
     deuda = get_object_or_404(Deuda, id=deuda_id)
 
     if request.method == 'POST':
-        deuda.saldo = 0
-        deuda.estado = 'Pagada'
-        deuda.save()
+        with transaction.atomic():
+            # Lo que faltaba por pagar entra como un abono, para que
+            # el reporte de ingresos cuente esa plata.
+            if deuda.saldo > 0:
+                Abono.objects.create(deuda=deuda, valor=deuda.saldo)
+
+            deuda.saldo = 0
+            deuda.estado = 'Pagada'
+            deuda.save()
 
         messages.success(request, 'La venta fue marcada como pagada.')
         return redirect('ventas_pendientes')
@@ -794,89 +801,253 @@ def registrar_gasto(request):
 # ============================================================
 # 9. REPORTES
 # ============================================================
+#
+# REGLAS (todo se cuenta cuando el dinero REALMENTE se mueve):
+#
+#  - INGRESOS: solo cuenta la plata que ya entró (abonos y pagos de los
+#    clientes). Si una venta es de $3.000 y el cliente solo pagó $1.000,
+#    el ingreso es $1.000 y los otros $2.000 quedan en "Por cobrar".
+#    Las devoluciones ya hechas (reembolsos "Devuelto") se restan.
+#
+#  - COSTOS: solo cuentan los pedidos ya RECIBIDOS (desde el día en que
+#    llegaron) más los gastos hormiga. Un pedido pendiente o cancelado
+#    todavía no es un costo; se muestra aparte como "Por recibir".
+#
+#  - BALANCE: ingresos netos recibidos - costos.
+
+def parsear_fecha(texto):
+    """Convierte 'AAAA-MM-DD' en fecha. Si viene vacío o mal escrito, None."""
+    if not texto:
+        return None
+
+    try:
+        return date.fromisoformat(texto)
+    except ValueError:
+        return None
 
 
-def datos_ingresos(fecha_inicio, fecha_fin):
+def rango_fechas(request):
+    """Lee Desde/Hasta del filtro. Si vienen al revés, las intercambia."""
+    inicio = parsear_fecha(request.GET.get('fecha_inicio'))
+    fin = parsear_fecha(request.GET.get('fecha_fin'))
 
-    pagos = Pago.objects.all()
+    if inicio and fin and inicio > fin:
+        messages.warning(
+            request,
+            'La fecha inicial era posterior a la final, así que las intercambiamos.'
+        )
+        inicio, fin = fin, inicio
 
-    if fecha_inicio:
-        pagos = pagos.filter(fecha__date__gte=fecha_inicio)
-    if fecha_fin:
-        pagos = pagos.filter(fecha__date__lte=fecha_fin)
+    return inicio, fin
 
-    pagos_por_fecha = (
-        pagos.annotate(dia=TruncDate('fecha'))
-        .values('dia')
-        .annotate(total=Sum('valor'))
-        .order_by('dia')
-    )
 
+def contexto_filtro(inicio, fin):
+    """Datos comunes del filtro de fechas y de los atajos (hoy, mes...)."""
+    hoy = timezone.localdate()
+    primero_este_mes = hoy.replace(day=1)
+    ultimo_mes_pasado = primero_este_mes - timedelta(days=1)
+    primero_mes_pasado = ultimo_mes_pasado.replace(day=1)
+
+    return {
+        'fecha_inicio': inicio.isoformat() if inicio else '',
+        'fecha_fin': fin.isoformat() if fin else '',
+        'atajos': [
+            ('Hoy', hoy.isoformat(), hoy.isoformat()),
+            ('Este mes', primero_este_mes.isoformat(), hoy.isoformat()),
+            ('Mes pasado', primero_mes_pasado.isoformat(), ultimo_mes_pasado.isoformat()),
+        ],
+    }
+
+
+def datos_ingresos(inicio, fin):
+    """Dinero recibido (abonos) menos devoluciones, por día."""
+
+    # --- Dinero que entró: cada abono (el pago inicial también es un abono) ---
     abonos = Abono.objects.all()
 
-    if fecha_inicio:
-        abonos = abonos.filter(fecha__date__gte=fecha_inicio)
-    if fecha_fin:
-        abonos = abonos.filter(fecha__date__lte=fecha_fin)
+    if inicio:
+        abonos = abonos.filter(fecha__date__gte=inicio)
+    if fin:
+        abonos = abonos.filter(fecha__date__lte=fin)
 
-    abonos_por_fecha = (
-        abonos.annotate(dia=TruncDate('fecha'))
+    recibido_por_dia = {
+        fila['dia']: fila['total']
+        for fila in abonos.annotate(dia=TruncDate('fecha'))
         .values('dia')
         .annotate(total=Sum('valor'))
-        .order_by('dia')
+    }
+
+    por_forma_pago = list(
+        abonos.values('forma_pago')
+        .annotate(total=Sum('valor'), cantidad=Count('id'))
+        .order_by('-total')
     )
 
-    # Juntamos pagos y abonos en un solo diccionario {día: total}
-    totales = {}
-
-    for fila in pagos_por_fecha:
-        dia = fila['dia']
-        totales[dia] = totales.get(dia, Decimal('0')) + fila['total']
-
-    for fila in abonos_por_fecha:
-        dia = fila['dia']
-        totales[dia] = totales.get(dia, Decimal('0')) + fila['total']
-
-    ingresos_por_fecha = [
-        {'fecha': dia, 'total': total}
-        for dia, total in sorted(totales.items())
-    ]
-
-    total_ingresos = sum(totales.values(), Decimal('0'))
-
-    return ingresos_por_fecha, total_ingresos
-
-
-def datos_gastos(fecha_inicio, fecha_fin):
-    """Devuelve (gastos por día, total)."""
-    gastos = filtrar_por_fecha(Gasto.objects.all(), fecha_inicio, fecha_fin)
-
-    por_fecha = (
-        gastos.values('fecha')
-        .annotate(total=Sum('valor'))
-        .order_by('fecha')
+    # --- Dinero que salió: reembolsos ya devueltos ---
+    devoluciones = (
+        Reembolso.objects.filter(estado='Devuelto')
+        .annotate(momento=Coalesce('fecha_devolucion', 'fecha_solicitud'))
+        .annotate(dia=TruncDate('momento'))
     )
 
-    total = gastos.aggregate(total=Sum('valor'))['total'] or 0
+    if inicio:
+        devoluciones = devoluciones.filter(dia__gte=inicio)
+    if fin:
+        devoluciones = devoluciones.filter(dia__lte=fin)
 
-    return por_fecha, total
+    devuelto_por_dia = {
+        fila['dia']: fila['total']
+        for fila in devoluciones.values('dia').annotate(total=Sum('monto'))
+    }
+
+    # --- Una fila por día ---
+    filas = []
+
+    for dia in sorted(set(recibido_por_dia) | set(devuelto_por_dia)):
+        recibido = recibido_por_dia.get(dia, Decimal('0'))
+        devuelto = devuelto_por_dia.get(dia, Decimal('0'))
+
+        filas.append({
+            'fecha': dia,
+            'recibido': recibido,
+            'devuelto': devuelto,
+            'neto': recibido - devuelto,
+        })
+
+    total_recibido = sum(recibido_por_dia.values(), Decimal('0'))
+    total_devuelto = sum(devuelto_por_dia.values(), Decimal('0'))
+
+    # --- Lo vendido en el período (para comparar con lo recibido) ---
+    ventas = Venta.objects.exclude(estado='Cancelada')
+    ventas = filtrar_por_fecha(ventas, inicio, fin)
+    total_vendido = ventas.aggregate(total=Sum('valor_total'))['total'] or Decimal('0')
+
+    return {
+        'filas': filas,
+        'por_forma_pago': por_forma_pago,
+        'total_recibido': total_recibido,
+        'total_devuelto': total_devuelto,
+        'total_neto': total_recibido - total_devuelto,
+        'total_vendido': total_vendido,
+    }
+
+
+def datos_gastos(inicio, fin):
+    """Costos: pedidos RECIBIDOS + gastos hormiga. Los pendientes van aparte."""
+
+    # --- Pedidos que ya llegaron (cuentan desde el día de recepción) ---
+    recibidos = (
+        Pedido.objects.filter(estado='Recibido')
+        .select_related('proveedor')
+        .annotate(fecha_costo=Coalesce('fecha_recepcion', 'fecha'))
+    )
+
+    if inicio:
+        recibidos = recibidos.filter(fecha_costo__gte=inicio)
+    if fin:
+        recibidos = recibidos.filter(fecha_costo__lte=fin)
+
+    movimientos = []
+
+    for pedido in recibidos:
+        proveedor = pedido.proveedor.nombre if pedido.proveedor else (pedido.proveedor_texto or 'Sin proveedor')
+
+        movimientos.append({
+            'fecha': pedido.fecha_costo,
+            'concepto': f'Pedido #{pedido.id} · {proveedor}',
+            'tipo': 'Pedido',
+            'valor': pedido.costo_total,
+            'pedido_id': pedido.id,
+        })
+
+    total_pedidos = sum((m['valor'] for m in movimientos), Decimal('0'))
+
+    # --- Gastos hormiga (los gastos viejos "Pedido" se ignoran: ahora se
+    #     calculan desde los pedidos recibidos, para no contarlos dos veces) ---
+    hormiga = filtrar_por_fecha(Gasto.objects.exclude(tipo='Pedido'), inicio, fin)
+
+    for gasto in hormiga:
+        movimientos.append({
+            'fecha': gasto.fecha,
+            'concepto': gasto.descripcion,
+            'tipo': 'Hormiga',
+            'valor': gasto.valor,
+            'pedido_id': None,
+        })
+
+    total_hormiga = sum(
+        (m['valor'] for m in movimientos if m['tipo'] == 'Hormiga'),
+        Decimal('0')
+    )
+
+    movimientos.sort(key=lambda m: (m['fecha'], m['concepto']))
+
+    # --- Pedidos que todavía no llegan (NO se cuentan como costo) ---
+    pendientes = list(
+        Pedido.objects.filter(estado='Pendiente')
+        .select_related('proveedor')
+        .order_by('fecha', 'id')
+    )
+
+    total_pendientes = sum((p.costo_total for p in pendientes), Decimal('0'))
+
+    return {
+        'movimientos': movimientos,
+        'total_pedidos': total_pedidos,
+        'total_hormiga': total_hormiga,
+        'total': total_pedidos + total_hormiga,
+        'pendientes': pendientes,
+        'total_pendientes': total_pendientes,
+    }
 
 
 def datos_clientes_deuda():
-    """Devuelve (clientes con deuda, total de la deuda)."""
-    clientes = Cliente.objects.filter(
-        deudas__estado='Pendiente',
-        deudas__saldo__gt=0
-    ).annotate(
-        saldo_pendiente=Sum('deudas__saldo')
-    ).distinct()
-
-    total = Deuda.objects.filter(
+    """Lo que los clientes todavía NO han pagado (por cobrar)."""
+    deudas = Deuda.objects.filter(
         estado='Pendiente',
         saldo__gt=0
-    ).aggregate(total=Sum('saldo'))['total'] or 0
+    ).select_related('cliente')
 
-    return clientes, total
+    # Si una venta se canceló, su deuda ya no se cobra.
+    # (La deuda y la venta se relacionan por cliente + valor total.)
+    canceladas = set(
+        Venta.objects.filter(estado='Cancelada')
+        .values_list('cliente_id', 'valor_total')
+    )
+    activas = set(
+        Venta.objects.exclude(estado='Cancelada')
+        .values_list('cliente_id', 'valor_total')
+    )
+
+    por_cliente = {}
+
+    for deuda in deudas:
+        clave = (deuda.cliente_id, deuda.valor_total)
+
+        if clave in canceladas and clave not in activas:
+            continue
+
+        fila = por_cliente.setdefault(deuda.cliente_id, {
+            'cliente': deuda.cliente,
+            'deudas': 0,
+            'total': Decimal('0'),
+            'abonado': Decimal('0'),
+            'saldo': Decimal('0'),
+        })
+
+        fila['deudas'] += 1
+        fila['total'] += deuda.valor_total
+        fila['abonado'] += deuda.valor_total - deuda.saldo
+        fila['saldo'] += deuda.saldo
+
+    filas = sorted(por_cliente.values(), key=lambda f: f['saldo'], reverse=True)
+
+    return {
+        'filas': filas,
+        'total_saldo': sum((f['saldo'] for f in filas), Decimal('0')),
+        'total_abonado': sum((f['abonado'] for f in filas), Decimal('0')),
+        'total_ventas': sum((f['total'] for f in filas), Decimal('0')),
+    }
 
 
 # ---------- Pantallas de reportes ----------
@@ -891,75 +1062,65 @@ def reportes(request):
 @login_required
 @requiere_permisos('view_pago', 'view_abono')
 def reporte_ingresos(request):
-    """Reporte de ingresos por fecha."""
-    fecha_inicio = request.GET.get('fecha_inicio')
-    fecha_fin = request.GET.get('fecha_fin')
+    """Ingresos: solo el dinero que ya entró, menos devoluciones."""
+    inicio, fin = rango_fechas(request)
 
-    ingresos_por_fecha, total_ingresos = datos_ingresos(fecha_inicio, fecha_fin)
+    contexto = {
+        'ingresos': datos_ingresos(inicio, fin),
+        'por_cobrar': datos_clientes_deuda()['total_saldo'],
+    }
+    contexto.update(contexto_filtro(inicio, fin))
 
-    return render(request, 'reporte_ingresos.html', {
-        'ingresos_por_fecha': ingresos_por_fecha,
-        'total_ingresos': total_ingresos,
-        'fecha_inicio': fecha_inicio,
-        'fecha_fin': fecha_fin
-    })
+    return render(request, 'reporte_ingresos.html', contexto)
 
 
 @login_required
 @requiere_permisos('view_gasto')
 def reporte_gastos(request):
-    """Reporte de gastos por fecha."""
-    fecha_inicio = request.GET.get('fecha_inicio')
-    fecha_fin = request.GET.get('fecha_fin')
+    """Costos: pedidos recibidos + gastos hormiga."""
+    inicio, fin = rango_fechas(request)
 
-    gastos_por_fecha, total_gastos = datos_gastos(fecha_inicio, fecha_fin)
+    contexto = {'gastos': datos_gastos(inicio, fin)}
+    contexto.update(contexto_filtro(inicio, fin))
 
-    return render(request, 'reporte_gastos.html', {
-        'gastos_por_fecha': gastos_por_fecha,
-        'total_gastos': total_gastos,
-        'fecha_inicio': fecha_inicio,
-        'fecha_fin': fecha_fin
-    })
+    return render(request, 'reporte_gastos.html', contexto)
 
 
 @login_required
 @requiere_permisos('view_cliente', 'view_deuda')
 def reporte_clientes_deuda(request):
-    """Reporte de clientes que deben dinero."""
-    clientes, total_deuda = datos_clientes_deuda()
-
+    """Clientes que todavía deben dinero."""
     return render(request, 'reporte_clientes_deuda.html', {
-        'clientes': clientes,
-        'total_deuda': total_deuda
+        'deudas': datos_clientes_deuda()
     })
 
 
 @login_required
 @requiere_permisos('view_pago', 'view_abono', 'view_gasto')
 def reporte_balance(request):
-    """Balance = ingresos - gastos."""
-    fecha_inicio = request.GET.get('fecha_inicio')
-    fecha_fin = request.GET.get('fecha_fin')
+    """Balance = ingresos netos recibidos - costos."""
+    inicio, fin = rango_fechas(request)
 
-    total_ingresos = datos_ingresos(fecha_inicio, fecha_fin)[1]
-    total_gastos = datos_gastos(fecha_inicio, fecha_fin)[1]
-    balance = total_ingresos - total_gastos
+    ingresos = datos_ingresos(inicio, fin)
+    gastos = datos_gastos(inicio, fin)
 
-    return render(request, 'reporte_balance.html', {
-        'total_ingresos': total_ingresos,
-        'total_gastos': total_gastos,
-        'balance': balance,
-        'fecha_inicio': fecha_inicio,
-        'fecha_fin': fecha_fin
-    })
+    contexto = {
+        'ingresos': ingresos,
+        'gastos': gastos,
+        'balance': ingresos['total_neto'] - gastos['total'],
+        'por_cobrar': datos_clientes_deuda()['total_saldo'],
+    }
+    contexto.update(contexto_filtro(inicio, fin))
+
+    return render(request, 'reporte_balance.html', contexto)
 
 
 @login_required
 @requiere_permisos('view_venta', 'view_abono')
 def consultar_por_fecha(request):
     """Muestra las ventas y abonos entre dos fechas."""
-    fecha_inicio = request.GET.get('fecha_inicio')
-    fecha_fin = request.GET.get('fecha_fin')
+    fecha_inicio = parsear_fecha(request.GET.get('fecha_inicio'))
+    fecha_fin = parsear_fecha(request.GET.get('fecha_fin'))
 
     ventas = None
     abonos = None
@@ -971,13 +1132,13 @@ def consultar_por_fecha(request):
         ).select_related('cliente')
 
         abonos = Abono.objects.filter(
-            fecha__gte=fecha_inicio,
-            fecha__lte=fecha_fin
+            fecha__date__gte=fecha_inicio,
+            fecha__date__lte=fecha_fin
         ).select_related('deuda__cliente')
 
     return render(request, 'consultar_por_fecha.html', {
-        'fecha_inicio': fecha_inicio,
-        'fecha_fin': fecha_fin,
+        'fecha_inicio': request.GET.get('fecha_inicio'),
+        'fecha_fin': request.GET.get('fecha_fin'),
         'ventas': ventas,
         'abonos': abonos,
     })
@@ -988,8 +1149,6 @@ def consultar_por_fecha(request):
 def descargar_reporte(request):
     """Descarga un reporte en formato CSV (se abre en Excel)."""
     tipo = request.GET.get('tipo')
-    fecha_inicio = request.GET.get('fecha_inicio')
-    fecha_fin = request.GET.get('fecha_fin')
 
     # Sin tipo: mostramos la pantalla para elegir
     if not tipo:
@@ -999,6 +1158,8 @@ def descargar_reporte(request):
         messages.error(request, 'Selecciona un tipo de reporte válido.')
         return redirect('descargar_reporte')
 
+    inicio, fin = rango_fechas(request)
+
     # Preparamos el archivo CSV
     response = HttpResponse(content_type='text/csv; charset=utf-8')
     response['Content-Disposition'] = f'attachment; filename="reporte_{tipo}.csv"'
@@ -1007,37 +1168,65 @@ def descargar_reporte(request):
     writer = csv.writer(response)
 
     if tipo == 'ingresos':
-        por_fecha, total = datos_ingresos(fecha_inicio, fecha_fin)
+        datos = datos_ingresos(inicio, fin)
 
-        writer.writerow(['Fecha', 'Total vendido'])
-        for fila in por_fecha:
-            writer.writerow([fila['fecha'], int_cop(fila['total'])])
-        writer.writerow(['TOTAL', int_cop(total)])
+        writer.writerow(['Fecha', 'Recibido', 'Devoluciones', 'Ingreso neto'])
+        for fila in datos['filas']:
+            writer.writerow([
+                fila['fecha'],
+                int_cop(fila['recibido']),
+                int_cop(fila['devuelto']),
+                int_cop(fila['neto']),
+            ])
+        writer.writerow([
+            'TOTAL',
+            int_cop(datos['total_recibido']),
+            int_cop(datos['total_devuelto']),
+            int_cop(datos['total_neto']),
+        ])
 
     elif tipo == 'gastos':
-        por_fecha, total = datos_gastos(fecha_inicio, fecha_fin)
+        datos = datos_gastos(inicio, fin)
 
-        writer.writerow(['Fecha', 'Total gastado'])
-        for fila in por_fecha:
-            writer.writerow([fila['fecha'], int_cop(fila['total'])])
-        writer.writerow(['TOTAL', int_cop(total)])
+        writer.writerow(['Fecha', 'Tipo', 'Concepto', 'Valor'])
+        for mov in datos['movimientos']:
+            writer.writerow([
+                mov['fecha'], mov['tipo'], mov['concepto'], int_cop(mov['valor'])
+            ])
+        writer.writerow(['', '', 'Pedidos recibidos', int_cop(datos['total_pedidos'])])
+        writer.writerow(['', '', 'Gastos hormiga', int_cop(datos['total_hormiga'])])
+        writer.writerow(['', '', 'TOTAL COSTOS', int_cop(datos['total'])])
 
     elif tipo == 'clientes_deuda':
-        clientes, total = datos_clientes_deuda()
+        datos = datos_clientes_deuda()
 
-        writer.writerow(['Cliente', 'Saldo pendiente'])
-        for cliente in clientes:
-            writer.writerow([cliente.nombre, int_cop(cliente.saldo_pendiente)])
-        writer.writerow(['TOTAL', int_cop(total)])
+        writer.writerow(['Cliente', 'Total de ventas', 'Abonado', 'Saldo pendiente'])
+        for fila in datos['filas']:
+            writer.writerow([
+                fila['cliente'].nombre,
+                int_cop(fila['total']),
+                int_cop(fila['abonado']),
+                int_cop(fila['saldo']),
+            ])
+        writer.writerow([
+            'TOTAL',
+            int_cop(datos['total_ventas']),
+            int_cop(datos['total_abonado']),
+            int_cop(datos['total_saldo']),
+        ])
 
     elif tipo == 'balance':
-        ingresos = datos_ingresos(fecha_inicio, fecha_fin)[1]
-        gastos = datos_gastos(fecha_inicio, fecha_fin)[1]
+        ingresos = datos_ingresos(inicio, fin)
+        gastos = datos_gastos(inicio, fin)
 
         writer.writerow(['Concepto', 'Valor'])
-        writer.writerow(['Ingresos', int_cop(ingresos)])
-        writer.writerow(['Gastos', int_cop(gastos)])
-        writer.writerow(['Balance final', int_cop(ingresos - gastos)])
+        writer.writerow(['Dinero recibido', int_cop(ingresos['total_recibido'])])
+        writer.writerow(['Devoluciones', int_cop(ingresos['total_devuelto'])])
+        writer.writerow(['Ingresos netos', int_cop(ingresos['total_neto'])])
+        writer.writerow(['Pedidos recibidos', int_cop(gastos['total_pedidos'])])
+        writer.writerow(['Gastos hormiga', int_cop(gastos['total_hormiga'])])
+        writer.writerow(['Total costos', int_cop(gastos['total'])])
+        writer.writerow(['Balance final', int_cop(ingresos['total_neto'] - gastos['total'])])
 
     return response
 
@@ -1058,7 +1247,7 @@ def list_pedido(request):
 @login_required
 @requiere_permisos('add_pedido', 'add_detallepedido', 'add_gasto', 'view_producto', 'view_proveedor')
 def register_pedido(request):
-    """Registra un pedido a un proveedor y crea el gasto automáticamente."""
+    """Registra un pedido a un proveedor (queda Pendiente, sin costo todavía)."""
     productos = Producto.objects.all()
     proveedores = Proveedor.objects.order_by('nombre')
 
@@ -1140,15 +1329,13 @@ def register_pedido(request):
             pedido.costo_total = costo_total_acumulado
             pedido.save()
 
-            # 3.4 Crear el gasto automáticamente
-            Gasto.objects.create(
-                descripcion=f"Pedido a proveedor: {proveedor.nombre} (Pedido #{pedido.id})",
-                valor=costo_total_acumulado,
-                fecha=fecha,
-                tipo='Pedido'
-            )
+            # El costo NO se registra aquí: el pedido empieza "Pendiente" y
+            # solo cuenta como costo en los reportes cuando se marque "Recibido".
 
-        messages.success(request, 'Pedido registrado y sincronizado en gastos correctamente.')
+        messages.success(
+            request,
+            'Pedido registrado. Se contará como costo cuando lo marques como Recibido.'
+        )
         return redirect('list_pedido')
 
     return render(request, 'register_pedido.html', {
@@ -1178,11 +1365,17 @@ def pedido_details(request, pedido_id):
                     detalle.producto.cantidad_disponible += detalle.cantidad
                     detalle.producto.save()
 
+                # Desde hoy el pedido cuenta como costo en los reportes
+                pedido.fecha_recepcion = timezone.localdate()
+
             # Estaba Recibido y cambia a otro estado -> quitamos el stock
             elif pedido.estado == 'Recibido' and nuevo_estado != 'Recibido':
                 for detalle in detalles:
                     detalle.producto.cantidad_disponible -= detalle.cantidad
                     detalle.producto.save()
+
+                # Ya no cuenta como costo
+                pedido.fecha_recepcion = None
 
             pedido.estado = nuevo_estado
             pedido.save()
@@ -1200,7 +1393,7 @@ def pedido_details(request, pedido_id):
 @require_POST
 @requiere_permisos('delete_pedido')
 def eliminar_pedido(request, pedido_id):
-    """Elimina un pedido y su gasto. Si ya estaba recibido, resta el stock."""
+    """Elimina un pedido. Si ya estaba recibido, resta el stock."""
     pedido = get_object_or_404(Pedido, id=pedido_id)
 
     if request.method == 'POST':
@@ -1213,7 +1406,7 @@ def eliminar_pedido(request, pedido_id):
                     detalle.producto.cantidad_disponible -= detalle.cantidad
                     detalle.producto.save()
 
-            # Borramos el gasto de ESTE pedido.
+            # Borramos el gasto viejo de ESTE pedido (si existe de antes).
             # (endswith evita que "Pedido #1" borre también "#10", "#11"...)
             Gasto.objects.filter(
                 descripcion__endswith=f"(Pedido #{pedido.id})"
@@ -1221,7 +1414,7 @@ def eliminar_pedido(request, pedido_id):
 
             pedido.delete()
 
-        messages.success(request, 'Pedido y su gasto asociado eliminados correctamente.')
+        messages.success(request, 'Pedido eliminado correctamente.')
         return redirect('list_pedido')
 
     return redirect('pedido_details', pedido_id=pedido.id)

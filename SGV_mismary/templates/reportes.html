@@ -167,7 +167,7 @@ Reportes | MisMary
     <!-- ENCABEZADO -->
     <div class="encabezado">
         <h1>Reportes 📊</h1>
-        <p>Selecciona el reporte que quieres consultar</p>
+        <p>Todo se cuenta cuando la plata realmente entra o sale</p>
     </div>
 
     <!-- TARJETAS -->
@@ -176,28 +176,28 @@ Reportes | MisMary
         <div class="tarjeta">
             <div class="tarjeta-icono">💰</div>
             <h3>Ingresos</h3>
-            <p>Consulta cuánto dinero ingresó por fecha.</p>
+            <p>El dinero que ya recibiste de tus clientes, por día. Lo que aún te deben no se cuenta.</p>
             <a href="{% url 'reporte_ingresos' %}" class="btn-mismary">Ver reporte</a>
         </div>
 
         <div class="tarjeta">
             <div class="tarjeta-icono">🧾</div>
             <h3>Clientes con deuda</h3>
-            <p>Revisa quién debe y cuánto, para gestionar cobros.</p>
+            <p>Quién te debe y cuánto, para gestionar cobros. Esta plata todavía no es ingreso.</p>
             <a href="{% url 'reporte_clientes_deuda' %}" class="btn-mismary">Ver reporte</a>
         </div>
 
         <div class="tarjeta">
             <div class="tarjeta-icono">💸</div>
             <h3>Costos</h3>
-            <p>Conoce las salidas de dinero por fecha.</p>
+            <p>Pedidos que ya llegaron y gastos hormiga. Los pedidos pendientes no cuentan.</p>
             <a href="{% url 'reporte_gastos' %}" class="btn-mismary">Ver reporte</a>
         </div>
 
         <div class="tarjeta">
             <div class="tarjeta-icono">⚖️</div>
             <h3>Balance</h3>
-            <p>Compara ingresos y gastos para ver la utilidad.</p>
+            <p>Ingresos recibidos menos costos, para ver si realmente estás ganando.</p>
             <a href="{% url 'reporte_balance' %}" class="btn-mismary">Ver reporte</a>
         </div>
 

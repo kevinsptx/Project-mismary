@@ -1,462 +1,155 @@
-{% extends 'layout/base.html' %}
+{% extends 'layout/reportes_base.html' %}
 
 {% block title %}
-Gastos | MisMary
+Costos | MisMary
 {% endblock %}
 
-{% block content %}
+{% block rep_titulo %}Reporte de costos 💸{% endblock %}
 
-<style>
-    /* ===== PALETA Y BASE ===== */
-    :root {
-        --cafe-tostado: #4A2C1B;
-        --terracota: #9E3B27;
-        --naranja: #FF6B35;
-        --naranja-hover: #E85A26;
-        --arena: #E8DFC8;
-        --arena-suave: #F5EFE3;
-        --marfil-bg: #FCFAF7;
-        --blanco: #FFFFFF;
-        --verde: #2E7D32;
-        --verde-fondo: #E8F5E9;
-        --rojo-fondo: #FBE9E7;
-        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
-    }
+{% block rep_subtitulo %}Pedidos que ya llegaron y gastos hormiga. Lo que aún no llega no se cuenta{% endblock %}
 
-    .wrap-mismary {
-        max-width: 1040px;
-        margin: 0 auto;
-        padding: 30px 20px;
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-    }
+{% block rep_cuerpo %}
 
-    /* ===== ENCABEZADO ===== */
-    .encabezado {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-bottom: 25px;
-    }
+    <!-- RESUMEN -->
+    <section class="resumen">
 
-    .encabezado h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .encabezado p {
-        margin: 4px 0 0;
-        font-size: 14px;
-        color: var(--terracota);
-    }
-
-    .acciones {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    /* ===== BOTONES ===== */
-    .btn-mismary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        background: var(--naranja);
-        color: #FFF;
-        text-decoration: none;
-        padding: 10px 18px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        font-family: inherit;
-        transition: background 0.2s ease, transform 0.2s ease,
-                    box-shadow 0.2s ease;
-    }
-
-    .btn-mismary:hover {
-        background: var(--terracota);
-        color: #FFF;
-        transform: translateY(-2px);
-        box-shadow: var(--sombra-hover);
-    }
-
-    .btn-secundario {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        border: 1px solid var(--arena);
-    }
-
-    .btn-secundario:hover {
-        background: var(--blanco);
-        border-color: var(--terracota);
-        color: var(--terracota);
-    }
-
-    /* ===== BOTÓN REGISTRAR GASTO ===== */
-.contenedor-boton-gasto {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 32px;
-    margin-bottom: 15px;
-}
-
-.btn-registrar-gasto {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    padding: 12px 23px;
-    background: var(--naranja);
-    color: #FFFFFF;
-    text-decoration: none;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
-    border: 1px solid var(--naranja);
-    font-family: inherit;
-    box-shadow: var(--sombra-suave);
-    transition: background 0.2s ease, transform 0.2s ease,
-                box-shadow 0.2s ease;
-}
-
-.btn-registrar-gasto:hover {
-    background: var(--terracota);
-    border-color: var(--terracota);
-    color: #FFFFFF;
-    transform: translateY(-2px);
-    box-shadow: var(--sombra-hover);
-}
-
-.icono-gasto {
-    font-size: 19px;
-    font-weight: 700;
-}
-
-@media (max-width: 600px) {
-    .btn-registrar-gasto {
-        padding: 12px 20px;
-    }
-}
-
-@media print {
-    .contenedor-boton-gasto {
-        display: none;
-    }
-}
-
-    /* ===== FILTRO ===== */
-    .filtro {
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        padding: 20px 24px;
-        margin-bottom: 26px;
-        box-shadow: var(--sombra-suave);
-    }
-
-    .filtro form {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-end;
-        gap: 14px;
-    }
-
-    .filtro label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .filtro input {
-        padding: 12px 20px;
-        border: 1px solid var(--arena);
-        border-radius: 999px;
-        font-size: 14px;
-        font-family: inherit;
-        color: var(--cafe-tostado);
-        background: var(--blanco);
-    }
-
-    .filtro input:focus {
-        outline: none;
-        border-color: var(--terracota);
-        box-shadow: var(--sombra-suave);
-    }
-
-    /* ===== RESULTADOS ===== */
-    .resultados-barra {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 12px;
-        flex-wrap: wrap;
-    }
-
-    .resultados-barra h2 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .chip-mismary {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        padding: 6px 16px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        border: 1px solid var(--arena);
-    }
-
-    /* ===== TABLA ===== */
-    .tabla-caja {
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        box-shadow: var(--sombra-suave);
-        overflow-x: auto;
-        margin-bottom: 22px;
-    }
-
-    .tabla-gastos {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-    .tabla-gastos thead th {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        text-align: left;
-        font-size: 13px;
-        font-weight: 700;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--arena);
-        white-space: nowrap;
-    }
-
-    .tabla-gastos tbody td {
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--arena-suave);
-        vertical-align: middle;
-    }
-
-    .tabla-gastos tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .tabla-gastos tbody tr:hover {
-        background: var(--marfil-bg);
-    }
-
-    .col-numero {
-        text-align: right !important;
-        white-space: nowrap;
-    }
-
-    .precio {
-        font-weight: 700;
-        color: var(--terracota);
-    }
-
-    .sin-registros {
-        text-align: center;
-        padding: 40px 20px !important;
-        color: #6C5243;
-    }
-
-    /* ===== TOTAL ===== */
-    .total-reporte {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        flex-wrap: wrap;
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        padding: 20px 28px;
-        box-shadow: var(--sombra-suave);
-    }
-
-    .total-reporte span {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--terracota);
-    }
-
-    .total-reporte strong {
-        font-size: 28px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    /* ===== RESPONSIVO ===== */
-    @media (max-width: 600px) {
-        .encabezado {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .acciones {
-            width: 100%;
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .acciones > a,
-        .acciones > button {
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .btn-registrar-gasto {
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .filtro form {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filtro input {
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .filtro button {
-            width: 100%;
-        }
-
-        .total-reporte {
-            justify-content: center;
-            text-align: center;
-        }
-
-        .tabla-gastos thead th,
-        .tabla-gastos tbody td {
-            padding: 12px 14px;
-        }
-    }
-
-    /* ===== IMPRESIÓN ===== */
-    @media print {
-        .filtro,
-        .acciones,
-        .btn-registrar-gasto {
-            display: none !important;
-        }
-
-        .wrap-mismary {
-            max-width: 100%;
-            padding: 0;
-        }
-    }
-</style>
-
-<div class="wrap-mismary">
-
-    <!-- ENCABEZADO -->
-    <div class="encabezado">
-        <div>
-            <h1>Reporte de costos 💸</h1>
-            <p>Salidas de dinero del negocio, agrupadas por fecha</p>
+        <div class="stat stat-negativo">
+            <span class="etiqueta">Total de costos</span>
+            <span class="valor">$ {{ gastos.total|floatformat:"0g" }}</span>
+            <span class="nota">Pedidos recibidos + gastos hormiga</span>
         </div>
 
-        <div class="acciones">
-            <button
-                type="button"
-                onclick="window.print()"
-                class="btn-mismary">
-                🖨️ Imprimir
-            </button>
-
-            <a href="{% url 'reportes' %}"
-               class="btn-mismary btn-secundario">
-                ← Volver a reportes
-            </a>
+        <div class="stat">
+            <span class="etiqueta">Pedidos recibidos</span>
+            <span class="valor">$ {{ gastos.total_pedidos|floatformat:"0g" }}</span>
+            <span class="nota">Mercancía que ya llegó</span>
         </div>
-    </div>
 
-    
-    <!-- FILTRO -->
-    <section class="filtro">
-        <form method="GET">
+        <div class="stat">
+            <span class="etiqueta">Gastos hormiga</span>
+            <span class="valor">$ {{ gastos.total_hormiga|floatformat:"0g" }}</span>
+            <span class="nota">Gastos pequeños registrados a mano</span>
+        </div>
 
-            <div>
-                <label for="fecha_inicio">Desde</label>
-                <input
-                    type="date"
-                    id="fecha_inicio"
-                    name="fecha_inicio"
-                    value="{{ fecha_inicio|default:'' }}"
-                >
-            </div>
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Pedidos por recibir</span>
+            <span class="valor">$ {{ gastos.total_pendientes|floatformat:"0g" }}</span>
+            <span class="nota">
+                {{ gastos.pendientes|length }} pedido{{ gastos.pendientes|length|pluralize }} pendiente{{ gastos.pendientes|length|pluralize }}.
+                No cuentan como costo todavía.
+            </span>
+        </div>
 
-            <div>
-                <label for="fecha_fin">Hasta</label>
-                <input
-                    type="date"
-                    id="fecha_fin"
-                    name="fecha_fin"
-                    value="{{ fecha_fin|default:'' }}"
-                >
-            </div>
-
-            <button type="submit" class="btn-mismary">
-                Filtrar
-            </button>
-
-        </form>
     </section>
 
-    <!-- TÍTULO DE RESULTADOS -->
-    <div class="resultados-barra">
-        <h2>Costos por fecha</h2>
-
-        <span class="chip-mismary">
-            {{ gastos_por_fecha|length }}
-            fecha{{ gastos_por_fecha|length|pluralize }}
+    <div class="aviso">
+        <span>ℹ️</span>
+        <span>
+            <strong>Cómo se cuenta:</strong> un pedido solo aparece como costo cuando lo marcas como
+            <strong>Recibido</strong>, y cuenta desde ese día. Si está pendiente o cancelado, no suma.
         </span>
     </div>
 
-    <!-- TABLA -->
+    <!-- COSTOS DETALLADOS -->
+    <div class="resultados-barra">
+        <h2>Costos del período</h2>
+
+        <span class="chip-mismary">
+            {{ gastos.movimientos|length }} registro{{ gastos.movimientos|length|pluralize }}
+        </span>
+    </div>
+
     <div class="tabla-caja">
-        <table class="tabla-gastos">
+        <table class="tabla-reporte">
 
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th class="col-numero">Total gastado</th>
+                    <th>Tipo</th>
+                    <th>Concepto</th>
+                    <th class="col-numero">Valor</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for fila in gastos_por_fecha %}
+                {% for mov in gastos.movimientos %}
                     <tr>
-                        <td>{{ fila.fecha|date:"d/m/Y" }}</td>
-                        <td class="col-numero precio">
-                            ${{ fila.total }}
+                        <td class="nombre-fuerte">{{ mov.fecha|date:"d/m/Y" }}</td>
+
+                        <td>
+                            {% if mov.tipo == 'Pedido' %}
+                                <span class="chip-tipo chip-pedido">Pedido recibido</span>
+                            {% else %}
+                                <span class="chip-tipo">Hormiga</span>
+                            {% endif %}
                         </td>
+
+                        <td>
+                            {% if mov.pedido_id %}
+                                <a class="link-fila" href="{% url 'pedido_details' mov.pedido_id %}">{{ mov.concepto }}</a>
+                            {% else %}
+                                {{ mov.concepto }}
+                            {% endif %}
+                        </td>
+
+                        <td class="col-numero">$ {{ mov.valor|floatformat:"0g" }}</td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="2" class="sin-registros">
-                            No hay gastos en ese rango de fechas.
+                        <td colspan="4" class="sin-registros">
+                            No hay costos en ese rango de fechas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+            {% if gastos.movimientos %}
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total de costos</td>
+                        <td class="col-numero">$ {{ gastos.total|floatformat:"0g" }}</td>
+                    </tr>
+                </tfoot>
+            {% endif %}
+
+        </table>
+    </div>
+
+    <!-- PEDIDOS POR RECIBIR -->
+    <div class="resultados-barra">
+        <h2>Pedidos por recibir</h2>
+
+        <span class="chip-mismary">No cuentan como costo todavía</span>
+    </div>
+
+    <div class="tabla-caja">
+        <table class="tabla-reporte">
+
+            <thead>
+                <tr>
+                    <th>Pedido</th>
+                    <th>Fecha del pedido</th>
+                    <th>Proveedor</th>
+                    <th>Estado</th>
+                    <th class="col-numero">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for pedido in gastos.pendientes %}
+                    <tr>
+                        <td>
+                            <a class="link-fila" href="{% url 'pedido_details' pedido.id %}">#{{ pedido.id }}</a>
+                        </td>
+                        <td>{{ pedido.fecha|date:"d/m/Y" }}</td>
+                        <td>{% if pedido.proveedor %}{{ pedido.proveedor.nombre }}{% else %}{{ pedido.proveedor_texto|default:"Sin proveedor" }}{% endif %}</td>
+                        <td><span class="chip-tipo chip-pendiente">Pendiente</span></td>
+                        <td class="col-numero">$ {{ pedido.costo_total|floatformat:"0g" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="sin-registros">
+                            No tienes pedidos pendientes por recibir. 🎉
                         </td>
                     </tr>
                 {% endfor %}
@@ -465,22 +158,11 @@ Gastos | MisMary
         </table>
     </div>
 
-    <!-- TOTAL -->
-    <div class="total-reporte">
-        <span>Total de Consto</span>
-        <strong>${{ total_gastos }}</strong>
-
-
+    <!-- REGISTRAR GASTO HORMIGA -->
+    <div class="acciones no-imprimir">
+        <a href="{% url 'registrar_gasto' %}" class="btn-mismary">
+            + Registrar gasto hormiga
+        </a>
     </div>
-
-    <!-- BOTÓN REGISTRAR GASTO -->
-<div class="contenedor-boton-gasto">
-    <a href="{% url 'registrar_gasto' %}" class="btn-registrar-gasto">
-        <span class="icono-gasto">＋</span>
-        Registrar costo Hormiga
-    </a>
-</div>
-
-</div>
 
 {% endblock %}

@@ -1,4 +1,3 @@
-
 {% extends 'layout/base.html' %}
 {% load humanize %}
 
@@ -130,7 +129,7 @@
         {% endif %}
     </div>
 
-    {% if reembolso.estado != "Devuelto" %}
+    {% if reembolso.estado != "Devuelto" and perms.SGV_mismary.change_reembolso %}
         <p class="aviso-detalle">
             Confirma que el dinero se haya devuelto realmente al cliente
             antes de registrar esta operación como completada.

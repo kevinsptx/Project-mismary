@@ -1,322 +1,124 @@
-{% extends 'layout/base.html' %}
+{% extends 'layout/reportes_base.html' %}
 
 {% block title %}
 Balance | MisMary
 {% endblock %}
 
-{% block content %}
+{% block rep_titulo %}Balance ⚖️{% endblock %}
 
-<style>
+{% block rep_subtitulo %}Dinero que realmente entró menos dinero de pedidos que ya llegaron y gastos{% endblock %}
 
-    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
+{% block rep_cuerpo %}
 
-    :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
-        --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
+    <!-- RESULTADO PRINCIPAL -->
+    <section class="resumen">
 
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
-
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
-    }
-
-    body {
-        background-color: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding-bottom: 60px;
-    }
-
-    .wrap-mismary {
-        max-width: 1040px;
-        margin: 0 auto;
-        padding: 30px 20px;
-    }
-
-    /* ===== ENCABEZADO ===== */
-
-    .encabezado {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-bottom: 25px;
-    }
-
-    .encabezado h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .encabezado p {
-        margin: 4px 0 0 0;
-        font-size: 14px;
-        color: var(--terracota);
-    }
-
-    .acciones {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    /* ===== BOTONES ===== */
-
-    .btn-mismary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        background: var(--naranja);
-        color: #FFF;
-        text-decoration: none;
-        padding: 10px 18px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        font-family: inherit;
-        transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-    .btn-mismary:hover {
-        background: var(--terracota);
-    }
-
-    .btn-secundario {
-        background: var(--arena-suave);
-        color: var(--cafe-tostado);
-        border: 1px solid var(--arena);
-    }
-
-    .btn-secundario:hover {
-        background: var(--blanco);
-        border-color: var(--terracota);
-        color: var(--terracota);
-    }
-
-    /* ===== FILTRO ===== */
-
-    .filtro {
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        padding: 20px 24px;
-        margin-bottom: 26px;
-        box-shadow: var(--sombra-suave);
-    }
-
-    .filtro form {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-end;
-        gap: 14px;
-    }
-
-    .filtro label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .filtro input {
-        padding: 12px 20px;
-        border: 1px solid var(--arena);
-        border-radius: 999px;
-        font-size: 14px;
-        font-family: inherit;
-        color: var(--cafe-tostado);
-        background: var(--blanco);
-    }
-
-    .filtro input:focus {
-        outline: none;
-        border-color: var(--terracota);
-    }
-
-    /* ===== TARJETAS ===== */
-
-    .tarjetas {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 22px;
-        margin-bottom: 30px;
-    }
-
-    .tarjeta {
-        flex: 1 1 260px;
-        background: var(--blanco);
-        border: 1px solid var(--arena);
-        border-radius: 24px;
-        padding: 26px 24px;
-        box-shadow: var(--sombra-suave);
-        text-align: center;
-    }
-
-    .tarjeta-icono {
-        width: 52px;
-        height: 52px;
-        margin: 0 auto 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--arena-suave);
-        border: 1px solid var(--arena);
-        border-radius: 50%;
-        font-size: 24px;
-    }
-
-    .tarjeta h3 {
-        margin: 0 0 8px 0;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--terracota);
-    }
-
-    .tarjeta .valor {
-        margin: 0;
-        font-size: 28px;
-        font-weight: 700;
-        color: var(--cafe-tostado);
-    }
-
-    .tarjeta-balance .valor {
-        display: inline-block;
-        padding: 6px 20px;
-        border-radius: 999px;
-    }
-
-    .valor-positivo {
-        background: var(--verde-fondo);
-        color: var(--verde) !important;
-    }
-
-    .valor-negativo {
-        background: var(--rojo-fondo);
-        color: var(--terracota) !important;
-    }
-
-    /* ===== RESPONSIVO ===== */
-
-    @media (max-width: 600px) {
-        .encabezado {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .filtro form {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filtro button {
-            width: 100%;
-        }
-
-        .tarjeta {
-            flex: 1 1 100%;
-        }
-    }
-
-    /* ===== IMPRESIÓN ===== */
-
-    @media print {
-        .filtro,
-        .acciones {
-            display: none;
-        }
-    }
-
-</style>
-
-
-<div class="wrap-mismary">
-
-    <!-- ENCABEZADO -->
-    <div class="encabezado">
-        <div>
-            <h1>Balance del negocio ⚖️</h1>
-            <p>Ingresos menos gastos: la utilidad del negocio</p>
+        <div class="stat {% if balance >= 0 %}stat-positivo{% else %}stat-negativo{% endif %}">
+            <span class="etiqueta">{% if balance >= 0 %}Ganancia del período{% else %}Pérdida del período{% endif %}</span>
+            <span class="valor">{% if balance < 0 %}- {% endif %}$ {{ balance|floatformat:"0g"|cut:"-" }}</span>
+            <span class="nota">Ingresos netos recibidos menos costos</span>
         </div>
 
-        <div class="acciones">
-            <button onclick="window.print()" class="btn-mismary">🖨️ Imprimir</button>
-            <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">← Volver a reportes</a>
+        <div class="stat">
+            <span class="etiqueta">Ingresos netos</span>
+            <span class="valor">$ {{ ingresos.total_neto|floatformat:"0g" }}</span>
+            <span class="nota">Dinero recibido menos devoluciones</span>
         </div>
+
+        <div class="stat">
+            <span class="etiqueta">Costos</span>
+            <span class="valor">$ {{ gastos.total|floatformat:"0g" }}</span>
+            <span class="nota">Pedidos recibidos + gastos hormiga</span>
+        </div>
+
+    </section>
+
+    <!-- DETALLE DEL BALANCE -->
+    <div class="resultados-barra">
+        <h2>Cómo se calcula</h2>
     </div>
 
-    <!-- FILTRO -->
-    <section class="filtro">
-        <form method="GET">
+    <div class="tabla-caja">
+        <table class="tabla-reporte">
 
-            <div>
-                <label for="fecha_inicio">Desde</label>
-                <input
-                    type="date"
-                    id="fecha_inicio"
-                    name="fecha_inicio"
-                    value="{{ fecha_inicio|default:'' }}"
-                >
-            </div>
+            <thead>
+                <tr>
+                    <th>Concepto</th>
+                    <th class="col-numero">Valor</th>
+                </tr>
+            </thead>
 
-            <div>
-                <label for="fecha_fin">Hasta</label>
-                <input
-                    type="date"
-                    id="fecha_fin"
-                    name="fecha_fin"
-                    value="{{ fecha_fin|default:'' }}"
-                >
-            </div>
+            <tbody>
+                <tr>
+                    <td class="nombre-fuerte">Ingresos</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;Dinero recibido de clientes</td>
+                    <td class="col-numero">$ {{ ingresos.total_recibido|floatformat:"0g" }}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;Devoluciones hechas</td>
+                    <td class="col-numero">- $ {{ ingresos.total_devuelto|floatformat:"0g" }}</td>
+                </tr>
+                <tr>
+                    <td class="nombre-fuerte">Ingresos netos</td>
+                    <td class="col-numero monto-positivo">$ {{ ingresos.total_neto|floatformat:"0g" }}</td>
+                </tr>
 
-            <button type="submit" class="btn-mismary">Filtrar</button>
+                <tr>
+                    <td class="nombre-fuerte">Costos</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;Pedidos recibidos</td>
+                    <td class="col-numero">$ {{ gastos.total_pedidos|floatformat:"0g" }}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;Gastos hormiga</td>
+                    <td class="col-numero">$ {{ gastos.total_hormiga|floatformat:"0g" }}</td>
+                </tr>
+                <tr>
+                    <td class="nombre-fuerte">Total de costos</td>
+                    <td class="col-numero monto-negativo">- $ {{ gastos.total|floatformat:"0g" }}</td>
+                </tr>
+            </tbody>
 
-        </form>
+            <tfoot>
+                <tr>
+                    <td>{% if balance >= 0 %}Ganancia{% else %}Pérdida{% endif %}</td>
+                    <td class="col-numero">{% if balance < 0 %}- {% endif %}$ {{ balance|floatformat:"0g"|cut:"-" }}</td>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
+
+    <!-- LO QUE NO ENTRA AL BALANCE -->
+    <div class="resultados-barra">
+        <h2>Fuera del balance (todavía no se mueve plata)</h2>
+    </div>
+
+    <section class="resumen">
+
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Por cobrar a clientes (hoy)</span>
+            <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
+            <span class="nota">Entra al balance cuando el cliente pague. <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver detalle</a></span>
+        </div>
+
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Pedidos por recibir (hoy)</span>
+            <span class="valor">$ {{ gastos.total_pendientes|floatformat:"0g" }}</span>
+            <span class="nota">Entra a costos cuando lo marques como Recibido. <a class="link-fila no-imprimir" href="{% url 'reporte_gastos' %}">Ver detalle</a></span>
+        </div>
+
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Vendido en el período</span>
+            <span class="valor">$ {{ ingresos.total_vendido|floatformat:"0g" }}</span>
+            <span class="nota">Ventas registradas, hayan pagado o no.</span>
+        </div>
+
     </section>
-
-    <!-- TARJETAS -->
-    <section class="tarjetas">
-
-        <div class="tarjeta">
-            <div class="tarjeta-icono">💰</div>
-            <h3>Ingresos</h3>
-            <p class="valor">${{ total_ingresos }}</p>
-        </div>
-
-        <div class="tarjeta">
-            <div class="tarjeta-icono">💸</div>
-            <h3>Gastos</h3>
-            <p class="valor">${{ total_gastos }}</p>
-        </div>
-
-        <div class="tarjeta tarjeta-balance">
-            <div class="tarjeta-icono">⚖️</div>
-            <h3>Balance final</h3>
-            <p class="valor {% if balance >= 0 %}valor-positivo{% else %}valor-negativo{% endif %}">
-                ${{ balance }}
-            </p>
-        </div>
-
-    </section>
-
-</div>
 
 {% endblock %}

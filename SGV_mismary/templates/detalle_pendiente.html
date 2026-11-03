@@ -329,12 +329,14 @@
                 💵 Registrar nuevo abono
             </a>
 
-            <form method="POST" action="{% url 'eliminar_pendiente' deuda.id %}" style="margin: 0;">
-                {% csrf_token %}
-                <button type="submit" class="btn-mismary btn-eliminar" onclick="return confirm('¿Está seguro de eliminar esta deuda? Se eliminarán la venta y abonos asociados.')">
-                    🗑️ Eliminar
-                </button>
-            </form>
+            {% if perms.SGV_mismary.delete_deuda %}
+                <form method="POST" action="{% url 'eliminar_pendiente' deuda.id %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-mismary btn-eliminar" onclick="return confirm('¿Está seguro de eliminar esta deuda? Se eliminarán la venta y abonos asociados.')">
+                        🗑️ Eliminar
+                    </button>
+                </form>
+            {% endif %}
         </div>
 
     </div>

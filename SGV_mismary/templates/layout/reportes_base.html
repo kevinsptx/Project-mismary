@@ -1,0 +1,513 @@
+{% extends 'layout/base.html' %}
+
+{% comment %}
+    BASE COMPARTIDA DE LOS REPORTES
+    Aquí vive el estilo (paleta MisMary), el encabezado y el filtro de fechas.
+    Cada reporte solo llena los bloques:
+        rep_titulo, rep_subtitulo, rep_filtro (opcional), rep_cuerpo
+{% endcomment %}
+
+{% block content %}
+
+<style>
+
+    /* ===== PALETA Y BASE (igual que el home) ===== */
+
+    :root {
+        --cafe-tostado:  #4A2C1B;
+        --terracota:     #9E3B27;
+        --naranja:       #FF6B35;
+        --naranja-hover: #E85A26;
+        --arena:         #E8DFC8;
+        --arena-suave:   #F5EFE3;
+        --marfil-bg:     #FCFAF7;
+        --blanco:        #FFFFFF;
+
+        --verde:         #2E7D32;
+        --verde-fondo:   #E8F5E9;
+        --rojo-fondo:    #FBE9E7;
+        --ambar:         #8A5A00;
+        --ambar-fondo:   #FFF4D6;
+
+        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+    }
+
+    body {
+        background-color: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding-bottom: 60px;
+    }
+
+    .wrap-mismary {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .wrap-mismary * {
+        box-sizing: border-box;
+    }
+
+    /* ===== ENCABEZADO ===== */
+
+    .encabezado {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .encabezado p {
+        margin: 4px 0 0 0;
+        font-size: 14px;
+        color: var(--terracota);
+    }
+
+    .acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    /* ===== BOTONES ===== */
+
+    .btn-mismary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--naranja);
+        color: #FFF;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: background 0.2s ease;
+    }
+
+    .btn-mismary:hover {
+        background: var(--terracota);
+    }
+
+    .btn-secundario {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        border-color: var(--arena);
+    }
+
+    .btn-secundario:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== FILTRO DE FECHAS ===== */
+
+    .filtro {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 20px 24px;
+        box-shadow: var(--sombra-suave);
+        margin-bottom: 26px;
+    }
+
+    .filtro form {
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .filtro label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--cafe-tostado);
+    }
+
+    .filtro input[type="date"] {
+        padding: 10px 16px;
+        border: 1px solid var(--arena);
+        border-radius: 999px;
+        background: var(--marfil-bg);
+        color: var(--cafe-tostado);
+        font-family: inherit;
+        font-size: 14px;
+    }
+
+    .filtro input[type="date"]:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+    }
+
+    .atajos {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px dashed var(--arena);
+        font-size: 12px;
+        color: #6C5243;
+    }
+
+    .atajo {
+        padding: 5px 14px;
+        border-radius: 999px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        color: var(--cafe-tostado);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .atajo:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    /* ===== TARJETAS DE RESUMEN ===== */
+
+    .resumen {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .stat {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        padding: 20px 22px;
+        box-shadow: var(--sombra-suave);
+    }
+
+    .stat .etiqueta {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #6C5243;
+        margin-bottom: 8px;
+    }
+
+    .stat .valor {
+        display: block;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+        overflow-wrap: anywhere;
+    }
+
+    .stat .nota {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        color: #8A7364;
+        line-height: 1.4;
+    }
+
+    .stat-positivo {
+        background: var(--verde-fondo);
+        border-color: #C7E4C5;
+    }
+
+    .stat-positivo .valor {
+        color: var(--verde);
+    }
+
+    .stat-negativo {
+        background: var(--rojo-fondo);
+        border-color: #F1C8BD;
+    }
+
+    .stat-negativo .valor {
+        color: var(--terracota);
+    }
+
+    .stat-aparte {
+        background: var(--arena-suave);
+        border-style: dashed;
+        box-shadow: none;
+    }
+
+    /* ===== SECCIONES Y TABLAS ===== */
+
+    .resultados-barra {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 8px 0 12px;
+        flex-wrap: wrap;
+    }
+
+    .resultados-barra h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--cafe-tostado);
+    }
+
+    .chip-mismary {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+    }
+
+    .tabla-caja {
+        background: var(--blanco);
+        border: 1px solid var(--arena);
+        border-radius: 24px;
+        box-shadow: var(--sombra-suave);
+        overflow-x: auto;
+        margin-bottom: 28px;
+    }
+
+    .tabla-reporte {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .tabla-reporte thead th {
+        background: var(--arena-suave);
+        color: var(--cafe-tostado);
+        text-align: left;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--arena);
+        white-space: nowrap;
+    }
+
+    .tabla-reporte tbody td,
+    .tabla-reporte tfoot td {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--arena-suave);
+        vertical-align: middle;
+    }
+
+    .tabla-reporte tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .tabla-reporte tbody tr:hover {
+        background: var(--marfil-bg);
+    }
+
+    .tabla-reporte tfoot td {
+        background: var(--arena-suave);
+        border-top: 1px solid var(--arena);
+        border-bottom: none;
+        font-weight: 700;
+    }
+
+    .col-numero {
+        text-align: right !important;
+        white-space: nowrap;
+    }
+
+    .nombre-fuerte {
+        font-weight: 700;
+    }
+
+    .sin-registros {
+        padding: 40px 20px !important;
+        text-align: center;
+        color: #6C5243;
+        font-size: 14px;
+    }
+
+    .monto-positivo { color: var(--verde); font-weight: 700; }
+    .monto-negativo { color: var(--terracota); font-weight: 700; }
+
+    .chip-tipo {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid var(--arena);
+        background: var(--arena-suave);
+        color: var(--terracota);
+    }
+
+    .chip-pedido {
+        background: var(--verde-fondo);
+        border-color: #C7E4C5;
+        color: var(--verde);
+    }
+
+    .chip-pendiente {
+        background: var(--ambar-fondo);
+        border-color: #F1DEA8;
+        color: var(--ambar);
+    }
+
+    .link-fila {
+        color: var(--terracota);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .link-fila:hover {
+        text-decoration: underline;
+    }
+
+    /* ===== AVISOS ===== */
+
+    .aviso {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 14px 18px;
+        margin-bottom: 28px;
+        background: var(--arena-suave);
+        border: 1px dashed var(--arena);
+        border-radius: 18px;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #6C5243;
+    }
+
+    .aviso strong {
+        color: var(--cafe-tostado);
+    }
+
+    /* ===== RESPONSIVO ===== */
+
+    @media (max-width: 700px) {
+        .encabezado {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .filtro form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filtro input[type="date"],
+        .filtro .btn-mismary {
+            width: 100%;
+        }
+
+        .tabla-reporte thead th,
+        .tabla-reporte tbody td,
+        .tabla-reporte tfoot td {
+            padding: 12px 14px;
+        }
+
+        .stat .valor {
+            font-size: 22px;
+        }
+    }
+
+    /* ===== IMPRESIÓN ===== */
+
+    @media print {
+        .filtro,
+        .acciones,
+        .no-imprimir {
+            display: none !important;
+        }
+
+        .wrap-mismary {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .stat,
+        .tabla-caja {
+            box-shadow: none;
+        }
+    }
+
+</style>
+
+
+<div class="wrap-mismary">
+
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+        <div>
+            <h1>{% block rep_titulo %}{% endblock %}</h1>
+            <p>{% block rep_subtitulo %}{% endblock %}</p>
+        </div>
+
+        <div class="acciones">
+            <button type="button" onclick="window.print()" class="btn-mismary">
+                🖨️ Imprimir
+            </button>
+
+            <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">
+                ← Volver a reportes
+            </a>
+        </div>
+    </div>
+
+    <!-- FILTRO DE FECHAS -->
+    {% block rep_filtro %}
+        <section class="filtro">
+            <form method="GET">
+
+                <div>
+                    <label for="fecha_inicio">Desde</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio }}">
+                </div>
+
+                <div>
+                    <label for="fecha_fin">Hasta</label>
+                    <input type="date" id="fecha_fin" name="fecha_fin" value="{{ fecha_fin }}">
+                </div>
+
+                <button type="submit" class="btn-mismary">Filtrar</button>
+
+                <a href="?" class="btn-mismary btn-secundario">Ver todo</a>
+
+            </form>
+
+            <div class="atajos">
+                <span>Atajos:</span>
+                {% for etiqueta, desde, hasta in atajos %}
+                    <a class="atajo" href="?fecha_inicio={{ desde }}&fecha_fin={{ hasta }}">{{ etiqueta }}</a>
+                {% endfor %}
+            </div>
+        </section>
+    {% endblock %}
+
+    <!-- CONTENIDO DE CADA REPORTE -->
+    {% block rep_cuerpo %}{% endblock %}
+
+</div>
+
+{% endblock %}
