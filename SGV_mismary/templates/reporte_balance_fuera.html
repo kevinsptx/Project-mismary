@@ -1,0 +1,38 @@
+{% extends 'layout/reportes_base.html' %}
+
+{% block title %}
+Balance | MisMary
+{% endblock %}
+
+{% block rep_titulo %}Fuera del balance 🕓{% endblock %}
+
+{% block rep_subtitulo %}Lo que todavía no mueve plata{% endblock %}
+
+{% block rep_cuerpo %}    <!-- LO QUE NO ENTRA AL BALANCE -->
+    <div class="resultados-barra">
+        <h2>Fuera del balance (todavía no se mueve plata)</h2>
+    </div>
+
+    <section class="resumen">
+
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Por cobrar a clientes (hoy)</span>
+            <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
+            <span class="nota">Entra al balance cuando el cliente pague. <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver detalle</a></span>
+        </div>
+
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Pedidos por recibir (hoy)</span>
+            <span class="valor">$ {{ gastos.total_pendientes|floatformat:"0g" }}</span>
+            <span class="nota">Entra a costos cuando lo marques como Recibido. <a class="link-fila no-imprimir" href="{% url 'reporte_gastos' %}">Ver detalle</a></span>
+        </div>
+
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Vendido en el período</span>
+            <span class="valor">$ {{ ingresos.total_vendido|floatformat:"0g" }}</span>
+            <span class="nota">Ventas registradas, hayan pagado o no.</span>
+        </div>
+
+    </section>
+
+{% endblock %}

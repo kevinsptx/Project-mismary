@@ -115,6 +115,11 @@
         <strong>Fecha de solicitud:</strong>
         {{ reembolso.fecha_solicitud|date:"d/m/Y H:i" }}<br>
 
+        <strong>Reembolsado por:</strong>
+        {% if reembolso.registrado_por %}
+            {{ reembolso.registrado_por.get_full_name|default:reembolso.registrado_por.username }}
+        {% else %}No registrado{% endif %}<br>
+
         <strong>Fecha de devolución:</strong>
         {% if reembolso.fecha_devolucion %}
             {{ reembolso.fecha_devolucion|date:"d/m/Y H:i" }}
@@ -129,7 +134,27 @@
         {% endif %}
     </div>
 
-    {% if reembolso.estado != "Devuelto" and perms.SGV_mismary.change_reembolso %}
+    <h3>Productos reembolsados</h3>
+    <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+        <thead>
+            <tr style="background:#F5EFE3; text-align:left;">
+                <th style="padding:8px;">Producto</th>
+                <th style="padding:8px;">Cantidad</th>
+                <th style="padding:8px;">Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in detalles %}
+                <tr style="border-top:1px solid #F5EFE3;">
+                    <td style="padding:8px;">{{ d.producto.nombre }}</td>
+                    <td style="padding:8px;">{{ d.cantidad }}</td>
+                    <td style="padding:8px;">$ {{ d.precio|floatformat:0|intcomma }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if reembolso.estado != "Devuelto" and reembolso.estado != "No aplica" and perms.SGV_mismary.change_reembolso %}
         <p class="aviso-detalle">
             Confirma que el dinero se haya devuelto realmente al cliente
             antes de registrar esta operación como completada.
@@ -185,7 +210,7 @@
         </form>
     {% else %}
         <p class="aviso-detalle">
-            Esta devolución ya figura como completada.
+            {% if reembolso.estado == 'No aplica' %}No hubo dinero que devolver en esta venta.{% else %}Esta devolución ya figura como completada.{% endif %}
         </p>
 
         <div class="acciones-detalle">

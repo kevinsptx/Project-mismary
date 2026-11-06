@@ -1,0 +1,69 @@
+{% extends 'layout/reportes_base.html' %}
+
+{% block title %}
+Ingresos | MisMary
+{% endblock %}
+
+{% block rep_titulo %}Ingresos por día 📅{% endblock %}
+
+{% block rep_subtitulo %}Dinero recibido cada día, menos devoluciones{% endblock %}
+
+{% block rep_cuerpo %}    <!-- INGRESOS POR DÍA -->
+    <div class="resultados-barra">
+        <h2>Ingresos por día</h2>
+
+        <span class="chip-mismary">
+            {{ ingresos.filas|length }} día{{ ingresos.filas|length|pluralize }}
+        </span>
+    </div>
+
+    <div class="tabla-caja">
+        <table class="tabla-reporte">
+
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th class="col-numero">Recibido</th>
+                    <th class="col-numero">Devoluciones</th>
+                    <th class="col-numero">Ingreso neto</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for fila in ingresos.filas %}
+                    <tr>
+                        <td class="nombre-fuerte">{{ fila.fecha|date:"d/m/Y" }}</td>
+                        <td class="col-numero">$ {{ fila.recibido|floatformat:"0g" }}</td>
+                        <td class="col-numero">
+                            {% if fila.devuelto > 0 %}
+                                <span class="monto-negativo">- $ {{ fila.devuelto|floatformat:"0g" }}</span>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td class="col-numero monto-positivo">$ {{ fila.neto|floatformat:"0g" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="sin-registros">
+                            No hay dinero recibido en ese rango de fechas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+            {% if ingresos.filas %}
+                <tfoot>
+                    <tr>
+                        <td>Total</td>
+                        <td class="col-numero">$ {{ ingresos.total_recibido|floatformat:"0g" }}</td>
+                        <td class="col-numero">$ {{ ingresos.total_devuelto|floatformat:"0g" }}</td>
+                        <td class="col-numero">$ {{ ingresos.total_neto|floatformat:"0g" }}</td>
+                    </tr>
+                </tfoot>
+            {% endif %}
+
+        </table>
+    </div>
+
+{% endblock %}

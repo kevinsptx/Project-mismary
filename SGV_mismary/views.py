@@ -10,6 +10,7 @@ from django.db import transaction
 from django.db.models import Sum, Count, Q
 from django.db.models.functions import Coalesce, TruncDate
 from django.http import HttpResponse
+from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -17,7 +18,7 @@ from django.views.decorators.http import require_POST
 from .forms import ProductoForm, ProductoRegistroForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
 from .models import Cliente, Venta, Abono, Deuda, Categoria,Producto, DetalleVenta, Gasto, Pago,DetallePedido, Pedido, Proveedor, Reembolso
 
-METODOS_VALIDOS = ['Efectivo', 'Transferencia', 'Otro']
+METODOS_VALIDOS = ['Efectivo', 'Nequi', 'Daviplata', 'Transferencia', 'Otro']
 ESTADOS_PEDIDO = ['Pendiente', 'Recibido', 'Cancelado']
 
 
@@ -209,7 +210,12 @@ def cliente_historial(request, id):
         estado='Pendiente'
     ).aggregate(total=Sum('saldo'))['total'] or 0
 
+    ver = request.GET.get('ver', 'ventas')
+    if ver not in ('ventas', 'abonos'):
+        ver = 'ventas'
+
     return render(request, 'cliente_historial.html', {
+        'ver': ver,
         'cliente': cliente,
         'ventas': ventas,
         'abonos': abonos,
@@ -512,6 +518,8 @@ def list_venta(request):
     else:
         ventas = Venta.objects.all()
 
+    ventas = ventas.select_related('cliente', 'reembolso')
+
     return render(request, 'list_ventas.html', {
         'ventas': ventas,
         'buscar': buscar
@@ -784,18 +792,58 @@ def eliminar_pendiente(request, deuda_id):
 @login_required
 @requiere_permisos('add_gasto')
 def registrar_gasto(request):
-    """Registra un gasto."""
+    """Registra un gasto hormiga."""
     if request.method == 'POST':
         form = GastoForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            gasto = form.save(commit=False)
+            gasto.tipo = 'Hormiga'
+            gasto.save()
             messages.success(request, 'Gasto registrado correctamente.')
-            return redirect('reporte_gastos')
+            return redirect('reporte_gastos_hormiga')
     else:
-        form = GastoForm()
+        form = GastoForm(initial={'fecha': timezone.localdate()})
 
     return render(request, 'registrar_gasto.html', {'form': form})
+
+
+@login_required
+@requiere_permisos('change_gasto')
+def editar_gasto(request, gasto_id):
+    """Edita un gasto hormiga."""
+    gasto = get_object_or_404(Gasto.objects.exclude(tipo='Pedido'), pk=gasto_id)
+
+    if request.method == 'POST':
+        form = GastoForm(request.POST, instance=gasto)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Gasto actualizado correctamente.')
+            return redirect('reporte_gastos_hormiga')
+    else:
+        form = GastoForm(instance=gasto)
+
+    return render(request, 'registrar_gasto.html', {
+        'form': form,
+        'titulo': 'Editar gasto',
+        'subtitulo': 'Corrige los datos del gasto',
+        'boton': 'Guardar cambios',
+    })
+
+
+@login_required
+@requiere_permisos('delete_gasto')
+def eliminar_gasto(request, gasto_id):
+    """Elimina un gasto hormiga (pide confirmación una vez)."""
+    gasto = get_object_or_404(Gasto.objects.exclude(tipo='Pedido'), pk=gasto_id)
+
+    if request.method == 'POST':
+        gasto.delete()
+        messages.success(request, 'Gasto eliminado correctamente.')
+        return redirect('reporte_gastos_hormiga')
+
+    return render(request, 'eliminar_gasto.html', {'gasto': gasto})
 
 
 # ============================================================
@@ -1050,6 +1098,41 @@ def datos_clientes_deuda():
     }
 
 
+# ---------- Pestañas: cada una es una página aparte ----------
+
+PESTANAS_REPORTE = {
+    'ingresos': [
+        ('Resumen', 'reporte_ingresos', 'resumen'),
+        ('Por día', 'reporte_ingresos_dias', 'dias'),
+        ('Por forma de pago', 'reporte_ingresos_pagos', 'pagos'),
+    ],
+    'costos': [
+        ('Resumen', 'reporte_gastos', 'resumen'),
+        ('Detalle', 'reporte_gastos_detalle', 'detalle'),
+        ('Gastos hormiga', 'reporte_gastos_hormiga', 'hormiga'),
+        ('Por recibir', 'reporte_gastos_pendientes', 'pendientes'),
+    ],
+    'balance': [
+        ('Balance', 'reporte_balance', 'balance'),
+        ('Fuera del balance', 'reporte_balance_fuera', 'fuera'),
+    ],
+}
+
+
+def contexto_pestanas(request, grupo, activa):
+    """Pestañas del reporte; conservan las fechas del filtro al cambiar de página."""
+    consulta = request.GET.urlencode()
+    pestanas = []
+
+    for etiqueta, nombre, clave in PESTANAS_REPORTE[grupo]:
+        url = reverse(nombre)
+        if consulta:
+            url += '?' + consulta
+        pestanas.append((etiqueta, url, clave))
+
+    return {'pestanas': pestanas, 'pestana_activa': activa}
+
+
 # ---------- Pantallas de reportes ----------
 
 @login_required
@@ -1059,10 +1142,7 @@ def reportes(request):
     return render(request, 'reportes.html')
 
 
-@login_required
-@requiere_permisos('view_pago', 'view_abono')
-def reporte_ingresos(request):
-    """Ingresos: solo el dinero que ya entró, menos devoluciones."""
+def _reporte_ingresos(request, plantilla, activa):
     inicio, fin = rango_fechas(request)
 
     contexto = {
@@ -1070,20 +1150,80 @@ def reporte_ingresos(request):
         'por_cobrar': datos_clientes_deuda()['total_saldo'],
     }
     contexto.update(contexto_filtro(inicio, fin))
+    contexto.update(contexto_pestanas(request, 'ingresos', activa))
 
-    return render(request, 'reporte_ingresos.html', contexto)
+    return render(request, plantilla, contexto)
+
+
+@login_required
+@requiere_permisos('view_pago', 'view_abono')
+def reporte_ingresos(request):
+    """Ingresos: resumen del dinero que ya entró."""
+    return _reporte_ingresos(request, 'reporte_ingresos.html', 'resumen')
+
+
+@login_required
+@requiere_permisos('view_pago', 'view_abono')
+def reporte_ingresos_dias(request):
+    """Ingresos día por día."""
+    return _reporte_ingresos(request, 'reporte_ingresos_dias.html', 'dias')
+
+
+@login_required
+@requiere_permisos('view_pago', 'view_abono')
+def reporte_ingresos_pagos(request):
+    """Ingresos por forma de pago."""
+    return _reporte_ingresos(request, 'reporte_ingresos_pagos.html', 'pagos')
+
+
+def _reporte_gastos(request, plantilla, activa):
+    inicio, fin = rango_fechas(request)
+
+    contexto = {'gastos': datos_gastos(inicio, fin)}
+    contexto.update(contexto_filtro(inicio, fin))
+    contexto.update(contexto_pestanas(request, 'costos', activa))
+
+    return render(request, plantilla, contexto)
 
 
 @login_required
 @requiere_permisos('view_gasto')
 def reporte_gastos(request):
-    """Costos: pedidos recibidos + gastos hormiga."""
+    """Costos: resumen."""
+    return _reporte_gastos(request, 'reporte_gastos.html', 'resumen')
+
+
+@login_required
+@requiere_permisos('view_gasto')
+def reporte_gastos_detalle(request):
+    """Costos: cada movimiento del período."""
+    return _reporte_gastos(request, 'reporte_gastos_detalle.html', 'detalle')
+
+
+@login_required
+@requiere_permisos('view_gasto')
+def reporte_gastos_pendientes(request):
+    """Pedidos que todavía no llegan."""
+    return _reporte_gastos(request, 'reporte_gastos_pendientes.html', 'pendientes')
+
+
+@login_required
+@requiere_permisos('view_gasto')
+def reporte_gastos_hormiga(request):
+    """Gastos hormiga: lista para editar o eliminar."""
     inicio, fin = rango_fechas(request)
 
-    contexto = {'gastos': datos_gastos(inicio, fin)}
-    contexto.update(contexto_filtro(inicio, fin))
+    gastos = filtrar_por_fecha(
+        Gasto.objects.exclude(tipo='Pedido').order_by('-fecha', '-id'),
+        inicio, fin
+    )
+    total = gastos.aggregate(t=Sum('valor'))['t'] or Decimal('0')
 
-    return render(request, 'reporte_gastos.html', contexto)
+    contexto = {'gastos': gastos, 'total': total}
+    contexto.update(contexto_filtro(inicio, fin))
+    contexto.update(contexto_pestanas(request, 'costos', 'hormiga'))
+
+    return render(request, 'reporte_gastos_hormiga.html', contexto)
 
 
 @login_required
@@ -1095,9 +1235,7 @@ def reporte_clientes_deuda(request):
     })
 
 
-@login_required
-@requiere_permisos('view_pago', 'view_abono', 'view_gasto')
-def reporte_balance(request):
+def _reporte_balance(request, plantilla, activa):
     """Balance = ingresos netos recibidos - costos."""
     inicio, fin = rango_fechas(request)
 
@@ -1111,8 +1249,21 @@ def reporte_balance(request):
         'por_cobrar': datos_clientes_deuda()['total_saldo'],
     }
     contexto.update(contexto_filtro(inicio, fin))
+    contexto.update(contexto_pestanas(request, 'balance', activa))
 
-    return render(request, 'reporte_balance.html', contexto)
+    return render(request, plantilla, contexto)
+
+
+@login_required
+@requiere_permisos('view_pago', 'view_abono', 'view_gasto')
+def reporte_balance(request):
+    return _reporte_balance(request, 'reporte_balance.html', 'balance')
+
+
+@login_required
+@requiere_permisos('view_pago', 'view_abono', 'view_gasto')
+def reporte_balance_fuera(request):
+    return _reporte_balance(request, 'reporte_balance_fuera.html', 'fuera')
 
 
 @login_required
@@ -1533,25 +1684,46 @@ def proveedor_delete(request, proveedor_id):
 # 12. CANCELACIÓN DE VENTAS Y REEMBOLSOS
 # ============================================================
 
-def crear_reembolso_automatico(venta):
+def dinero_recibido_de_venta(venta):
+    """Dinero que MisMary realmente recibió por esta venta (lo que se devuelve)."""
+    total = venta.pagos.aggregate(t=Sum('valor'))['t']
+    return total or Decimal('0')
 
+
+def crear_reembolso_automatico(venta, usuario=None, metodo=None):
+    """
+    Crea el reembolso ya HECHO (una sola confirmación).
+    Devuelve lo que el cliente realmente pagó y deja registrado
+    quién lo hizo y cuándo.
+    """
     if venta.estado != 'Cancelada':
         return None, False
 
-    metodo_pago = getattr(venta, 'forma_pago', 'Otro') or 'Otro'
+    if metodo not in METODOS_VALIDOS:
+        metodo = getattr(venta, 'forma_pago', 'Otro') or 'Otro'
+        if metodo not in METODOS_VALIDOS:
+            metodo = 'Otro'
 
-    if metodo_pago not in METODOS_VALIDOS:
-        metodo_pago = 'Otro'
+    monto = dinero_recibido_de_venta(venta)
+    ahora = timezone.now()
 
+    if monto > 0:
+        estado, fecha_dev = 'Devuelto', ahora
+        obs = 'Reembolso realizado al cancelar la venta.'
+    else:
+        estado, fecha_dev = 'No aplica', None
+        obs = 'El cliente no había pagado nada, no hay dinero que devolver.'
 
     reembolso, creado = Reembolso.objects.get_or_create(
         venta=venta,
         defaults={
             'motivo': 'Reembolso generado por cancelación de venta',
-            'monto': venta.valor_total,
-            'metodo': metodo_pago,
-            'estado': 'Solicitado',
-            'observaciones': 'Registro generado automáticamente al cancelar la venta.',
+            'monto': monto,
+            'metodo': metodo,
+            'estado': estado,
+            'fecha_devolucion': fecha_dev,
+            'observaciones': obs,
+            'registrado_por': usuario,
         }
     )
 
@@ -1561,33 +1733,56 @@ def crear_reembolso_automatico(venta):
 @login_required
 @requiere_permisos('change_venta')
 def cancelar_venta(request, venta_id):
-    venta = get_object_or_404(Venta, pk=venta_id)
+    venta = get_object_or_404(
+        Venta.objects.select_related('cliente'), pk=venta_id
+    )
+
+    if venta.estado == 'Cancelada':
+        messages.info(request, f'La venta #{venta.id} ya estaba reembolsada.')
+        reembolso = Reembolso.objects.filter(venta=venta).first()
+        if reembolso:
+            return redirect('details_reembolso', reembolso_id=reembolso.id)
+        return redirect('list_venta')
 
     if request.method == 'GET':
-        return render(request, 'cancelar_venta.html', {'venta': venta})
+        metodo_sugerido = venta.forma_pago if venta.forma_pago in METODOS_VALIDOS else 'Otro'
+        return render(request, 'cancelar_venta.html', {
+            'venta': venta,
+            'detalles': venta.detalles.select_related('producto'),
+            'monto_devolver': dinero_recibido_de_venta(venta),
+            'metodos': METODOS_VALIDOS,
+            'metodo_sugerido': metodo_sugerido,
+        })
 
     if request.method != 'POST':
         return redirect('list_venta')
 
+    metodo = request.POST.get('metodo', '')
+    if metodo not in METODOS_VALIDOS:
+        messages.error(request, 'Selecciona la forma en que se devuelve el dinero.')
+        return redirect('cancelar_venta', venta_id=venta.id)
+
     with transaction.atomic():
-        if venta.estado != 'Cancelada':
-            venta.estado = 'Cancelada'
-            venta.save(update_fields=['estado'])
+        venta.estado = 'Cancelada'
+        venta.save(update_fields=['estado'])
+        reembolso, creado = crear_reembolso_automatico(
+            venta, usuario=request.user, metodo=metodo
+        )
 
-        reembolso, creado = crear_reembolso_automatico(venta)
-
-    if creado:
+    if reembolso.estado == 'Devuelto':
         messages.success(
             request,
-            f'La venta #{venta.id} fue cancelada y su reembolso quedó registrado.'
+            f'Reembolso realizado: se devolvieron $ {reembolso.monto:,.0f} '
+            f'de la venta #{venta.id}.'
         )
     else:
-        messages.info(
+        messages.success(
             request,
-            f'La venta #{venta.id} ya estaba cancelada o ya tenía un reembolso.'
+            f'La venta #{venta.id} fue cancelada. El cliente no había pagado nada, '
+            f'así que no hubo dinero que devolver.'
         )
 
-    return redirect('list_venta')
+    return redirect('details_reembolso', reembolso_id=reembolso.id)
 
 
 @login_required
@@ -1595,7 +1790,8 @@ def cancelar_venta(request, venta_id):
 def lista_reembolsos(request):
     reembolsos = (
         Reembolso.objects
-        .select_related('venta', 'venta__cliente')
+        .select_related('venta', 'venta__cliente', 'registrado_por')
+        .prefetch_related('venta__detalles__producto')
         .order_by('-fecha_solicitud')
     )
 
@@ -1656,11 +1852,14 @@ def solicitar_reembolso(request, venta_id):
 def details_reembolso(request, reembolso_id):
 
     reembolso = get_object_or_404(
-        Reembolso.objects.select_related('venta', 'venta__cliente'),
+        Reembolso.objects.select_related('venta', 'venta__cliente', 'registrado_por'),
         pk=reembolso_id
     )
 
-    return render(request, 'details_reembolso.html', {'reembolso': reembolso})
+    return render(request, 'details_reembolso.html', {
+        'reembolso': reembolso,
+        'detalles': reembolso.venta.detalles.select_related('producto'),
+    })
 
 
 @login_required
@@ -1694,7 +1893,8 @@ def registrar_devolucion(request, reembolso_id):
     reembolso.metodo = metodo
     reembolso.estado = 'Devuelto'
     reembolso.fecha_devolucion = timezone.now()
-    reembolso.save(update_fields=['metodo', 'estado', 'fecha_devolucion'])
+    reembolso.registrado_por = request.user
+    reembolso.save(update_fields=['metodo', 'estado', 'fecha_devolucion', 'registrado_por'])
 
     messages.success(request, 'La devolución quedó registrada.')
     return redirect('details_reembolso', reembolso_id=reembolso.id)

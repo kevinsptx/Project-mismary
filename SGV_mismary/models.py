@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
@@ -302,6 +303,8 @@ class Reembolso(models.Model):
 
     METODOS = [
         ("Efectivo", "Efectivo"),
+        ("Nequi", "Nequi"),
+        ("Daviplata", "Daviplata"),
         ("Transferencia", "Transferencia"),
         ("Otro", "Otro"),
     ]
@@ -345,6 +348,15 @@ class Reembolso(models.Model):
 
     observaciones = models.TextField(
         blank=True
+    )
+
+    registrado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="reembolsos_registrados",
+        verbose_name="Quién hizo el reembolso"
     )
 
     def __str__(self):

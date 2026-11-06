@@ -181,6 +181,7 @@ Ventas | MisMary
 
     .tabla-ventas {
         width: 100%;
+        table-layout: auto;
         border-collapse: collapse;
         font-size: 14px;
     }
@@ -244,7 +245,8 @@ Ventas | MisMary
     .col-acciones {
         text-align: right !important;
         white-space: nowrap;
-        min-width: 260px;
+        width: 300px;
+        min-width: 300px;
     }
 
     .grupo-botones {
@@ -257,6 +259,8 @@ Ventas | MisMary
     }
 
     .btn-tabla {
+        flex: 0 0 auto;
+        width: 130px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -293,6 +297,9 @@ Ventas | MisMary
     }
 
     .estado-cancelada {
+        flex: 0 0 auto;
+        width: 130px;
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -464,9 +471,14 @@ Ventas | MisMary
                                         </a>
                                     {% endif %}
                                 {% else %}
-                                    <span class="estado-cancelada">
-                                        Reembolsada
-                                    </span>
+                                    {% if venta.reembolso %}
+                                        <a href="{% url 'details_reembolso' venta.reembolso.id %}"
+                                           class="estado-cancelada">
+                                            Reembolsada
+                                        </a>
+                                    {% else %}
+                                        <span class="estado-cancelada">Reembolsada</span>
+                                    {% endif %}
                                 {% endif %}
 
                             </div>

@@ -1,0 +1,76 @@
+{% extends 'layout/reportes_base.html' %}
+
+{% block title %}
+Costos | MisMary
+{% endblock %}
+
+{% block rep_titulo %}Detalle de costos 📋{% endblock %}
+
+{% block rep_subtitulo %}Cada costo del período, uno por uno{% endblock %}
+
+{% block rep_cuerpo %}    <!-- COSTOS DETALLADOS -->
+    <div class="resultados-barra">
+        <h2>Costos del período</h2>
+
+        <span class="chip-mismary">
+            {{ gastos.movimientos|length }} registro{{ gastos.movimientos|length|pluralize }}
+        </span>
+    </div>
+
+    <div class="tabla-caja">
+        <table class="tabla-reporte">
+
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Concepto</th>
+                    <th class="col-numero">Valor</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for mov in gastos.movimientos %}
+                    <tr>
+                        <td class="nombre-fuerte">{{ mov.fecha|date:"d/m/Y" }}</td>
+
+                        <td>
+                            {% if mov.tipo == 'Pedido' %}
+                                <span class="chip-tipo chip-pedido">Pedido recibido</span>
+                            {% else %}
+                                <span class="chip-tipo">Hormiga</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if mov.pedido_id %}
+                                <a class="link-fila" href="{% url 'pedido_details' mov.pedido_id %}">{{ mov.concepto }}</a>
+                            {% else %}
+                                {{ mov.concepto }}
+                            {% endif %}
+                        </td>
+
+                        <td class="col-numero">$ {{ mov.valor|floatformat:"0g" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="sin-registros">
+                            No hay costos en ese rango de fechas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+            {% if gastos.movimientos %}
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total de costos</td>
+                        <td class="col-numero">$ {{ gastos.total|floatformat:"0g" }}</td>
+                    </tr>
+                </tfoot>
+            {% endif %}
+
+        </table>
+    </div>
+
+{% endblock %}

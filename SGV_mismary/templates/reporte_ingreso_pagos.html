@@ -1,0 +1,46 @@
+{% extends 'layout/reportes_base.html' %}
+
+{% block title %}
+Ingresos | MisMary
+{% endblock %}
+
+{% block rep_titulo %}Ingresos por forma de pago 💳{% endblock %}
+
+{% block rep_subtitulo %}Efectivo, Nequi, Daviplata y transferencia{% endblock %}
+
+{% block rep_cuerpo %}    <!-- POR FORMA DE PAGO -->
+    {% if ingresos.por_forma_pago %}
+        <div class="resultados-barra">
+            <h2>Dinero recibido por forma de pago</h2>
+        </div>
+
+        <div class="tabla-caja">
+            <table class="tabla-reporte">
+
+                <thead>
+                    <tr>
+                        <th>Forma de pago</th>
+                        <th class="col-numero">Pagos</th>
+                        <th class="col-numero">Total recibido</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for fila in ingresos.por_forma_pago %}
+                        <tr>
+                            <td class="nombre-fuerte">{{ fila.forma_pago }}</td>
+                            <td class="col-numero">{{ fila.cantidad }}</td>
+                            <td class="col-numero">$ {{ fila.total|floatformat:"0g" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    {% endif %}
+
+
+    {% if not ingresos.por_forma_pago %}
+        <div class="tabla-caja"><p class="sin-registros">No hay dinero recibido en ese rango de fechas.</p></div>
+    {% endif %}
+{% endblock %}

@@ -331,6 +331,13 @@ Historial Cliente | MisMary
         </div>
     </div>
 
+    <!-- PESTAÑAS -->
+    <nav style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;">
+        <a href="?ver=ventas" class="btn-mismary {% if ver != 'ventas' %}btn-secundario{% endif %}">🛒 Ventas ({{ ventas|length }})</a>
+        <a href="?ver=abonos" class="btn-mismary {% if ver != 'abonos' %}btn-secundario{% endif %}">💵 Abonos ({{ abonos|length }})</a>
+    </nav>
+
+    {% if ver == 'ventas' %}
     <!-- VENTAS -->
     <div class="seccion">
         <div class="resultados-barra">
@@ -373,6 +380,9 @@ Historial Cliente | MisMary
         </div>
     </div>
 
+    {% endif %}
+
+    {% if ver == 'abonos' %}
     <!-- ABONOS -->
     <div class="seccion">
         <div class="resultados-barra">
@@ -410,6 +420,7 @@ Historial Cliente | MisMary
             </table>
         </div>
     </div>
+    {% endif %}
 
 </div>
 

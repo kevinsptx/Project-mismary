@@ -207,8 +207,8 @@ Registrar gasto | MisMary
 
     <!-- ENCABEZADO -->
     <div class="encabezado">
-        <h1>Registrar gasto 🧾</h1>
-        <p>Registra una salida de dinero del negocio</p>
+        <h1>{{ titulo|default:'Registrar gasto' }} 🧾</h1>
+        <p>{{ subtitulo|default:'Registra una salida de dinero del negocio' }}</p>
     </div>
 
     <!-- MENSAJES -->
@@ -235,20 +235,15 @@ Registrar gasto | MisMary
             {{ form.as_p }}
 
            <div class="acciones-form">
-    <button type="submit" class="btn-mismary">
-        🧾 Guardar gasto
-    </button>
+                <button type="submit" class="btn-mismary">
+                    🧾 {{ boton|default:'Guardar gasto' }}
+                </button>
 
-    <a href="{% url 'reporte_gastos' %}"
-       class="btn-mismary btn-secundario">
-        Cancelar
-    </a>
-
-    <a href="{% url 'reporte_gastos' %}"
-       class="btn-mismary btn-secundario">
-        ← Volver al reporte de gastos
-    </a>
-</div>
+                <a href="{% url 'reporte_gastos_hormiga' %}"
+                   class="btn-mismary btn-secundario">
+                    Cancelar
+                </a>
+            </div>
         </form>
 
     </div>

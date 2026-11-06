@@ -4,9 +4,9 @@
 Ingresos | MisMary
 {% endblock %}
 
-{% block rep_titulo %}Reporte de ingresos 💰{% endblock %}
+{% block rep_titulo %}Ingresos 💰{% endblock %}
 
-{% block rep_subtitulo %}Solo el dinero que ya entró, sin contar lo que los clientes todavía deben{% endblock %}
+{% block rep_subtitulo %}Resumen del dinero que ya recibiste{% endblock %}
 
 {% block rep_cuerpo %}
 
@@ -53,94 +53,5 @@ Ingresos | MisMary
             “Por cobrar” y entran a ingresos el día que el cliente los pague.
         </span>
     </div>
-
-    <!-- INGRESOS POR DÍA -->
-    <div class="resultados-barra">
-        <h2>Ingresos por día</h2>
-
-        <span class="chip-mismary">
-            {{ ingresos.filas|length }} día{{ ingresos.filas|length|pluralize }}
-        </span>
-    </div>
-
-    <div class="tabla-caja">
-        <table class="tabla-reporte">
-
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th class="col-numero">Recibido</th>
-                    <th class="col-numero">Devoluciones</th>
-                    <th class="col-numero">Ingreso neto</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for fila in ingresos.filas %}
-                    <tr>
-                        <td class="nombre-fuerte">{{ fila.fecha|date:"d/m/Y" }}</td>
-                        <td class="col-numero">$ {{ fila.recibido|floatformat:"0g" }}</td>
-                        <td class="col-numero">
-                            {% if fila.devuelto > 0 %}
-                                <span class="monto-negativo">- $ {{ fila.devuelto|floatformat:"0g" }}</span>
-                            {% else %}
-                                —
-                            {% endif %}
-                        </td>
-                        <td class="col-numero monto-positivo">$ {{ fila.neto|floatformat:"0g" }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="4" class="sin-registros">
-                            No hay dinero recibido en ese rango de fechas.
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-
-            {% if ingresos.filas %}
-                <tfoot>
-                    <tr>
-                        <td>Total</td>
-                        <td class="col-numero">$ {{ ingresos.total_recibido|floatformat:"0g" }}</td>
-                        <td class="col-numero">$ {{ ingresos.total_devuelto|floatformat:"0g" }}</td>
-                        <td class="col-numero">$ {{ ingresos.total_neto|floatformat:"0g" }}</td>
-                    </tr>
-                </tfoot>
-            {% endif %}
-
-        </table>
-    </div>
-
-    <!-- POR FORMA DE PAGO -->
-    {% if ingresos.por_forma_pago %}
-        <div class="resultados-barra">
-            <h2>Dinero recibido por forma de pago</h2>
-        </div>
-
-        <div class="tabla-caja">
-            <table class="tabla-reporte">
-
-                <thead>
-                    <tr>
-                        <th>Forma de pago</th>
-                        <th class="col-numero">Pagos</th>
-                        <th class="col-numero">Total recibido</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for fila in ingresos.por_forma_pago %}
-                        <tr>
-                            <td class="nombre-fuerte">{{ fila.forma_pago }}</td>
-                            <td class="col-numero">{{ fila.cantidad }}</td>
-                            <td class="col-numero">$ {{ fila.total|floatformat:"0g" }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-
-            </table>
-        </div>
-    {% endif %}
 
 {% endblock %}

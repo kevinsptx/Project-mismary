@@ -104,54 +104,71 @@ Cancelar venta | MisMary
             box-sizing: border-box;
         }
     }
+
+    .tabla-mini { width:100%; border-collapse:collapse; margin:10px 0 0; font-size:14px; }
+    .tabla-mini th { text-align:left; padding:6px 8px; background:#F5EFE3; }
+    .tabla-mini td { padding:6px 8px; border-top:1px solid #F5EFE3; }
+    .campo-metodo { display:block; margin:14px 0 6px; font-weight:600; }
+    .campo-metodo + select { width:100%; box-sizing:border-box; padding:10px 12px;
+        border:1px solid #E8DFC8; border-radius:12px; font:inherit; color:#4A2C1B; }
+    .monto-devolver { font-size:18px; font-weight:700; color:#9E3B27; }
 </style>
+
 
 <div class="cancelar-contenedor">
     <div class="cancelar-tarjeta">
 
-        <h1>Cancelar venta</h1>
+        <h1>Reembolsar venta</h1>
 
-        <p>
-            ¿Estás segura de que deseas cancelar esta venta?
-            Revisa la información antes de continuar.
-        </p>
+        <p>Revisa la información. Al confirmar, la venta se cancela y el reembolso queda hecho.</p>
+
+        {% if messages %}
+            {% for message in messages %}<p class="aviso">{{ message }}</p>{% endfor %}
+        {% endif %}
 
         <div class="dato-venta">
             <strong>Venta:</strong> #{{ venta.id }}<br>
-
-            <strong>Cliente:</strong>
-            {{ venta.cliente.nombre }}<br>
-
-            <strong>Valor total:</strong>
-            $ {{ venta.valor_total|floatformat:0|intcomma }}<br>
-
-            <strong>Fecha:</strong>
-            {{ venta.fecha }}<br>
-
-            <strong>Estado:</strong>
-            {{ venta.estado }}
+            <strong>Cliente:</strong> {{ venta.cliente.nombre }}<br>
+            <strong>Valor total:</strong> $ {{ venta.valor_total|floatformat:0|intcomma }}<br>
+            <strong>Fecha:</strong> {{ venta.fecha }}<br>
+            <strong>Dinero a devolver:</strong>
+            <span class="monto-devolver">$ {{ monto_devolver|floatformat:0|intcomma }}</span>
         </div>
+
+        <strong>Productos de la venta</strong>
+        <table class="tabla-mini">
+            <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th></tr></thead>
+            <tbody>
+            {% for d in detalles %}
+                <tr>
+                    <td>{{ d.producto.nombre }}</td>
+                    <td>{{ d.cantidad }}</td>
+                    <td>$ {{ d.precio|floatformat:0|intcomma }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
         <p class="aviso">
-            La venta quedará registrada como cancelada.
-            Esta acción no devuelve dinero automáticamente.
-            Si el cliente ya pagó, el reembolso debe gestionarse
-            por separado.
+            Se devuelve solo lo que el cliente ya pagó. Si no había pagado nada,
+            la venta se cancela sin devolver dinero.
         </p>
 
-        <div class="botones">
-            <form method="POST">
-                {% csrf_token %}
+        <form method="POST">
+            {% csrf_token %}
 
-                <button type="submit" class="btn-cancelar">
-                    Sí, cancelar venta
-                </button>
-            </form>
+            <label class="campo-metodo" for="metodo">Forma en que se devuelve el dinero</label>
+            <select id="metodo" name="metodo" required>
+                {% for m in metodos %}
+                    <option value="{{ m }}" {% if m == metodo_sugerido %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
 
-            <a href="{% url 'list_venta' %}" class="btn-volver">
-                Volver 
-            </a>
-        </div>
+            <div class="botones">
+                <button type="submit" class="btn-cancelar">Confirmar reembolso</button>
+                <a href="{% url 'list_venta' %}" class="btn-volver">Volver</a>
+            </div>
+        </form>
 
     </div>
 </div>

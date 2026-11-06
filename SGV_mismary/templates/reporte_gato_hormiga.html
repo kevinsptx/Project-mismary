@@ -1,0 +1,62 @@
+{% extends 'layout/reportes_base.html' %}
+
+{% block title %}
+Costos | MisMary
+{% endblock %}
+
+{% block rep_titulo %}Gastos hormiga 🐜{% endblock %}
+
+{% block rep_subtitulo %}Gastos pequeños registrados a mano. Aquí los puedes editar o eliminar{% endblock %}
+
+{% block rep_cuerpo %}
+    <div class="resumen">
+        <div class="stat stat-negativo">
+            <span class="etiqueta">Total gastos hormiga</span>
+            <span class="valor">$ {{ total|floatformat:"0g" }}</span>
+            <span class="nota">{{ gastos|length }} gasto{{ gastos|length|pluralize }} en el período</span>
+        </div>
+    </div>
+
+    {% if perms.SGV_mismary.add_gasto %}
+        <div class="acciones no-imprimir" style="margin-bottom:18px;">
+            <a href="{% url 'registrar_gasto' %}" class="btn-mismary">+ Registrar gasto</a>
+        </div>
+    {% endif %}
+
+    <div class="tabla-caja">
+        <table class="tabla-reporte">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th class="col-numero">Valor</th>
+                    <th class="col-numero no-imprimir">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for g in gastos %}
+                    <tr>
+                        <td class="nombre-fuerte">{{ g.fecha|date:"d/m/Y" }}</td>
+                        <td>{{ g.descripcion }}</td>
+                        <td class="col-numero">$ {{ g.valor|floatformat:"0g" }}</td>
+                        <td class="col-numero no-imprimir">
+                            {% if perms.SGV_mismary.change_gasto %}
+                                <a class="btn-mini" href="{% url 'editar_gasto' g.id %}">Editar</a>
+                            {% endif %}
+                            {% if perms.SGV_mismary.delete_gasto %}
+                                <a class="btn-mini btn-mini-peligro" href="{% url 'eliminar_gasto' g.id %}">Eliminar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="sin-registros">No hay gastos hormiga en ese rango de fechas.</td></tr>
+                {% endfor %}
+            </tbody>
+            {% if gastos %}
+                <tfoot>
+                    <tr><td colspan="2">Total</td><td class="col-numero">$ {{ total|floatformat:"0g" }}</td><td class="no-imprimir"></td></tr>
+                </tfoot>
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}

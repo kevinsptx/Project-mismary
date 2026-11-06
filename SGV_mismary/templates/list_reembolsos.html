@@ -1,4 +1,3 @@
-
 {% extends 'layout/base.html' %}
 {% load humanize %}
 
@@ -96,7 +95,7 @@
 <div class="reembolsos-contenedor">
     <div class="reembolsos-encabezado">
         <h1>Reembolsos</h1>
-        <p>Consulta los reembolsos de ventas canceladas y gestiona las devoluciones.</p>
+        <p>Consulta quién reembolsó, cuándo y qué productos.</p>
     </div>
 
     {% if messages %}
@@ -112,9 +111,11 @@
                     <th>Reembolso</th>
                     <th>Venta</th>
                     <th>Cliente</th>
+                    <th>Productos</th>
                     <th>Monto</th>
                     <th>Estado</th>
-                    <th>Fecha de solicitud</th>
+                    <th>Quién reembolsó</th>
+                    <th>Fecha</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -125,6 +126,11 @@
                         <td>#{{ reembolso.id }}</td>
                         <td>#{{ reembolso.venta.id }}</td>
                         <td>{{ reembolso.venta.cliente.nombre }}</td>
+                        <td>
+                            {% for d in reembolso.venta.detalles.all %}
+                                {{ d.producto.nombre }} (x{{ d.cantidad }}){% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
                         <td class="precio-reembolso">
                             $ {{ reembolso.monto|floatformat:0|intcomma }}
                         </td>
@@ -133,7 +139,12 @@
                                 {{ reembolso.estado }}
                             </span>
                         </td>
-                        <td>{{ reembolso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if reembolso.registrado_por %}
+                                {{ reembolso.registrado_por.get_full_name|default:reembolso.registrado_por.username }}
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>{{ reembolso.fecha_devolucion|default:reembolso.fecha_solicitud|date:"d/m/Y H:i" }}</td>
                         <td>
                             <a
                                 class="boton-reembolso"
@@ -144,7 +155,7 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="7" class="sin-resultados">
+                        <td colspan="9" class="sin-resultados">
                             Todavía no hay reembolsos registrados.
                         </td>
                     </tr>

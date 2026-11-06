@@ -1,41 +1,18 @@
 {% extends 'layout/reportes_base.html' %}
 
 {% block title %}
-Balance | MisMary
+Costos | MisMary
 {% endblock %}
 
-{% block rep_titulo %}Balance ⚖️{% endblock %}
+{% block rep_titulo %}Pedidos por recibir 📦{% endblock %}
 
-{% block rep_subtitulo %}Dinero que realmente entró menos dinero de pedidos que ya llegaron y gastos{% endblock %}
+{% block rep_subtitulo %}No cuentan como costo hasta que los marques como Recibidos{% endblock %}
 
-{% block rep_cuerpo %}
-
-    <!-- RESULTADO PRINCIPAL -->
-    <section class="resumen">
-
-        <div class="stat {% if balance >= 0 %}stat-positivo{% else %}stat-negativo{% endif %}">
-            <span class="etiqueta">{% if balance >= 0 %}Ganancia del período{% else %}Pérdida del período{% endif %}</span>
-            <span class="valor">{% if balance < 0 %}- {% endif %}$ {{ balance|floatformat:"0g"|cut:"-" }}</span>
-            <span class="nota">Ingresos netos recibidos menos costos</span>
-        </div>
-
-        <div class="stat">
-            <span class="etiqueta">Ingresos netos</span>
-            <span class="valor">$ {{ ingresos.total_neto|floatformat:"0g" }}</span>
-            <span class="nota">Dinero recibido menos devoluciones</span>
-        </div>
-
-        <div class="stat">
-            <span class="etiqueta">Costos</span>
-            <span class="valor">$ {{ gastos.total|floatformat:"0g" }}</span>
-            <span class="nota">Pedidos recibidos + gastos hormiga</span>
-        </div>
-
-    </section>
-
-    <!-- DETALLE DEL BALANCE -->
+{% block rep_cuerpo %}    <!-- PEDIDOS POR RECIBIR -->
     <div class="resultados-barra">
-        <h2>Cómo se calcula</h2>
+        <h2>Pedidos por recibir</h2>
+
+        <span class="chip-mismary">No cuentan como costo todavía</span>
     </div>
 
     <div class="tabla-caja">
@@ -43,82 +20,35 @@ Balance | MisMary
 
             <thead>
                 <tr>
-                    <th>Concepto</th>
+                    <th>Pedido</th>
+                    <th>Fecha del pedido</th>
+                    <th>Proveedor</th>
+                    <th>Estado</th>
                     <th class="col-numero">Valor</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td class="nombre-fuerte">Ingresos</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;&nbsp;Dinero recibido de clientes</td>
-                    <td class="col-numero">$ {{ ingresos.total_recibido|floatformat:"0g" }}</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;&nbsp;Devoluciones hechas</td>
-                    <td class="col-numero">- $ {{ ingresos.total_devuelto|floatformat:"0g" }}</td>
-                </tr>
-                <tr>
-                    <td class="nombre-fuerte">Ingresos netos</td>
-                    <td class="col-numero monto-positivo">$ {{ ingresos.total_neto|floatformat:"0g" }}</td>
-                </tr>
-
-                <tr>
-                    <td class="nombre-fuerte">Costos</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;&nbsp;Pedidos recibidos</td>
-                    <td class="col-numero">$ {{ gastos.total_pedidos|floatformat:"0g" }}</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;&nbsp;Gastos hormiga</td>
-                    <td class="col-numero">$ {{ gastos.total_hormiga|floatformat:"0g" }}</td>
-                </tr>
-                <tr>
-                    <td class="nombre-fuerte">Total de costos</td>
-                    <td class="col-numero monto-negativo">- $ {{ gastos.total|floatformat:"0g" }}</td>
-                </tr>
+                {% for pedido in gastos.pendientes %}
+                    <tr>
+                        <td>
+                            <a class="link-fila" href="{% url 'pedido_details' pedido.id %}">#{{ pedido.id }}</a>
+                        </td>
+                        <td>{{ pedido.fecha|date:"d/m/Y" }}</td>
+                        <td>{% if pedido.proveedor %}{{ pedido.proveedor.nombre }}{% else %}{{ pedido.proveedor_texto|default:"Sin proveedor" }}{% endif %}</td>
+                        <td><span class="chip-tipo chip-pendiente">Pendiente</span></td>
+                        <td class="col-numero">$ {{ pedido.costo_total|floatformat:"0g" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="sin-registros">
+                            No tienes pedidos pendientes por recibir. 🎉
+                        </td>
+                    </tr>
+                {% endfor %}
             </tbody>
-
-            <tfoot>
-                <tr>
-                    <td>{% if balance >= 0 %}Ganancia{% else %}Pérdida{% endif %}</td>
-                    <td class="col-numero">{% if balance < 0 %}- {% endif %}$ {{ balance|floatformat:"0g"|cut:"-" }}</td>
-                </tr>
-            </tfoot>
 
         </table>
     </div>
-
-    <!-- LO QUE NO ENTRA AL BALANCE -->
-    <div class="resultados-barra">
-        <h2>Fuera del balance (todavía no se mueve plata)</h2>
-    </div>
-
-    <section class="resumen">
-
-        <div class="stat stat-aparte">
-            <span class="etiqueta">Por cobrar a clientes (hoy)</span>
-            <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
-            <span class="nota">Entra al balance cuando el cliente pague. <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver detalle</a></span>
-        </div>
-
-        <div class="stat stat-aparte">
-            <span class="etiqueta">Pedidos por recibir (hoy)</span>
-            <span class="valor">$ {{ gastos.total_pendientes|floatformat:"0g" }}</span>
-            <span class="nota">Entra a costos cuando lo marques como Recibido. <a class="link-fila no-imprimir" href="{% url 'reporte_gastos' %}">Ver detalle</a></span>
-        </div>
-
-        <div class="stat stat-aparte">
-            <span class="etiqueta">Vendido en el período</span>
-            <span class="valor">$ {{ ingresos.total_vendido|floatformat:"0g" }}</span>
-            <span class="nota">Ventas registradas, hayan pagado o no.</span>
-        </div>
-
-    </section>
 
 {% endblock %}
