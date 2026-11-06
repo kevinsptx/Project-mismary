@@ -63,6 +63,33 @@
         margin-bottom: 25px;
     }
 
+    .icono-titulo {
+        display: inline-flex;
+        vertical-align: -5px;
+        width: 32px;
+        height: 32px;
+        margin-left: 6px;
+    }
+
+    .icono-titulo svg,
+    .icono-boton svg {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: var(--naranja);
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .icono-boton {
+        display: inline-flex;
+        width: 20px;
+        height: 20px;
+    }
+
+    .icono-boton svg { stroke: currentColor; }
+
     .encabezado h1 {
         margin: 0;
         font-size: 26px;
@@ -512,7 +539,7 @@
 
         <div class="acciones">
             <button type="button" onclick="window.print()" class="btn-mismary">
-                🖨️ Imprimir
+                <span class="icono-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.6 L7.1 3.8 L17 3.7 L17 8.6"/><path d="M7 16 L3.6 16.1 L3.4 10.3 Q3.5 8.9 5 8.8 L19.2 8.6 Q20.6 8.7 20.6 10.2 L20.5 16 L17 16.1"/><path d="M7.2 13.4 L16.9 13.3 L16.9 20.4 L7.2 20.5 Z"/></svg></span> Imprimir
             </button>
 
             <a href="{% url 'reportes' %}" class="btn-mismary btn-secundario">

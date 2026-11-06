@@ -1,580 +1,354 @@
 {% extends 'layout/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Menú Principal | MisMary{% endblock %}
 
 {% block content %}
 
 <style>
-:root {
-    --cafe-tostado: #4A2C1B;
-    --terracota: #9E3B27;
-    --naranja: #FF6B35;
-    --naranja-hover: #E85A26;
-    --arena: #E8DFC8;
-    --arena-suave: #F5EFE3;
-    --marfil-bg: #FCFAF7;
-    --blanco: #FFFFFF;
-    --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
-    --sombra-hover: 0 18px 32px -8px rgba(74, 44, 27, 0.12);
-}
-
-.wrap-mismary {
-    max-width: 1040px;
+.bento-wrap {
+    max-width: 1060px;
     margin: 0 auto;
-    padding: 20px 0 40px;
-    color: var(--cafe-tostado);
+    padding: 10px 0 40px;
+    color: #4A2C1B;
     font-family: 'Fredoka', 'Quicksand', sans-serif;
 }
 
-.saludo-caja {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+/* ===== CUADRÍCULA BENTO: 4 columnas, filas de 150px ===== */
+.bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 150px;
     gap: 16px;
-    margin-bottom: 25px;
 }
 
-.saludo-texto h1 {
-    margin: 0;
-    font-family: 'Fredoka', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--cafe-tostado);
-}
-
-.saludo-texto p {
-    margin: 5px 0 0;
-    font-size: 14px;
-    color: var(--terracota);
-}
-
-.chip-mismary {
-    background: var(--arena-suave);
-    color: var(--cafe-tostado);
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-    border: 1px solid var(--arena);
-    white-space: nowrap;
-}
-
-.layout-mismary {
+.tile {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-}
-
-.hero-card {
-    background: linear-gradient(135deg, var(--naranja) 0%, var(--terracota) 100%);
-    color: var(--blanco);
-    border-radius: 28px;
-    padding: 32px;
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    box-shadow: 0 14px 28px rgba(255, 107, 53, 0.25);
-    position: relative;
+    padding: 20px 22px;
+    border-radius: 26px;
     overflow: hidden;
-}
-
-.hero-content {
-    max-width: 550px;
-}
-
-.hero-badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--blanco);
-    padding: 5px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    display: inline-block;
-    margin-bottom: 12px;
-}
-
-.hero-content h2 {
-    font-family: 'Fredoka', sans-serif;
-    font-size: 29px;
-    margin: 0 0 8px;
-    font-weight: 700;
-    color: var(--blanco);
-}
-
-.hero-content p {
-    font-size: 15px;
-    margin: 0 0 20px;
-    opacity: 0.95;
-    line-height: 1.6;
-}
-
-.btn-hero {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: var(--blanco);
-    color: var(--terracota);
     text-decoration: none;
-    padding: 12px 24px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 700;
+    color: inherit;
+    border: 1px solid transparent;
+    box-shadow: 0 10px 25px -8px rgba(74, 44, 27, 0.12);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn-hero:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
-}
-
-.hero-logo {
-    width: 140px;
-    height: 140px;
-    flex-shrink: 0;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 4px solid var(--arena);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-}
-
-.grid-dos {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
-}
-
-.card-mediana {
-    background: var(--blanco);
-    border: 1px solid var(--arena);
-    border-radius: 24px;
-    padding: 26px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 18px;
-    box-shadow: var(--sombra-suave);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.card-mediana:hover {
+a.tile:hover {
     transform: translateY(-4px);
-    box-shadow: var(--sombra-hover);
-    border-color: var(--terracota);
+    box-shadow: 0 20px 34px -10px rgba(74, 44, 27, 0.22);
 }
 
-.card-header-flex {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 12px;
+a.tile:active { transform: scale(0.98); }
+
+.tile h3 { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.15; }
+.tile small { display: block; margin-top: 3px; font-size: 13px; opacity: 0.8; }
+
+.tile svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.icono-img {
-    width: 68px;
-    height: 68px;
-    flex-shrink: 0;
-    object-fit: cover;
-    border-radius: 18px;
-    box-shadow: 0 6px 14px rgba(74, 44, 27, 0.15);
+.t-icono { display: inline-flex; flex-shrink: 0; }
+
+.t-num { font-size: 34px; font-weight: 700; line-height: 1; }
+.t-num-xl { font-size: 46px; }
+.t-sub { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+.t-flecha {
+    position: absolute; top: 16px; right: 16px;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.55); font-size: 16px; font-weight: 700;
 }
 
-.icono-img-grande {
-    width: 84px;
-    height: 84px;
-    border-radius: 22px;
-}
+/* ===== TARJETAS (cada una: tamaño, color e ícono distintos) ===== */
 
-/* Iconos de tarjetas que aún no tienen imagen */
-.icono-emoji {
-    width: 68px;
-    height: 68px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
+/* Saludo: ancha y naranja */
+.t-hero {
+    grid-column: span 2;
+    background: linear-gradient(135deg, #FF6B35, #E85A26);
+    color: #FFFFFF;
     justify-content: center;
-    font-size: 32px;
-    background: var(--arena-suave);
-    border: 1px solid var(--arena);
-    border-radius: 18px;
-    box-shadow: 0 6px 14px rgba(74, 44, 27, 0.10);
+}
+.t-hero::after {
+    content: ""; position: absolute; right: -40px; top: -50px;
+    width: 190px; height: 190px; border-radius: 50%;
+    background: rgba(255,255,255,0.14);
+}
+.t-hero::before {
+    content: ""; position: absolute; right: 70px; bottom: -60px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(74,44,27,0.14);
+}
+.t-hero h1 { margin: 0; font-size: 30px; font-weight: 700; position: relative; z-index: 1; }
+.t-hero p { margin: 6px 0 0; opacity: 0.92; position: relative; z-index: 1; }
+.t-hero .fecha {
+    display: inline-block; margin-top: 12px; padding: 4px 14px; border-radius: 999px;
+    background: rgba(255,255,255,0.22); font-size: 13px; font-weight: 600;
+    position: relative; z-index: 1; align-self: flex-start;
 }
 
-.icono-emoji-grande {
-    width: 84px;
-    height: 84px;
-    font-size: 40px;
-    border-radius: 22px;
+/* Ventas: GRANDE (2x2), crema, ícono enorme */
+.t-ventas {
+    grid-column: span 2; grid-row: span 2;
+    background: #F5EFE3; border-color: #E8DFC8;
+}
+.t-ventas .blob {
+    position: absolute; right: -30px; bottom: -40px;
+    width: 250px; height: 250px; border-radius: 50%; background: #E3A91F; opacity: 0.30;
+}
+.t-ventas .t-icono { width: 128px; height: 128px; color: #FF6B35; position: absolute; right: 30px; bottom: 26px; }
+.t-ventas .t-icono svg { width: 128px; height: 128px; stroke-width: 1.9; }
+.t-ventas h3 { font-size: 28px; }
+.t-ventas .boton {
+    align-self: flex-start; padding: 10px 20px; border-radius: 999px;
+    background: #FF6B35; color: #fff; font-weight: 600; font-size: 14px; position: relative; z-index: 1;
 }
 
-.card-mediana h3 {
-    margin: 0;
-    font-family: 'Fredoka', sans-serif;
-    font-size: 21px;
-    color: var(--cafe-tostado);
+/* Pedidos: pequeña, café oscuro */
+.t-pedidos { background: #4A2C1B; color: #FCFAF7; }
+.t-pedidos .t-icono { width: 44px; height: 44px; color: #FF6B35; }
+.t-pedidos .t-icono svg { width: 44px; height: 44px; }
+
+/* Clientes: pequeña, blanca */
+.t-clientes { background: #FFFFFF; border-color: #E8DFC8; }
+.t-clientes .t-icono { width: 56px; height: 56px; color: #9E3B27; }
+.t-clientes .t-icono svg { width: 56px; height: 56px; }
+
+/* Catálogo: ancha, mostaza suave */
+.t-catalogo {
+    grid-column: span 2; background: #F6E3B0; border-color: #EBD08A;
+    flex-direction: row; align-items: center; gap: 20px;
+}
+.t-catalogo .t-icono { width: 86px; height: 86px; color: #4A2C1B; }
+.t-catalogo .t-icono svg { width: 86px; height: 86px; stroke-width: 1.9; }
+
+/* Reportes: ALTA (1x2), terracota */
+.t-reportes { grid-row: span 2; background: #9E3B27; color: #FFF; }
+.t-reportes .t-icono { width: 96px; height: 96px; color: #FFD9C7; margin: 6px 0; }
+.t-reportes .t-icono svg { width: 96px; height: 96px; stroke-width: 1.9; }
+.t-reportes .barras { display: flex; align-items: flex-end; gap: 6px; height: 54px; }
+.t-reportes .barras i { display: block; width: 14px; border-radius: 6px 6px 2px 2px; background: rgba(255,255,255,0.35); }
+.t-reportes .barras i:nth-child(1){height:40%} .t-reportes .barras i:nth-child(2){height:70%}
+.t-reportes .barras i:nth-child(3){height:55%} .t-reportes .barras i:nth-child(4){height:100%; background:#FF6B35}
+
+/* Reembolsos: pequeña, rosada */
+.t-reembolsos { background: #FBE9E7; border-color: #F5B7AB; color: #9E3B27; }
+.t-reembolsos .t-icono { width: 40px; height: 40px; }
+.t-reembolsos .t-icono svg { width: 40px; height: 40px; }
+
+/* Proveedores: pequeña, durazno */
+.t-proveedores { background: #FFE3D6; border-color: #FFC9AE; }
+.t-proveedores .t-icono { width: 62px; height: 62px; color: #E85A26; }
+.t-proveedores .t-icono svg { width: 62px; height: 62px; }
+
+/* Por cobrar: número grande, blanca */
+.t-cobrar { background: #FFFFFF; border-color: #E8DFC8; }
+.t-cobrar .t-icono { width: 34px; height: 34px; color: #E3A91F; }
+.t-cobrar .t-icono svg { width: 34px; height: 34px; }
+.t-cobrar .t-num { font-size: 28px; }
+
+/* Gastos hormiga: pequeña, arena */
+.t-gastos { background: #E8DFC8; }
+.t-gastos .t-icono { width: 50px; height: 50px; color: #4A2C1B; }
+.t-gastos .t-icono svg { width: 50px; height: 50px; }
+
+/* Grupos (solo superusuario): franja ancha y baja */
+.t-grupos {
+    grid-column: span 4; grid-row: span 1; background: #4A2C1B; color: #FCFAF7;
+    flex-direction: row; align-items: center; gap: 18px; padding: 0 26px;
+}
+.t-grupos { min-height: 0; }
+.t-grupos .t-icono { width: 46px; height: 46px; color: #FF6B35; }
+.t-grupos .t-icono svg { width: 46px; height: 46px; }
+
+
+/* ===== STICKERS (ilustraciones recortadas) ===== */
+.stk {
+    position: absolute;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 8px rgba(74, 44, 27, 0.25));
+    transition: transform 0.25s ease;
+}
+a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
+
+/* tarjetas pequeñas: texto abajo, sticker arriba/derecha */
+.t-pedidos, .t-clientes, .t-reembolsos, .t-proveedores, .t-cobrar, .t-gastos {
+    justify-content: flex-end;
 }
 
-.card-mediana p {
-    font-size: 14px;
-    color: #6C5243;
-    margin: 0;
-    line-height: 1.6;
+/* logo en el saludo */
+.logo-hero {
+    position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
+    width: 118px; height: 118px; border-radius: 50%; object-fit: cover;
+    border: 5px solid #FFFFFF; box-shadow: 0 10px 22px -6px rgba(74,44,27,0.45);
+    z-index: 2;
+}
+.t-hero h1, .t-hero p { max-width: calc(100% - 150px); }
+
+.stk-ventas     { right: 26px; bottom: 16px; height: 270px; z-index: 0; }
+.stk-pedidos    { right: 14px; top: 12px; height: 84px; transform: rotate(6deg); }
+.stk-clientes   { right: 8px; top: 10px; width: 150px; }
+.stk-catalogo   { position: static; height: 128px; flex-shrink: 0; margin-left: -4px; }
+.stk-reportes   { position: static; width: 128px; align-self: center; margin: 4px 0; }
+.stk-reembolsos { right: 12px; top: 10px; height: 76px; }
+.stk-proveedores{ right: 8px; top: 16px; width: 122px; }
+.stk-cobrar     { right: 14px; top: 14px; height: 70px; transform: rotate(-8deg); }
+.stk-gastos     { right: 4px; top: 6px; height: 132px; }
+.t-gastos h3    { max-width: 115px; }
+
+@media (max-width: 520px) {
+    .stk-ventas { height: 210px; }
+    .logo-hero { width: 90px; height: 90px; }
+    .t-hero h1, .t-hero p { max-width: calc(100% - 110px); }
 }
 
-.btn-mismary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--naranja);
-    color: var(--blanco);
-    text-decoration: none;
-    padding: 11px 18px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-    transition: background 0.2s ease, transform 0.2s ease;
-    align-self: flex-start;
+/* ===== PANTALLAS MEDIANAS Y PEQUEÑAS ===== */
+@media (max-width: 900px) {
+    .bento { grid-template-columns: repeat(2, 1fr); }
+    .t-hero, .t-catalogo, .t-grupos { grid-column: span 2; }
+    .t-ventas { grid-column: span 2; grid-row: span 2; }
+    .t-reportes { grid-row: span 2; }
 }
-
-.btn-mismary:hover {
-    background: var(--terracota);
-    transform: translateY(-2px);
-}
-
-/* Tarjeta larga de proveedores */
-.card-larga {
-    background: var(--blanco);
-    border: 1px solid var(--arena);
-    border-radius: 24px;
-    padding: 22px 26px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    box-shadow: var(--sombra-suave);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.card-larga:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--sombra-hover);
-    border-color: var(--terracota);
-}
-
-.card-larga-info {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    min-width: 0;
-}
-
-.card-larga h3 {
-    margin: 0 0 4px;
-    font-family: 'Fredoka', sans-serif;
-    font-size: 21px;
-    color: var(--cafe-tostado);
-}
-
-.card-larga p {
-    margin: 0;
-    font-size: 14px;
-    color: #6C5243;
-    line-height: 1.6;
-}
-
-/* Tarjetas pequeñas */
-.grid-tres {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 20px;
-}
-
-.card-compacta {
-    background: var(--arena-suave);
-    border: 1px solid transparent;
-    border-radius: 20px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    text-decoration: none;
-    color: var(--cafe-tostado);
-    min-width: 0;
-    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-}
-
-.card-compacta:hover {
-    background: var(--blanco);
-    border-color: var(--terracota);
-    transform: translateY(-3px);
-    box-shadow: var(--sombra-suave);
-}
-
-.card-compacta-info {
-    min-width: 0;
-}
-
-.card-compacta-info h4 {
-    margin: 0 0 3px;
-    font-family: 'Fredoka', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.card-compacta-info span {
-    font-size: 12px;
-    color: var(--terracota);
-    line-height: 1.4;
-}
-
-/* Tarjeta de módulo pendiente */
-.card-compacta-pronto {
-    cursor: default;
-}
-
-.card-compacta-pronto:hover {
-    background: var(--arena-suave);
-    border-color: transparent;
-    transform: none;
-    box-shadow: none;
-}
-
-.etiqueta-pronto {
-    display: inline-block;
-    margin-left: 6px;
-    padding: 2px 8px;
-    background: var(--blanco);
-    border: 1px solid var(--arena);
-    border-radius: 999px;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--terracota);
-    vertical-align: middle;
-}
-
-@media (max-width: 850px) {
-    .hero-card {
-        padding: 26px;
-    }
-
-    .hero-logo {
-        width: 110px;
-        height: 110px;
-    }
-}
-
-@media (max-width: 650px) {
-    .wrap-mismary {
-        padding-top: 10px;
-    }
-
-    .saludo-caja {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .saludo-texto h1 {
-        font-size: 24px;
-    }
-
-    .grid-dos,
-    .grid-tres {
-        grid-template-columns: 1fr;
-    }
-
-    .hero-card {
-        padding: 24px;
-    }
-
-    .hero-content h2 {
-        font-size: 25px;
-    }
-
-    .hero-logo {
-        display: none;
-    }
-
-    .card-mediana {
-        padding: 22px;
-    }
-
-    .card-larga {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 22px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .wrap-mismary *,
-    .wrap-mismary *::before,
-    .wrap-mismary *::after {
-        transition-duration: 0.01ms !important;
-    }
+@media (max-width: 520px) {
+    .bento { grid-template-columns: 1fr; grid-auto-rows: minmax(130px, auto); }
+    .t-hero, .t-ventas, .t-catalogo, .t-grupos, .t-reportes { grid-column: span 1; grid-row: span 1; }
+    .t-ventas { min-height: 260px; }
+    .t-reportes { min-height: 260px; }
 }
 </style>
 
-<div class="wrap-mismary">
+<div class="bento-wrap">
+<div class="bento">
 
-    <div class="saludo-caja">
-        <div class="saludo-texto">
-            <h1>¡Hola, {{ user.username }}! ✨</h1>
-            <p>Bienvenido a tu espacio de trabajo en MisMary.</p>
+    <!-- SALUDO -->
+    <section class="tile t-hero">
+        <img class="logo-hero" src="{% static 'logo.jpeg' %}" alt="Logo MisMary">
+        <h1>¡Hola, {{ user.username }}!</h1>
+        <p>Bienvenido a tu espacio de trabajo en MisMary.</p>
+        <span class="fecha">{% now "d/m/Y" %}</span>
+    </section>
+
+    <!-- VENTAS (grande) -->
+    <a href="{% url 'list_venta' %}" class="tile t-ventas">
+        <span class="blob"></span>
+        <div style="position:relative;z-index:1;">
+            <h3>Ventas</h3>
+            <small>Registra, consulta y reembolsa</small>
         </div>
-
-        <div class="chip-mismary">
-            {% now "d/m/Y" %}
-        </div>
-    </div>
-
-    <div class="layout-mismary">
-
-        <!-- TARJETA PRINCIPAL -->
-        <section class="hero-card">
-            <div class="hero-content">
-                <span class="hero-badge">Acceso principal</span>
-                <h2>Gestión de catálogo</h2>
-                <p>
-                    Consulta los productos disponibles y revisa el catálogo
-                    de tu tienda desde un solo lugar.
-                </p>
-
-                <a href="{% url 'list_producto' %}" class="btn-hero">
-                    Ver catálogo completo ➔
-                </a>
-            </div>
-
-            <img src="{% static 'logo.jpeg' %}"
-                 alt="Logo MisMary"
-                 class="hero-logo">
-        </section>
-
-        <!-- VENTAS Y PEDIDOS -->
-        <div class="grid-dos">
-
-            <section class="card-mediana">
-                <div>
-                    <div class="card-header-flex">
-                        <img src="{% static 'venta.jpg' %}"
-                             alt="Ventas"
-                             class="icono-img icono-img-grande">
-                        <h3>Ventas</h3>
-                    </div>
-
-                    <p>
-                        Registra las ventas, consulta su información y revisa
-                        el historial de tus clientes.
-                    </p>
-                </div>
-
-                <a href="{% url 'list_venta' %}" class="btn-mismary">
-                    Ir a ventas
-                </a>
-            </section>
-
-            <section class="card-mediana">
-                <div>
-                    <div class="card-header-flex">
-                        <img src="{% static 'pedidos.jpg' %}"
-                             alt="Pedidos"
-                             class="icono-img icono-img-grande">
-                        <h3>Pedidos</h3>
-                    </div>
-
-                    <p>
-                        Consulta los pedidos, los productos solicitados
-                        y el estado de las entregas.
-                    </p>
-                </div>
-
-                <a href="{% url 'list_pedido' %}" class="btn-mismary">
-                    Ver pedidos
-                </a>
-            </section>
-
-        </div>
-
-        <!-- PROVEEDORES -->
-        <section class="card-larga">
-            <div class="card-larga-info">
-                <img src="{% static 'proveedores.jpg' %}"
-                     alt="Proveedores"
-                     class="icono-img icono-img-grande">
-
-                <div>
-                    <h3>Proveedores</h3>
-                    <p>
-                        Registra y consulta tus proveedores, y revisa
-                        el historial de pedidos de cada uno.
-                    </p>
-                </div>
-            </div>
-
-            <a href="{% url 'list_proveedor' %}" class="btn-mismary">
-                Ver proveedores
-            </a>
-        </section>
-
-        <!-- TARJETAS PEQUEÑAS -->
-        <div class="grid-tres">
-
-            <!-- CLIENTES -->
-            <a href="{% url 'list_cliente' %}" class="card-compacta">
-                <img src="{% static 'clientes.jpg' %}"
-                     alt="Clientes"
-                     class="icono-img">
-
-                <div class="card-compacta-info">
-                    <h4>Clientes</h4>
-                    <span>Directorio y contacto</span>
-                </div>
-            </a>
-
-            <!-- REPORTES -->
-            <a href="{% url 'reportes' %}" class="card-compacta">
-                <img src="{% static 'reportes.jpg' %}"
-                     alt="Reportes"
-                     class="icono-img">
-
-                <div class="card-compacta-info">
-                    <h4>Reportes</h4>
-                    <span>Resumen y métricas</span>
-                </div>
-            </a>
-
-
-<!-- REEMBOLSOS -->
-<a href="{% url 'lista_reembolsos' %}" class="card-compacta">
-    <img src="{% static 'reembolsos.jpg' %}"
-         alt="Reembolsos"
-         class="icono-img">
-
-    <div class="card-compacta-info">
-        <h4>Reembolsos</h4>
-        <span>cancelaciones y devoluciones</span>
-    </div>
-</a>
-
-
-            <!-- GRUPOS: SOLO PARA SUPERUSUARIOS -->
-            {% if user.is_superuser %}
-                <a href="{% url 'list_grupos' %}" class="card-compacta">
-                    <img src="{% static 'usuarios.jpg' %}"
-                         alt="Administración de grupos"
-                         class="icono-img">
-
-                    <div class="card-compacta-info">
-                        <h4>Grupos</h4>
-                        <span>Usuarios y permisos del sistema</span>
-                    </div>
-                </a>
+        <img class="stk stk-ventas" src="{% static 'stk_comprador.png' %}" alt="" loading="lazy">
+        <div style="position:relative;z-index:1;">
+            {% if stats.ventas_hoy is not None %}
+                <div class="t-num t-num-xl">$ {{ stats.ventas_hoy_total|floatformat:0|intcomma }}</div>
+                <div class="t-sub">{{ stats.ventas_hoy }} venta{{ stats.ventas_hoy|pluralize }} hoy</div>
             {% endif %}
-
+            <span class="boton" style="display:inline-block;margin-top:12px;">Ir a ventas →</span>
         </div>
-    </div>
+    </a>
+
+    <!-- PEDIDOS (pequeña, oscura) -->
+    <a href="{% url 'list_pedido' %}" class="tile t-pedidos">
+        <img class="stk stk-pedidos" src="{% static 'stk_tablilla.png' %}" alt="" loading="lazy">
+        <div>
+            {% if stats.pedidos_pendientes is not None %}
+                <div class="t-num">{{ stats.pedidos_pendientes }}</div>
+                <div class="t-sub">pedido{{ stats.pedidos_pendientes|pluralize }} por recibir</div>
+            {% else %}
+                <h3>Pedidos</h3>
+            {% endif %}
+        </div>
+    </a>
+
+    <!-- CLIENTES -->
+    <a href="{% url 'list_cliente' %}" class="tile t-clientes">
+        <img class="stk stk-clientes" src="{% static 'stk_clientes.png' %}" alt="" loading="lazy">
+        <div>
+            <h3>Clientes</h3>
+            <small>{% if stats.clientes is not None %}{{ stats.clientes }} registrado{{ stats.clientes|pluralize }}{% else %}Directorio y contacto{% endif %}</small>
+        </div>
+    </a>
+
+    <!-- CATÁLOGO (ancha, mostaza) -->
+    <a href="{% url 'list_producto' %}" class="tile t-catalogo">
+        <img class="stk stk-catalogo" src="{% static 'stk_tendero.png' %}" alt="" loading="lazy">
+        <div>
+            <h3>Catálogo</h3>
+            <small>
+                {% if stats.productos is not None %}
+                    {{ stats.productos }} producto{{ stats.productos|pluralize }}{% if stats.sin_stock %} · {{ stats.sin_stock }} sin stock{% endif %}
+                {% else %}Productos disponibles{% endif %}
+            </small>
+        </div>
+    </a>
+
+    <!-- REPORTES (alta, terracota) -->
+    <a href="{% url 'reportes' %}" class="tile t-reportes">
+        <div>
+            <h3>Reportes</h3>
+            <small>Ingresos, costos y balance</small>
+        </div>
+        <img class="stk stk-reportes" src="{% static 'stk_calculadora.png' %}" alt="" loading="lazy">
+        <div class="barras"><i></i><i></i><i></i><i></i></div>
+    </a>
+
+    <!-- REEMBOLSOS -->
+    <a href="{% url 'lista_reembolsos' %}" class="tile t-reembolsos">
+        <img class="stk stk-reembolsos" src="{% static 'stk_reembolso.png' %}" alt="" loading="lazy">
+        <div>
+            <h3>Reembolsos</h3>
+            <small>{% if stats.reembolsos_mes is not None %}{{ stats.reembolsos_mes }} este mes{% else %}Devoluciones{% endif %}</small>
+        </div>
+    </a>
+
+    <!-- PROVEEDORES -->
+    <a href="{% url 'list_proveedor' %}" class="tile t-proveedores">
+        <img class="stk stk-proveedores" src="{% static 'stk_camion.png' %}" alt="" loading="lazy">
+        <div>
+            <h3>Proveedores</h3>
+            <small>{% if stats.proveedores is not None %}{{ stats.proveedores }} registrado{{ stats.proveedores|pluralize }}{% else %}Quién te surte{% endif %}</small>
+        </div>
+    </a>
+
+    <!-- POR COBRAR -->
+    <a href="{% url 'reporte_clientes_deuda' %}" class="tile t-cobrar">
+        <img class="stk stk-cobrar" src="{% static 'stk_billete.png' %}" alt="" loading="lazy">
+        <div>
+            {% if stats.por_cobrar is not None %}
+                <div class="t-num">$ {{ stats.por_cobrar|floatformat:0|intcomma }}</div>
+            {% endif %}
+            <small>Por cobrar a clientes</small>
+        </div>
+    </a>
+
+    <!-- GASTOS HORMIGA -->
+    <a href="{% url 'reporte_gastos_hormiga' %}" class="tile t-gastos">
+        <img class="stk stk-gastos" src="{% static 'stk_hormiga.png' %}" alt="" loading="lazy">
+        <div>
+            <h3>Gastos hormiga</h3>
+            <small>{% if stats.gastos_mes is not None %}$ {{ stats.gastos_mes|floatformat:0|intcomma }} este mes{% else %}Gastos pequeños{% endif %}</small>
+        </div>
+    </a>
+
+    <!-- GRUPOS: SOLO SUPERUSUARIOS -->
+    {% if user.is_superuser %}
+        <a href="{% url 'list_grupos' %}" class="tile t-grupos">
+            <span class="t-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.8" r="3"/><path d="M6.2 19.6 Q6.3 13.6 12 13.5 Q17.7 13.6 17.8 19.6"/><circle cx="4.7" cy="10.2" r="1.9"/><circle cx="19.3" cy="10.2" r="1.9"/></svg></span>
+            <div>
+                <h3>Grupos y permisos</h3>
+                <small>Usuarios y permisos del sistema</small>
+            </div>
+        </a>
+    {% endif %}
+
+</div>
 </div>
 
 {% endblock %}

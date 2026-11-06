@@ -96,8 +96,21 @@ Reportes | MisMary
         background: var(--arena-suave);
         border: 1px solid var(--arena);
         border-radius: 50%;
-        font-size: 26px;
         margin-bottom: 14px;
+    }
+
+    .tarjeta-icono svg {
+        width: 30px;
+        height: 30px;
+        fill: none;
+        stroke: var(--naranja);
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .tarjeta:hover .tarjeta-icono svg {
+        stroke: var(--terracota);
     }
 
     .tarjeta h3 {
@@ -174,42 +187,42 @@ Reportes | MisMary
     <section class="tarjetas">
 
         <div class="tarjeta">
-            <div class="tarjeta-icono">💰</div>
+            <div class="tarjeta-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 7.2 L20.6 6.9 L20.8 17 L3.3 17.3 Z"/><circle cx="12" cy="12.1" r="2.6"/><path d="M6.4 12 L6.5 12.1"/><path d="M17.6 12 L17.7 12.1"/></svg></div>
             <h3>Ingresos</h3>
             <p>El dinero que ya recibiste de tus clientes, por día. Lo que aún te deben no se cuenta.</p>
             <a href="{% url 'reporte_ingresos' %}" class="btn-mismary">Ver reporte</a>
         </div>
 
         <div class="tarjeta">
-            <div class="tarjeta-icono">🧾</div>
+            <div class="tarjeta-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.6 L18.2 3.5 L18.3 20.6 L15.2 19 L12.1 20.6 L9 19 L5.9 20.6 Z"/><path d="M9.2 8.6 L15 8.5"/><path d="M9.2 12.5 L14.8 12.4"/></svg></div>
             <h3>Clientes con deuda</h3>
             <p>Quién te debe y cuánto, para gestionar cobros. Esta plata todavía no es ingreso.</p>
             <a href="{% url 'reporte_clientes_deuda' %}" class="btn-mismary">Ver reporte</a>
         </div>
 
         <div class="tarjeta">
-            <div class="tarjeta-icono">💸</div>
+            <div class="tarjeta-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 L18 7.2 Q19.4 7.2 19.4 8.7 L19.5 18 Q19.4 19.4 18 19.5 L5 19.6 Q3.5 19.5 3.5 18 Z"/><path d="M4.2 7.4 L14.8 3.8 L16 7.2"/><circle cx="15.8" cy="13.4" r="1.2"/></svg></div>
             <h3>Costos</h3>
             <p>Pedidos que ya llegaron y gastos hormiga. Los pedidos pendientes no cuentan.</p>
             <a href="{% url 'reporte_gastos' %}" class="btn-mismary">Ver reporte</a>
         </div>
 
         <div class="tarjeta">
-            <div class="tarjeta-icono">🐜</div>
+            <div class="tarjeta-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6.2" r="2.2"/><path d="M8.4 12.6 Q8.2 19.8 12 20 Q15.8 19.8 15.6 12.6 Q15.8 9.2 12 9.1 Q8.2 9.2 8.4 12.6 Z"/><path d="M8.4 12.2 L3.6 10.6"/><path d="M8.5 15.4 L3.5 16"/><path d="M15.6 12.2 L20.4 10.6"/><path d="M15.5 15.4 L20.5 16"/><path d="M10.8 4.4 L9.2 2.8"/><path d="M13.2 4.4 L14.8 2.8"/></svg></div>
             <h3>Gastos hormiga</h3>
             <p>Registra, edita o elimina los gastos pequeños del negocio.</p>
             <a href="{% url 'reporte_gastos_hormiga' %}" class="btn-mismary">Ver gastos</a>
         </div>
 
         <div class="tarjeta">
-            <div class="tarjeta-icono">⚖️</div>
+            <div class="tarjeta-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 L12.1 19.8"/><path d="M7.4 20.2 L16.8 20.1"/><path d="M4.2 7.4 L19.8 7.1"/><path d="M4.4 7.5 L2.6 13.4 Q4.4 15.2 6.4 13.4 L4.4 7.5"/><path d="M19.6 7.3 L17.6 13.2 Q19.6 15 21.4 13.2 L19.6 7.3"/></svg></div>
             <h3>Balance</h3>
             <p>Ingresos recibidos menos costos, para ver si realmente estás ganando.</p>
             <a href="{% url 'reporte_balance' %}" class="btn-mismary">Ver reporte</a>
         </div>
 
         <div class="tarjeta">
-            <div class="tarjeta-icono">📥</div>
+            <div class="tarjeta-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.8 L12.1 14.2"/><path d="M7.8 10.4 L12 14.6 L16.3 10.3"/><path d="M4 15.4 L4.2 20 L19.8 19.8 L19.9 15.2"/></svg></div>
             <h3>Descargar reporte</h3>
             <p>Genera un archivo para guardar o imprimir.</p>
             <a href="{% url 'descargar_reporte' %}" class="btn-mismary btn-secundario">Descargar</a>

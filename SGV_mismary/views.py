@@ -80,8 +80,45 @@ def filtrar_por_fecha(consulta, fecha_inicio, fecha_fin):
 
 @login_required
 def home(request):
+    """Dashboard: cada tarjeta muestra un dato real (solo si el usuario tiene permiso)."""
+    hoy = timezone.localdate()
+    inicio_mes = hoy.replace(day=1)
+    u = request.user
+    stats = {}
 
-    return render(request, 'home.html')
+    if u.has_perm('SGV_mismary.view_venta'):
+        v = (Venta.objects.exclude(estado='Cancelada')
+             .filter(fecha=hoy)
+             .aggregate(n=Count('id'), t=Sum('valor_total')))
+        stats['ventas_hoy'] = v['n']
+        stats['ventas_hoy_total'] = v['t'] or 0
+
+    if u.has_perm('SGV_mismary.view_pedido'):
+        stats['pedidos_pendientes'] = Pedido.objects.filter(estado='Pendiente').count()
+
+    if u.has_perm('SGV_mismary.view_cliente'):
+        stats['clientes'] = Cliente.objects.count()
+
+    if u.has_perm('SGV_mismary.view_producto'):
+        stats['productos'] = Producto.objects.count()
+        stats['sin_stock'] = Producto.objects.filter(cantidad_disponible=0).count()
+
+    if u.has_perm('SGV_mismary.view_reembolso'):
+        stats['reembolsos_mes'] = Reembolso.objects.filter(
+            fecha_solicitud__date__gte=inicio_mes
+        ).count()
+
+    if u.has_perm('SGV_mismary.view_proveedor'):
+        stats['proveedores'] = Proveedor.objects.count()
+
+    if u.has_perm('SGV_mismary.view_deuda'):
+        stats['por_cobrar'] = datos_clientes_deuda()['total_saldo']
+
+    if u.has_perm('SGV_mismary.view_gasto'):
+        stats['gastos_mes'] = (Gasto.objects.filter(fecha__gte=inicio_mes, fecha__lte=hoy)
+                               .aggregate(t=Sum('valor'))['t'] or 0)
+
+    return render(request, 'home.html', {'stats': stats})
 
 
 # ============================================================

@@ -21,6 +21,7 @@
             --terracota:     #9E3B27;
             --naranja:       #FF6B35;
             --naranja-hover: #E85A26;
+            --mostaza:       #E3A91F;
             --arena:         #E8DFC8;
             --arena-suave:   #F5EFE3;
             --marfil-bg:     #FCFAF7;
@@ -39,7 +40,6 @@
         }
 
         body {
-            background-color: var(--marfil-bg);
             color: var(--cafe-tostado);
             font-family: sans-serif;
 
@@ -47,16 +47,73 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 30px 20px;
+            padding: 28px 20px;
 
-            position: relative;
-            overflow: hidden;
+            /* Imagen de fondo (accounts/static/login.png) con un velo suave */
+            background:
+                linear-gradient(rgba(74, 44, 27, 0.20), rgba(74, 44, 27, 0.20)),
+                url("{% static 'login.png' %}") center / cover no-repeat fixed;
+            background-color: var(--arena);
         }
 
-        /* ===== BOLITAS ANIMADAS DE FONDO ===== */
+        /* ===== EL CUADRO CENTRAL ===== */
+
+        .cuadro {
+            position: relative;
+            width: 100%;
+            max-width: 980px;
+            min-height: 620px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 64px 28px 48px;
+
+            background: rgba(252, 250, 247, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 28px;
+            box-shadow: 0 30px 60px -20px rgba(74, 44, 27, 0.50);
+            overflow: hidden;
+
+            animation: aparecer 0.5s ease-out;
+        }
+
+        /* franja superior del cuadro */
+        .cuadro-barra {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 28px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--cafe-tostado);
+        }
+
+        .cuadro-barra .marca::before {
+            content: "";
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background: var(--naranja);
+        }
+
+        .cuadro-barra .estado {
+            color: var(--terracota);
+        }
+
+        /* ===== BOLITAS ANIMADAS (dentro del cuadro) ===== */
 
         .gatos {
-            position: fixed;
+            position: absolute;
             inset: 0;
             z-index: 0;
             overflow: hidden;
@@ -69,66 +126,54 @@
         }
 
         .gatos svg:nth-child(1) {
-            width: 170px;
-            height: 170px;
-            color: var(--naranja);
-            opacity: 0.22;
-            top: 8%;
-            left: 6%;
+            width: 170px; height: 170px;
+            color: var(--mostaza);
+            opacity: 0.30;
+            top: 8%; left: 4%;
             animation-duration: 24s;
         }
 
         .gatos svg:nth-child(2) {
-            width: 90px;
-            height: 90px;
+            width: 90px; height: 90px;
             color: var(--terracota);
             opacity: 0.18;
-            top: 20%;
-            right: 12%;
+            top: 22%; right: 10%;
             animation-duration: 19s;
             animation-delay: -5s;
         }
 
         .gatos svg:nth-child(3) {
-            width: 230px;
-            height: 230px;
+            width: 230px; height: 230px;
             color: var(--arena);
-            opacity: 0.85;
-            bottom: 5%;
-            right: 5%;
+            opacity: 0.95;
+            bottom: -4%; right: 3%;
             animation-duration: 28s;
             animation-delay: -10s;
         }
 
         .gatos svg:nth-child(4) {
-            width: 120px;
-            height: 120px;
+            width: 120px; height: 120px;
             color: var(--naranja);
-            opacity: 0.16;
-            bottom: 16%;
-            left: 12%;
+            opacity: 0.22;
+            bottom: 12%; left: 9%;
             animation-duration: 21s;
             animation-delay: -3s;
         }
 
         .gatos svg:nth-child(5) {
-            width: 70px;
-            height: 70px;
-            color: var(--cafe-tostado);
-            opacity: 0.12;
-            top: 58%;
-            left: 46%;
+            width: 70px; height: 70px;
+            color: var(--naranja);
+            opacity: 0.20;
+            top: 62%; left: 48%;
             animation-duration: 17s;
             animation-delay: -8s;
         }
 
         .gatos svg:nth-child(6) {
-            width: 140px;
-            height: 140px;
+            width: 140px; height: 140px;
             color: var(--arena);
-            opacity: 0.9;
-            top: 5%;
-            left: 55%;
+            opacity: 0.95;
+            top: 2%; left: 58%;
             animation-duration: 26s;
             animation-delay: -12s;
         }
@@ -142,50 +187,34 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .gatos svg {
-                animation: none;
-            }
+            .gatos svg { animation: none; }
+            .cuadro { animation: none; }
         }
 
-        /* ===== TARJETA ===== */
+        /* ===== LOGIN (centrado dentro del cuadro) ===== */
 
         .login {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 480px;
-
-            background: var(--blanco);
-            border: 1px solid var(--arena);
-            border-radius: 30px;
-            padding: 44px 38px 38px;
-            box-shadow: var(--sombra-suave);
-
-            animation: aparecer 0.5s ease-out;
+            max-width: 400px;
         }
 
         @keyframes aparecer {
-            from {
-                opacity: 0;
-                transform: translateY(14px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== ENCABEZADO ===== */
 
         .encabezado {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 26px;
         }
 
         .logo {
-            width: 160px;
-            height: 160px;
+            width: 130px;
+            height: 130px;
             margin: 0 auto 20px;
             background: var(--naranja);
             color: #FFF;
@@ -194,6 +223,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: var(--sombra-suave);
+            border: 4px solid var(--blanco);
             overflow: hidden;
         }
 
@@ -290,14 +320,20 @@
 
         /* ===== RESPONSIVO ===== */
 
-        @media (max-width: 500px) {
-            .login {
-                padding: 32px 24px 28px;
+        @media (max-width: 600px) {
+            body { padding: 14px; }
+
+            .cuadro {
+                min-height: 0;
+                padding: 64px 20px 32px;
+                border-radius: 22px;
             }
 
+            .cuadro-barra { padding: 16px 20px; }
+
             .logo {
-                width: 120px;
-                height: 120px;
+                width: 110px;
+                height: 110px;
             }
         }
 
@@ -320,7 +356,16 @@
         </symbol>
     </svg>
 
-    <!-- BOLITAS DE FONDO -->
+    <!-- EL CUADRO CENTRAL (imagen de fondo = login.png) -->
+
+    <div class="cuadro">
+
+    <div class="cuadro-barra">
+        <span class="marca">MisMary</span>
+        <span class="estado">Acceso al sistema</span>
+    </div>
+
+    <!-- BOLITAS (dentro del cuadro) -->
 
     <div class="gatos">
         <svg viewBox="0 0 100 100"><use href="#bolita"/></svg>
@@ -399,6 +444,8 @@
         </form>
 
     </div>
+
+    </div><!-- /cuadro -->
 
 </body>
 
