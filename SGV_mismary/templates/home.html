@@ -131,14 +131,22 @@ a.tile:active { transform: scale(0.98); }
 .t-catalogo .t-icono { width: 86px; height: 86px; color: #4A2C1B; }
 .t-catalogo .t-icono svg { width: 86px; height: 86px; stroke-width: 1.9; }
 
-/* Reportes: ALTA (1x2), terracota */
-.t-reportes { grid-row: span 2; background: #9E3B27; color: #FFF; }
-.t-reportes .t-icono { width: 96px; height: 96px; color: #FFD9C7; margin: 6px 0; }
-.t-reportes .t-icono svg { width: 96px; height: 96px; stroke-width: 1.9; }
-.t-reportes .barras { display: flex; align-items: flex-end; gap: 6px; height: 54px; }
-.t-reportes .barras i { display: block; width: 14px; border-radius: 6px 6px 2px 2px; background: rgba(255,255,255,0.35); }
-.t-reportes .barras i:nth-child(1){height:40%} .t-reportes .barras i:nth-child(2){height:70%}
-.t-reportes .barras i:nth-child(3){height:55%} .t-reportes .barras i:nth-child(4){height:100%; background:#FF6B35}
+/* Reportes: ALTA (1x2), es una IMAGEN que ocupa toda la tarjeta */
+.t-reportes {
+    grid-row: span 2;
+    padding: 0;
+    background: #9E3B27;
+    border: 0;
+}
+.t-reportes .img-reportes {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.35s ease;
+}
+a.t-reportes:hover .img-reportes { transform: scale(1.04); }
 
 /* Reembolsos: pequeña, rosada */
 .t-reembolsos { background: #FBE9E7; border-color: #F5B7AB; color: #9E3B27; }
@@ -289,14 +297,9 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         </div>
     </a>
 
-    <!-- REPORTES (alta, terracota) -->
-    <a href="{% url 'reportes' %}" class="tile t-reportes">
-        <div>
-            <h3>Reportes</h3>
-            <small>Ingresos, costos y balance</small>
-        </div>
-        <img class="stk stk-reportes" src="{% static 'stk_calculadora.png' %}" alt="" loading="lazy">
-        <div class="barras"><i></i><i></i><i></i><i></i></div>
+    <!-- REPORTES (alta): imagen completa -->
+    <a href="{% url 'reportes' %}" class="tile t-reportes" aria-label="Ir a Reportes">
+        <img class="img-reportes" src="{% static 'reportes_home.jpg' %}" alt="Reportes: estadísticas, datos de crecimiento y análisis mensual">
     </a>
 
     <!-- REEMBOLSOS -->

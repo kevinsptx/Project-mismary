@@ -11,9 +11,9 @@ Carga datos de EJEMPLO con un flujo completo y coherente:
 Las fechas se calculan desde HOY, así los reportes siempre se ven vivos.
 
 Uso:
-    python manage.py cargar_datos_demo
-    python manage.py cargar_datos_demo --limpiar          (borra antes lo del negocio)
-    python manage.py cargar_datos_demo --crear-usuarios   (crea admin_demo y usuario_demo)
+    python manage.py cargar_datos
+    python manage.py cargar_datos --limpiar          (borra antes lo del negocio)
+    python manage.py cargar_datos --crear-usuarios   (crea admin_demo y usuario_demo)
 """
 from datetime import datetime, time, timedelta
 from decimal import Decimal
@@ -37,58 +37,62 @@ from .limpiar_datos import borrar_datos_negocio, hacer_respaldo
 # ------------------------------------------------------------------
 
 CATEGORIAS = [
-    'Labiales', 'Bases y Correctores', 'Ojos', 'Cuidado de la Piel', 'Accesorios',
+    'Maquillaje', 'Cuidado Facial', 'Cabello', 'Uñas', 'Accesorios',
 ]
 
 PROVEEDORES = [
-    ('Distribuidora Belleza Total', '3101234567', 'ventas@bellezatotal.co', 'Cra 5 # 10-20, Ibagué'),
-    ('Cosméticos del Valle', '3207654321', 'pedidos@cosmeticosvalle.co', 'Calle 15 # 8-45, Cali'),
+    ('Distribuciones Aurora', '3112345678', 'ventas@aurora.co', 'Cra 3 # 12-40, Ibagué'),
+    ('Beauty Import Colombia', '3159876543', 'pedidos@beautyimport.co', 'Calle 72 # 10-34, Bogotá'),
+    ('Mayorista La Belleza', '3004561230', 'info@mayoristabelleza.co', 'Av. 30 de Agosto # 45-10, Pereira'),
 ]
 
 # nombre: (categoría, precio de compra, precio de venta)
 PRODUCTOS = {
-    'Labial Mate Rojo':          ('Labiales', 6000, 12000),
-    'Labial Mate Nude':          ('Labiales', 6000, 12000),
-    'Brillo Labial Transparente': ('Labiales', 4000, 8500),
-    'Base Líquida Tono Claro':   ('Bases y Correctores', 14000, 28000),
-    'Corrector Cremoso':         ('Bases y Correctores', 9000, 18000),
-    'Delineador Líquido Negro':  ('Ojos', 5000, 11000),
-    'Máscara de Pestañas':       ('Ojos', 8000, 17000),
-    'Paleta de Sombras':         ('Ojos', 18000, 35000),
-    'Crema Hidratante Facial':   ('Cuidado de la Piel', 12000, 24000),
-    'Protector Solar Facial':    ('Cuidado de la Piel', 15000, 30000),
-    'Set de Brochas':            ('Accesorios', 20000, 40000),
-    'Esponja de Maquillaje':     ('Accesorios', 3000, 7000),
+    'Labial Líquido Coral':     ('Maquillaje', 7000, 15000),
+    'Rubor en Polvo Rosa':      ('Maquillaje', 8000, 17000),
+    'Polvo Compacto Natural':   ('Maquillaje', 9000, 19000),
+    'Pestañina Waterproof':     ('Maquillaje', 8500, 18000),
+    'Gel Fijador de Cejas':     ('Maquillaje', 5000, 11000),
+    'Limpiador Facial Espuma':  ('Cuidado Facial', 11000, 23000),
+    'Sérum Vitamina C':         ('Cuidado Facial', 18000, 38000),
+    'Mascarilla de Arcilla':    ('Cuidado Facial', 6000, 13000),
+    'Shampoo de Keratina':      ('Cabello', 13000, 26000),
+    'Mascarilla Capilar':       ('Cabello', 12000, 25000),
+    'Aceite de Argán':          ('Cabello', 15000, 32000),
+    'Esmalte Gel Rojo':         ('Uñas', 4000, 9000),
+    'Set de Limas':             ('Uñas', 3000, 7000),
+    'Espejo de Mano':           ('Accesorios', 6000, 14000),
+    'Neceser Floral':           ('Accesorios', 10000, 22000),
 }
 
 # Producto registrado pero SIN pedido todavía (sin precio ni stock):
 # así se ve cómo queda un producto recién creado.
-PRODUCTO_SIN_PEDIDO = ('Rubor en Crema', 'Bases y Correctores')
+PRODUCTO_SIN_PEDIDO = ('Kit de Pinceles Mini', 'Accesorios')
 
 CLIENTES = [
-    ('Ana María Gómez',     '3001112233', 'Barrio La Pola, Ibagué'),
-    ('Carlos Pérez',        '3012223344', 'Cra 4 # 15-30, Ibagué'),
-    ('Laura Rodríguez',     '3023334455', 'Barrio Jordán, Ibagué'),
-    ('Sofía Martínez',      '3034445566', 'Cádiz, Ibagué'),
-    ('Juan David Torres',   '3045556677', 'El Salado, Ibagué'),
-    ('Valentina Ríos',      '3056667788', 'Picaleña, Ibagué'),
-    ('Camila Herrera',      '3067778899', 'Ambalá, Ibagué'),
-    ('Andrés Castaño',      '3078889900', 'Calle 60 # 5-12, Ibagué'),
-    ('Daniela Ospina',      '3089990011', 'Barrio Interlaken, Ibagué'),
-    ('Mariana López',       '3090001122', 'Cra 3 # 22-40, Ibagué'),
+    ('Paula Andrea Vargas',   '3101112233', 'Barrio La Pola, Ibagué'),
+    ('Esteban Molina',        '3112223344', 'Cra 5 # 20-15, Ibagué'),
+    ('Natalia Cárdenas',      '3123334455', 'Barrio Jordán, Ibagué'),
+    ('Felipe Giraldo',        '3134445566', 'Cádiz, Ibagué'),
+    ('Luisa Fernanda Mejía',  '3145556677', 'El Salado, Ibagué'),
+    ('Santiago Rincón',       '3156667788', 'Picaleña, Ibagué'),
+    ('Karen Beltrán',         '3167778899', 'Ambalá, Ibagué'),
+    ('Julián Arias',          '3178889900', 'Calle 42 # 3-18, Ibagué'),
 ]
 
 # (días atrás del pedido, índice proveedor, estado, días atrás de recepción, líneas)
 PEDIDOS = [
-    (56, 0, 'Recibido', 53, [('Labial Mate Rojo', 8), ('Labial Mate Nude', 9),
-                             ('Brillo Labial Transparente', 8), ('Delineador Líquido Negro', 6),
-                             ('Máscara de Pestañas', 6)]),
-    (36, 1, 'Recibido', 33, [('Base Líquida Tono Claro', 5), ('Corrector Cremoso', 3),
-                             ('Crema Hidratante Facial', 5), ('Protector Solar Facial', 5)]),
-    (22, 0, 'Cancelado', None, [('Set de Brochas', 4)]),
-    (14, 0, 'Recibido', 10, [('Paleta de Sombras', 3), ('Set de Brochas', 2),
-                             ('Esponja de Maquillaje', 8), ('Labial Mate Rojo', 4)]),
-    (4,  1, 'Pendiente', None, [('Protector Solar Facial', 6), ('Base Líquida Tono Claro', 4)]),
+    (60, 0, 'Recibido', 57, [('Labial Líquido Coral', 7), ('Rubor en Polvo Rosa', 4),
+                             ('Polvo Compacto Natural', 4), ('Pestañina Waterproof', 6),
+                             ('Esmalte Gel Rojo', 8), ('Set de Limas', 4),
+                             ('Limpiador Facial Espuma', 4)]),
+    (42, 1, 'Recibido', 39, [('Sérum Vitamina C', 4), ('Mascarilla de Arcilla', 3),
+                             ('Shampoo de Keratina', 3), ('Mascarilla Capilar', 4),
+                             ('Aceite de Argán', 3)]),
+    (30, 2, 'Cancelado', None, [('Neceser Floral', 5)]),
+    (18, 2, 'Recibido', 15, [('Espejo de Mano', 4), ('Neceser Floral', 3),
+                             ('Gel Fijador de Cejas', 4), ('Labial Líquido Coral', 3)]),
+    (3,  1, 'Pendiente', None, [('Sérum Vitamina C', 6), ('Shampoo de Keratina', 4)]),
 ]
 
 # Cada venta:
@@ -98,46 +102,47 @@ PEDIDOS = [
 #   pagado: lo que pagó al momento de la venta
 #   forma:  forma de pago del pago inicial
 #   abonos: [(días atrás, valor, forma)]  pagos posteriores
-#   cancelada: None | ('Devuelto', días atrás de la devolución) | ('Solicitado', None)
+#   cancelada: None | ('Devuelto', días atrás de la devolución)
 VENTAS = [
-    dict(dias=50, cliente=0, items=[('Labial Mate Rojo', 2), ('Brillo Labial Transparente', 1)], pagado=32500, forma='Efectivo'),
-    dict(dias=48, cliente=1, items=[('Labial Mate Nude', 1), ('Delineador Líquido Negro', 1)], pagado=10000, forma='Nequi',
-         abonos=[(40, 8000, 'Nequi'), (30, 5000, 'Efectivo')]),
-    dict(dias=45, cliente=2, items=[('Máscara de Pestañas', 2), ('Labial Mate Rojo', 1)], pagado=46000, forma='Transferencia'),
-    dict(dias=41, cliente=3, items=[('Labial Mate Nude', 2)], pagado=0, forma='Efectivo',
-         abonos=[(20, 10000, 'Efectivo')]),
-    dict(dias=38, cliente=4, items=[('Delineador Líquido Negro', 2), ('Brillo Labial Transparente', 2)], pagado=20000, forma='Daviplata',
-         abonos=[(15, 9000, 'Daviplata')]),
-    dict(dias=32, cliente=5, items=[('Base Líquida Tono Claro', 1), ('Corrector Cremoso', 1)], pagado=46000, forma='Nequi'),
-    dict(dias=28, cliente=0, items=[('Crema Hidratante Facial', 1), ('Protector Solar Facial', 1)], pagado=30000, forma='Efectivo',
-         abonos=[(12, 24000, 'Nequi')]),
-    dict(dias=25, cliente=6, items=[('Labial Mate Rojo', 3), ('Labial Mate Nude', 2)], pagado=60000, forma='Efectivo',
-         cancelada=('Devuelto', 23)),
-    dict(dias=20, cliente=7, items=[('Base Líquida Tono Claro', 2), ('Máscara de Pestañas', 1)], pagado=40000, forma='Transferencia',
-         abonos=[(8, 15000, 'Efectivo')]),
-    dict(dias=16, cliente=8, items=[('Crema Hidratante Facial', 2)], pagado=48000, forma='Nequi'),
-    dict(dias=13, cliente=9, items=[('Protector Solar Facial', 2), ('Corrector Cremoso', 1)], pagado=0, forma='Efectivo'),
-    dict(dias=9,  cliente=1, items=[('Paleta de Sombras', 1), ('Esponja de Maquillaje', 2)], pagado=49000, forma='Efectivo'),
-    dict(dias=7,  cliente=2, items=[('Set de Brochas', 1), ('Labial Mate Rojo', 2)], pagado=30000, forma='Nequi'),
-    dict(dias=5,  cliente=3, items=[('Esponja de Maquillaje', 3), ('Brillo Labial Transparente', 2)], pagado=38000, forma='Efectivo',
-         cancelada=('Solicitado', None)),
-    dict(dias=3,  cliente=5, items=[('Paleta de Sombras', 2), ('Delineador Líquido Negro', 1)], pagado=81000, forma='Transferencia'),
-    dict(dias=1,  cliente=4, items=[('Labial Mate Rojo', 2), ('Labial Mate Nude', 2), ('Brillo Labial Transparente', 1)], pagado=56500, forma='Efectivo'),
-    dict(dias=0,  cliente=0, items=[('Máscara de Pestañas', 1)], pagado=17000, forma='Nequi'),
-    dict(dias=31, cliente=8, items=[('Base Líquida Tono Claro', 1)], pagado=28000, forma='Nequi'),
-    dict(dias=18, cliente=6, items=[('Crema Hidratante Facial', 1), ('Corrector Cremoso', 1)], pagado=42000, forma='Efectivo'),
-    dict(dias=11, cliente=7, items=[('Protector Solar Facial', 1), ('Labial Mate Nude', 1)], pagado=42000, forma='Transferencia'),
-    dict(dias=6,  cliente=9, items=[('Máscara de Pestañas', 1), ('Delineador Líquido Negro', 1)], pagado=28000, forma='Daviplata'),
+    dict(dias=54, cliente=0, items=[('Labial Líquido Coral', 2), ('Esmalte Gel Rojo', 1)], pagado=39000, forma='Efectivo'),
+    dict(dias=51, cliente=1, items=[('Rubor en Polvo Rosa', 1), ('Pestañina Waterproof', 1)], pagado=15000, forma='Nequi',
+         abonos=[(44, 10000, 'Nequi'), (35, 10000, 'Efectivo')]),
+    dict(dias=47, cliente=2, items=[('Polvo Compacto Natural', 2), ('Set de Limas', 2)], pagado=52000, forma='Transferencia'),
+    dict(dias=43, cliente=3, items=[('Limpiador Facial Espuma', 1), ('Labial Líquido Coral', 1)], pagado=0, forma='Efectivo',
+         abonos=[(25, 15000, 'Efectivo')]),
+    dict(dias=41, cliente=4, items=[('Esmalte Gel Rojo', 3), ('Pestañina Waterproof', 1)], pagado=20000, forma='Daviplata',
+         abonos=[(20, 25000, 'Daviplata')]),
+    dict(dias=36, cliente=5, items=[('Sérum Vitamina C', 1), ('Mascarilla de Arcilla', 1)], pagado=51000, forma='Nequi'),
+    dict(dias=33, cliente=6, items=[('Shampoo de Keratina', 1), ('Mascarilla Capilar', 1)], pagado=25000, forma='Efectivo',
+         abonos=[(14, 26000, 'Nequi')]),
+    dict(dias=29, cliente=7, items=[('Labial Líquido Coral', 3), ('Rubor en Polvo Rosa', 1)], pagado=62000, forma='Efectivo',
+         cancelada=('Devuelto', 27)),
+    dict(dias=26, cliente=0, items=[('Aceite de Argán', 1), ('Esmalte Gel Rojo', 1)], pagado=41000, forma='Transferencia'),
+    dict(dias=22, cliente=1, items=[('Sérum Vitamina C', 2)], pagado=40000, forma='Nequi',
+         abonos=[(9, 20000, 'Efectivo')]),
+    dict(dias=19, cliente=2, items=[('Pestañina Waterproof', 2), ('Limpiador Facial Espuma', 1)], pagado=59000, forma='Efectivo'),
+    dict(dias=14, cliente=3, items=[('Espejo de Mano', 1), ('Neceser Floral', 1)], pagado=0, forma='Efectivo'),
+    dict(dias=12, cliente=4, items=[('Gel Fijador de Cejas', 2), ('Labial Líquido Coral', 1)], pagado=37000, forma='Nequi'),
+    dict(dias=10, cliente=5, items=[('Polvo Compacto Natural', 1), ('Rubor en Polvo Rosa', 1), ('Set de Limas', 1)], pagado=43000, forma='Efectivo'),
+    dict(dias=8,  cliente=6, items=[('Neceser Floral', 1), ('Espejo de Mano', 1)], pagado=36000, forma='Daviplata',
+         cancelada=('Devuelto', 7)),
+    dict(dias=6,  cliente=7, items=[('Shampoo de Keratina', 1), ('Aceite de Argán', 1), ('Mascarilla de Arcilla', 1)], pagado=71000, forma='Transferencia'),
+    dict(dias=4,  cliente=2, items=[('Sérum Vitamina C', 1), ('Limpiador Facial Espuma', 1)], pagado=30000, forma='Efectivo',
+         abonos=[(1, 15000, 'Nequi')]),
+    dict(dias=2,  cliente=0, items=[('Labial Líquido Coral', 2), ('Esmalte Gel Rojo', 2)], pagado=48000, forma='Nequi'),
+    dict(dias=1,  cliente=1, items=[('Mascarilla Capilar', 2), ('Espejo de Mano', 1)], pagado=64000, forma='Efectivo'),
+    dict(dias=0,  cliente=3, items=[('Pestañina Waterproof', 1), ('Gel Fijador de Cejas', 1)], pagado=29000, forma='Nequi'),
 ]
 
 # (días atrás, descripción, valor)
 GASTOS_HORMIGA = [
-    (50, 'Bolsas y papel de regalo', 8500),
-    (44, 'Transporte para recoger pedido', 12000),
-    (30, 'Cinta y etiquetas para empaques', 6000),
-    (21, 'Publicidad en redes sociales', 30000),
-    (11, 'Domicilios a clientes', 15000),
-    (2,  'Papelería y marcadores', 9500),
+    (52, 'Bolsas de papel kraft', 9000),
+    (46, 'Pasaje para recoger mercancía', 7500),
+    (38, 'Etiquetas y stickers para empaques', 11000),
+    (27, 'Impulso de publicaciones en Instagram', 25000),
+    (16, 'Domicilio a clientes', 14000),
+    (9,  'Tijeras y cinta de embalaje', 8000),
+    (1,  'Papel de seda para regalos', 6500),
 ]
 
 
@@ -165,15 +170,21 @@ class Command(BaseCommand):
                 '(se hace un respaldo automático).'
             )
 
+        if opciones['crear_usuarios']:
+            self.crear_usuarios()
+
+        # Usuario que queda como "quien hizo el reembolso" en los datos de ejemplo
+        User = get_user_model()
+        self.quien = (User.objects.filter(is_superuser=True).first()
+                      or User.objects.filter(username='admin_demo').first()
+                      or User.objects.first())
+
         with transaction.atomic():
             productos = self.crear_catalogo()
             clientes = self.crear_clientes()
             self.crear_pedidos(productos)
             ventas = self.crear_ventas(productos, clientes)
             self.crear_gastos()
-
-        if opciones['crear_usuarios']:
-            self.crear_usuarios()
 
         self.resumen()
 
@@ -323,15 +334,14 @@ class Command(BaseCommand):
                 venta.estado = 'Cancelada'
                 venta.save(update_fields=['estado'])
 
+                metodo = datos['forma'] if datos['forma'] in ('Efectivo', 'Nequi', 'Daviplata', 'Transferencia') else 'Otro'
                 reembolso = Reembolso.objects.create(
                     venta=venta, motivo='El cliente se arrepintió de la compra',
-                    monto=pagado, metodo='Efectivo', estado='Solicitado',
-                    observaciones='Dato de ejemplo.',
+                    monto=pagado, metodo=metodo, estado='Devuelto',
+                    fecha_devolucion=self.momento(dias_devolucion, hora=11),
+                    observaciones='Reembolso realizado al cancelar la venta (dato de ejemplo).',
+                    registrado_por=self.quien,
                 )
-                if estado_reembolso == 'Devuelto':
-                    reembolso.estado = 'Devuelto'
-                    reembolso.fecha_devolucion = self.momento(dias_devolucion, hora=11)
-                    reembolso.save()
 
     # ------------------------------------------------------------
     # 4. Gastos hormiga

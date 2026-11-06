@@ -1,4 +1,3 @@
-```html
 {% extends 'layout/base.html' %}
 {% load humanize %}
 
@@ -497,13 +496,15 @@ Detalle de Venta | MisMary
                 </a>
             {% endif %}
 
-            <a
-                href="{% url 'venta_delete' venta.id %}"
-                class="btn-mismary btn-eliminar"
-                onclick="return confirm('¿Está seguro de eliminar esta venta?')"
-            >
-                Eliminar
-            </a>
+            {% if perms.SGV_mismary.delete_venta %}
+                <form method="POST" action="{% url 'venta_delete' venta.id %}" style="margin:0;"
+                      onsubmit="return confirm('¿Está seguro de eliminar esta venta?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-mismary btn-eliminar">
+                        Eliminar
+                    </button>
+                </form>
+            {% endif %}
 
         </div>
 
@@ -511,4 +512,3 @@ Detalle de Venta | MisMary
 </div>
 
 {% endblock %}
-```

@@ -1,0 +1,42 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Sin permiso | MisMary{% endblock %}
+
+{% block content %}
+<style>
+    .sin-permiso {
+        max-width: 520px;
+        margin: 70px auto;
+        padding: 36px 30px;
+        text-align: center;
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 26px;
+        box-shadow: 0 10px 25px -8px rgba(74, 44, 27, 0.12);
+        color: #4A2C1B;
+    }
+    .sin-permiso svg {
+        width: 72px; height: 72px; fill: none; stroke: #FF6B35;
+        stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .sin-permiso h1 { margin: 14px 0 8px; font-size: 26px; }
+    .sin-permiso p  { margin: 0 0 22px; opacity: 0.85; line-height: 1.5; }
+    .sin-permiso a {
+        display: inline-block; padding: 11px 24px; border-radius: 999px;
+        background: #FF6B35; color: #FFFFFF; font-weight: 600; text-decoration: none;
+    }
+    .sin-permiso a:hover { background: #E85A26; }
+</style>
+
+<div class="sin-permiso">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6.4 10.6 L17.6 10.4 L17.8 20.2 L6.3 20.4 Z"/>
+        <path d="M8.6 10.5 L8.5 7.4 Q8.6 3.8 12 3.7 Q15.5 3.8 15.5 7.3 L15.4 10.4"/>
+        <path d="M12 14.4 L12.1 16.6"/>
+    </svg>
+    <h1>No tienes permiso para esto</h1>
+    <p>Tu rol solo permite ver y registrar. Si necesitas editar o eliminar,
+       pídele al administrador que ajuste tus permisos.</p>
+    <a href="{% url 'home' %}">Volver al inicio</a>
+</div>
+{% endblock %}

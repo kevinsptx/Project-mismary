@@ -1,4 +1,3 @@
-
 {% extends 'layout/base.html' %}
 
 {% block title %}Detalle Cliente | MisMary{% endblock %}
@@ -323,18 +322,25 @@
                 Volver
             </a>
 
-            <a href="{% url 'cliente_update' cliente.id %}" class="btn-mismary">
-                Actualizar
-            </a>
-
-            {% if tiene_deuda %}
-                <button type="button" class="btn-mismary btn-eliminar" onclick="mostrarAviso()">
-                    Eliminar
-                </button>
-            {% else %}
-                <a href="{% url 'cliente_delete' cliente.id %}" class="btn-mismary btn-eliminar">
-                    Eliminar
+            {% if perms.SGV_mismary.change_cliente %}
+                <a href="{% url 'cliente_update' cliente.id %}" class="btn-mismary">
+                    Actualizar
                 </a>
+            {% endif %}
+
+            {% if perms.SGV_mismary.delete_cliente %}
+                {% if tiene_deuda %}
+                    <button type="button" class="btn-mismary btn-eliminar" onclick="mostrarAviso()">
+                        Eliminar
+                    </button>
+                {% else %}
+                    <form method="POST" action="{% url 'cliente_delete' cliente.id %}" style="margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-mismary btn-eliminar">
+                            Eliminar
+                        </button>
+                    </form>
+                {% endif %}
             {% endif %}
         </div>
 
