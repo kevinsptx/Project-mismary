@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from functools import wraps
 from django.db import transaction
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, F, DecimalField
 from django.db.models.functions import Coalesce, TruncDate
 from django.http import HttpResponse
 from django.urls import reverse
@@ -968,7 +968,23 @@ def datos_ingresos(inicio, fin):
     # --- Lo vendido en el período (para comparar con lo recibido) ---
     ventas = Venta.objects.exclude(estado='Cancelada')
     ventas = filtrar_por_fecha(ventas, inicio, fin)
-    total_vendido = ventas.aggregate(total=Sum('valor_total'))['total'] or Decimal('0')
+    # Ingreso neto: lo que se ganó con cada producto vendido
+    # = (precio de venta - precio de compra) x cantidad, sumado.
+    detalles = DetalleVenta.objects.exclude(venta__estado='Cancelada')
+    if inicio:
+        detalles = detalles.filter(venta__fecha__gte=inicio)
+    if fin:
+        detalles = detalles.filter(venta__fecha__lte=fin)
+
+    ganancia_productos = detalles.aggregate(
+        total=Sum(
+            (F('precio') - F('producto__precio_compra')) * F('cantidad'),
+            output_field=DecimalField(max_digits=14, decimal_places=2)
+        )
+    )['total'] or Decimal('0')
+
+    resumen_ventas = ventas.aggregate(total=Sum('valor_total'), cantidad=Count('id'))
+    total_vendido = resumen_ventas['total'] or Decimal('0')
 
     return {
         'filas': filas,
@@ -977,6 +993,8 @@ def datos_ingresos(inicio, fin):
         'total_devuelto': total_devuelto,
         'total_neto': total_recibido - total_devuelto,
         'total_vendido': total_vendido,
+        'ganancia_productos': ganancia_productos,
+        'cantidad_ventas': resumen_ventas['cantidad'],
     }
 
 
@@ -1112,10 +1130,6 @@ PESTANAS_REPORTE = {
         ('Gastos hormiga', 'reporte_gastos_hormiga', 'hormiga'),
         ('Por recibir', 'reporte_gastos_pendientes', 'pendientes'),
     ],
-    'balance': [
-        ('Balance', 'reporte_balance', 'balance'),
-        ('Fuera del balance', 'reporte_balance_fuera', 'fuera'),
-    ],
 }
 
 
@@ -1145,10 +1159,7 @@ def reportes(request):
 def _reporte_ingresos(request, plantilla, activa):
     inicio, fin = rango_fechas(request)
 
-    contexto = {
-        'ingresos': datos_ingresos(inicio, fin),
-        'por_cobrar': datos_clientes_deuda()['total_saldo'],
-    }
+    contexto = {'ingresos': datos_ingresos(inicio, fin)}
     contexto.update(contexto_filtro(inicio, fin))
     contexto.update(contexto_pestanas(request, 'ingresos', activa))
 
@@ -1166,20 +1177,23 @@ def reporte_ingresos(request):
 @requiere_permisos('view_pago', 'view_abono')
 def reporte_ingresos_dias(request):
     """Ingresos día por día."""
-    return _reporte_ingresos(request, 'reporte_ingresos_dias.html', 'dias')
+    return _reporte_ingresos(request, 'reporte_ingreso_dia.html', 'dias')
 
 
 @login_required
 @requiere_permisos('view_pago', 'view_abono')
 def reporte_ingresos_pagos(request):
     """Ingresos por forma de pago."""
-    return _reporte_ingresos(request, 'reporte_ingresos_pagos.html', 'pagos')
+    return _reporte_ingresos(request, 'reporte_ingreso_pagos.html', 'pagos')
 
 
 def _reporte_gastos(request, plantilla, activa):
     inicio, fin = rango_fechas(request)
 
-    contexto = {'gastos': datos_gastos(inicio, fin)}
+    contexto = {
+        'gastos': datos_gastos(inicio, fin),
+        'por_cobrar': datos_clientes_deuda()['total_saldo'],
+    }
     contexto.update(contexto_filtro(inicio, fin))
     contexto.update(contexto_pestanas(request, 'costos', activa))
 
@@ -1197,14 +1211,14 @@ def reporte_gastos(request):
 @requiere_permisos('view_gasto')
 def reporte_gastos_detalle(request):
     """Costos: cada movimiento del período."""
-    return _reporte_gastos(request, 'reporte_gastos_detalle.html', 'detalle')
+    return _reporte_gastos(request, 'reporte_gatos_detalle.html', 'detalle')
 
 
 @login_required
 @requiere_permisos('view_gasto')
 def reporte_gastos_pendientes(request):
     """Pedidos que todavía no llegan."""
-    return _reporte_gastos(request, 'reporte_gastos_pendientes.html', 'pendientes')
+    return _reporte_gastos(request, 'reporte_gatos_pendientes.html', 'pendientes')
 
 
 @login_required
@@ -1223,7 +1237,7 @@ def reporte_gastos_hormiga(request):
     contexto.update(contexto_filtro(inicio, fin))
     contexto.update(contexto_pestanas(request, 'costos', 'hormiga'))
 
-    return render(request, 'reporte_gastos_hormiga.html', contexto)
+    return render(request, 'reporte_gato_hormiga.html', contexto)
 
 
 @login_required
@@ -1235,7 +1249,9 @@ def reporte_clientes_deuda(request):
     })
 
 
-def _reporte_balance(request, plantilla, activa):
+@login_required
+@requiere_permisos('view_pago', 'view_abono', 'view_gasto')
+def reporte_balance(request):
     """Balance = ingresos netos recibidos - costos."""
     inicio, fin = rango_fechas(request)
 
@@ -1246,24 +1262,10 @@ def _reporte_balance(request, plantilla, activa):
         'ingresos': ingresos,
         'gastos': gastos,
         'balance': ingresos['total_neto'] - gastos['total'],
-        'por_cobrar': datos_clientes_deuda()['total_saldo'],
     }
     contexto.update(contexto_filtro(inicio, fin))
-    contexto.update(contexto_pestanas(request, 'balance', activa))
 
-    return render(request, plantilla, contexto)
-
-
-@login_required
-@requiere_permisos('view_pago', 'view_abono', 'view_gasto')
-def reporte_balance(request):
-    return _reporte_balance(request, 'reporte_balance.html', 'balance')
-
-
-@login_required
-@requiere_permisos('view_pago', 'view_abono', 'view_gasto')
-def reporte_balance_fuera(request):
-    return _reporte_balance(request, 'reporte_balance_fuera.html', 'fuera')
+    return render(request, 'reporte_balance.html', contexto)
 
 
 @login_required

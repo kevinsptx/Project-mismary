@@ -14,44 +14,26 @@ Ingresos | MisMary
     <section class="resumen">
 
         <div class="stat stat-positivo">
-            <span class="etiqueta">Ingreso neto recibido</span>
+            <span class="etiqueta">Ingreso neto</span>
+            <span class="valor">$ {{ ingresos.ganancia_productos|floatformat:"0g" }}</span>
+        </div>
+
+        <div class="stat">
+            <span class="etiqueta">Ingresos</span>
             <span class="valor">$ {{ ingresos.total_neto|floatformat:"0g" }}</span>
-            <span class="nota">Dinero recibido menos devoluciones</span>
         </div>
 
         <div class="stat">
             <span class="etiqueta">Dinero recibido</span>
             <span class="valor">$ {{ ingresos.total_recibido|floatformat:"0g" }}</span>
-            <span class="nota">Pagos y abonos de clientes</span>
         </div>
 
         <div class="stat">
             <span class="etiqueta">Devoluciones</span>
             <span class="valor">$ {{ ingresos.total_devuelto|floatformat:"0g" }}</span>
-            <span class="nota">Reembolsos ya devueltos</span>
-        </div>
-
-        <div class="stat stat-aparte">
-            <span class="etiqueta">Vendido en este período</span>
-            <span class="valor">$ {{ ingresos.total_vendido|floatformat:"0g" }}</span>
-            <span class="nota">Ventas registradas (sin canceladas). No es plata recibida todavía.</span>
-        </div>
-
-        <div class="stat stat-aparte">
-            <span class="etiqueta">Por cobrar hoy</span>
-            <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
-            <span class="nota">Lo que los clientes aún deben. <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver clientes</a></span>
         </div>
 
     </section>
 
-    <div class="aviso">
-        <span>ℹ️</span>
-        <span>
-            <strong>Cómo se cuenta:</strong> si un cliente compra por $3.000 y solo paga $1.000,
-            en ingresos aparecen <strong>$1.000</strong>. Los otros $2.000 quedan en
-            “Por cobrar” y entran a ingresos el día que el cliente los pague.
-        </span>
-    </div>
 
 {% endblock %}

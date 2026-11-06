@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -307,11 +306,48 @@
             box-shadow: 0 6px 14px rgba(255, 107, 53, 0.35);
         }
 
+        /* ===== ÍCONOS DIBUJADOS A MANO (naranja; cambian de color al pasar/presionar) ===== */
         .nav-icono {
-            font-size: 18px;
             flex-shrink: 0;
-            width: 20px;
-            text-align: center;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--naranja);
+            transition: color 0.2s ease, transform 0.15s ease;
+        }
+
+        .nav-icono svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* al pasar el mouse: se aclara y se inclina un poquito */
+        .nav-item:hover .nav-icono {
+            color: var(--arena);
+            transform: rotate(-7deg) scale(1.1);
+        }
+
+        /* al presionar: se achica */
+        .nav-item:active .nav-icono {
+            color: #FFFFFF;
+            transform: scale(0.85);
+        }
+
+        /* página actual: el fondo es naranja, entonces el ícono se vuelve blanco */
+        .nav-item.activo .nav-icono {
+            color: #FFFFFF;
+        }
+
+        /* el botón de cerrar sesión ya es naranja: ícono blanco */
+        .logout-btn .nav-icono {
+            color: #FFFFFF;
         }
 
         .nav-texto {
@@ -512,57 +548,57 @@
 
             <a href="{% url 'home' %}"
                class="nav-item{% if request.resolver_match.url_name == 'home' %} activo{% endif %}">
-                <span class="nav-icono">🏠</span>
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 11.6 L12.1 3.7 L20.9 11.3"/><path d="M5.5 10.3 L5.2 20.2 Q5.2 20.8 5.8 20.8 L18.3 20.6 Q18.9 20.6 18.8 20 L18.6 10.2"/><path d="M10 20.7 L10.2 14.6 L14 14.5 L13.9 20.6"/></svg></span>
                 <span class="nav-texto">Home</span>
             </a>
 
             <a href="{% url 'list_producto' %}"
                class="nav-item{% if request.resolver_match.url_name == 'list_producto' %} activo{% endif %}">
-                <span class="nav-icono">📦</span>
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 7.6 L12 3.4 L20.7 7.5 L20.5 16.6 L12.2 20.8 L3.5 16.7 Z"/><path d="M3.6 7.7 L12.1 11.9 L20.5 7.6"/><path d="M12.1 12 L12.2 20.7"/></svg></span>
                 <span class="nav-texto">Productos</span>
             </a>
 
             <a href="{% url 'list_cliente' %}"
                class="nav-item{% if request.resolver_match.url_name == 'list_cliente' %} activo{% endif %}">
-                <span class="nav-icono">👥</span>
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.2 20 Q3.4 14.3 9 14.2 Q14.6 14.3 14.9 20"/><path d="M15.8 4.9 Q18.9 5.2 18.8 8.3 Q18.6 10.6 16.3 11"/><path d="M17.6 14.4 Q20.7 15 20.9 19.6"/></svg></span>
                 <span class="nav-texto">Clientes</span>
             </a>
 
             <a href="{% url 'list_venta' %}"
                class="nav-item{% if request.resolver_match.url_name == 'list_venta' %} activo{% endif %}">
-                <span class="nav-icono">🛒</span>
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 4 L5.4 4.2 L7.6 15.2 L18.6 14.9 L20.4 7.2 L6 7"/><circle cx="9.3" cy="19.2" r="1.3"/><circle cx="17" cy="19" r="1.3"/></svg></span>
                 <span class="nav-texto">Ventas</span>
             </a>
 
             <a href="{% url 'list_pedido' %}"
                class="nav-item{% if request.resolver_match.url_name == 'list_pedido' %} activo{% endif %}">
-                <span class="nav-icono">📋</span>
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 5.2 L5.3 5.4 L5.1 20.4 L18.9 20.2 L18.7 5.1 L16.8 5.2"/><path d="M8.4 3.6 L15.7 3.5 L15.6 6.9 L8.5 7 Z"/><path d="M8.6 12 L15.4 11.9"/><path d="M8.5 16 L13.4 16.1"/></svg></span>
                 <span class="nav-texto">Pedidos</span>
             </a>
 
             <a href="{% url 'list_proveedor' %}"
                class="nav-item{% if request.resolver_match.url_name == 'list_proveedor' or request.resolver_match.url_name == 'register_proveedor' or request.resolver_match.url_name == 'proveedor_details' or request.resolver_match.url_name == 'proveedor_update' %} activo{% endif %}">
-                <span class="nav-icono">🚚</span>
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.7 6.4 L14 6.2 L14.2 16.6 L2.9 16.8 Z"/><path d="M14.2 9.6 L18.4 9.5 L21.2 12.8 L21.1 16.6 L14.2 16.6"/><circle cx="7" cy="18.4" r="1.8"/><circle cx="17.3" cy="18.3" r="1.8"/></svg></span>
                 <span class="nav-texto">Proveedores</span>
             </a>
             
             {% if user.is_superuser %}
                 <a href="{% url 'list_grupos' %}"
                    class="nav-item{% if request.resolver_match.url_name == 'list_grupos' or request.resolver_match.url_name == 'grupo_detalle' %} activo{% endif %}">
-                    <span class="nav-icono">👤</span>
+                    <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.8" r="3"/><path d="M6.2 19.6 Q6.3 13.6 12 13.5 Q17.7 13.6 17.8 19.6"/><circle cx="4.7" cy="10.2" r="1.9"/><circle cx="19.3" cy="10.2" r="1.9"/></svg></span>
                     <span class="nav-texto">Grupos</span>
                 </a>
             {% endif %}
             
                 <a href="{% url 'lista_reembolsos' %}"
                    class="nav-item{% if request.resolver_match.url_name == 'lista_reembolsos' or request.resolver_match.url_name == 'solicitar_reembolso' or request.resolver_match.url_name == 'details_reembolso' or request.resolver_match.url_name == 'registrar_devolucion' %} activo{% endif %}">
-                    <span class="nav-icono">💸</span>
+                    <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12.2" cy="12" r="8.6"/><path d="M8.5 12.3 L12.4 8.3"/><path d="M8.5 12.3 L12.5 16.3"/><path d="M8.8 12.4 L16.2 12.5"/></svg></span>
                     <span class="nav-texto">Reembolsos</span>
                 </a>
 
                 <a href="{% url 'reportes' %}"
                    class="nav-item{% if request.resolver_match.url_name == 'reportes' %} activo{% endif %}">
-                    <span class="nav-icono">📊</span>
+                    <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 20.5 L20.4 20.3"/><path d="M7.2 19.8 L7.3 13"/><path d="M12 19.8 L11.9 5.6"/><path d="M16.8 19.8 L16.9 10.2"/></svg></span>
                     <span class="nav-texto">Reportes</span>
                 </a>
 
@@ -572,7 +608,7 @@
         <div class="sidebar-bottom">
 
             <div class="usuario-sidebar">
-                <span class="nav-icono">⚙️</span>
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.4" r="3.6"/><path d="M4.6 20.6 Q5 14.6 12 14.6 Q19 14.6 19.4 20.6"/></svg></span>
                 <span class="nav-texto">
                     <strong>{{ user.username }}</strong>
                     {% if user.is_superuser %}
@@ -589,7 +625,7 @@
                 {% csrf_token %}
 
                 <button type="submit" class="logout-btn">
-                    <span class="nav-icono">🚪</span>
+                    <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.8 4 L4.6 4.2 L4.5 20 L9.7 20.1"/><path d="M10.4 12 L20.2 12.1"/><path d="M16.3 8 L20.3 12 L16.2 16.1"/></svg></span>
                     <span class="nav-texto">Cerrar sesión</span>
                 </button>
             </form>

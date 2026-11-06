@@ -1,54 +1,35 @@
 {% extends 'layout/reportes_base.html' %}
 
 {% block title %}
-Costos | MisMary
+Balance | MisMary
 {% endblock %}
 
-{% block rep_titulo %}Pedidos por recibir 📦{% endblock %}
+{% block rep_titulo %}Balance ⚖️{% endblock %}
 
-{% block rep_subtitulo %}No cuentan como costo hasta que los marques como Recibidos{% endblock %}
+{% block rep_subtitulo %}Cuánto entró, cuánto salió y cuánto ganamos{% endblock %}
 
-{% block rep_cuerpo %}    <!-- PEDIDOS POR RECIBIR -->
-    <div class="resultados-barra">
-        <h2>Pedidos por recibir</h2>
+{% block rep_cuerpo %}
 
-        <span class="chip-mismary">No cuentan como costo todavía</span>
-    </div>
+    <section class="resumen">
 
-    <div class="tabla-caja">
-        <table class="tabla-reporte">
+        <div class="stat">
+            <span class="etiqueta">Ingresos</span>
+            <span class="valor">$ {{ ingresos.total_neto|floatformat:"0g" }}</span>
+            <span class="nota">Dinero recibido menos devoluciones</span>
+        </div>
 
-            <thead>
-                <tr>
-                    <th>Pedido</th>
-                    <th>Fecha del pedido</th>
-                    <th>Proveedor</th>
-                    <th>Estado</th>
-                    <th class="col-numero">Valor</th>
-                </tr>
-            </thead>
+        <div class="stat">
+            <span class="etiqueta">Costos</span>
+            <span class="valor">$ {{ gastos.total|floatformat:"0g" }}</span>
+            <span class="nota">Pedidos recibidos + gastos hormiga</span>
+        </div>
 
-            <tbody>
-                {% for pedido in gastos.pendientes %}
-                    <tr>
-                        <td>
-                            <a class="link-fila" href="{% url 'pedido_details' pedido.id %}">#{{ pedido.id }}</a>
-                        </td>
-                        <td>{{ pedido.fecha|date:"d/m/Y" }}</td>
-                        <td>{% if pedido.proveedor %}{{ pedido.proveedor.nombre }}{% else %}{{ pedido.proveedor_texto|default:"Sin proveedor" }}{% endif %}</td>
-                        <td><span class="chip-tipo chip-pendiente">Pendiente</span></td>
-                        <td class="col-numero">$ {{ pedido.costo_total|floatformat:"0g" }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="5" class="sin-registros">
-                            No tienes pedidos pendientes por recibir. 🎉
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
+        <div class="stat {% if balance >= 0 %}stat-positivo{% else %}stat-negativo{% endif %}">
+            <span class="etiqueta">{% if balance >= 0 %}Ganancia{% else %}Pérdida{% endif %}</span>
+            <span class="valor">{% if balance < 0 %}- {% endif %}$ {{ balance|floatformat:"0g"|cut:"-" }}</span>
+            <span class="nota">Ingresos menos costos</span>
+        </div>
 
-        </table>
-    </div>
+    </section>
 
 {% endblock %}

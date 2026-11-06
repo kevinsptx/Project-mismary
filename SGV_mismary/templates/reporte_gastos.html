@@ -40,21 +40,15 @@ Costos | MisMary
             </span>
         </div>
 
+        <div class="stat stat-aparte">
+            <span class="etiqueta">Por cobrar a clientes</span>
+            <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
+            <span class="nota">
+                Lo que los clientes aún deben. No suma al total de costos.
+                <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver clientes</a>
+            </span>
+        </div>
+
     </section>
 
-    <div class="aviso">
-        <span>ℹ️</span>
-        <span>
-            <strong>Cómo se cuenta:</strong> un pedido solo aparece como costo cuando lo marcas como
-            <strong>Recibido</strong>, y cuenta desde ese día. Si está pendiente o cancelado, no suma.
-        </span>
-    </div>
-
-
-    <div class="acciones no-imprimir">
-        <a href="{% url 'reporte_gastos_hormiga' %}" class="btn-mismary btn-secundario">Ver gastos hormiga</a>
-        {% if perms.SGV_mismary.add_gasto %}
-            <a href="{% url 'registrar_gasto' %}" class="btn-mismary">+ Registrar gasto</a>
-        {% endif %}
-    </div>
 {% endblock %}
