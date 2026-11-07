@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load static %}
 {% load humanize %}
 
 {% block title %}
@@ -258,6 +259,22 @@ Pedidos | MisMary
         }
     }
 
+
+    /* ===== STICKER DEL ENCABEZADO (discreto) ===== */
+    .enc-titulo { display: flex; align-items: center; gap: 14px; }
+
+    .stk-lista {
+        height: 58px;
+        width: auto;
+        flex-shrink: 0;
+        transform: rotate(-4deg);
+        filter: drop-shadow(0 4px 6px rgba(74, 44, 27, 0.22));
+        transition: transform 0.25s ease;
+    }
+
+    .enc-titulo:hover .stk-lista { transform: rotate(3deg) scale(1.06); }
+
+    @media (max-width: 520px) { .stk-lista { display: none; } }
 </style>
 
 
@@ -265,10 +282,11 @@ Pedidos | MisMary
 
     <!-- ENCABEZADO -->
     <div class="encabezado">
+        <div class="enc-titulo"><img class="stk-lista" src="{% static 'stk_tablilla.png' %}" alt="">
         <div>
-            <h1>Pedidos a proveedores <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 5.2 L5.3 5.4 L5.1 20.4 L18.9 20.2 L18.7 5.1 L16.8 5.2"/><path d="M8.4 3.6 L15.7 3.5 L15.6 6.9 L8.5 7 Z"/><path d="M8.6 12 L15.4 11.9"/><path d="M8.5 16 L13.4 16.1"/></svg></span></h1>
+            <h1>Pedidos a proveedores </h1>
             <p>Gestiona los pedidos de reabastecimiento para surtir el inventario</p>
-        </div>
+        </div></div>
 
         <a href="{% url 'register_pedido' %}" class="btn-mismary">
             + Registrar pedido

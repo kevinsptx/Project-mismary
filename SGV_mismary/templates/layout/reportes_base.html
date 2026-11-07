@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load static %}
 
 {% comment %}
     BASE COMPARTIDA DE LOS REPORTES
@@ -525,6 +526,22 @@
         }
     }
 
+
+    /* ===== STICKER DEL ENCABEZADO (discreto) ===== */
+    .enc-titulo { display: flex; align-items: center; gap: 14px; }
+
+    .stk-lista {
+        height: 56px;
+        width: auto;
+        flex-shrink: 0;
+        transform: rotate(-4deg);
+        filter: drop-shadow(0 4px 6px rgba(74, 44, 27, 0.22));
+        transition: transform 0.25s ease;
+    }
+
+    .enc-titulo:hover .stk-lista { transform: rotate(3deg) scale(1.06); }
+
+    @media (max-width: 520px) { .stk-lista { display: none; } }
 </style>
 
 
@@ -532,9 +549,12 @@
 
     <!-- ENCABEZADO -->
     <div class="encabezado">
-        <div>
-            <h1>{% block rep_titulo %}{% endblock %}</h1>
-            <p>{% block rep_subtitulo %}{% endblock %}</p>
+        <div class="enc-titulo">
+            {% block rep_sticker %}{% endblock %}
+            <div>
+                <h1>{% block rep_titulo %}{% endblock %}</h1>
+                <p>{% block rep_subtitulo %}{% endblock %}</p>
+            </div>
         </div>
 
         <div class="acciones">

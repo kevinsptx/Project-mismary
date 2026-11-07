@@ -113,10 +113,54 @@ a.tile:active { transform: scale(0.98); }
     background: #FF6B35; color: #fff; font-weight: 600; font-size: 14px; position: relative; z-index: 1;
 }
 
-/* Pedidos: pequeña, café oscuro */
-.t-pedidos { background: #4A2C1B; color: #FCFAF7; }
-.t-pedidos .t-icono { width: 44px; height: 44px; color: #FF6B35; }
-.t-pedidos .t-icono svg { width: 44px; height: 44px; }
+/* Pedidos: el sticker (pedidos_tarjeta.png) va SIN tarjeta detrás.
+   Es un poquito más ancho que la celda para que se vea grande. */
+.t-pedidos {
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+}
+.t-pedidos .img-pedidos {
+    position: absolute;
+    left: -6%;
+    top: 50%;
+    width: 112%;
+    height: auto;
+    transform: translateY(-50%);
+    filter: drop-shadow(0 6px 8px rgba(74, 44, 27, 0.25));
+    pointer-events: none;
+}
+a.t-pedidos:hover { box-shadow: none; }
+/* Etiqueta encima del sticker: "Pendientes (número)" */
+.t-pedidos .chip-pedidos {
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 5px 4px 11px;
+    border-radius: 999px;
+    background: #FF6B35;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.5);
+}
+.t-pedidos .chip-pedidos b {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #FFFFFF;
+    color: #E85A26;
+    font-size: 14px;
+}
 
 /* Clientes: pequeña, blanca */
 .t-clientes { background: #FFFFFF; border-color: #E8DFC8; }
@@ -131,22 +175,14 @@ a.tile:active { transform: scale(0.98); }
 .t-catalogo .t-icono { width: 86px; height: 86px; color: #4A2C1B; }
 .t-catalogo .t-icono svg { width: 86px; height: 86px; stroke-width: 1.9; }
 
-/* Reportes: ALTA (1x2), es una IMAGEN que ocupa toda la tarjeta */
+/* Reportes: ALTA (1x2). La imagen ocupa TODA la altura y va centrada;
+   a los lados queda el mismo rojo de la imagen, así que no hay espacios blancos. */
 .t-reportes {
     grid-row: span 2;
     padding: 0;
-    background: #9E3B27;
     border: 0;
+    background: #A03722 url("{% static 'reportes_tarjeta.jpg' %}") center / auto 100% no-repeat;
 }
-.t-reportes .img-reportes {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.35s ease;
-}
-a.t-reportes:hover .img-reportes { transform: scale(1.04); }
 
 /* Reembolsos: pequeña, rosada */
 .t-reembolsos { background: #FBE9E7; border-color: #F5B7AB; color: #9E3B27; }
@@ -169,15 +205,47 @@ a.t-reportes:hover .img-reportes { transform: scale(1.04); }
 .t-gastos .t-icono { width: 50px; height: 50px; color: #4A2C1B; }
 .t-gastos .t-icono svg { width: 50px; height: 50px; }
 
-/* Grupos (solo superusuario): franja ancha y baja */
+/* Grupos (solo superusuario): franja LARGA de 4 columnas.
+   La imagen (grupos_tarjeta.png) trae el mismo café de la franja y sus extremos
+   se difuminan, así que se ve como una sola pieza. El ícono va a la izquierda. */
 .t-grupos {
-    grid-column: span 4; grid-row: span 1; background: #4A2C1B; color: #FCFAF7;
-    flex-direction: row; align-items: center; gap: 18px; padding: 0 26px;
+    grid-column: span 4;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: #281205;
+    color: #FF6B35;
 }
-.t-grupos { min-height: 0; }
-.t-grupos .t-icono { width: 46px; height: 46px; color: #FF6B35; }
-.t-grupos .t-icono svg { width: 46px; height: 46px; }
-
+.t-grupos::after {
+    content: ""; position: absolute; right: -60px; top: -80px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: rgba(255, 107, 53, 0.10);
+}
+.t-grupos .img-grupos {
+    position: relative;
+    z-index: 1;
+    display: block;
+    height: 154px;
+    width: auto;
+    max-width: 100%;
+    margin-top: -4px;
+}
+.t-grupos .icono-grupos {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 64px;
+    height: 64px;
+    z-index: 1;
+}
+.t-grupos .icono-grupos svg {
+    width: 64px; height: 64px;
+    stroke: #FF6B35; stroke-width: 2.1; fill: none;
+    stroke-linecap: round; stroke-linejoin: round;
+}
 
 /* ===== STICKERS (ilustraciones recortadas) ===== */
 .stk {
@@ -189,7 +257,7 @@ a.t-reportes:hover .img-reportes { transform: scale(1.04); }
 a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
 
 /* tarjetas pequeñas: texto abajo, sticker arriba/derecha */
-.t-pedidos, .t-clientes, .t-reembolsos, .t-proveedores, .t-cobrar, .t-gastos {
+.t-clientes, .t-reembolsos, .t-proveedores, .t-cobrar, .t-gastos {
     justify-content: flex-end;
 }
 
@@ -203,14 +271,13 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
 .t-hero h1, .t-hero p { max-width: calc(100% - 150px); }
 
 .stk-ventas     { right: 26px; bottom: 16px; height: 270px; z-index: 0; }
-.stk-pedidos    { right: 14px; top: 12px; height: 84px; transform: rotate(6deg); }
-.stk-clientes   { right: 8px; top: 10px; width: 150px; }
+.stk-clientes   { right: 6px; top: 8px; width: 126px; }
 .stk-catalogo   { position: static; height: 128px; flex-shrink: 0; margin-left: -4px; }
 .stk-reportes   { position: static; width: 128px; align-self: center; margin: 4px 0; }
 .stk-reembolsos { right: 12px; top: 10px; height: 76px; }
 .stk-proveedores{ right: 8px; top: 16px; width: 122px; }
 .stk-cobrar     { right: 14px; top: 14px; height: 70px; transform: rotate(-8deg); }
-.stk-gastos     { right: 4px; top: 6px; height: 132px; }
+.stk-gastos     { right: 4px; top: 8px; height: 104px; }
 .t-gastos h3    { max-width: 115px; }
 
 @media (max-width: 520px) {
@@ -223,6 +290,8 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
 @media (max-width: 900px) {
     .bento { grid-template-columns: repeat(2, 1fr); }
     .t-hero, .t-catalogo, .t-grupos { grid-column: span 2; }
+    .t-grupos .icono-grupos { display: none; }
+    .t-grupos .img-grupos { height: auto; width: 100%; margin-top: 0; }
     .t-ventas { grid-column: span 2; grid-row: span 2; }
     .t-reportes { grid-row: span 2; }
 }
@@ -262,17 +331,12 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         </div>
     </a>
 
-    <!-- PEDIDOS (pequeña, oscura) -->
-    <a href="{% url 'list_pedido' %}" class="tile t-pedidos">
-        <img class="stk stk-pedidos" src="{% static 'stk_tablilla.png' %}" alt="" loading="lazy">
-        <div>
-            {% if stats.pedidos_pendientes is not None %}
-                <div class="t-num">{{ stats.pedidos_pendientes }}</div>
-                <div class="t-sub">pedido{{ stats.pedidos_pendientes|pluralize }} por recibir</div>
-            {% else %}
-                <h3>Pedidos</h3>
-            {% endif %}
-        </div>
+    <!-- PEDIDOS: el sticker es la tarjeta; encima va "Pendientes" y el número -->
+    <a href="{% url 'list_pedido' %}" class="tile t-pedidos" aria-label="Ir a Pedidos">
+        <img class="img-pedidos" src="{% static 'pedido_home.png' %}" alt="">
+        {% if stats.pedidos_pendientes is not None %}
+            <span class="chip-pedidos">Pendientes <b>{{ stats.pedidos_pendientes }}</b></span>
+        {% endif %}
     </a>
 
     <!-- CLIENTES -->
@@ -297,7 +361,7 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         </div>
     </a>
 
-    <!-- REPORTES (alta): imagen completa -->
+    <!-- REPORTES (alta): la imagen es el fondo de la tarjeta -->
     <a href="{% url 'reportes' %}" class="tile t-reportes" aria-label="Ir a Reportes">
         <img class="img-reportes" src="{% static 'reportes_home.jpg' %}" alt="Reportes: estadísticas, datos de crecimiento y análisis mensual">
     </a>
@@ -340,14 +404,11 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         </div>
     </a>
 
-    <!-- GRUPOS: SOLO SUPERUSUARIOS -->
+    <!-- GRUPOS: SOLO SUPERUSUARIOS (franja larga) -->
     {% if user.is_superuser %}
-        <a href="{% url 'list_grupos' %}" class="tile t-grupos">
-            <span class="t-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.8" r="3"/><path d="M6.2 19.6 Q6.3 13.6 12 13.5 Q17.7 13.6 17.8 19.6"/><circle cx="4.7" cy="10.2" r="1.9"/><circle cx="19.3" cy="10.2" r="1.9"/></svg></span>
-            <div>
-                <h3>Grupos y permisos</h3>
-                <small>Usuarios y permisos del sistema</small>
-            </div>
+        <a href="{% url 'list_grupos' %}" class="tile t-grupos" aria-label="Ir a Usuarios y Grupos">
+            <span class="icono-grupos"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.8" r="3"/><path d="M6.2 19.6 Q6.3 13.6 12 13.5 Q17.7 13.6 17.8 19.6"/><circle cx="4.7" cy="10.2" r="1.9"/><circle cx="19.3" cy="10.2" r="1.9"/></svg></span>
+            <img class="img-grupos" src="{% static 'grupos_home.jpeg' %}" alt="Usuarios y Grupos">
         </a>
     {% endif %}
 

@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load static %}
 {% load humanize %}
 
 {% block title %}Reembolsos | MisMary{% endblock %}
@@ -90,12 +91,29 @@
         text-align: center;
         padding: 30px !important;
     }
+
+    /* ===== STICKER DEL ENCABEZADO (discreto) ===== */
+    .enc-titulo { display: flex; align-items: center; gap: 14px; }
+
+    .stk-lista {
+        height: 54px;
+        width: auto;
+        flex-shrink: 0;
+        transform: rotate(-4deg);
+        filter: drop-shadow(0 4px 6px rgba(74, 44, 27, 0.22));
+        transition: transform 0.25s ease;
+    }
+
+    .enc-titulo:hover .stk-lista { transform: rotate(3deg) scale(1.06); }
+
+    @media (max-width: 520px) { .stk-lista { display: none; } }
 </style>
 
 <div class="reembolsos-contenedor">
     <div class="reembolsos-encabezado">
-        <h1>Reembolsos  <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12.2" cy="12" r="8.6"/><path d="M8.5 12.3 L12.4 8.3"/><path d="M8.5 12.3 L12.5 16.3"/><path d="M8.8 12.4 L16.2 12.5"/></svg></span></h1>
-        <p>Consulta quién reembolsó, cuándo y qué productos.</p>
+        <div class="enc-titulo"><img class="stk-lista" src="{% static 'stk_reembolso.png' %}" alt="">
+        <div><h1>Reembolsos  <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12.2" cy="12" r="8.6"/><path d="M8.5 12.3 L12.4 8.3"/><path d="M8.5 12.3 L12.5 16.3"/><path d="M8.8 12.4 L16.2 12.5"/></svg></span></h1>
+        <p>Consulta quién reembolsó, cuándo y qué productos.</p></div></div>
     </div>
 
     {% if messages %}

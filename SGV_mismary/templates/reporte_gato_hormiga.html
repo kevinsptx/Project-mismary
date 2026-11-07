@@ -1,8 +1,11 @@
 {% extends 'layout/reportes_base.html' %}
+{% load static %}
 
 {% block title %}
 Costos | MisMary
 {% endblock %}
+
+{% block rep_sticker %}<img class="stk-lista" src="{% static 'stk_hormiga.png' %}" alt="">{% endblock %}
 
 {% block rep_titulo %}Gastos hormiga <span class="icono-titulo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6.2" r="2.2"/><path d="M8.4 12.6 Q8.2 19.8 12 20 Q15.8 19.8 15.6 12.6 Q15.8 9.2 12 9.1 Q8.2 9.2 8.4 12.6 Z"/><path d="M8.4 12.2 L3.6 10.6"/><path d="M8.5 15.4 L3.5 16"/><path d="M15.6 12.2 L20.4 10.6"/><path d="M15.5 15.4 L20.5 16"/><path d="M10.8 4.4 L9.2 2.8"/><path d="M13.2 4.4 L14.8 2.8"/></svg></span>{% endblock %}
 
