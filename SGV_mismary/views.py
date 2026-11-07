@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from functools import wraps
 from django.db import transaction
+from django.db.models import ProtectedError
 from django.db.models import Sum, Count, Q, F, DecimalField
 from django.db.models.functions import Coalesce, TruncDate
 from django.http import HttpResponse
@@ -344,14 +345,25 @@ def producto_delete(request, id):
     if request.method == 'POST':
         nombre_producto = producto.nombre
 
-        with transaction.atomic():
-            DetalleVenta.objects.filter(producto=producto).delete()
-            producto.delete()
+        # Con ventas o pedidos registrados NO se borra: se perdería el historial.
+        if DetalleVenta.objects.filter(producto=producto).exists():
+            messages.error(
+                request,
+                f'No se puede eliminar "{nombre_producto}" porque ya tiene ventas '
+                f'registradas. Si ya no lo vendes, déjalo en stock 0.'
+            )
+            return redirect('list_producto')
 
-        messages.success(
-            request,
-            f'El producto "{nombre_producto}" y su historial fueron eliminados correctamente.'
-        )
+        try:
+            producto.delete()
+        except ProtectedError:
+            messages.error(
+                request,
+                f'No se puede eliminar "{nombre_producto}" porque ya está en pedidos a proveedores.'
+            )
+            return redirect('list_producto')
+
+        messages.success(request, f'El producto "{nombre_producto}" fue eliminado correctamente.')
         return redirect('list_producto')
 
     return render(request, 'producto_delete.html', {'producto': producto})
@@ -515,6 +527,7 @@ def register_venta(request):
 
                     deuda = Deuda.objects.create(
                         cliente=cliente,
+                        venta=venta,
                         valor_total=valor_total,
                         saldo=saldo,
                         estado=estado
@@ -581,27 +594,24 @@ def venta_details(request, id):
 @require_POST
 @requiere_permisos('delete_venta')
 def venta_delete(request, id):
-    """Elimina una venta, devuelve el stock y borra su deuda y abonos."""
+    """Elimina una venta con todo lo suyo: pagos, deuda, abonos y reembolso."""
     venta = get_object_or_404(Venta, id=id)
 
     with transaction.atomic():
-        # 1. Devolver los productos al stock
-        for detalle in venta.detalles.select_related('producto'):
-            producto = detalle.producto
+        # 1. Devolver los productos al stock (solo si la venta seguía activa;
+        #    si estaba reembolsada, el stock ya se manejó al reembolsar)
+        if venta.estado == 'Activa':
+            for detalle in venta.detalles.select_related('producto'):
+                producto = detalle.producto
 
-            if producto:
-                producto.cantidad_disponible += detalle.cantidad
-                producto.save(update_fields=['cantidad_disponible'])
+                if producto:
+                    producto.cantidad_disponible += detalle.cantidad
+                    producto.save(update_fields=['cantidad_disponible'])
 
-        # 2. Borrar la deuda y sus abonos
-        deudas = Deuda.objects.filter(
-            cliente=venta.cliente,
-            valor_total=venta.valor_total
-        )
-
-        for deuda in deudas:
-            deuda.abonos.all().delete()
-            deuda.delete()
+        # 2. Borrar lo que depende de la venta
+        Reembolso.objects.filter(venta=venta).delete()
+        venta.pagos.all().delete()
+        venta.deudas.all().delete()          # sus abonos se borran con ella
 
         # 3. Borrar la venta
         venta.delete()
@@ -1583,20 +1593,21 @@ def pedido_details(request, pedido_id):
 @require_POST
 @requiere_permisos('delete_pedido')
 def eliminar_pedido(request, pedido_id):
-    """Elimina un pedido. Si ya estaba recibido, resta el stock."""
+    """Elimina un pedido. Los pedidos ya recibidos no se pueden eliminar."""
     pedido = get_object_or_404(Pedido, id=pedido_id)
 
     if request.method == 'POST':
-        detalles = DetallePedido.objects.filter(pedido=pedido)
+        # Un pedido recibido ya sumó su stock y puede que ya se haya vendido.
+        if pedido.estado == 'Recibido':
+            messages.error(
+                request,
+                'No se puede eliminar este pedido porque ya fue recibido '
+                'y su stock ya se sumó al inventario.'
+            )
+            return redirect('pedido_details', pedido_id=pedido.id)
 
         with transaction.atomic():
-            # Si ya se había recibido, quitamos ese stock
-            if pedido.estado == 'Recibido':
-                for detalle in detalles:
-                    detalle.producto.cantidad_disponible -= detalle.cantidad
-                    detalle.producto.save()
-
-            # Borramos el gasto viejo de ESTE pedido (si existe de antes).
+            # Borramos el gasto de ESTE pedido (si existe).
             # (endswith evita que "Pedido #1" borre también "#10", "#11"...)
             Gasto.objects.filter(
                 descripcion__endswith=f"(Pedido #{pedido.id})"
@@ -1668,10 +1679,18 @@ def proveedor_details(request, proveedor_id):
         total=Sum('costo_total')
     )['total'] or 0
 
+    # Cuántos pedidos hay en cada estado (para los tres cuadros de colores)
+    resumen = {
+        'recibidos': pedidos.filter(estado='Recibido').count(),
+        'pendientes': pedidos.filter(estado='Pendiente').count(),
+        'cancelados': pedidos.filter(estado='Cancelado').count(),
+    }
+
     return render(request, 'proveedor_details.html', {
         'proveedor': proveedor,
         'pedidos': pedidos,
         'total_comprado': total_comprado,
+        'resumen': resumen,
     })
 
 
@@ -1724,8 +1743,18 @@ def proveedor_delete(request, proveedor_id):
 # ============================================================
 
 def dinero_recibido_de_venta(venta):
-    """Dinero que MisMary realmente recibió por esta venta (lo que se devuelve)."""
-    total = venta.pagos.aggregate(t=Sum('valor'))['t']
+    """
+    Dinero que MisMary realmente recibió por esta venta (lo que se devuelve).
+    Cuenta el pago inicial y todos los abonos posteriores de la deuda de la venta.
+    """
+    deudas = venta.deudas.all()
+
+    if deudas.exists():
+        total = Abono.objects.filter(deuda__in=deudas).aggregate(t=Sum('valor'))['t']
+    else:
+        # ventas viejas sin deuda ligada: solo se conoce el pago inicial
+        total = venta.pagos.aggregate(t=Sum('valor'))['t']
+
     return total or Decimal('0')
 
 
@@ -1801,12 +1830,26 @@ def cancelar_venta(request, venta_id):
         messages.error(request, 'Selecciona la forma en que se devuelve el dinero.')
         return redirect('cancelar_venta', venta_id=venta.id)
 
+    devolver_stock = request.POST.get('devolver_stock') == 'on'
+
     with transaction.atomic():
         venta.estado = 'Cancelada'
         venta.save(update_fields=['estado'])
         reembolso, creado = crear_reembolso_automatico(
             venta, usuario=request.user, metodo=metodo
         )
+
+        # La deuda de esta venta ya no se cobra: queda cancelada y sin saldo
+        venta.deudas.update(estado='Cancelada', saldo=0)
+
+        # Opcional: los productos vuelven al inventario
+        if devolver_stock:
+            for detalle in venta.detalles.select_related('producto'):
+                producto = detalle.producto
+
+                if producto:
+                    producto.cantidad_disponible += detalle.cantidad
+                    producto.save(update_fields=['cantidad_disponible'])
 
     if reembolso.estado == 'Devuelto':
         messages.success(

@@ -312,7 +312,7 @@ class Command(BaseCommand):
             deuda = None
             if saldo > 0 or pagado > 0:
                 deuda = Deuda.objects.create(
-                    cliente=cliente, valor_total=total, saldo=saldo,
+                    cliente=cliente, venta=venta, valor_total=total, saldo=saldo,
                     estado='Pagada' if saldo == 0 else 'Pendiente',
                 )
                 if pagado > 0:
@@ -332,6 +332,7 @@ class Command(BaseCommand):
             if datos.get('cancelada'):
                 estado_reembolso, dias_devolucion = datos['cancelada']
                 venta.estado = 'Cancelada'
+                Deuda.objects.filter(venta=venta).update(estado='Cancelada', saldo=0)
                 venta.save(update_fields=['estado'])
 
                 metodo = datos['forma'] if datos['forma'] in ('Efectivo', 'Nequi', 'Daviplata', 'Transferencia') else 'Otro'

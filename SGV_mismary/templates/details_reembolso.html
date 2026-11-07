@@ -1,225 +1,275 @@
 {% extends 'layout/base.html' %}
+{% load static %}
 {% load humanize %}
 
-{% block title %}Detalles del reembolso | MisMary{% endblock %}
+{% block title %}Reembolso #{{ reembolso.id }} | MisMary{% endblock %}
 
 {% block content %}
 <style>
-    .detalle-reembolso {
-        max-width: 700px;
-        margin: 40px auto;
-        padding: 30px;
+    .rb-wrap {
+        max-width: 880px;
+        margin: 30px auto 50px;
+        color: #4A2C1B;
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
+    }
+
+    /* ===== Encabezado ===== */
+    .rb-head {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+    .rb-head img {
+        height: 74px;
+        width: auto;
+        transform: rotate(-4deg);
+        filter: drop-shadow(0 6px 8px rgba(74, 44, 27, 0.25));
+    }
+    .rb-head h1 { margin: 0; font-size: 28px; line-height: 1.1; }
+    .rb-head p  { margin: 4px 0 0; opacity: 0.75; font-size: 14px; }
+    .rb-estado {
+        margin-left: auto;
+        padding: 8px 18px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px solid transparent;
+    }
+    .rb-estado.devuelto  { background: #E6F4EA; color: #1E7B3A; border-color: #BFE3C9; }
+    .rb-estado.noaplica  { background: #EFEAE0; color: #6B5A4A; border-color: #E0D6C3; }
+    .rb-estado.solicitado{ background: #FFF3D6; color: #9A6A00; border-color: #F2DB9C; }
+
+    /* ===== Tarjeta del monto ===== */
+    .rb-monto {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 26px 30px;
+        margin-bottom: 18px;
+        border-radius: 26px;
+        color: #FFFFFF;
+        background: linear-gradient(135deg, #9E3B27, #C4512F);
+        box-shadow: 0 14px 28px -12px rgba(158, 59, 39, 0.55);
+    }
+    .rb-monto::after {
+        content: ""; position: absolute; right: -50px; top: -70px;
+        width: 220px; height: 220px; border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+    }
+    .rb-monto small  { display: block; opacity: 0.85; font-size: 13px; margin-bottom: 4px; }
+    .rb-monto .valor { font-size: 44px; font-weight: 700; line-height: 1; position: relative; z-index: 1; }
+    .rb-monto .metodo {
+        position: relative; z-index: 1;
+        padding: 8px 18px; border-radius: 999px;
+        background: rgba(255, 255, 255, 0.22);
+        font-weight: 600; font-size: 14px;
+    }
+
+    /* ===== Cuadrícula de datos ===== */
+    .rb-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+    .rb-dato {
         background: #FFFFFF;
         border: 1px solid #E8DFC8;
-        border-radius: 24px;
-        color: #4A2C1B;
-        box-shadow: 0 10px 25px -5px rgba(74,44,27,.07);
+        border-radius: 18px;
+        padding: 14px 18px;
+        box-shadow: 0 8px 18px -10px rgba(74, 44, 27, 0.15);
     }
-
-    .detalle-reembolso h1 {
-        color: #9E3B27;
-        margin-top: 0;
+    .rb-dato span  {
+        display: block; font-size: 12px; font-weight: 600;
+        letter-spacing: 0.6px; text-transform: uppercase; opacity: 0.6; margin-bottom: 4px;
     }
+    .rb-dato strong { font-size: 16px; font-weight: 600; }
+    .rb-dato small  { display: block; margin-top: 2px; opacity: 0.7; font-size: 13px; }
+    .rb-dato a { color: #E85A26; text-decoration: none; font-weight: 600; }
+    .rb-dato a:hover { text-decoration: underline; }
 
-    .detalle-datos {
-        background: #F5EFE3;
-        border-radius: 15px;
-        padding: 18px;
-        line-height: 2;
-        overflow-wrap: anywhere;
-    }
-
-    .estado-detalle {
-        display: inline-block;
-        background: #F5EFE3;
+    /* ===== Productos ===== */
+    .rb-productos {
+        background: #FFFFFF;
         border: 1px solid #E8DFC8;
-        border-radius: 20px;
-        padding: 5px 12px;
-        font-weight: 600;
-    }
-
-    .acciones-detalle {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 25px;
-    }
-
-    .btn-detalle {
-        padding: 11px 17px;
-        border: none;
         border-radius: 22px;
-        text-decoration: none;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
+        overflow: hidden;
+        margin-bottom: 22px;
+        box-shadow: 0 8px 18px -10px rgba(74, 44, 27, 0.15);
+    }
+    .rb-productos h3 { margin: 0; padding: 16px 22px 10px; font-size: 18px; }
+    .rb-productos table { width: 100%; border-collapse: collapse; }
+    .rb-productos th {
+        text-align: left; padding: 10px 22px; font-size: 12px; letter-spacing: 0.6px;
+        text-transform: uppercase; background: #F5EFE3; opacity: 0.85;
+    }
+    .rb-productos td { padding: 12px 22px; border-top: 1px solid #F2EBDD; }
+    .rb-productos .num { text-align: right; white-space: nowrap; }
+    .rb-productos tfoot td { font-weight: 700; background: #FCFAF7; }
+
+    /* ===== Botones y avisos ===== */
+    .rb-aviso {
+        padding: 14px 18px; border-radius: 16px; margin-bottom: 18px;
+        background: #FFF3D6; border: 1px solid #F2DB9C; color: #6F4E00; font-size: 14px;
+    }
+    .rb-acciones { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .rb-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 12px 24px; border-radius: 999px; border: 0; cursor: pointer;
+        font: inherit; font-weight: 600; font-size: 14px; text-decoration: none;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .rb-btn:hover { transform: translateY(-2px); }
+    .rb-btn.principal { background: #FF6B35; color: #FFFFFF; }
+    .rb-btn.principal:hover { background: #E85A26; }
+    .rb-btn.suave { background: #F5EFE3; color: #4A2C1B; border: 1px solid #E8DFC8; }
+    .rb-form select {
+        padding: 10px 14px; border: 1px solid #E8DFC8; border-radius: 12px;
+        font: inherit; color: #4A2C1B; margin: 8px 0 14px;
     }
 
-    .btn-devolver {
-        background: #FF6B35;
-        color: #FFFFFF;
+    .rb-mensaje {
+        padding: 12px 18px; border-radius: 14px; margin-bottom: 16px;
+        background: #E6F4EA; color: #1E7B3A; border: 1px solid #BFE3C9; font-weight: 600;
     }
 
-    .btn-devolver:hover {
-        background: #9E3B27;
+    @media (max-width: 640px) {
+        .rb-grid { grid-template-columns: 1fr; }
+        .rb-estado { margin-left: 0; }
+        .rb-monto .valor { font-size: 36px; }
     }
-
-    .btn-lista {
-        background: #F5EFE3;
-        color: #4A2C1B;
-        border: 1px solid #E8DFC8;
-    }
-
-    .aviso-detalle {
-        color: #6C5243;
-        font-size: 13px;
-        line-height: 1.6;
-        margin-top: 18px;
+    @media print {
+        .rb-acciones, .rb-form { display: none; }
     }
 </style>
 
-<div class="detalle-reembolso">
-    <h1>Detalles del reembolso</h1>
+<div class="rb-wrap">
 
     {% if messages %}
         {% for message in messages %}
-            <p>{{ message }}</p>
+            <div class="rb-mensaje">{{ message }}</div>
         {% endfor %}
     {% endif %}
 
-    <div class="detalle-datos">
-        <strong>Número de reembolso:</strong>
-        #{{ reembolso.id }}<br>
-
-        <strong>Venta relacionada:</strong>
-        #{{ reembolso.venta.id }}<br>
-
-        <strong>Cliente:</strong>
-        {{ reembolso.venta.cliente.nombre }}<br>
-
-        <strong>Total de la venta:</strong>
-        $ {{ reembolso.venta.valor_total|floatformat:0|intcomma }}<br>
-
-        <strong>Importe del reembolso:</strong>
-        $ {{ reembolso.monto|floatformat:2|intcomma }}<br>
-
-        <strong>Motivo:</strong>
-        {{ reembolso.motivo }}<br>
-
-        <strong>Estado:</strong>
-        <span class="estado-detalle">{{ reembolso.estado }}</span><br>
-
-        <strong>Método de devolución:</strong>
-        {{ reembolso.metodo }}<br>
-
-        <strong>Fecha de solicitud:</strong>
-        {{ reembolso.fecha_solicitud|date:"d/m/Y H:i" }}<br>
-
-        <strong>Reembolsado por:</strong>
-        {% if reembolso.registrado_por %}
-            {{ reembolso.registrado_por.get_full_name|default:reembolso.registrado_por.username }}
-        {% else %}No registrado{% endif %}<br>
-
-        <strong>Fecha de devolución:</strong>
-        {% if reembolso.fecha_devolucion %}
-            {{ reembolso.fecha_devolucion|date:"d/m/Y H:i" }}
-        {% else %}
-            Todavía no registrada
-        {% endif %}
-
-        {% if reembolso.observaciones %}
-            <br>
-            <strong>Observaciones:</strong>
-            {{ reembolso.observaciones }}
-        {% endif %}
+    <!-- ENCABEZADO -->
+    <div class="rb-head">
+        <img src="{% static 'stk_reembolso.png' %}" alt="">
+        <div>
+            <h1>Reembolso #{{ reembolso.id }}</h1>
+            <p>Venta #{{ reembolso.venta.id }} · {{ reembolso.venta.cliente.nombre }}</p>
+        </div>
+        <span class="rb-estado {% if reembolso.estado == 'Devuelto' %}devuelto{% elif reembolso.estado == 'No aplica' %}noaplica{% else %}solicitado{% endif %}">
+            {{ reembolso.estado }}
+        </span>
     </div>
 
-    <h3>Productos reembolsados</h3>
-    <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
-        <thead>
-            <tr style="background:#F5EFE3; text-align:left;">
-                <th style="padding:8px;">Producto</th>
-                <th style="padding:8px;">Cantidad</th>
-                <th style="padding:8px;">Precio</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for d in detalles %}
-                <tr style="border-top:1px solid #F5EFE3;">
-                    <td style="padding:8px;">{{ d.producto.nombre }}</td>
-                    <td style="padding:8px;">{{ d.cantidad }}</td>
-                    <td style="padding:8px;">$ {{ d.precio|floatformat:0|intcomma }}</td>
+    <!-- MONTO -->
+    <div class="rb-monto">
+        <div>
+            <small>{% if reembolso.estado == 'Devuelto' %}Dinero devuelto al cliente{% elif reembolso.estado == 'No aplica' %}No hubo dinero que devolver{% else %}Dinero por devolver{% endif %}</small>
+            <div class="valor">$ {{ reembolso.monto|floatformat:0|intcomma }}</div>
+        </div>
+        <span class="metodo">{{ reembolso.metodo }}</span>
+    </div>
+
+    <!-- DATOS -->
+    <div class="rb-grid">
+        <div class="rb-dato">
+            <span>Cliente</span>
+            <strong>{{ reembolso.venta.cliente.nombre }}</strong>
+        </div>
+        <div class="rb-dato">
+            <span>Venta relacionada</span>
+            <strong>
+                {% if perms.SGV_mismary.view_venta %}
+                    <a href="{% url 'details_venta' reembolso.venta.id %}">Venta #{{ reembolso.venta.id }}</a>
+                {% else %}
+                    Venta #{{ reembolso.venta.id }}
+                {% endif %}
+            </strong>
+        </div>
+        <div class="rb-dato">
+            <span>Total de la venta</span>
+            <strong>$ {{ reembolso.venta.valor_total|floatformat:0|intcomma }}</strong>
+        </div>
+        <div class="rb-dato">
+            <span>Fecha del reembolso</span>
+            <strong>{{ reembolso.fecha_devolucion|default:reembolso.fecha_solicitud|date:"d/m/Y H:i" }}</strong>
+            {% if reembolso.registrado_por %}
+                <small>Por {{ reembolso.registrado_por.get_full_name|default:reembolso.registrado_por.username }}</small>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="rb-productos">
+        <h3>Productos de la venta reembolsada</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th class="num">Cantidad</th>
+                    <th class="num">Precio</th>
+                    <th class="num">Subtotal</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for d in detalles %}
+                    <tr>
+                        <td>{{ d.producto.nombre }}</td>
+                        <td class="num">{{ d.cantidad }}</td>
+                        <td class="num">$ {{ d.precio|floatformat:0|intcomma }}</td>
+                        <td class="num">$ {% widthratio d.cantidad 1 d.precio as sub %}{{ sub|floatformat:0|intcomma }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total de la venta</td>
+                    <td class="num">$ {{ reembolso.venta.valor_total|floatformat:0|intcomma }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 
+    <!-- ACCIONES -->
     {% if reembolso.estado != "Devuelto" and reembolso.estado != "No aplica" and perms.SGV_mismary.change_reembolso %}
-        <p class="aviso-detalle">
-            Confirma que el dinero se haya devuelto realmente al cliente
-            antes de registrar esta operación como completada.
-        </p>
+        <div class="rb-aviso">
+            Confirma que el dinero se haya devuelto realmente al cliente antes de
+            registrar esta operación como completada.
+        </div>
 
-        <form
-            method="POST"
-            action="{% url 'registrar_devolucion' reembolso.id %}">
-
+        <form method="POST" action="{% url 'registrar_devolucion' reembolso.id %}" class="rb-form">
             {% csrf_token %}
-
-            <label for="metodo">
-                Método utilizado para devolver el dinero
-            </label>
-
-            <select
-                id="metodo"
-                name="metodo"
-                required
-                style="padding: 10px; border: 1px solid #E8DFC8;
-                       border-radius: 10px; margin-top: 8px;">
-
-                <option value="Efectivo"
-                    {% if reembolso.metodo == "Efectivo" %}selected{% endif %}>
-                    Efectivo
-                </option>
-
-                <option value="Transferencia"
-                    {% if reembolso.metodo == "Transferencia" %}selected{% endif %}>
-                    Transferencia
-                </option>
-
-                <option value="Otro"
-                    {% if reembolso.metodo == "Otro" %}selected{% endif %}>
-                    Otro
-                </option>
+            <label for="metodo"><strong>Método usado para devolver el dinero</strong></label><br>
+            <select id="metodo" name="metodo" required>
+                <option value="Efectivo" {% if reembolso.metodo == "Efectivo" %}selected{% endif %}>Efectivo</option>
+                <option value="Nequi" {% if reembolso.metodo == "Nequi" %}selected{% endif %}>Nequi</option>
+                <option value="Daviplata" {% if reembolso.metodo == "Daviplata" %}selected{% endif %}>Daviplata</option>
+                <option value="Transferencia" {% if reembolso.metodo == "Transferencia" %}selected{% endif %}>Transferencia</option>
+                <option value="Otro" {% if reembolso.metodo == "Otro" %}selected{% endif %}>Otro</option>
             </select>
 
-            <div class="acciones-detalle">
-                <button
-                    type="submit"
-                    class="btn-detalle btn-devolver"
-                    onclick="return confirm('¿Confirmas que la devolución ya se realizó?');">
+            <div class="rb-acciones">
+                <button type="submit" class="rb-btn principal"
+                        onclick="return confirm('¿Confirmas que la devolución ya se realizó?');">
                     Registrar devolución realizada
                 </button>
-
-                <a
-                    href="{% url 'lista_reembolsos' %}"
-                    class="btn-detalle btn-lista">
-                    Volver a reembolsos
-                </a>
+                <a href="{% url 'lista_reembolsos' %}" class="rb-btn suave">Volver a reembolsos</a>
             </div>
         </form>
     {% else %}
-        <p class="aviso-detalle">
-            {% if reembolso.estado == 'No aplica' %}No hubo dinero que devolver en esta venta.{% else %}Esta devolución ya figura como completada.{% endif %}
-        </p>
-
-        <div class="acciones-detalle">
-            <a
-                href="{% url 'lista_reembolsos' %}"
-                class="btn-detalle btn-lista">
-                Volver a reembolsos
-            </a>
+        <div class="rb-acciones">
+            <a href="{% url 'lista_reembolsos' %}" class="rb-btn principal">Volver a reembolsos</a>
+            <button type="button" class="rb-btn suave" onclick="window.print()">Imprimir</button>
         </div>
     {% endif %}
+
 </div>
 {% endblock %}

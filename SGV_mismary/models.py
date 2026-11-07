@@ -99,10 +99,21 @@ class Deuda(models.Model):
     ESTADOS = [
         ("Pendiente", "Pendiente"),
         ("Pagada", "Pagada"),
+        ("Cancelada", "Cancelada"),   # la venta fue reembolsada
     ]
 
     cliente = models.ForeignKey(
         Cliente,
+        on_delete=models.CASCADE,
+        related_name="deudas"
+    )
+
+    # La venta a la que pertenece esta deuda (así nunca se confunde con otra venta
+    # del mismo cliente y del mismo valor). Si se borra la venta, se borra la deuda.
+    venta = models.ForeignKey(
+        Venta,
+        null=True,
+        blank=True,
         on_delete=models.CASCADE,
         related_name="deudas"
     )

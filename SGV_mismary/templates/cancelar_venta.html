@@ -111,6 +111,8 @@ Cancelar venta | MisMary
     .campo-metodo { display:block; margin:14px 0 6px; font-weight:600; }
     .campo-metodo + select { width:100%; box-sizing:border-box; padding:10px 12px;
         border:1px solid #E8DFC8; border-radius:12px; font:inherit; color:#4A2C1B; }
+    .campo-stock { display: flex; align-items: center; gap: 10px; margin: 16px 0 4px; font-weight: 600; cursor: pointer; }
+    .campo-stock input { width: 18px; height: 18px; accent-color: #FF6B35; }
     .monto-devolver { font-size:18px; font-weight:700; color:#9E3B27; }
 </style>
 
@@ -163,6 +165,11 @@ Cancelar venta | MisMary
                     <option value="{{ m }}" {% if m == metodo_sugerido %}selected{% endif %}>{{ m }}</option>
                 {% endfor %}
             </select>
+
+            <label class="campo-stock">
+                <input type="checkbox" name="devolver_stock" checked>
+                Devolver los productos al inventario
+            </label>
 
             <div class="botones">
                 <button type="submit" class="btn-cancelar">Confirmar reembolso</button>
