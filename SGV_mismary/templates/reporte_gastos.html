@@ -16,35 +16,27 @@ Costos | MisMary
         <div class="stat stat-negativo">
             <span class="etiqueta">Total de costos</span>
             <span class="valor">$ {{ gastos.total|floatformat:"0g" }}</span>
-            <span class="nota">Pedidos recibidos + gastos hormiga</span>
         </div>
 
         <div class="stat">
             <span class="etiqueta">Pedidos recibidos</span>
             <span class="valor">$ {{ gastos.total_pedidos|floatformat:"0g" }}</span>
-            <span class="nota">Mercancía que ya llegó</span>
         </div>
 
         <div class="stat">
             <span class="etiqueta">Gastos hormiga</span>
             <span class="valor">$ {{ gastos.total_hormiga|floatformat:"0g" }}</span>
-            <span class="nota">Gastos pequeños registrados a mano</span>
         </div>
 
         <div class="stat stat-aparte">
             <span class="etiqueta">Pedidos por recibir</span>
             <span class="valor">$ {{ gastos.total_pendientes|floatformat:"0g" }}</span>
-            <span class="nota">
-                {{ gastos.pendientes|length }} pedido{{ gastos.pendientes|length|pluralize }} pendiente{{ gastos.pendientes|length|pluralize }}.
-                No cuentan como costo todavía.
-            </span>
         </div>
 
         <div class="stat stat-aparte">
             <span class="etiqueta">Por cobrar a clientes</span>
             <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
             <span class="nota">
-                Lo que los clientes aún deben. No suma al total de costos.
                 <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver clientes</a>
             </span>
         </div>

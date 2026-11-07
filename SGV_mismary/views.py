@@ -555,7 +555,7 @@ def list_venta(request):
     else:
         ventas = Venta.objects.all()
 
-    ventas = ventas.select_related('cliente', 'reembolso')
+    ventas = ventas.select_related('cliente', 'reembolso').order_by('-fecha')
 
     return render(request, 'list_ventas.html', {
         'ventas': ventas,

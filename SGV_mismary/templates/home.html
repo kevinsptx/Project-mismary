@@ -113,7 +113,7 @@ a.tile:active { transform: scale(0.98); }
     background: #FF6B35; color: #fff; font-weight: 600; font-size: 14px; position: relative; z-index: 1;
 }
 
-/* Pedidos: el sticker (pedidos_tarjeta.png) va SIN tarjeta detrás.
+/* Pedidos: el sticker (pedido_home.png) va SIN tarjeta detrás.
    Es un poquito más ancho que la celda para que se vea grande. */
 .t-pedidos {
     padding: 0;
@@ -133,11 +133,12 @@ a.tile:active { transform: scale(0.98); }
     pointer-events: none;
 }
 a.t-pedidos:hover { box-shadow: none; }
-/* Etiqueta encima del sticker: "Pendientes (número)" */
+/* Etiqueta encima del sticker: "Pendientes (número)".
+   Para moverla: left = más a la izquierda cuanto menor; bottom = más abajo cuanto menor. */
 .t-pedidos .chip-pedidos {
     position: absolute;
-    left: 30px;
-    bottom: 30px;
+    left: 22px;
+    bottom: 22px;
     display: flex;
     align-items: center;
     gap: 7px;
@@ -206,7 +207,7 @@ a.t-pedidos:hover { box-shadow: none; }
 .t-gastos .t-icono svg { width: 50px; height: 50px; }
 
 /* Grupos (solo superusuario): franja LARGA de 4 columnas.
-   La imagen (grupos_tarjeta.png) trae el mismo café de la franja y sus extremos
+   La imagen (grupos_home.jpeg) trae el mismo café de la franja y sus extremos
    se difuminan, así que se ve como una sola pieza. El ícono va a la izquierda. */
 .t-grupos {
     grid-column: span 4;
