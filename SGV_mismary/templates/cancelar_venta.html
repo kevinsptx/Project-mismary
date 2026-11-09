@@ -1,183 +1,529 @@
 {% extends 'layout/base.html' %}
+{% load static %}
 {% load humanize %}
+{% load l10n %}
 
-{% block title %}
-Cancelar venta | MisMary
-{% endblock %}
+{% block title %}Reembolsar venta #{{ venta.id }} | MisMary{% endblock %}
 
 {% block content %}
-
 <style>
-    .cancelar-contenedor {
-        max-width: 600px;
-        margin: 50px auto;
-        padding: 20px;
+    .rf-wrap {
+        max-width: 880px;
+        margin: 30px auto 60px;
+        color: #4A2C1B;
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
     }
 
-    .cancelar-tarjeta {
+    /* ===== Encabezado ===== */
+    .rf-head {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+    }
+    .rf-head img {
+        height: 74px;
+        width: auto;
+        transform: rotate(-4deg);
+        filter: drop-shadow(0 6px 8px rgba(74, 44, 27, 0.25));
+    }
+    .rf-head h1 { margin: 0; font-size: 28px; line-height: 1.1; }
+    .rf-head p  { margin: 4px 0 0; font-size: 14px; opacity: 0.75; }
+    .rf-volver {
+        margin-left: auto;
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: 1px solid #E8DFC8;
+        background: #F5EFE3;
+        color: #4A2C1B;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+    }
+    .rf-volver:hover { background: #E8DFC8; }
+
+    /* ===== Mensajes ===== */
+    .rf-msg {
+        padding: 12px 18px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+        font-weight: 600;
+        background: #FBE9E7;
+        color: #9E3B27;
+        border: 1px solid #F5B7AB;
+    }
+
+    /* ===== Datos de la venta ===== */
+    .rf-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+    .rf-dato {
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 18px;
+        padding: 14px 18px;
+        box-shadow: 0 8px 18px -10px rgba(74, 44, 27, 0.15);
+        min-width: 0;
+    }
+    .rf-dato span {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        opacity: 0.6;
+    }
+    .rf-dato strong { font-size: 16px; font-weight: 600; word-break: break-word; }
+
+    .rf-previo {
+        padding: 14px 18px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+        background: #FFF3D6;
+        border: 1px solid #F2DB9C;
+        color: #6F4E00;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* ===== Secciones ===== */
+    .rf-seccion {
         background: #FFFFFF;
         border: 1px solid #E8DFC8;
         border-radius: 24px;
-        padding: 30px;
-        box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        color: #4A2C1B;
+        padding: 22px 24px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 18px -10px rgba(74, 44, 27, 0.15);
     }
+    .rf-seccion h2 { margin: 0; font-size: 19px; }
+    .rf-seccion .sub { margin: 4px 0 0; font-size: 14px; opacity: 0.7; line-height: 1.5; }
 
-    .cancelar-tarjeta h1 {
-        margin-top: 0;
-        color: #9E3B27;
-        font-size: 25px;
-    }
-
-    .dato-venta {
-        background: #F5EFE3;
-        padding: 15px;
-        border-radius: 14px;
-        margin: 20px 0;
-        line-height: 2;
-    }
-
-    .botones {
+    .rf-titulo {
         display: flex;
-        gap: 10px;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 14px;
         flex-wrap: wrap;
-        margin-top: 25px;
+        margin-bottom: 14px;
     }
 
-    .btn-cancelar,
-    .btn-volver {
-        display: inline-block;
-        padding: 11px 18px;
+    .rf-todos {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
         border-radius: 999px;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
+        background: #F5EFE3;
+        border: 1px solid #E8DFC8;
         font-size: 14px;
         font-weight: 600;
-        font-family: inherit;
+        cursor: pointer;
+        user-select: none;
+    }
+    .rf-todos input { width: 18px; height: 18px; accent-color: #FF6B35; cursor: pointer; }
+
+    /* ===== Productos ===== */
+    .rf-lista { display: flex; flex-direction: column; gap: 10px; }
+
+    .rf-fila {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        align-items: center;
+        gap: 18px;
+        padding: 14px 18px;
+        border-radius: 18px;
+        background: #FCFAF7;
+        border: 1.5px solid #EFE6D2;
+        transition: border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+    }
+    .rf-fila.marcada { background: #FFF6F0; border-color: #FFC9AE; }
+    .rf-fila.apagada { opacity: 0.55; }
+
+    .rf-fila input[type=checkbox] { width: 22px; height: 22px; accent-color: #FF6B35; cursor: pointer; }
+
+    .rf-nombre strong { display: block; font-size: 16px; font-weight: 600; }
+    .rf-nombre small  { display: block; margin-top: 2px; font-size: 13px; opacity: 0.7; }
+    .rf-tag {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #EFEAE0;
+        color: #6B5A4A;
+        vertical-align: middle;
+    }
+
+    /* contador de cantidad: [-] 1 [+] */
+    .rf-cant { display: flex; align-items: center; gap: 8px; }
+    .rf-cant button {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 1px solid #E8DFC8;
+        background: #FFFFFF;
+        color: #4A2C1B;
+        font-size: 18px; line-height: 1;
+        cursor: pointer;
+    }
+    .rf-cant button:hover:not(:disabled) { background: #FF6B35; border-color: #FF6B35; color: #FFFFFF; }
+    .rf-cant button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .rf-cant input[type=number] {
+        width: 52px;
+        padding: 6px 4px;
         text-align: center;
-        transition: background 0.2s ease;
-    }
-
-    .btn-cancelar {
-        background: #9E3B27;
-        color: #FFFFFF;
-    }
-
-    .btn-cancelar:hover {
-        background: #7D2D20;
-    }
-
-    .btn-volver {
-        background: #F5EFE3;
+        font: inherit;
+        font-weight: 600;
         color: #4A2C1B;
         border: 1px solid #E8DFC8;
+        border-radius: 10px;
+        background: #FFFFFF;
+        -moz-appearance: textfield;
     }
+    .rf-cant input[type=number]::-webkit-outer-spin-button,
+    .rf-cant input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .rf-cant input[type=number]:disabled { background: #F5EFE3; opacity: 0.6; }
+    .rf-cant .de { font-size: 13px; opacity: 0.65; white-space: nowrap; }
 
-    .btn-volver:hover {
-        background: #E8DFC8;
+    .rf-subtotal { min-width: 96px; text-align: right; font-weight: 700; font-size: 16px; }
+    .rf-fila.apagada .rf-subtotal { opacity: 0.4; }
+
+    /* ===== Tarjeta del dinero ===== */
+    .rf-monto {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 22px;
+        flex-wrap: wrap;
+        padding: 26px 30px;
+        margin-bottom: 16px;
+        border-radius: 26px;
+        color: #FFFFFF;
+        background: linear-gradient(135deg, #9E3B27, #C4512F);
+        box-shadow: 0 14px 28px -12px rgba(158, 59, 39, 0.55);
     }
-
-    .aviso {
+    .rf-monto::after {
+        content: ""; position: absolute; right: -50px; top: -70px;
+        width: 220px; height: 220px; border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+    }
+    .rf-monto > * { position: relative; z-index: 1; }
+    .rf-monto small  { display: block; opacity: 0.88; font-size: 13px; margin-bottom: 4px; }
+    .rf-monto .valor { font-size: 46px; font-weight: 700; line-height: 1; }
+    .rf-monto .nota  { margin-top: 10px; font-size: 14px; opacity: 0.92; max-width: 360px; line-height: 1.4; }
+    .rf-resumen { display: flex; flex-direction: column; gap: 8px; }
+    .rf-resumen div {
+        padding: 8px 16px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.2);
         font-size: 14px;
-        color: #6C5243;
-        line-height: 1.6;
+        min-width: 210px;
     }
+    .rf-resumen b { float: right; margin-left: 14px; }
 
-    @media (max-width: 600px) {
-        .cancelar-contenedor {
-            margin: 20px auto;
-            padding: 15px;
-        }
-
-        .cancelar-tarjeta {
-            padding: 22px;
-        }
-
-        .botones {
-            flex-direction: column;
-        }
-
-        .btn-cancelar,
-        .btn-volver {
-            width: 100%;
-            box-sizing: border-box;
-        }
+    /* ===== Forma de devolución ===== */
+    .rf-metodos { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .rf-metodos label { cursor: pointer; }
+    .rf-metodos input { position: absolute; opacity: 0; pointer-events: none; }
+    .rf-metodos span {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: 1.5px solid #E8DFC8;
+        background: #FCFAF7;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.15s ease;
     }
+    .rf-metodos label:hover span { border-color: #FF6B35; }
+    .rf-metodos input:checked + span { background: #FF6B35; border-color: #FF6B35; color: #FFFFFF; }
+    .rf-metodos input:focus-visible + span { outline: 3px solid rgba(255, 107, 53, 0.35); }
 
-    .tabla-mini { width:100%; border-collapse:collapse; margin:10px 0 0; font-size:14px; }
-    .tabla-mini th { text-align:left; padding:6px 8px; background:#F5EFE3; }
-    .tabla-mini td { padding:6px 8px; border-top:1px solid #F5EFE3; }
-    .campo-metodo { display:block; margin:14px 0 6px; font-weight:600; }
-    .campo-metodo + select { width:100%; box-sizing:border-box; padding:10px 12px;
-        border:1px solid #E8DFC8; border-radius:12px; font:inherit; color:#4A2C1B; }
-    .campo-stock { display: flex; align-items: center; gap: 10px; margin: 16px 0 4px; font-weight: 600; cursor: pointer; }
-    .campo-stock input { width: 18px; height: 18px; accent-color: #FF6B35; }
-    .monto-devolver { font-size:18px; font-weight:700; color:#9E3B27; }
+    /* ===== Botones ===== */
+    .rf-botones { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+    .rf-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 14px 30px; border-radius: 999px; border: 0; cursor: pointer;
+        font: inherit; font-weight: 700; font-size: 15px; text-decoration: none;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .rf-btn:hover:not(:disabled) { transform: translateY(-2px); }
+    .rf-btn.principal { background: #9E3B27; color: #FFFFFF; box-shadow: 0 10px 20px -10px rgba(158, 59, 39, 0.7); }
+    .rf-btn.principal:hover:not(:disabled) { background: #7D2D20; }
+    .rf-btn.principal:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+    .rf-btn.suave { background: #F5EFE3; color: #4A2C1B; border: 1px solid #E8DFC8; }
+
+    /* ===== Pantallas pequeñas ===== */
+    @media (max-width: 760px) {
+        .rf-grid { grid-template-columns: repeat(2, 1fr); }
+        .rf-grid .rf-dato:last-child { grid-column: span 2; }
+        .rf-volver { margin-left: 0; }
+        .rf-seccion { padding: 18px 16px; }
+        .rf-fila {
+            grid-template-columns: auto 1fr;
+            row-gap: 12px;
+            padding: 14px;
+        }
+        .rf-cant { grid-column: 1 / span 2; }
+        .rf-subtotal { grid-column: 1 / span 2; text-align: left; }
+        .rf-monto { padding: 22px 20px; }
+        .rf-monto .valor { font-size: 38px; }
+        .rf-resumen div { min-width: 0; }
+        .rf-btn { width: 100%; }
+    }
+    @media (max-width: 420px) {
+        .rf-grid { grid-template-columns: 1fr; }
+        .rf-grid .rf-dato:last-child { grid-column: span 1; }
+    }
 </style>
 
+<div class="rf-wrap">
 
-<div class="cancelar-contenedor">
-    <div class="cancelar-tarjeta">
+    <!-- ENCABEZADO -->
+    <div class="rf-head">
+        <img src="{% static 'stk_reembolso.png' %}" alt="">
+        <div>
+            <h1>Reembolsar venta #{{ venta.id }}</h1>
+            <p>Elige qué productos se devuelven y cuántas unidades.</p>
+        </div>
+        <a href="{% url 'list_venta' %}" class="rf-volver">← Volver</a>
+    </div>
 
-        <h1>Reembolsar venta</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="rf-msg">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-        <p>Revisa la información. Al confirmar, la venta se cancela y el reembolso queda hecho.</p>
+    <!-- DATOS DE LA VENTA -->
+    <div class="rf-grid">
+        <div class="rf-dato">
+            <span>Cliente</span>
+            <strong>{{ venta.cliente.nombre }}</strong>
+        </div>
+        <div class="rf-dato">
+            <span>Fecha</span>
+            <strong>{{ venta.fecha|date:"d/m/Y" }}</strong>
+        </div>
+        <div class="rf-dato">
+            <span>Total de la venta</span>
+            <strong>$ {{ venta.valor_total|floatformat:0|intcomma }}</strong>
+        </div>
+    </div>
 
-        {% if messages %}
-            {% for message in messages %}<p class="aviso">{{ message }}</p>{% endfor %}
-        {% endif %}
+    {% if devuelto_antes or valor_antes %}
+        <div class="rf-previo">
+            Esta venta ya tuvo otro reembolso: se devolvieron
+            <strong>$ {{ devuelto_antes|floatformat:0|intcomma }}</strong> en productos por un valor de
+            <strong>$ {{ valor_antes|floatformat:0|intcomma }}</strong>.
+        </div>
+    {% endif %}
 
-        <div class="dato-venta">
-            <strong>Venta:</strong> #{{ venta.id }}<br>
-            <strong>Cliente:</strong> {{ venta.cliente.nombre }}<br>
-            <strong>Valor total:</strong> $ {{ venta.valor_total|floatformat:0|intcomma }}<br>
-            <strong>Fecha:</strong> {{ venta.fecha }}<br>
-            <strong>Dinero a devolver:</strong>
-            <span class="monto-devolver">$ {{ monto_devolver|floatformat:0|intcomma }}</span>
+    <form method="POST" id="form-reembolso"
+          data-total="{{ venta.valor_total|unlocalize }}"
+          data-recibido="{{ recibido|unlocalize }}"
+          data-devuelto-antes="{{ devuelto_antes|unlocalize }}"
+          data-valor-antes="{{ valor_antes|unlocalize }}">
+        {% csrf_token %}
+
+        <!-- PRODUCTOS -->
+        <div class="rf-seccion">
+            <div class="rf-titulo">
+                <div>
+                    <h2>¿Qué productos se devuelven?</h2>
+                    <p class="sub">Desmarca los que el cliente se queda, o baja la cantidad si solo devuelve algunas unidades. Los productos reembolsados no vuelven al inventario.</p>
+                </div>
+                <label class="rf-todos">
+                    <input type="checkbox" id="marcar-todos" checked>
+                    Reembolsar todo
+                </label>
+            </div>
+
+            <div class="rf-lista">
+                {% for d in detalles %}
+                    {% if d.cantidad_restante > 0 %}
+                        <div class="rf-fila marcada" data-precio="{{ d.precio|unlocalize }}">
+                            <input type="checkbox" class="elegir" checked
+                                   aria-label="Reembolsar {{ d.producto.nombre }}">
+
+                            <div class="rf-nombre">
+                                <strong>
+                                    {{ d.producto.nombre }}
+                                    {% if d.cantidad_reembolsada %}
+                                        <span class="rf-tag">{{ d.cantidad_reembolsada }} ya reembolsado{{ d.cantidad_reembolsada|pluralize:"s" }}</span>
+                                    {% endif %}
+                                </strong>
+                                <small>$ {{ d.precio|floatformat:0|intcomma }} c/u · vendidos: {{ d.cantidad }}</small>
+                            </div>
+
+                            <div class="rf-cant">
+                                <button type="button" class="menos" aria-label="Una unidad menos">−</button>
+                                <input type="number" class="cant" name="cant_{{ d.id }}"
+                                       min="1" max="{{ d.cantidad_restante }}" value="{{ d.cantidad_restante }}">
+                                <button type="button" class="mas" aria-label="Una unidad más">+</button>
+                                <span class="de">de {{ d.cantidad_restante }}</span>
+                            </div>
+
+                            <div class="rf-subtotal">$ 0</div>
+                        </div>
+                    {% else %}
+                        <div class="rf-fila apagada">
+                            <span></span>
+                            <div class="rf-nombre">
+                                <strong>{{ d.producto.nombre }} <span class="rf-tag">Ya reembolsado</span></strong>
+                                <small>$ {{ d.precio|floatformat:0|intcomma }} c/u · vendidos: {{ d.cantidad }}</small>
+                            </div>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
 
-        <strong>Productos de la venta</strong>
-        <table class="tabla-mini">
-            <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th></tr></thead>
-            <tbody>
-            {% for d in detalles %}
-                <tr>
-                    <td>{{ d.producto.nombre }}</td>
-                    <td>{{ d.cantidad }}</td>
-                    <td>$ {{ d.precio|floatformat:0|intcomma }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        <p class="aviso">
-            Se devuelve solo lo que el cliente ya pagó. Si no había pagado nada,
-            la venta se cancela sin devolver dinero.
-        </p>
-
-        <form method="POST">
-            {% csrf_token %}
-
-            <label class="campo-metodo" for="metodo">Forma en que se devuelve el dinero</label>
-            <select id="metodo" name="metodo" required>
-                {% for m in metodos %}
-                    <option value="{{ m }}" {% if m == metodo_sugerido %}selected{% endif %}>{{ m }}</option>
-                {% endfor %}
-            </select>
-
-            <label class="campo-stock">
-                <input type="checkbox" name="devolver_stock" checked>
-                Devolver los productos al inventario
-            </label>
-
-            <div class="botones">
-                <button type="submit" class="btn-cancelar">Confirmar reembolso</button>
-                <a href="{% url 'list_venta' %}" class="btn-volver">Volver</a>
+        <!-- DINERO A DEVOLVER -->
+        <div class="rf-monto">
+            <div>
+                <small>Dinero a devolver ahora</small>
+                <div class="valor" id="monto-ahora">$ 0</div>
+                <div class="nota" id="nota-monto"></div>
             </div>
-        </form>
+            <div class="rf-resumen">
+                <div>Productos reembolsados <b id="res-productos">$ 0</b></div>
+                <div>La venta queda valiendo <b id="res-queda">$ 0</b></div>
+            </div>
+        </div>
 
-    </div>
+        <!-- FORMA DE DEVOLUCIÓN -->
+        <div class="rf-seccion">
+            <h2>¿Cómo se devuelve el dinero?</h2>
+            <div class="rf-metodos">
+                {% for m in metodos %}
+                    <label>
+                        <input type="radio" name="metodo" value="{{ m }}" required
+                               {% if m == metodo_sugerido %}checked{% endif %}>
+                        <span>{{ m }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="rf-botones">
+            <button type="submit" class="rf-btn principal" id="btn-confirmar">Confirmar reembolso</button>
+            <a href="{% url 'list_venta' %}" class="rf-btn suave">Cancelar</a>
+        </div>
+    </form>
+
 </div>
+
+<script>
+(function () {
+    var form = document.getElementById('form-reembolso');
+    var total = parseFloat(form.dataset.total);
+    var recibido = parseFloat(form.dataset.recibido);
+    var devueltoAntes = parseFloat(form.dataset.devueltoAntes);
+    var valorAntes = parseFloat(form.dataset.valorAntes);
+
+    var filas = Array.prototype.slice.call(form.querySelectorAll('.rf-fila[data-precio]'));
+    var todos = document.getElementById('marcar-todos');
+    var montoAhora = document.getElementById('monto-ahora');
+    var nota = document.getElementById('nota-monto');
+    var resProductos = document.getElementById('res-productos');
+    var resQueda = document.getElementById('res-queda');
+    var boton = document.getElementById('btn-confirmar');
+
+    function pesos(n) { return '$ ' + Math.round(n).toLocaleString('es-CO'); }
+
+    function calcular() {
+        var valorNuevo = 0, marcadas = 0;
+
+        filas.forEach(function (fila) {
+            var chk = fila.querySelector('.elegir');
+            var cant = fila.querySelector('.cant');
+            var menos = fila.querySelector('.menos');
+            var mas = fila.querySelector('.mas');
+            var sub = fila.querySelector('.rf-subtotal');
+            var max = parseInt(cant.max, 10);
+            var precio = parseFloat(fila.dataset.precio);
+
+            cant.disabled = !chk.checked;
+            fila.classList.toggle('marcada', chk.checked);
+            fila.classList.toggle('apagada', !chk.checked);
+
+            var n = parseInt(cant.value, 10);
+            if (isNaN(n) || n < 1) { n = 1; }
+            if (n > max) { n = max; }
+            cant.value = n;
+
+            menos.disabled = !chk.checked || n <= 1;
+            mas.disabled = !chk.checked || n >= max;
+
+            if (chk.checked) {
+                valorNuevo += n * precio;
+                marcadas++;
+                sub.textContent = pesos(n * precio);
+            } else {
+                sub.textContent = '$ 0';
+            }
+        });
+
+        var reembolsado = valorAntes + valorNuevo;
+        var quedaValiendo = Math.max(0, total - reembolsado);
+        var enTotal = Math.max(0, recibido - (total - reembolsado));
+        var ahora = Math.max(0, enTotal - devueltoAntes);
+
+        montoAhora.textContent = pesos(ahora);
+        resProductos.textContent = pesos(valorNuevo);
+        resQueda.textContent = pesos(quedaValiendo);
+        boton.disabled = marcadas === 0;
+
+        if (marcadas === 0) {
+            nota.textContent = 'Marca al menos un producto.';
+        } else if (ahora === 0) {
+            nota.textContent = 'El cliente no pagó de más, así que no hay dinero que devolver.';
+        } else if (quedaValiendo === 0) {
+            nota.textContent = 'Se devuelve todo lo que el cliente pagó.';
+        } else {
+            nota.textContent = 'Es lo que el cliente pagó de más sobre lo que se queda.';
+        }
+
+        todos.checked = filas.every(function (f) { return f.querySelector('.elegir').checked; });
+    }
+
+    todos.addEventListener('change', function () {
+        filas.forEach(function (fila) {
+            var cant = fila.querySelector('.cant');
+            fila.querySelector('.elegir').checked = todos.checked;
+            if (todos.checked) { cant.value = cant.max; }
+        });
+        calcular();
+    });
+
+    filas.forEach(function (fila) {
+        var cant = fila.querySelector('.cant');
+
+        fila.querySelector('.elegir').addEventListener('change', calcular);
+        cant.addEventListener('input', calcular);
+
+        fila.querySelector('.menos').addEventListener('click', function () {
+            cant.value = (parseInt(cant.value, 10) || 1) - 1;
+            calcular();
+        });
+        fila.querySelector('.mas').addEventListener('click', function () {
+            cant.value = (parseInt(cant.value, 10) || 0) + 1;
+            calcular();
+        });
+    });
+
+    calcular();
+})();
+</script>
 
 {% endblock %}

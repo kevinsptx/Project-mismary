@@ -1,20 +1,29 @@
 """
-Carga datos de EJEMPLO con un flujo completo y coherente:
+Carga datos de EJEMPLO GRANDES con un flujo completo y coherente.
 
-  1. Se registran categorías, proveedores, clientes y productos.
-  2. Se hacen pedidos a proveedores (unos recibidos, uno pendiente y
-     uno cancelado). Al recibirlos entra el stock.
-  3. Se hacen ventas (pagadas, con abonos, con deuda) con fechas repartidas
-     en los últimos ~50 días, una venta de hoy, dos cancelaciones con
-     reembolso y varios gastos hormiga.
+Genera, de forma automática (y repetible), unos ~4 meses de negocio:
 
+  1. Categorías, proveedores, clientes y un catálogo de ~47 productos.
+  2. Pedidos a proveedores: uno inicial por proveedor y reposiciones cuando
+     el stock se agota (recibidos), más uno cancelado y uno pendiente.
+  3. Cientos de ventas repartidas por días (más movimiento en fines de
+     semana): pagadas, con abonos, con deuda, canceladas con reembolso y
+     con reembolso parcial. Siempre hay ventas de hoy y de ayer.
+  4. Gastos hormiga repartidos en todo el período.
+
+El stock se simula día por día: nunca se vende algo que todavía no ha
+llegado ni queda stock negativo.
 Las fechas se calculan desde HOY, así los reportes siempre se ven vivos.
 
 Uso:
     python manage.py cargar_datos
-    python manage.py cargar_datos --limpiar          (borra antes lo del negocio)
-    python manage.py cargar_datos --crear-usuarios   (crea admin_demo y usuario_demo)
+    python manage.py cargar_datos --limpiar            (borra antes lo del negocio)
+    python manage.py cargar_datos --crear-usuarios     (crea admin_demo y usuario_demo)
+    python manage.py cargar_datos --dias 180           (cuántos días de historial)
+    python manage.py cargar_datos --semilla 7          (otro juego de datos distinto)
 """
+import random
+from collections import defaultdict
 from datetime import datetime, time, timedelta
 from decimal import Decimal
 
@@ -26,138 +35,390 @@ from django.utils import timezone
 
 from SGV_mismary.models import (
     Abono, Categoria, Cliente, DetallePedido, DetalleVenta, Deuda, Gasto,
-    Pago, Pedido, Producto, Proveedor, Reembolso, Venta,
+    Pago, Pedido, Producto, Proveedor, Reembolso, Venta, DetalleReembolso,
 )
 
 from .limpiar_datos import borrar_datos_negocio, hacer_respaldo
 
 
 # ------------------------------------------------------------------
-# DATOS DE EJEMPLO
+# DATOS BASE
 # ------------------------------------------------------------------
 
 CATEGORIAS = [
-    'Maquillaje', 'Cuidado Facial', 'Cabello', 'Uñas', 'Accesorios',
+    'Maquillaje', 'Cejas y Pestañas', 'Cuidado Facial', 'Cabello',
+    'Uñas', 'Accesorios', 'Perfumería', 'Cuidado Corporal',
 ]
 
 PROVEEDORES = [
     ('Distribuciones Aurora', '3112345678', 'ventas@aurora.co', 'Cra 3 # 12-40, Ibagué'),
     ('Beauty Import Colombia', '3159876543', 'pedidos@beautyimport.co', 'Calle 72 # 10-34, Bogotá'),
     ('Mayorista La Belleza', '3004561230', 'info@mayoristabelleza.co', 'Av. 30 de Agosto # 45-10, Pereira'),
+    ('Fragancias del Valle', '3187654321', 'comercial@fragancias.co', 'Cra 100 # 5-20, Cali'),
+    ('Importadora Glamour', '3203334455', 'ventas@glamour.co', 'Cra 43A # 1-50, Medellín'),
 ]
+
+# Qué proveedores (por posición en la lista de arriba) surten cada categoría
+PROV_POR_CATEGORIA = {
+    'Maquillaje':        [0, 4],
+    'Cejas y Pestañas':  [0, 1],
+    'Cuidado Facial':    [1],
+    'Cabello':           [2],
+    'Uñas':              [0, 4],
+    'Accesorios':        [2, 4],
+    'Perfumería':        [3],
+    'Cuidado Corporal':  [1, 3],
+}
 
 # nombre: (categoría, precio de compra, precio de venta)
 PRODUCTOS = {
-    'Labial Líquido Coral':     ('Maquillaje', 7000, 15000),
-    'Rubor en Polvo Rosa':      ('Maquillaje', 8000, 17000),
-    'Polvo Compacto Natural':   ('Maquillaje', 9000, 19000),
-    'Pestañina Waterproof':     ('Maquillaje', 8500, 18000),
-    'Gel Fijador de Cejas':     ('Maquillaje', 5000, 11000),
-    'Limpiador Facial Espuma':  ('Cuidado Facial', 11000, 23000),
-    'Sérum Vitamina C':         ('Cuidado Facial', 18000, 38000),
-    'Mascarilla de Arcilla':    ('Cuidado Facial', 6000, 13000),
-    'Shampoo de Keratina':      ('Cabello', 13000, 26000),
-    'Mascarilla Capilar':       ('Cabello', 12000, 25000),
-    'Aceite de Argán':          ('Cabello', 15000, 32000),
-    'Esmalte Gel Rojo':         ('Uñas', 4000, 9000),
-    'Set de Limas':             ('Uñas', 3000, 7000),
-    'Espejo de Mano':           ('Accesorios', 6000, 14000),
-    'Neceser Floral':           ('Accesorios', 10000, 22000),
+    # Maquillaje
+    'Labial Líquido Coral':        ('Maquillaje', 7000, 15000),
+    'Labial Mate Vino':            ('Maquillaje', 7000, 15000),
+    'Rubor en Polvo Rosa':         ('Maquillaje', 8000, 17000),
+    'Polvo Compacto Natural':      ('Maquillaje', 9000, 19000),
+    'Base Líquida Tono Medio':     ('Maquillaje', 14000, 29000),
+    'Corrector Cobertura Alta':    ('Maquillaje', 8000, 17000),
+    'Iluminador Dorado':           ('Maquillaje', 9000, 20000),
+    'Paleta de Sombras Nude':      ('Maquillaje', 16000, 34000),
+    'Delineador Líquido Negro':    ('Maquillaje', 5000, 11000),
+    'Spray Fijador de Maquillaje': ('Maquillaje', 11000, 24000),
+    # Cejas y Pestañas
+    'Pestañina Waterproof':        ('Cejas y Pestañas', 8500, 18000),
+    'Gel Fijador de Cejas':        ('Cejas y Pestañas', 5000, 11000),
+    'Lápiz de Cejas Castaño':      ('Cejas y Pestañas', 4000, 9000),
+    'Pestañas Postizas Naturales': ('Cejas y Pestañas', 6000, 13000),
+    # Cuidado Facial
+    'Limpiador Facial Espuma':     ('Cuidado Facial', 11000, 23000),
+    'Sérum Vitamina C':            ('Cuidado Facial', 18000, 38000),
+    'Mascarilla de Arcilla':       ('Cuidado Facial', 6000, 13000),
+    'Crema Hidratante Día':        ('Cuidado Facial', 15000, 32000),
+    'Protector Solar FPS 50':      ('Cuidado Facial', 17000, 36000),
+    'Agua Micelar':                ('Cuidado Facial', 12000, 25000),
+    'Contorno de Ojos':            ('Cuidado Facial', 13000, 28000),
+    # Cabello
+    'Shampoo de Keratina':         ('Cabello', 13000, 26000),
+    'Mascarilla Capilar':          ('Cabello', 12000, 25000),
+    'Aceite de Argán':             ('Cabello', 15000, 32000),
+    'Acondicionador Sin Sal':      ('Cabello', 11000, 23000),
+    'Crema para Peinar':           ('Cabello', 9000, 19000),
+    'Tratamiento Anticaída':       ('Cabello', 19000, 40000),
+    # Uñas
+    'Esmalte Gel Rojo':            ('Uñas', 4000, 9000),
+    'Esmalte Gel Nude':            ('Uñas', 4000, 9000),
+    'Set de Limas':                ('Uñas', 3000, 7000),
+    'Removedor de Esmalte':        ('Uñas', 3000, 7000),
+    'Kit de Manicure':             ('Uñas', 10000, 22000),
+    # Accesorios
+    'Espejo de Mano':              ('Accesorios', 6000, 14000),
+    'Neceser Floral':              ('Accesorios', 10000, 22000),
+    'Set de Brochas x8':           ('Accesorios', 18000, 39000),
+    'Esponja Beauty Blender':      ('Accesorios', 5000, 12000),
+    'Cintillo para Maquillarse':   ('Accesorios', 3000, 8000),
+    'Organizador de Maquillaje':   ('Accesorios', 15000, 33000),
+    # Perfumería
+    'Splash Corporal Vainilla':    ('Perfumería', 12000, 26000),
+    'Perfume Floral 50 ml':        ('Perfumería', 28000, 59000),
+    'Perfume Cítrico 50 ml':       ('Perfumería', 27000, 57000),
+    'Colonia Infantil':            ('Perfumería', 10000, 22000),
+    # Cuidado Corporal
+    'Crema Corporal de Karité':    ('Cuidado Corporal', 10000, 21000),
+    'Exfoliante de Café':          ('Cuidado Corporal', 9000, 19000),
+    'Aceite Corporal de Almendras': ('Cuidado Corporal', 13000, 28000),
+    'Desodorante en Crema':        ('Cuidado Corporal', 7000, 15000),
 }
 
 # Producto registrado pero SIN pedido todavía (sin precio ni stock):
 # así se ve cómo queda un producto recién creado.
 PRODUCTO_SIN_PEDIDO = ('Kit de Pinceles Mini', 'Accesorios')
 
-CLIENTES = [
-    ('Paula Andrea Vargas',   '3101112233', 'Barrio La Pola, Ibagué'),
-    ('Esteban Molina',        '3112223344', 'Cra 5 # 20-15, Ibagué'),
-    ('Natalia Cárdenas',      '3123334455', 'Barrio Jordán, Ibagué'),
-    ('Felipe Giraldo',        '3134445566', 'Cádiz, Ibagué'),
-    ('Luisa Fernanda Mejía',  '3145556677', 'El Salado, Ibagué'),
-    ('Santiago Rincón',       '3156667788', 'Picaleña, Ibagué'),
-    ('Karen Beltrán',         '3167778899', 'Ambalá, Ibagué'),
-    ('Julián Arias',          '3178889900', 'Calle 42 # 3-18, Ibagué'),
+NOMBRES = [
+    'Paula Andrea', 'Esteban', 'Natalia', 'Felipe', 'Luisa Fernanda', 'Santiago',
+    'Karen', 'Julián', 'Valentina', 'Camilo', 'Daniela', 'Andrés', 'Mariana',
+    'Sebastián', 'Laura', 'Juan Pablo', 'Carolina', 'Mateo', 'Juliana', 'David',
+    'Sofía', 'Nicolás', 'Alejandra', 'Brayan', 'Ximena', 'Cristian', 'Tatiana',
+    'Oscar', 'Manuela', 'Diego',
 ]
 
-# (días atrás del pedido, índice proveedor, estado, días atrás de recepción, líneas)
-PEDIDOS = [
-    (60, 0, 'Recibido', 57, [('Labial Líquido Coral', 7), ('Rubor en Polvo Rosa', 4),
-                             ('Polvo Compacto Natural', 4), ('Pestañina Waterproof', 6),
-                             ('Esmalte Gel Rojo', 8), ('Set de Limas', 4),
-                             ('Limpiador Facial Espuma', 4)]),
-    (42, 1, 'Recibido', 39, [('Sérum Vitamina C', 4), ('Mascarilla de Arcilla', 3),
-                             ('Shampoo de Keratina', 3), ('Mascarilla Capilar', 4),
-                             ('Aceite de Argán', 3)]),
-    (30, 2, 'Cancelado', None, [('Neceser Floral', 5)]),
-    (18, 2, 'Recibido', 15, [('Espejo de Mano', 4), ('Neceser Floral', 3),
-                             ('Gel Fijador de Cejas', 4), ('Labial Líquido Coral', 3)]),
-    (3,  1, 'Pendiente', None, [('Sérum Vitamina C', 6), ('Shampoo de Keratina', 4)]),
+APELLIDOS = [
+    'Vargas', 'Molina', 'Cárdenas', 'Giraldo', 'Mejía', 'Rincón', 'Beltrán',
+    'Arias', 'Ramírez', 'Gómez', 'Torres', 'Ospina', 'Castaño', 'Herrera',
+    'Rojas', 'Quintero', 'Salazar', 'Morales', 'Duque', 'Parra', 'Londoño',
+    'Mora', 'Cruz', 'Prieto',
 ]
 
-# Cada venta:
-#   dias:   días atrás de la venta
-#   cliente: índice en CLIENTES
-#   items:  [(producto, cantidad)]
-#   pagado: lo que pagó al momento de la venta
-#   forma:  forma de pago del pago inicial
-#   abonos: [(días atrás, valor, forma)]  pagos posteriores
-#   cancelada: None | ('Devuelto', días atrás de la devolución)
-VENTAS = [
-    dict(dias=54, cliente=0, items=[('Labial Líquido Coral', 2), ('Esmalte Gel Rojo', 1)], pagado=39000, forma='Efectivo'),
-    dict(dias=51, cliente=1, items=[('Rubor en Polvo Rosa', 1), ('Pestañina Waterproof', 1)], pagado=15000, forma='Nequi',
-         abonos=[(44, 10000, 'Nequi'), (35, 10000, 'Efectivo')]),
-    dict(dias=47, cliente=2, items=[('Polvo Compacto Natural', 2), ('Set de Limas', 2)], pagado=52000, forma='Transferencia'),
-    dict(dias=43, cliente=3, items=[('Limpiador Facial Espuma', 1), ('Labial Líquido Coral', 1)], pagado=0, forma='Efectivo',
-         abonos=[(25, 15000, 'Efectivo')]),
-    dict(dias=41, cliente=4, items=[('Esmalte Gel Rojo', 3), ('Pestañina Waterproof', 1)], pagado=20000, forma='Daviplata',
-         abonos=[(20, 25000, 'Daviplata')]),
-    dict(dias=36, cliente=5, items=[('Sérum Vitamina C', 1), ('Mascarilla de Arcilla', 1)], pagado=51000, forma='Nequi'),
-    dict(dias=33, cliente=6, items=[('Shampoo de Keratina', 1), ('Mascarilla Capilar', 1)], pagado=25000, forma='Efectivo',
-         abonos=[(14, 26000, 'Nequi')]),
-    dict(dias=29, cliente=7, items=[('Labial Líquido Coral', 3), ('Rubor en Polvo Rosa', 1)], pagado=62000, forma='Efectivo',
-         cancelada=('Devuelto', 27)),
-    dict(dias=26, cliente=0, items=[('Aceite de Argán', 1), ('Esmalte Gel Rojo', 1)], pagado=41000, forma='Transferencia'),
-    dict(dias=22, cliente=1, items=[('Sérum Vitamina C', 2)], pagado=40000, forma='Nequi',
-         abonos=[(9, 20000, 'Efectivo')]),
-    dict(dias=19, cliente=2, items=[('Pestañina Waterproof', 2), ('Limpiador Facial Espuma', 1)], pagado=59000, forma='Efectivo'),
-    dict(dias=14, cliente=3, items=[('Espejo de Mano', 1), ('Neceser Floral', 1)], pagado=0, forma='Efectivo'),
-    dict(dias=12, cliente=4, items=[('Gel Fijador de Cejas', 2), ('Labial Líquido Coral', 1)], pagado=37000, forma='Nequi'),
-    dict(dias=10, cliente=5, items=[('Polvo Compacto Natural', 1), ('Rubor en Polvo Rosa', 1), ('Set de Limas', 1)], pagado=43000, forma='Efectivo'),
-    dict(dias=8,  cliente=6, items=[('Neceser Floral', 1), ('Espejo de Mano', 1)], pagado=36000, forma='Daviplata',
-         cancelada=('Devuelto', 7)),
-    dict(dias=6,  cliente=7, items=[('Shampoo de Keratina', 1), ('Aceite de Argán', 1), ('Mascarilla de Arcilla', 1)], pagado=71000, forma='Transferencia'),
-    dict(dias=4,  cliente=2, items=[('Sérum Vitamina C', 1), ('Limpiador Facial Espuma', 1)], pagado=30000, forma='Efectivo',
-         abonos=[(1, 15000, 'Nequi')]),
-    dict(dias=2,  cliente=0, items=[('Labial Líquido Coral', 2), ('Esmalte Gel Rojo', 2)], pagado=48000, forma='Nequi'),
-    dict(dias=1,  cliente=1, items=[('Mascarilla Capilar', 2), ('Espejo de Mano', 1)], pagado=64000, forma='Efectivo'),
-    dict(dias=0,  cliente=3, items=[('Pestañina Waterproof', 1), ('Gel Fijador de Cejas', 1)], pagado=29000, forma='Nequi'),
+BARRIOS = [
+    'Barrio La Pola', 'Jordán', 'Cádiz', 'El Salado', 'Picaleña', 'Ambalá',
+    'Mirolindo', 'El Vergel', 'Interlaken', 'Piedra Pintada', 'Belén',
+    'Santa Ana', 'Gaitán', 'La Francia', 'Calambeo',
 ]
 
-# (días atrás, descripción, valor)
-GASTOS_HORMIGA = [
-    (52, 'Bolsas de papel kraft', 9000),
-    (46, 'Pasaje para recoger mercancía', 7500),
-    (38, 'Etiquetas y stickers para empaques', 11000),
-    (27, 'Impulso de publicaciones en Instagram', 25000),
-    (16, 'Domicilio a clientes', 14000),
-    (9,  'Tijeras y cinta de embalaje', 8000),
-    (1,  'Papel de seda para regalos', 6500),
+CANTIDAD_CLIENTES = 32
+
+# (descripción, valor mínimo, valor máximo)
+TIPOS_GASTO_HORMIGA = [
+    ('Bolsas de papel kraft', 6000, 12000),
+    ('Pasaje para recoger mercancía', 4000, 9000),
+    ('Etiquetas y stickers para empaques', 8000, 14000),
+    ('Impulso de publicaciones en Instagram', 15000, 35000),
+    ('Domicilio a clientes', 8000, 18000),
+    ('Tijeras y cinta de embalaje', 5000, 10000),
+    ('Papel de seda para regalos', 4000, 9000),
+    ('Tarjetas de agradecimiento', 7000, 13000),
+    ('Recarga de datos del celular', 10000, 20000),
+    ('Fotocopias del catálogo', 3000, 8000),
+    ('Cajas de cartón para envíos', 9000, 16000),
+    ('Almuerzo en día de entregas', 8000, 15000),
 ]
 
+FORMAS_PAGO = ['Efectivo', 'Nequi', 'Daviplata', 'Transferencia']
+PESOS_FORMA = [35, 32, 12, 21]
+
+
+# ------------------------------------------------------------------
+# GENERADOR DE DATOS (todo sale de una semilla: siempre igual)
+# ------------------------------------------------------------------
+
+def redondear_mil(valor):
+    return int(round(valor / 1000.0)) * 1000
+
+
+def generar_clientes(semilla):
+    rng = random.Random(semilla + 1)
+    clientes, usados, telefonos = [], set(), set()
+
+    while len(clientes) < CANTIDAD_CLIENTES:
+        nombre = f'{rng.choice(NOMBRES)} {rng.choice(APELLIDOS)}'
+        telefono = '3' + ''.join(str(rng.randint(0, 9)) for _ in range(9))
+
+        if nombre in usados or telefono in telefonos:
+            continue
+        usados.add(nombre)
+        telefonos.add(telefono)
+
+        if rng.random() < 0.5:
+            direccion = f'{rng.choice(BARRIOS)}, Ibagué'
+        else:
+            direccion = f'Cra {rng.randint(1, 15)} # {rng.randint(1, 60)}-{rng.randint(1, 50)}, Ibagué'
+
+        clientes.append((nombre, telefono, direccion))
+
+    return clientes
+
+
+def generar_plan(hoy, dias_total, semilla):
+    """
+    Simula el negocio día por día y devuelve todo lo que hay que cargar:
+    clientes, pedidos, ventas y gastos. El stock se controla en memoria
+    para que los datos nunca queden incoherentes.
+    """
+    rng = random.Random(semilla)
+    clientes = generar_clientes(semilla)
+
+    nombres = list(PRODUCTOS)
+    precio_venta = {n: PRODUCTOS[n][2] for n in nombres}
+    popularidad = {n: rng.uniform(0.3, 3.0) for n in nombres}
+
+    # Cada producto lo surte siempre el mismo proveedor
+    proveedor_de = {n: rng.choice(PROV_POR_CATEGORIA[PRODUCTOS[n][0]]) for n in nombres}
+
+    stock = {n: 0 for n in nombres}
+    entrante = {n: 0 for n in nombres}          # pedido en camino
+    recepciones = defaultdict(list)             # día -> [(producto, cantidad)]
+    pedidos, ventas = [], []
+
+    def cantidad_inicial(n):
+        # Lo caro se compra en menos cantidad
+        return rng.randint(8, 14) if precio_venta[n] >= 35000 else rng.randint(14, 26)
+
+    def colocar_pedido(dias, idx_prov, lineas, estado, demora=3):
+        dias_recep = None
+
+        if estado == 'Recibido':
+            dias_recep = dias - demora
+            if dias_recep < 0:               # todavía no llega
+                estado, dias_recep = 'Pendiente', None
+            else:
+                recepciones[dias_recep].extend(lineas)
+                for n, c in lineas:
+                    entrante[n] += c
+
+        pedidos.append((dias, idx_prov, estado, dias_recep, lineas))
+
+    # --- Pedidos iniciales: un pedido por proveedor con todo su catálogo ---
+    for idx_prov in range(len(PROVEEDORES)):
+        lineas = [(n, cantidad_inicial(n)) for n in nombres if proveedor_de[n] == idx_prov]
+        if lineas:
+            colocar_pedido(dias_total, idx_prov, lineas, 'Recibido', rng.randint(2, 4))
+
+    dia_cancelado_1 = int(dias_total * 0.62)
+    dia_cancelado_2 = int(dias_total * 0.25)
+
+    # --- Simulación día por día, desde el más antiguo hasta hoy ---
+    for d in range(dias_total, -1, -1):
+
+        # 1. Llegan los pedidos que estaban en camino
+        for n, c in recepciones.pop(d, []):
+            stock[n] += c
+            entrante[n] -= c
+
+        # 2. Reposición: cada 9 días se pide lo que se está agotando
+        if 6 <= d <= dias_total - 10 and d % 9 == 0:
+            for idx_prov in range(len(PROVEEDORES)):
+                bajos = [n for n in nombres
+                         if proveedor_de[n] == idx_prov and stock[n] + entrante[n] < 6]
+                if bajos:
+                    rng.shuffle(bajos)
+                    lineas = [(n, rng.randint(10, 20) if precio_venta[n] < 35000 else rng.randint(6, 10))
+                              for n in bajos[:8]]
+                    colocar_pedido(d, idx_prov, lineas, 'Recibido', rng.randint(2, 4))
+
+        # 3. Un par de pedidos cancelados y uno pendiente reciente
+        if d in (dia_cancelado_1, dia_cancelado_2):
+            idx_prov = rng.randrange(len(PROVEEDORES))
+            candidatos = [n for n in nombres if proveedor_de[n] == idx_prov] or nombres
+            lineas = [(n, rng.randint(4, 8)) for n in rng.sample(candidatos, min(2, len(candidatos)))]
+            pedidos.append((d, idx_prov, 'Cancelado', None, lineas))
+
+        if d == 3:
+            idx_prov = 1
+            candidatos = [n for n in nombres if proveedor_de[n] == idx_prov]
+            lineas = [(n, rng.randint(8, 14)) for n in rng.sample(candidatos, min(3, len(candidatos)))]
+            colocar_pedido(d, idx_prov, lineas, 'Pendiente', 0)
+
+        # 4. Ventas del día (más en viernes y sábado)
+        dia_semana = (hoy - timedelta(days=d)).weekday()
+        cuantas = rng.choices([0, 1, 2, 3, 4], [8, 25, 32, 25, 10])[0]
+        if dia_semana in (4, 5) and rng.random() < 0.5:
+            cuantas += 1
+        if d <= 1:
+            cuantas = max(cuantas, 2)        # siempre hay ventas de hoy y de ayer
+
+        for _ in range(cuantas):
+            disponibles = [n for n in nombres if stock[n] > 0]
+            if not disponibles:
+                break
+
+            # Qué se vende
+            n_lineas = min(len(disponibles), rng.choices([1, 2, 3, 4], [35, 40, 20, 5])[0])
+            pool = disponibles[:]
+            items = []
+            for _l in range(n_lineas):
+                n = rng.choices(pool, [popularidad[x] for x in pool])[0]
+                pool.remove(n)
+                cant = min(stock[n], rng.choices([1, 2, 3], [65, 25, 10])[0])
+                stock[n] -= cant
+                items.append((n, cant))
+
+            total = sum(precio_venta[n] * c for n, c in items)
+
+            # Los primeros 8 clientes compran más seguido
+            cliente = rng.choices(range(len(clientes)),
+                                  [4 if i < 8 else 1 for i in range(len(clientes))])[0]
+            forma = rng.choices(FORMAS_PAGO, PESOS_FORMA)[0]
+
+            venta = dict(dias=d, cliente=cliente, items=items, forma=forma)
+            suerte = rng.random()
+
+            if suerte < 0.62:
+                # Pagada completa
+                venta['pagado'] = total
+
+            elif suerte < 0.80:
+                # Pagó una parte; puede ir abonando
+                pagado = redondear_mil(total * rng.uniform(0.3, 0.7))
+                venta['pagado'] = max(1000, min(pagado, total - 1000))
+                venta['abonos'] = generar_abonos(rng, d, total - venta['pagado'], 0.6)
+
+            elif suerte < 0.90:
+                # No pagó nada todavía
+                venta['pagado'] = 0
+                venta['abonos'] = generar_abonos(rng, d, total, 0.5)
+
+            elif suerte < 0.95 and d >= 2:
+                # Venta cancelada con reembolso de lo que había pagado
+                if rng.random() < 0.7:
+                    venta['pagado'] = total
+                else:
+                    venta['pagado'] = max(1000, min(redondear_mil(total * 0.5), total - 1000))
+                venta['cancelada'] = ('Devuelto', max(0, d - rng.randint(1, 2)))
+
+            elif suerte >= 0.95 and d >= 2 and (len(items) > 1 or items[0][1] > 1):
+                # Reembolso parcial: se devuelve 1 unidad de un producto
+                venta['pagado'] = total
+                producto_dev = rng.choice(items)[0]
+                venta['parcial'] = (max(0, d - rng.randint(1, 2)), [(producto_dev, 1)])
+
+            else:
+                venta['pagado'] = total
+
+            ventas.append(venta)
+
+    # --- Gastos hormiga repartidos en todo el período ---
+    gastos = []
+    for _ in range(max(8, dias_total // 4)):
+        descripcion, minimo, maximo = rng.choice(TIPOS_GASTO_HORMIGA)
+        valor = int(round(rng.randint(minimo, maximo) / 500.0)) * 500
+        gastos.append((rng.randint(0, dias_total), descripcion, valor))
+
+    pedidos.sort(key=lambda p: -p[0])
+    ventas.sort(key=lambda v: -v['dias'])
+    gastos.sort(key=lambda g: -g[0])
+
+    return dict(clientes=clientes, pedidos=pedidos, ventas=ventas, gastos=gastos)
+
+
+def generar_abonos(rng, dias_venta, saldo, probabilidad):
+    """Pagos posteriores a la venta: nunca superan lo que se debe."""
+    if dias_venta < 3 or saldo <= 0 or rng.random() > probabilidad:
+        return []
+
+    posibles = list(range(max(0, dias_venta - 35), dias_venta))   # días posteriores a la venta
+    cantidad = min(len(posibles), rng.choice([1, 1, 2]))
+    dias_abonos = sorted(rng.sample(posibles, cantidad), reverse=True)
+
+    abonos, restante = [], saldo
+
+    for i, dia in enumerate(dias_abonos):
+        if restante <= 0:
+            break
+
+        es_ultimo = i == len(dias_abonos) - 1
+        if es_ultimo and rng.random() < 0.65:
+            valor = restante                                      # termina de pagar
+        else:
+            valor = max(1000, redondear_mil(restante * rng.uniform(0.3, 0.6)))
+
+        valor = min(valor, restante)
+        abonos.append((dia, valor, rng.choices(FORMAS_PAGO, PESOS_FORMA)[0]))
+        restante -= valor
+
+    return abonos
+
+
+# ------------------------------------------------------------------
+# COMANDO
+# ------------------------------------------------------------------
 
 class Command(BaseCommand):
-    help = 'Carga datos de ejemplo con un flujo completo y coherente.'
+    help = 'Carga datos de ejemplo grandes con un flujo completo y coherente.'
 
     def add_arguments(self, parser):
         parser.add_argument('--limpiar', action='store_true',
                             help='Borra antes los datos del negocio (hace respaldo).')
         parser.add_argument('--crear-usuarios', action='store_true',
                             help='Crea admin_demo y usuario_demo (clave: demo1234).')
+        parser.add_argument('--dias', type=int, default=120,
+                            help='Cuántos días de historial generar (por defecto 120).')
+        parser.add_argument('--semilla', type=int, default=2026,
+                            help='Cambia este número para obtener otro juego de datos.')
 
     # ------------------------------------------------------------
     def handle(self, *args, **opciones):
         self.hoy = timezone.localdate()
+
+        if opciones['dias'] < 30:
+            raise CommandError('Usa al menos --dias 30 para que los datos tengan sentido.')
 
         if opciones['limpiar']:
             respaldo = hacer_respaldo()
@@ -179,12 +440,14 @@ class Command(BaseCommand):
                       or User.objects.filter(username='admin_demo').first()
                       or User.objects.first())
 
+        plan = generar_plan(self.hoy, opciones['dias'], opciones['semilla'])
+
         with transaction.atomic():
             productos = self.crear_catalogo()
-            clientes = self.crear_clientes()
-            self.crear_pedidos(productos)
-            ventas = self.crear_ventas(productos, clientes)
-            self.crear_gastos()
+            clientes = self.crear_clientes(plan['clientes'])
+            self.crear_pedidos(productos, plan['pedidos'])
+            self.crear_ventas(productos, clientes, plan['ventas'])
+            self.crear_gastos(plan['gastos'])
 
         self.resumen()
 
@@ -223,20 +486,20 @@ class Command(BaseCommand):
         )
         return productos
 
-    def crear_clientes(self):
+    def crear_clientes(self, datos_clientes):
         return [
             Cliente.objects.create(nombre=n, telefono=t, direccion=d)
-            for n, t, d in CLIENTES
+            for n, t, d in datos_clientes
         ]
 
     # ------------------------------------------------------------
     # 2. Pedidos a proveedores
     # ------------------------------------------------------------
-    def crear_pedidos(self, productos):
+    def crear_pedidos(self, productos, plan_pedidos):
         proveedores = list(Proveedor.objects.order_by('id'))
         tiene_fecha_recepcion = 'fecha_recepcion' in [f.name for f in Pedido._meta.fields]
 
-        for dias, idx_prov, estado, dias_recep, lineas in PEDIDOS:
+        for dias, idx_prov, estado, dias_recep, lineas in plan_pedidos:
             pedido = Pedido.objects.create(
                 proveedor=proveedores[idx_prov], fecha=self.dia(dias),
                 estado='Pendiente', costo_total=0,
@@ -272,8 +535,8 @@ class Command(BaseCommand):
     # ------------------------------------------------------------
     # 3. Ventas, pagos, abonos, deudas y reembolsos
     # ------------------------------------------------------------
-    def crear_ventas(self, productos, clientes):
-        for datos in VENTAS:
+    def crear_ventas(self, productos, clientes, plan_ventas):
+        for datos in plan_ventas:
             cliente = clientes[datos['cliente']]
             pagado = Decimal(datos['pagado'])
 
@@ -343,12 +606,62 @@ class Command(BaseCommand):
                     observaciones='Reembolso realizado al cancelar la venta (dato de ejemplo).',
                     registrado_por=self.quien,
                 )
+                for linea in venta.detalles.all():
+                    DetalleReembolso.objects.create(
+                        reembolso=reembolso, producto=linea.producto,
+                        cantidad=linea.cantidad, precio=linea.precio,
+                    )
+                    linea.cantidad_reembolsada = linea.cantidad
+                    linea.save(update_fields=['cantidad_reembolsada'])
+                Reembolso.objects.filter(pk=reembolso.pk).update(
+                    fecha_solicitud=reembolso.fecha_devolucion
+                )
+
+            # Reembolso PARCIAL: solo algunos productos; la venta sigue activa
+            if datos.get('parcial'):
+                dias_dev, productos_dev = datos['parcial']
+                recibido = pagado + sum(a[1] for a in datos.get('abonos', []))
+                valor_dev = Decimal('0')
+                lineas = []
+                for nombre, cant in productos_dev:
+                    linea = venta.detalles.get(producto=productos[nombre])
+                    lineas.append((linea, cant))
+                    valor_dev += linea.precio * cant
+
+                monto = max(Decimal('0'), Decimal(recibido) - (venta.valor_total - valor_dev))
+                metodo = datos['forma'] if datos['forma'] in ('Efectivo', 'Nequi', 'Daviplata', 'Transferencia') else 'Otro'
+                reembolso = Reembolso.objects.create(
+                    venta=venta, motivo='Reembolso de productos de la venta',
+                    monto=monto, metodo=metodo,
+                    estado='Devuelto' if monto > 0 else 'No aplica',
+                    fecha_devolucion=self.momento(dias_dev, hora=11) if monto > 0 else None,
+                    observaciones='Reembolso parcial (dato de ejemplo).',
+                    registrado_por=self.quien,
+                )
+                Reembolso.objects.filter(pk=reembolso.pk).update(
+                    fecha_solicitud=self.momento(dias_dev, hora=11)
+                )
+                for linea, cant in lineas:
+                    DetalleReembolso.objects.create(
+                        reembolso=reembolso, producto=linea.producto,
+                        cantidad=cant, precio=linea.precio,
+                    )
+                    linea.cantidad_reembolsada = cant
+                    linea.save(update_fields=['cantidad_reembolsada'])
+
+                # la deuda de la venta queda con el nuevo valor
+                nuevo_valor = venta.valor_total - valor_dev
+                saldo = max(Decimal('0'), nuevo_valor - (Decimal(recibido) - monto))
+                Deuda.objects.filter(venta=venta).update(
+                    valor_total=nuevo_valor, saldo=saldo,
+                    estado='Pagada' if saldo == 0 else 'Pendiente',
+                )
 
     # ------------------------------------------------------------
     # 4. Gastos hormiga
     # ------------------------------------------------------------
-    def crear_gastos(self):
-        for dias, descripcion, valor in GASTOS_HORMIGA:
+    def crear_gastos(self, plan_gastos):
+        for dias, descripcion, valor in plan_gastos:
             Gasto.objects.create(
                 descripcion=descripcion, valor=valor,
                 fecha=self.dia(dias), tipo='Hormiga',
@@ -378,11 +691,13 @@ class Command(BaseCommand):
     def resumen(self):
         self.stdout.write(self.style.SUCCESS('Datos de ejemplo cargados:'))
         self.stdout.write(f'  Categorías: {Categoria.objects.count()}   Proveedores: {Proveedor.objects.count()}   '
-                          f'Clientes: {Cliente.objects.count()}   Productos: {Producto.objects.count()}')
+                          f'Clientes: {Cliente.objects.count()}   Productos: {Producto.objects.count()} '
+                          f'(sin stock: {Producto.objects.filter(cantidad_disponible=0).count()})')
         self.stdout.write(f'  Pedidos: {Pedido.objects.count()} '
                           f'(recibidos {Pedido.objects.filter(estado="Recibido").count()}, '
                           f'pendientes {Pedido.objects.filter(estado="Pendiente").count()}, '
                           f'cancelados {Pedido.objects.filter(estado="Cancelado").count()})')
         self.stdout.write(f'  Ventas: {Venta.objects.count()}   Deudas pendientes: '
                           f'{Deuda.objects.filter(estado="Pendiente").count()}   '
+                          f'Abonos: {Abono.objects.count()}   '
                           f'Reembolsos: {Reembolso.objects.count()}   Gastos hormiga: {Gasto.objects.count()}')

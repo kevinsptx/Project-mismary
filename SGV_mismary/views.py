@@ -10,14 +10,14 @@ from django.db import transaction
 from django.db.models import ProtectedError
 from django.db.models import Sum, Count, Q, F, DecimalField
 from django.db.models.functions import Coalesce, TruncDate
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import ProductoForm, ProductoRegistroForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
-from .models import Cliente, Venta, Abono, Deuda, Categoria,Producto, DetalleVenta, Gasto, Pago,DetallePedido, Pedido, Proveedor, Reembolso
+from .models import Cliente, Venta, Abono, Deuda, Categoria,Producto, DetalleVenta, Gasto, Pago,DetallePedido, Pedido, Proveedor, Reembolso, DetalleReembolso
 
 METODOS_VALIDOS = ['Efectivo', 'Nequi', 'Daviplata', 'Transferencia', 'Otro']
 ESTADOS_PEDIDO = ['Pendiente', 'Recibido', 'Cancelado']
@@ -91,8 +91,12 @@ def home(request):
         v = (Venta.objects.exclude(estado='Cancelada')
              .filter(fecha=hoy)
              .aggregate(n=Count('id'), t=Sum('valor_total')))
+        reembolsado_hoy = (DetalleVenta.objects.exclude(venta__estado='Cancelada')
+                           .filter(venta__fecha=hoy)
+                           .aggregate(t=Sum(F('cantidad_reembolsada') * F('precio'),
+                                            output_field=DecimalField(max_digits=14, decimal_places=2)))['t'] or 0)
         stats['ventas_hoy'] = v['n']
-        stats['ventas_hoy_total'] = v['t'] or 0
+        stats['ventas_hoy_total'] = (v['t'] or 0) - reembolsado_hoy
 
     if u.has_perm('SGV_mismary.view_pedido'):
         stats['pedidos_pendientes'] = Pedido.objects.filter(estado='Pendiente').count()
@@ -395,7 +399,8 @@ def productos_mas_vendidos(request):
 
         productos_vendidos = (
             productos_vendidos.values('producto__nombre')
-            .annotate(total_vendido=Sum('cantidad'))
+            .annotate(total_vendido=Sum(F('cantidad') - F('cantidad_reembolsada')))
+            .filter(total_vendido__gt=0)
             .order_by('-total_vendido')
         )
 
@@ -568,7 +573,7 @@ def list_venta(request):
     else:
         ventas = Venta.objects.all()
 
-    ventas = ventas.select_related('cliente', 'reembolso').order_by('-fecha')
+    ventas = ventas.select_related('cliente').prefetch_related('reembolsos').order_by('-fecha')
 
     return render(request, 'list_ventas.html', {
         'ventas': ventas,
@@ -604,8 +609,8 @@ def venta_delete(request, id):
             for detalle in venta.detalles.select_related('producto'):
                 producto = detalle.producto
 
-                if producto:
-                    producto.cantidad_disponible += detalle.cantidad
+                if producto and detalle.cantidad_restante > 0:
+                    producto.cantidad_disponible += detalle.cantidad_restante
                     producto.save(update_fields=['cantidad_disponible'])
 
         # 2. Borrar lo que depende de la venta
@@ -1025,7 +1030,7 @@ def datos_ingresos(inicio, fin):
 
     ganancia_productos = detalles.aggregate(
         total=Sum(
-            (F('precio') - F('producto__precio_compra')) * F('cantidad'),
+            (F('precio') - F('producto__precio_compra')) * (F('cantidad') - F('cantidad_reembolsada')),
             output_field=DecimalField(max_digits=14, decimal_places=2)
         )
     )['total'] or Decimal('0')
@@ -1742,82 +1747,111 @@ def proveedor_delete(request, proveedor_id):
 # 12. CANCELACIÓN DE VENTAS Y REEMBOLSOS
 # ============================================================
 
-def dinero_recibido_de_venta(venta):
-    """
-    Dinero que MisMary realmente recibió por esta venta (lo que se devuelve).
-    Cuenta el pago inicial y todos los abonos posteriores de la deuda de la venta.
-    """
+# ============================================================
+# REEMBOLSOS
+#
+# La regla del dinero, en tres pasos:
+#   1. Al reembolsar productos, la venta pasa a valer menos.
+#   2. Lo que el cliente ya pagó cubre primero lo que se queda.
+#   3. Si pagó de MÁS, eso se le devuelve. Si pagó de menos, no se
+#      devuelve plata y simplemente le baja la deuda.
+#
+# Ejemplo: venta de $38.000 (un producto de $15.000 y otro de $23.000).
+#   - Pagó todo ($38.000) y devuelve el de $15.000  -> la venta queda en
+#     $23.000, pagó $15.000 de más  -> se le devuelven $15.000.
+#   - Solo abonó $15.000 y devuelve el de $15.000   -> la venta queda en
+#     $23.000, pagó menos que eso   -> no se devuelve nada y debe $8.000.
+# ============================================================
+
+def plata_pagada(venta):
+    """Todo lo que el cliente ha pagado de esta venta (pago inicial + abonos)."""
     deudas = venta.deudas.all()
 
     if deudas.exists():
         total = Abono.objects.filter(deuda__in=deudas).aggregate(t=Sum('valor'))['t']
     else:
-        # ventas viejas sin deuda ligada: solo se conoce el pago inicial
+        # ventas viejas sin deuda: solo se conoce el pago inicial
         total = venta.pagos.aggregate(t=Sum('valor'))['t']
 
     return total or Decimal('0')
 
 
-def crear_reembolso_automatico(venta, usuario=None, metodo=None):
-    """
-    Crea el reembolso ya HECHO (una sola confirmación).
-    Devuelve lo que el cliente realmente pagó y deja registrado
-    quién lo hizo y cuándo.
-    """
-    if venta.estado != 'Cancelada':
-        return None, False
+def plata_ya_devuelta(venta):
+    """Plata que ya se le devolvió al cliente en reembolsos anteriores."""
+    total = (
+        Reembolso.objects.filter(venta=venta, estado='Devuelto')
+        .aggregate(t=Sum('monto'))['t']
+    )
+    return total or Decimal('0')
 
-    if metodo not in METODOS_VALIDOS:
-        metodo = getattr(venta, 'forma_pago', 'Otro') or 'Otro'
-        if metodo not in METODOS_VALIDOS:
-            metodo = 'Otro'
 
-    monto = dinero_recibido_de_venta(venta)
-    ahora = timezone.now()
-
-    if monto > 0:
-        estado, fecha_dev = 'Devuelto', ahora
-        obs = 'Reembolso realizado al cancelar la venta.'
-    else:
-        estado, fecha_dev = 'No aplica', None
-        obs = 'El cliente no había pagado nada, no hay dinero que devolver.'
-
-    reembolso, creado = Reembolso.objects.get_or_create(
-        venta=venta,
-        defaults={
-            'motivo': 'Reembolso generado por cancelación de venta',
-            'monto': monto,
-            'metodo': metodo,
-            'estado': estado,
-            'fecha_devolucion': fecha_dev,
-            'observaciones': obs,
-            'registrado_por': usuario,
-        }
+def valor_ya_reembolsado(venta):
+    """Valor de los productos de esta venta que ya fueron reembolsados."""
+    return sum(
+        (d.precio * d.cantidad_reembolsada for d in venta.detalles.all()),
+        Decimal('0')
     )
 
-    return reembolso, creado
+
+def calcular_devolucion(venta, valor_a_reembolsar):
+    """Cuánta plata se le devuelve al cliente AHORA (ver la regla de arriba)."""
+    queda_valiendo = venta.valor_total - valor_ya_reembolsado(venta) - valor_a_reembolsar
+    pagado_de_mas = plata_pagada(venta) - queda_valiendo
+
+    # a lo que pagó de más le quitamos lo que ya se le había devuelto antes
+    return max(Decimal('0'), pagado_de_mas - plata_ya_devuelta(venta))
+
+
+def ajustar_deuda(venta):
+    """Después de un reembolso, la deuda queda acorde a lo que la venta quedó valiendo."""
+    nuevo_valor = venta.valor_total - valor_ya_reembolsado(venta)
+    pagado_que_se_queda = plata_pagada(venta) - plata_ya_devuelta(venta)
+    saldo = max(Decimal('0'), nuevo_valor - pagado_que_se_queda)
+
+    for deuda in venta.deudas.all():
+        if venta.estado == 'Cancelada':
+            # se reembolsó todo: ya no se cobra
+            deuda.estado = 'Cancelada'
+            deuda.saldo = 0
+        else:
+            deuda.valor_total = nuevo_valor
+            deuda.saldo = saldo
+            deuda.estado = 'Pagada' if saldo == 0 else 'Pendiente'
+        deuda.save()
+
+
+def a_entero(texto):
+    """Convierte un texto a número entero; si no se puede, devuelve 0."""
+    try:
+        return int(texto or 0)
+    except (TypeError, ValueError):
+        return 0
 
 
 @login_required
 @requiere_permisos('change_venta')
 def cancelar_venta(request, venta_id):
-    venta = get_object_or_404(
-        Venta.objects.select_related('cliente'), pk=venta_id
-    )
+    """Reembolsa productos de una venta (todos o solo algunos)."""
+    venta = get_object_or_404(Venta.objects.select_related('cliente'), pk=venta_id)
 
+    # Si ya se reembolsó todo, no hay nada más que hacer
     if venta.estado == 'Cancelada':
-        messages.info(request, f'La venta #{venta.id} ya estaba reembolsada.')
-        reembolso = Reembolso.objects.filter(venta=venta).first()
-        if reembolso:
-            return redirect('details_reembolso', reembolso_id=reembolso.id)
+        messages.info(request, f'La venta #{venta.id} ya estaba reembolsada por completo.')
+        if venta.reembolso:
+            return redirect('details_reembolso', reembolso_id=venta.reembolso.id)
         return redirect('list_venta')
 
+    detalles = list(venta.detalles.select_related('producto'))
+
+    # --- Mostrar la pantalla para elegir qué se devuelve ---
     if request.method == 'GET':
         metodo_sugerido = venta.forma_pago if venta.forma_pago in METODOS_VALIDOS else 'Otro'
         return render(request, 'cancelar_venta.html', {
             'venta': venta,
-            'detalles': venta.detalles.select_related('producto'),
-            'monto_devolver': dinero_recibido_de_venta(venta),
+            'detalles': detalles,
+            'recibido': plata_pagada(venta),
+            'devuelto_antes': plata_ya_devuelta(venta),
+            'valor_antes': valor_ya_reembolsado(venta),
             'metodos': METODOS_VALIDOS,
             'metodo_sugerido': metodo_sugerido,
         })
@@ -1825,43 +1859,76 @@ def cancelar_venta(request, venta_id):
     if request.method != 'POST':
         return redirect('list_venta')
 
+    # --- 1. Forma en que se devuelve el dinero ---
     metodo = request.POST.get('metodo', '')
     if metodo not in METODOS_VALIDOS:
         messages.error(request, 'Selecciona la forma en que se devuelve el dinero.')
         return redirect('cancelar_venta', venta_id=venta.id)
 
-    devolver_stock = request.POST.get('devolver_stock') == 'on'
+    # --- 2. Qué productos se reembolsan y cuántas unidades ---
+    elegidos = []   # lista de (línea de la venta, unidades a reembolsar)
 
+    for d in detalles:
+        cantidad = a_entero(request.POST.get(f'cant_{d.id}'))
+
+        if cantidad < 0 or cantidad > d.cantidad_restante:
+            messages.error(
+                request,
+                f'La cantidad de "{d.producto.nombre}" no es válida '
+                f'(máximo {d.cantidad_restante}).'
+            )
+            return redirect('cancelar_venta', venta_id=venta.id)
+
+        if cantidad > 0:
+            elegidos.append((d, cantidad))
+
+    if not elegidos:
+        messages.error(request, 'Elige al menos un producto para reembolsar.')
+        return redirect('cancelar_venta', venta_id=venta.id)
+
+    # --- 3. Cuánta plata se devuelve ---
+    valor_productos = sum((d.precio * c for d, c in elegidos), Decimal('0'))
+    plata = calcular_devolucion(venta, valor_productos)
+
+    # --- 4. Guardar todo (si algo falla, no se guarda nada) ---
     with transaction.atomic():
-        venta.estado = 'Cancelada'
-        venta.save(update_fields=['estado'])
-        reembolso, creado = crear_reembolso_automatico(
-            venta, usuario=request.user, metodo=metodo
+        reembolso = Reembolso.objects.create(
+            venta=venta,
+            motivo='Reembolso de productos de la venta',
+            monto=plata,
+            metodo=metodo,
+            estado='Devuelto' if plata > 0 else 'No aplica',
+            fecha_devolucion=timezone.now() if plata > 0 else None,
+            registrado_por=request.user,
         )
 
-        # La deuda de esta venta ya no se cobra: queda cancelada y sin saldo
-        venta.deudas.update(estado='Cancelada', saldo=0)
+        # Anotar qué productos se devolvieron.
+        # (No vuelven al inventario: si se devuelven es porque ya se usaron.)
+        for d, cantidad in elegidos:
+            DetalleReembolso.objects.create(
+                reembolso=reembolso,
+                producto=d.producto,
+                cantidad=cantidad,
+                precio=d.precio,
+            )
+            d.cantidad_reembolsada += cantidad
+            d.save(update_fields=['cantidad_reembolsada'])
 
-        # Opcional: los productos vuelven al inventario
-        if devolver_stock:
-            for detalle in venta.detalles.select_related('producto'):
-                producto = detalle.producto
+        # Si ya se reembolsó todo, la venta queda cancelada
+        if all(d.cantidad_restante == 0 for d in detalles):
+            venta.estado = 'Cancelada'
+            venta.save(update_fields=['estado'])
 
-                if producto:
-                    producto.cantidad_disponible += detalle.cantidad
-                    producto.save(update_fields=['cantidad_disponible'])
+        # La deuda se ajusta a lo que la venta quedó valiendo
+        ajustar_deuda(venta)
 
-    if reembolso.estado == 'Devuelto':
-        messages.success(
-            request,
-            f'Reembolso realizado: se devolvieron $ {reembolso.monto:,.0f} '
-            f'de la venta #{venta.id}.'
-        )
+    if plata > 0:
+        messages.success(request, f'Reembolso realizado: se devolvieron $ {plata:,.0f} de la venta #{venta.id}.')
     else:
         messages.success(
             request,
-            f'La venta #{venta.id} fue cancelada. El cliente no había pagado nada, '
-            f'así que no hubo dinero que devolver.'
+            f'Reembolso registrado en la venta #{venta.id}. '
+            f'El cliente no había pagado de más, así que no hubo dinero que devolver.'
         )
 
     return redirect('details_reembolso', reembolso_id=reembolso.id)
@@ -1873,7 +1940,7 @@ def lista_reembolsos(request):
     reembolsos = (
         Reembolso.objects
         .select_related('venta', 'venta__cliente', 'registrado_por')
-        .prefetch_related('venta__detalles__producto')
+        .prefetch_related('detalles__producto')
         .order_by('-fecha_solicitud')
     )
 
@@ -1938,9 +2005,23 @@ def details_reembolso(request, reembolso_id):
         pk=reembolso_id
     )
 
+    # Productos que se devolvieron en ESTE reembolso
+    detalles = list(reembolso.detalles.select_related('producto'))
+
+    # Reembolsos viejos que no guardaron los productos: mostramos los de la venta
+    if not detalles:
+        detalles = list(reembolso.venta.detalles.select_related('producto'))
+
+    valor_productos = sum(d.cantidad * d.precio for d in detalles)
+
+    venta = reembolso.venta
+    es_total = venta.estado == 'Cancelada' and venta.reembolsos.count() == 1
+
     return render(request, 'details_reembolso.html', {
         'reembolso': reembolso,
-        'detalles': reembolso.venta.detalles.select_related('producto'),
+        'detalles': detalles,
+        'valor_productos': valor_productos,
+        'es_total': es_total,
     })
 
 
@@ -1948,7 +2029,11 @@ def details_reembolso(request, reembolso_id):
 @requiere_permisos('view_reembolso')
 def details_reembolso_venta(request, venta_id):
 
-    reembolso = get_object_or_404(Reembolso, venta_id=venta_id)
+    # una venta puede tener varios reembolsos: mostramos el más reciente
+    reembolso = Reembolso.objects.filter(venta_id=venta_id).order_by('-id').first()
+
+    if reembolso is None:
+        raise Http404('Esta venta no tiene reembolsos.')
 
     return redirect('details_reembolso', reembolso_id=reembolso.id)
 

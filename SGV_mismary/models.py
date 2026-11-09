@@ -74,6 +74,12 @@ class Venta(models.Model):
 
     fecha = models.DateField()
 
+    @property
+    def reembolso(self):
+        """El último reembolso de esta venta (o None si no tiene)."""
+        todos = list(self.reembolsos.all())
+        return max(todos, key=lambda r: r.id) if todos else None
+
     forma_pago = models.CharField(
         max_length=20,
         choices=[
@@ -211,10 +217,18 @@ class DetalleVenta(models.Model):
 
     cantidad = models.PositiveIntegerField()
 
+    # Cuántas unidades de esta línea ya se reembolsaron (reembolso por productos)
+    cantidad_reembolsada = models.PositiveIntegerField(default=0)
+
     precio = models.DecimalField(
         max_digits=10,
         decimal_places=2
     )
+
+    @property
+    def cantidad_restante(self):
+        """Unidades que todavía se pueden reembolsar."""
+        return self.cantidad - self.cantidad_reembolsada
 
     def __str__(self):
         return f'{self.producto.nombre} - {self.cantidad} unidades'
@@ -320,10 +334,10 @@ class Reembolso(models.Model):
         ("Otro", "Otro"),
     ]
 
-    venta = models.OneToOneField(
+    venta = models.ForeignKey(
         "SGV_mismary.Venta",
         on_delete=models.PROTECT,
-        related_name="reembolso"
+        related_name="reembolsos"
     )
 
     motivo = models.TextField(
@@ -372,3 +386,33 @@ class Reembolso(models.Model):
 
     def __str__(self):
         return f"Reembolso de venta #{self.venta_id}"
+
+
+class DetalleReembolso(models.Model):
+    """Qué productos (y cuántas unidades) se devolvieron en un reembolso."""
+
+    reembolso = models.ForeignKey(
+        Reembolso,
+        on_delete=models.CASCADE,
+        related_name='detalles'
+    )
+
+    producto = models.ForeignKey(
+        Producto,
+        on_delete=models.PROTECT,
+        related_name='detalles_reembolso'
+    )
+
+    cantidad = models.PositiveIntegerField()
+
+    precio = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    @property
+    def subtotal(self):
+        return self.cantidad * self.precio
+
+    def __str__(self):
+        return f'{self.producto.nombre} x{self.cantidad} (reembolso #{self.reembolso_id})'

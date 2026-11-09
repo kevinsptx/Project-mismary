@@ -165,7 +165,7 @@
             <p>Venta #{{ reembolso.venta.id }} · {{ reembolso.venta.cliente.nombre }}</p>
         </div>
         <span class="rb-estado {% if reembolso.estado == 'Devuelto' %}devuelto{% elif reembolso.estado == 'No aplica' %}noaplica{% else %}solicitado{% endif %}">
-            {{ reembolso.estado }}
+            {{ reembolso.estado }} · {% if es_total %}Total{% else %}Parcial{% endif %}
         </span>
     </div>
 
@@ -209,7 +209,7 @@
 
     <!-- PRODUCTOS -->
     <div class="rb-productos">
-        <h3>Productos de la venta reembolsada</h3>
+        <h3>Productos reembolsados</h3>
         <table>
             <thead>
                 <tr>
@@ -231,8 +231,8 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3">Total de la venta</td>
-                    <td class="num">$ {{ reembolso.venta.valor_total|floatformat:0|intcomma }}</td>
+                    <td colspan="3">Valor de los productos reembolsados</td>
+                    <td class="num">$ {{ valor_productos|floatformat:0|intcomma }}</td>
                 </tr>
             </tfoot>
         </table>

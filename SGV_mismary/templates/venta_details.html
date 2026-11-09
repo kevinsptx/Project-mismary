@@ -431,7 +431,14 @@ Detalle de Venta | MisMary
                                         <strong>{{ detalle.producto.nombre }}</strong>
                                     </td>
 
-                                    <td>{{ detalle.cantidad }}</td>
+                                    <td>
+                                        {{ detalle.cantidad }}
+                                        {% if detalle.cantidad_reembolsada %}
+                                            <small style="color:#C62828; font-weight:700;">
+                                                ({{ detalle.cantidad_reembolsada }} reembolsado{{ detalle.cantidad_reembolsada|pluralize:"s" }})
+                                            </small>
+                                        {% endif %}
+                                    </td>
 
                                     <td class="precio-producto">
                                         $ {{ detalle.precio|floatformat:0|intcomma }}
@@ -448,6 +455,23 @@ Detalle de Venta | MisMary
                         $ {{ venta.valor_total|floatformat:0|intcomma }}
                     </span>
                 </div>
+
+                {% if venta.reembolsos.all %}
+                    <div style="margin-top:14px; padding:14px 18px; border-radius:14px; background:#FBE9E7; border:1px solid #F5B7AB; color:#9E3B27;">
+                        <strong>Reembolsos de esta venta</strong>
+                        <ul style="margin:8px 0 0; padding-left:18px; line-height:1.8;">
+                            {% for r in venta.reembolsos.all %}
+                                <li>
+                                    <a href="{% url 'details_reembolso' r.id %}" style="color:#9E3B27; font-weight:600;">
+                                        Reembolso #{{ r.id }}
+                                    </a>
+                                    · $ {{ r.monto|floatformat:0|intcomma }}
+                                    · {{ r.fecha_devolucion|default:r.fecha_solicitud|date:"d/m/Y" }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
 
             {% else %}
                 <p class="mensaje-sin-productos">

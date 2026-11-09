@@ -212,6 +212,17 @@ Ventas | MisMary
         background: var(--marfil-bg);
     }
 
+    /* Marca pequeña: la venta tiene un reembolso parcial */
+    .marca-parcial {
+        display: block;
+        margin-top: 3px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #C62828;
+        text-decoration: none;
+    }
+    .marca-parcial:hover { text-decoration: underline; }
+
     /* ===== Venta reembolsada: fila blanca con letra roja ===== */
     .tabla-ventas tbody tr.fila-reembolsada {
         background: #FFFFFF;
@@ -480,6 +491,11 @@ Ventas | MisMary
                     <tr{% if venta.estado == 'Cancelada' %} class="fila-reembolsada"{% endif %}>
                         <td class="nombre-venta">
                             #{{ venta.id }}
+                            {% if venta.estado != 'Cancelada' and venta.reembolso %}
+                                <a href="{% url 'details_reembolso' venta.reembolso.id %}" class="marca-parcial">
+                                    Reembolso parcial
+                                </a>
+                            {% endif %}
                         </td>
 
                         <td>
