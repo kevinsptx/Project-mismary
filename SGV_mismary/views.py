@@ -15,6 +15,7 @@ from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 
 from .forms import ProductoForm, ProductoRegistroForm, AbonoForm, ClienteForm, GastoForm, ProveedorForm
 from .models import Cliente, Venta, Abono, Deuda, Categoria,Producto, DetalleVenta, Gasto, Pago,DetallePedido, Pedido, Proveedor, Reembolso, DetalleReembolso
@@ -167,13 +168,23 @@ def list_cliente(request):
 
     if buscar:
         clientes = Cliente.objects.filter(
-            Q(nombre__icontains=buscar) | Q(telefono__icontains=buscar)
+            Q(nombre__icontains=buscar) |
+            Q(telefono__icontains=buscar)
         )
     else:
         clientes = Cliente.objects.all()
 
+    clientes, pagination_links, previous_url, next_url = paginar(
+        request,
+        clientes.order_by('id')
+    )
+
     return render(request, 'list_cliente.html', {
         'clientes': clientes,
+        'page_obj': clientes,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url,
         'buscar': buscar
     })
 
@@ -288,11 +299,9 @@ def register_producto(request):
 
     return render(request, 'register_producto.html', {'form': form})
 
-
 @login_required
 @requiere_permisos('view_producto', 'view_categoria')
 def list_producto(request):
-
     buscar = request.GET.get('buscar')
     categoria_id = request.GET.get('categoria')
 
@@ -305,13 +314,21 @@ def list_producto(request):
     if categoria_id:
         productos = productos.filter(categoria_id=categoria_id)
 
+    productos, pagination_links, previous_url, next_url = paginar(
+        request,
+        productos.order_by('id')
+    )
+
     return render(request, 'list_producto.html', {
         'productos': productos,
+        'page_obj': productos,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url,
         'buscar': buscar,
         'categorias': categorias,
         'categoria_id': categoria_id
     })
-
 
 @login_required
 @requiere_permisos('change_producto')
@@ -565,18 +582,32 @@ def register_venta(request):
 @login_required
 @requiere_permisos('view_venta')
 def list_venta(request):
-
     buscar = request.GET.get('buscar')
 
     if buscar:
-        ventas = Venta.objects.filter(cliente__nombre__icontains=buscar)
+        ventas = Venta.objects.filter(
+            cliente__nombre__icontains=buscar
+        )
     else:
         ventas = Venta.objects.all()
 
-    ventas = ventas.select_related('cliente').prefetch_related('reembolsos').order_by('-fecha')
+    ventas = ventas.select_related(
+        'cliente'
+    ).prefetch_related(
+        'reembolsos'
+    ).order_by('-fecha')
+
+    ventas, pagination_links, previous_url, next_url = paginar(
+        request,
+        ventas
+    )
 
     return render(request, 'list_ventas.html', {
         'ventas': ventas,
+        'page_obj': ventas,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url,
         'buscar': buscar
     })
 
@@ -624,16 +655,26 @@ def venta_delete(request, id):
     messages.success(request, 'La venta y sus deudas/abonos asociados fueron eliminados.')
     return redirect('list_venta')
 
-
 @login_required
 @requiere_permisos('view_deuda')
 def ventas_pendientes(request):
     """Lista las deudas que todavía están pendientes."""
-    deudas = Deuda.objects.filter(estado='Pendiente').select_related('cliente')
+    deudas = Deuda.objects.filter(
+        estado='Pendiente'
+    ).select_related('cliente')
 
-    return render(request, 'ventas_pendientes.html', {'deudas': deudas})
+    deudas, pagination_links, previous_url, next_url = paginar(
+        request,
+        deudas.order_by('-id')
+    )
 
-
+    return render(request, 'ventas_pendientes.html', {
+        'deudas': deudas,
+        'page_obj': deudas,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url
+    })
 # ============================================================
 # 7. ABONOS Y DEUDAS
 # ============================================================
@@ -644,11 +685,22 @@ def lista_abonos(request):
     """Lista los abonos de las deudas que aún tienen saldo."""
     abonos = Abono.objects.filter(
         deuda__saldo__gt=0
-    ).select_related('deuda__cliente').order_by('-fecha')
+    ).select_related(
+        'deuda__cliente'
+    ).order_by('-fecha')
 
-    return render(request, 'abonos.html', {'abonos': abonos})
+    abonos, pagination_links, previous_url, next_url = paginar(
+        request,
+        abonos
+    )
 
-
+    return render(request, 'abonos.html', {
+        'abonos': abonos,
+        'page_obj': abonos,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url
+    })
 @login_required
 @requiere_permisos('add_abono', 'view_deuda')
 def registrar_abono(request, deuda_id):
@@ -1442,11 +1494,23 @@ def descargar_reporte(request):
 
 @login_required
 @requiere_permisos('view_pedido')
+@login_required
+@requiere_permisos('view_pedido')
 def list_pedido(request):
     """Lista los pedidos, del más reciente al más antiguo."""
     pedidos = Pedido.objects.select_related('proveedor').order_by('-id')
 
-    return render(request, 'list_pedido.html', {'pedidos': pedidos})
+    pedidos, pagination_links, previous_url, next_url = paginar(
+        request, pedidos
+    )
+
+    return render(request, 'list_pedido.html', {
+        'pedidos': pedidos,
+        'page_obj': pedidos,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url
+    })
 
 
 @login_required
@@ -1635,20 +1699,30 @@ def eliminar_pedido(request, pedido_id):
 def list_proveedor(request):
     buscar = request.GET.get('buscar')
 
-    proveedores = Proveedor.objects.annotate(total_pedidos=Count('pedidos'))
+    proveedores = Proveedor.objects.annotate(
+        total_pedidos=Count('pedidos')
+    )
 
     if buscar:
         proveedores = proveedores.filter(
-            Q(nombre__icontains=buscar)
-            | Q(telefono__icontains=buscar)
-            | Q(correo__icontains=buscar)
+            Q(nombre__icontains=buscar) |
+            Q(telefono__icontains=buscar) |
+            Q(correo__icontains=buscar)
         )
+
+    proveedores, pagination_links, previous_url, next_url = paginar(
+        request,
+        proveedores.order_by('id')
+    )
 
     return render(request, 'list_proveedor.html', {
         'proveedores': proveedores,
+        'page_obj': proveedores,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url,
         'buscar': buscar
     })
-
 
 @login_required
 @requiere_permisos('add_proveedor')
@@ -1937,6 +2011,8 @@ def cancelar_venta(request, venta_id):
 @login_required
 @requiere_permisos('view_reembolso')
 def lista_reembolsos(request):
+    buscar = request.GET.get('buscar', '').strip()
+
     reembolsos = (
         Reembolso.objects
         .select_related('venta', 'venta__cliente', 'registrado_por')
@@ -1944,8 +2020,27 @@ def lista_reembolsos(request):
         .order_by('-fecha_solicitud')
     )
 
-    return render(request, 'list_reembolsos.html', {'reembolsos': reembolsos})
+    # Buscar por nombre del cliente o por ID del reembolso o de la venta.
+    if buscar:
+        filtros = Q(venta__cliente__nombre__icontains=buscar)
 
+        if buscar.isdigit():
+            filtros |= Q(id=int(buscar)) | Q(venta__id=int(buscar))
+
+        reembolsos = reembolsos.filter(filtros)
+
+    reembolsos, pagination_links, previous_url, next_url = paginar(
+        request, reembolsos
+    )
+
+    return render(request, 'list_reembolsos.html', {
+        'reembolsos': reembolsos,
+        'buscar': buscar,
+        'page_obj': reembolsos,
+        'pagination_links': pagination_links,
+        'previous_url': previous_url,
+        'next_url': next_url
+    })
 
 @login_required
 @requiere_permisos('add_reembolso', 'view_venta')
@@ -2065,3 +2160,48 @@ def registrar_devolucion(request, reembolso_id):
 
     messages.success(request, 'La devolución quedó registrada.')
     return redirect('details_reembolso', reembolso_id=reembolso.id)
+
+def paginar(request, queryset, cantidad=10):
+    """
+    Divide un queryset en páginas y conserva los filtros de la URL.
+    Devuelve la página actual, los enlaces numerados y los enlaces anterior/siguiente.
+    """
+    paginador = Paginator(queryset, cantidad)
+    page_obj = paginador.get_page(request.GET.get('page'))
+
+    def construir_url(numero):
+        parametros = request.GET.copy()
+        parametros['page'] = numero
+        return f"?{parametros.urlencode()}"
+
+    pagination_links = []
+
+    for numero in paginador.get_elided_page_range(page_obj.number):
+        if numero == Paginator.ELLIPSIS:
+            pagination_links.append({
+                'number': numero,
+                'is_ellipsis': True,
+                'is_current': False,
+                'url': None,
+            })
+        else:
+            pagination_links.append({
+                'number': numero,
+                'is_ellipsis': False,
+                'is_current': numero == page_obj.number,
+                'url': construir_url(numero),
+            })
+
+    previous_url = (
+        construir_url(page_obj.previous_page_number())
+        if page_obj.has_previous()
+        else None
+    )
+
+    next_url = (
+        construir_url(page_obj.next_page_number())
+        if page_obj.has_next()
+        else None
+    )
+
+    return page_obj, pagination_links, previous_url, next_url

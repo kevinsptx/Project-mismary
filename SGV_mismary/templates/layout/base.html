@@ -1,19 +1,15 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="language" content="es-CO">
-
     <title>{% block title %}MisMary{% endblock %}</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{% static 'logo.jpeg' %}">
-
     <style>
         * {
             margin: 0;
@@ -21,7 +17,6 @@
             box-sizing: border-box;
             font-family: 'Quicksand', sans-serif;
         }
-
         :root {
             --cafe: #4A2C1B;
             --terracota: #9E3B27;
@@ -32,21 +27,17 @@
             --texto-suave: #7A5A48;
             --borde: rgba(74, 44, 27, 0.12);
             --sombra: rgba(74, 44, 27, 0.14);
-
             --principal: var(--naranja);
             --acento: var(--terracota);
             --fondo: var(--marfil);
             --superficie: #FFFFFF;
-
             --ancho-sidebar: 230px;
             --ancho-sidebar-colapsado: 76px;
             --margen-sidebar: 0px;
         }
-
         html {
             scroll-behavior: smooth;
         }
-
         body {
             background: var(--marfil);
             min-height: 100vh;
@@ -54,7 +45,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
         .fondo-decor {
             position: fixed;
             inset: 0;
@@ -62,7 +52,6 @@
             overflow: hidden;
             pointer-events: none;
         }
-
         .fondo-decor::before {
             content: '';
             position: absolute;
@@ -72,13 +61,11 @@
             -webkit-mask-image: radial-gradient(ellipse at center, transparent 30%, #000 90%);
             mask-image: radial-gradient(ellipse at center, transparent 30%, #000 90%);
         }
-
         .orbe {
             position: absolute;
             border-radius: 50%;
             animation: flotar 20s ease-in-out infinite;
         }
-
         .orbe-1 {
             width: 520px;
             height: 520px;
@@ -87,7 +74,6 @@
             background: var(--arena);
             opacity: 0.9;
         }
-
         .orbe-2 {
             width: 420px;
             height: 420px;
@@ -98,7 +84,6 @@
             filter: blur(60px);
             animation-delay: -7s;
         }
-
         .orbe-3 {
             width: 54px;
             height: 54px;
@@ -108,7 +93,6 @@
             opacity: 0.9;
             animation-duration: 14s;
         }
-
         .orbe-4 {
             width: 28px;
             height: 28px;
@@ -119,7 +103,6 @@
             animation-duration: 11s;
             animation-delay: -4s;
         }
-
         .orbe-5 {
             width: 74px;
             height: 74px;
@@ -130,17 +113,14 @@
             animation-duration: 17s;
             animation-delay: -9s;
         }
-
         @keyframes flotar {
             0%, 100% {
                 transform: translate(0, 0);
             }
-
             50% {
                 transform: translate(18px, -26px);
             }
         }
-
         .sidebar {
             position: fixed;
             top: var(--margen-sidebar);
@@ -158,11 +138,9 @@
             overflow-x: hidden;
             overflow-y: auto;
         }
-
         .sidebar.colapsado {
             width: var(--ancho-sidebar-colapsado);
         }
-
         .backdrop {
             position: fixed;
             inset: 0;
@@ -173,12 +151,10 @@
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
-
         .backdrop.visible {
             opacity: 1;
             pointer-events: auto;
         }
-
         .sidebar-top {
             display: flex;
             align-items: center;
@@ -187,19 +163,16 @@
             border-bottom: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
         }
-
         .sidebar:not(.colapsado) .sidebar-top {
             justify-content: space-between;
             padding: 20px;
         }
-
         .marca {
             display: flex;
             align-items: center;
             gap: 10px;
             min-width: 0;
         }
-
         .logo-mini {
             width: 38px;
             height: 38px;
@@ -209,7 +182,6 @@
             border: 2px solid var(--arena);
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
         }
-
         .logo-sidebar {
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
@@ -218,11 +190,9 @@
             white-space: nowrap;
             overflow: hidden;
         }
-
         .sidebar.colapsado .marca {
             display: none;
         }
-
         .toggle-btn {
             flex-shrink: 0;
             width: 34px;
@@ -238,16 +208,13 @@
             cursor: pointer;
             transition: background 0.2s ease;
         }
-
         .toggle-btn:hover {
             background: rgba(249, 246, 240, 0.12);
         }
-
         .toggle-btn:focus-visible {
             outline: 3px solid var(--naranja);
             outline-offset: 2px;
         }
-
         .toggle-btn span {
             display: block;
             width: 18px;
@@ -256,19 +223,15 @@
             border-radius: 2px;
             transition: transform 0.25s ease, opacity 0.2s ease;
         }
-
         .toggle-btn[aria-expanded="true"] span:nth-child(1) {
             transform: translateY(6px) rotate(45deg);
         }
-
         .toggle-btn[aria-expanded="true"] span:nth-child(2) {
             opacity: 0;
         }
-
         .toggle-btn[aria-expanded="true"] span:nth-child(3) {
             transform: translateY(-6px) rotate(-45deg);
         }
-
         .sidebar-nav {
             flex: 0 0 auto;
             padding: 18px 12px;
@@ -276,7 +239,6 @@
             flex-direction: column;
             gap: 6px;
         }
-
         .nav-item {
             display: flex;
             align-items: center;
@@ -291,23 +253,19 @@
             overflow: hidden;
             transition: background 0.2s ease, color 0.2s ease;
         }
-
         .nav-item:hover {
             background: rgba(249, 246, 240, 0.12);
         }
-
         .nav-item:focus-visible {
             outline: 3px solid var(--naranja);
             outline-offset: -3px;
         }
-
         .nav-item.activo {
             background: var(--naranja);
             color: #FFFFFF;
             box-shadow: 0 6px 14px rgba(255, 107, 53, 0.35);
         }
-
-        /* ===== ÍCONOS DIBUJADOS A MANO (naranja; cambian de color al pasar/presionar) ===== */
+        /* ===== ÍCONOS DIBUJADOS A MANO ===== */
         .nav-icono {
             flex-shrink: 0;
             width: 24px;
@@ -318,7 +276,6 @@
             color: var(--naranja);
             transition: color 0.2s ease, transform 0.15s ease;
         }
-
         .nav-icono svg {
             width: 24px;
             height: 24px;
@@ -328,50 +285,37 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
-
-        /* al pasar el mouse: se aclara y se inclina un poquito */
         .nav-item:hover .nav-icono {
             color: var(--arena);
             transform: rotate(-7deg) scale(1.1);
         }
-
-        /* al presionar: se achica */
         .nav-item:active .nav-icono {
             color: #FFFFFF;
             transform: scale(0.85);
         }
-
-        /* página actual: el fondo es naranja, entonces el ícono se vuelve blanco */
         .nav-item.activo .nav-icono {
             color: #FFFFFF;
         }
-
-        /* el botón de cerrar sesión ya es naranja: ícono blanco */
         .logout-btn .nav-icono {
             color: #FFFFFF;
         }
-
         .nav-texto {
             transition: opacity 0.2s ease;
         }
-
         .sidebar.colapsado .nav-texto {
             opacity: 0;
             width: 0;
         }
-
         .sidebar.colapsado .nav-item {
             justify-content: center;
             padding: 11px 0;
         }
-
         .sidebar-bottom {
             margin-top: auto;
             padding: 16px 12px 20px;
             border-top: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
         }
-
         .usuario-sidebar {
             display: flex;
             align-items: center;
@@ -383,24 +327,19 @@
             white-space: nowrap;
             overflow: hidden;
         }
-
         .usuario-sidebar strong {
             color: var(--marfil);
         }
-
         .sidebar.colapsado .usuario-sidebar {
             justify-content: center;
             padding: 8px 0;
         }
-
         .sidebar.colapsado .usuario-sidebar .nav-texto {
             display: none;
         }
-
         .logout-form {
             margin: 0;
         }
-
         .logout-btn {
             width: 100%;
             display: flex;
@@ -421,44 +360,36 @@
             box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
             transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.25s ease;
         }
-
         .logout-btn:hover {
             background: var(--terracota);
             box-shadow: 0 10px 20px rgba(158, 59, 39, 0.4);
         }
-
         .logout-btn:active {
             transform: scale(0.97);
         }
-
         .logout-btn:focus-visible {
             outline: 3px solid var(--arena);
             outline-offset: 3px;
         }
-
         .sidebar.colapsado .logout-btn .nav-texto {
             display: none;
         }
-
         .contenido-wrap {
             margin-left: calc(var(--ancho-sidebar-colapsado) + var(--margen-sidebar));
             position: relative;
             z-index: 1;
             min-height: 100vh;
         }
-
         .contenido {
             width: 100%;
             max-width: 1100px;
             margin: 40px auto;
             padding: 0 25px;
         }
-
         .titulo {
             text-align: center;
             margin-bottom: 30px;
         }
-
         .titulo h1 {
             color: var(--cafe);
             font-family: 'Fredoka', sans-serif;
@@ -467,13 +398,11 @@
             margin-bottom: 8px;
             letter-spacing: 0.5px;
         }
-
         .titulo p {
             color: var(--texto-suave);
             font-size: 15px;
             font-weight: 600;
         }
-
         .contenedor {
             background: #FFFFFF;
             border: 1px solid var(--borde);
@@ -482,22 +411,18 @@
             box-shadow: 0 12px 28px var(--sombra);
             color: var(--cafe);
         }
-
         @media (max-width: 700px) {
             .sidebar {
                 width: min(var(--ancho-sidebar), 100vw);
             }
-
             .sidebar.colapsado {
                 width: var(--ancho-sidebar-colapsado);
             }
-
             .contenido {
                 margin: 25px auto;
                 padding: 0 15px;
             }
         }
-
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -508,10 +433,333 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* ================= ASISTENTE VIRTUAL MISMARY ================= */
+        .asistente-contenedor {
+            position: fixed;
+            right: 22px;
+            bottom: 18px;
+            z-index: 3000;
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .asistente-personaje {
+            width: 155px;
+            height: 175px;
+            flex: 0 0 155px;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            transition: transform 0.25s ease;
+            filter: drop-shadow(0 8px 12px rgba(74, 44, 27, 0.18));
+        }
+        .asistente-personaje:hover {
+            transform: translateY(-6px) scale(1.03);
+        }
+        .asistente-personaje model-viewer {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            --poster-color: transparent;
+            pointer-events: none;
+        }
+        .asistente-invitacion {
+            position: absolute;
+            right: 135px;
+            bottom: 135px;
+            max-width: 210px;
+            padding: 12px 16px;
+            border-radius: 17px 17px 4px 17px;
+            background: #FFFFFF;
+            color: var(--cafe);
+            border: 1px solid var(--borde);
+            box-shadow: 0 8px 24px rgba(74, 44, 27, 0.14);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            animation: asistente-aparecer 0.5s ease both;
+        }
+        .asistente-ventana {
+            display: none;
+            flex-direction: column;
+            width: 390px;
+            height: 540px;
+            max-height: min(72vh, 650px);
+            overflow: hidden;
+            background: #FFFFFF;
+            border: 1px solid rgba(74, 44, 27, 0.14);
+            border-radius: 22px;
+            box-shadow: 0 16px 45px rgba(46, 29, 20, 0.24);
+            color: var(--texto);
+            font-family: 'Quicksand', sans-serif;
+            animation: asistente-aparecer 0.25s ease both;
+        }
+        .asistente-ventana.abierto {
+            display: flex;
+        }
+        .asistente-encabezado {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 17px 19px;
+            color: #FFFFFF;
+            background: var(--cafe);
+            flex-shrink: 0;
+        }
+        .asistente-encabezado strong {
+            display: block;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .asistente-encabezado small {
+            display: block;
+            margin-top: 3px;
+            color: var(--arena);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .asistente-cerrar {
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.14);
+            color: #FFFFFF;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .asistente-cerrar:hover {
+            background: var(--terracota);
+        }
+        .asistente-mensajes {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 18px;
+            background: #FCFAF7;
+        }
+        .asistente-mensaje {
+            max-width: 86%;
+            padding: 11px 14px;
+            border-radius: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+        .asistente-mensaje.bot {
+            align-self: flex-start;
+            color: var(--cafe);
+            background: #F1E8D9;
+            border-bottom-left-radius: 4px;
+        }
+        .asistente-mensaje.usuario {
+            align-self: flex-end;
+            color: #FFFFFF;
+            background: var(--terracota);
+            border-bottom-right-radius: 4px;
+        }
+        .asistente-sugerencias {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            padding: 10px 14px;
+            background: #FFFFFF;
+            border-top: 1px solid var(--borde);
+        }
+        .asistente-sugerencia {
+            padding: 7px 10px;
+            border: 1px solid #E8DFC8;
+            border-radius: 999px;
+            background: #FCFAF7;
+            color: var(--cafe);
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .asistente-sugerencia:hover {
+            background: var(--arena);
+        }
+        .asistente-formulario {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 14px;
+            background: #FFFFFF;
+            border-top: 1px solid var(--borde);
+        }
+        .asistente-formulario input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px 14px;
+            border: 1px solid #E8DFC8;
+            border-radius: 999px;
+            outline: none;
+            color: var(--texto);
+            background: #FCFAF7;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        .asistente-formulario input:focus {
+            border-color: var(--naranja);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+        }
+        .asistente-formulario button {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 50%;
+            color: #FFFFFF;
+            background: var(--naranja);
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .asistente-formulario button svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .asistente-formulario button:hover {
+            background: var(--terracota);
+        }
+        @keyframes asistente-aparecer {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 600px) {
+            .asistente-contenedor {
+                right: 10px;
+                bottom: 10px;
+                gap: 8px;
+            }
+            .asistente-personaje {
+                width: 112px;
+                height: 132px;
+                flex-basis: 112px;
+            }
+            .asistente-ventana {
+                position: fixed;
+                right: 10px;
+                bottom: 135px;
+                width: min(calc(100vw - 20px), 390px);
+                height: min(540px, calc(100vh - 165px));
+                max-height: none;
+            }
+            .asistente-invitacion {
+                right: 95px;
+                bottom: 105px;
+                max-width: 180px;
+                font-size: 12px;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .asistente-personaje,
+            .asistente-ventana,
+            .asistente-invitacion {
+                animation: none;
+                transition: none;
+            }
+        }
+        /* ================= FIN ESTILOS DEL ASISTENTE ================= */
     </style>
 </head>
 
 <body>
+
+    <!-- ASISTENTE VIRTUAL MISMARY -->
+    <div class="asistente-contenedor">
+
+        <!-- Ventana del chat -->
+        <div class="asistente-ventana" id="asistente-ventana">
+
+            <div class="asistente-encabezado">
+                <div>
+                    <strong>Asistente MisMary</strong>
+                    <small>En línea · Estoy para ayudarte</small>
+                </div>
+
+                <button
+                    type="button"
+                    class="asistente-cerrar"
+                    id="asistente-cerrar"
+                    aria-label="Cerrar chat">
+                    &times;
+                </button>
+            </div>
+
+            <div
+                class="asistente-mensajes"
+                id="asistente-mensajes"
+                aria-live="polite">
+            </div>
+
+            <form class="asistente-formulario" id="asistente-formulario">
+                <input
+                    type="text"
+                    id="asistente-entrada"
+                    placeholder="Escribe tu pregunta..."
+                    autocomplete="off"
+                    aria-label="Escribe tu pregunta">
+
+                <button type="submit" aria-label="Enviar mensaje">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3.5 11.6 L20.4 3.8 L14.2 20.4 L11.2 13.4 Z"/>
+                        <path d="M11.2 13.4 L20.2 4"/>
+                    </svg>
+                </button>
+            </form>
+
+        </div>
+
+        <!-- Mensaje de invitación -->
+        <div
+            class="asistente-invitacion"
+            id="asistente-invitacion">
+            ¡Hola! ¿Necesitas ayuda?
+        </div>
+
+        <!-- Personaje 3D permanente -->
+        <div
+            class="asistente-personaje"
+            id="asistente-personaje"
+            title="Abrir asistente virtual">
+
+            <model-viewer
+                src="{% static 'model/kawaii_orange.glb' %}"
+                alt="Personaje 3D de MisMary"
+                auto-rotate
+                rotation-per-second="20deg"
+                interaction-prompt="none"
+                shadow-intensity="1"
+                exposure="1"
+                loading="eager">
+            </model-viewer>
+
+        </div>
+
+    </div>
+
+    <!-- Librería del modelo 3D -->
+    <script
+        type="module"
+        src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
+    </script>
+
+    <!-- FIN DEL ASISTENTE VIRTUAL -->
 
     <div class="fondo-decor" aria-hidden="true">
         <span class="orbe orbe-1"></span>
@@ -582,7 +830,7 @@
                 <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.7 6.4 L14 6.2 L14.2 16.6 L2.9 16.8 Z"/><path d="M14.2 9.6 L18.4 9.5 L21.2 12.8 L21.1 16.6 L14.2 16.6"/><circle cx="7" cy="18.4" r="1.8"/><circle cx="17.3" cy="18.3" r="1.8"/></svg></span>
                 <span class="nav-texto">Proveedores</span>
             </a>
-            
+
             {% if user.is_superuser %}
                 <a href="{% url 'list_grupos' %}"
                    class="nav-item{% if request.resolver_match.url_name == 'list_grupos' or request.resolver_match.url_name == 'grupo_detalle' %} activo{% endif %}">
@@ -590,19 +838,18 @@
                     <span class="nav-texto">Grupos</span>
                 </a>
             {% endif %}
-            
-                <a href="{% url 'lista_reembolsos' %}"
-                   class="nav-item{% if request.resolver_match.url_name == 'lista_reembolsos' or request.resolver_match.url_name == 'solicitar_reembolso' or request.resolver_match.url_name == 'details_reembolso' or request.resolver_match.url_name == 'registrar_devolucion' %} activo{% endif %}">
-                    <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12.2" cy="12" r="8.6"/><path d="M8.5 12.3 L12.4 8.3"/><path d="M8.5 12.3 L12.5 16.3"/><path d="M8.8 12.4 L16.2 12.5"/></svg></span>
-                    <span class="nav-texto">Reembolsos</span>
-                </a>
 
-                <a href="{% url 'reportes' %}"
-                   class="nav-item{% if request.resolver_match.url_name == 'reportes' %} activo{% endif %}">
-                    <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 20.5 L20.4 20.3"/><path d="M7.2 19.8 L7.3 13"/><path d="M12 19.8 L11.9 5.6"/><path d="M16.8 19.8 L16.9 10.2"/></svg></span>
-                    <span class="nav-texto">Reportes</span>
-                </a>
+            <a href="{% url 'lista_reembolsos' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'lista_reembolsos' or request.resolver_match.url_name == 'solicitar_reembolso' or request.resolver_match.url_name == 'details_reembolso' or request.resolver_match.url_name == 'registrar_devolucion' %} activo{% endif %}">
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12.2" cy="12" r="8.6"/><path d="M8.5 12.3 L12.4 8.3"/><path d="M8.5 12.3 L12.5 16.3"/><path d="M8.8 12.4 L16.2 12.5"/></svg></span>
+                <span class="nav-texto">Reembolsos</span>
+            </a>
 
+            <a href="{% url 'reportes' %}"
+               class="nav-item{% if request.resolver_match.url_name == 'reportes' %} activo{% endif %}">
+                <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8 20.5 L20.4 20.3"/><path d="M7.2 19.8 L7.3 13"/><path d="M12 19.8 L11.9 5.6"/><path d="M16.8 19.8 L16.9 10.2"/></svg></span>
+                <span class="nav-texto">Reportes</span>
+            </a>
 
         </nav>
 
@@ -636,6 +883,7 @@
 
     <div class="contenido-wrap" id="contenidoWrap">
         <main class="contenido">
+
             {% if messages %}
                 <div class="mensajes-sistema" aria-live="polite">
                     {% for message in messages %}
@@ -651,7 +899,6 @@
                         gap: 10px;
                         margin-bottom: 20px;
                     }
-
                     .mensaje-sistema {
                         padding: 13px 17px;
                         border-radius: 14px;
@@ -661,19 +908,16 @@
                         color: #4A2C1B;
                         border: 1px solid #E8DFC8;
                     }
-
                     .mensaje-sistema.success {
                         background: #EAF5E8;
                         color: #285B32;
                         border-color: #C7E4C5;
                     }
-
                     .mensaje-sistema.error {
                         background: #FCEBE7;
                         color: #9E3B27;
                         border-color: #F1C8BD;
                     }
-
                     .mensaje-sistema.warning {
                         background: #FFF4D6;
                         color: #765719;
@@ -686,7 +930,6 @@
             {% endblock %}
         </main>
     </div>
-
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggleBtn');
@@ -734,6 +977,9 @@
             });
         });
     </script>
+
+    <!-- FUNCIONAMIENTO DEL ASISTENTE MISMARY (archivo externo) -->
+    <script src="{% static 'js/asistente.js' %}"></script>
 
 </body>
 </html>

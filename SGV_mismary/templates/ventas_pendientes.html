@@ -205,4 +205,102 @@
     <p class="mensaje-vacio">No hay ventas pendientes por pagar en este momento.</p>
     {% endif %}
 </div>
+
+
+<style>
+    .paginacion-mismary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin: 18px 0 28px;
+        padding: 14px 18px;
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 16px;
+        color: #6C5243;
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
+        font-size: 13px;
+    }
+    .paginacion-info strong { color: #4A2C1B; }
+    .paginacion-controles {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .pagina-numero, .pagina-flecha {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 10px;
+        border: 1px solid #E8DFC8;
+        border-radius: 10px;
+        background: #F5EFE3;
+        color: #4A2C1B;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .pagina-numero:hover, .pagina-flecha:hover {
+        background: #FF6B35;
+        border-color: #FF6B35;
+        color: #FFFFFF;
+    }
+    .pagina-numero.activa {
+        background: #9E3B27;
+        border-color: #9E3B27;
+        color: #FFFFFF;
+        cursor: default;
+    }
+    .pagina-flecha { font-size: 21px; line-height: 1; }
+    .pagina-flecha.deshabilitada { opacity: .4; cursor: not-allowed; }
+    .pagina-puntos { padding: 0 4px; color: #9E3B27; }
+    @media (max-width: 600px) {
+        .paginacion-mismary { justify-content: center; text-align: center; }
+        .paginacion-info { width: 100%; }
+    }
+</style>
+
+
+{% if page_obj and page_obj.paginator.count > 0 %}
+<div class="paginacion-mismary">
+    <div class="paginacion-info">
+        Mostrando <strong>{{ page_obj.start_index }}</strong> a
+        <strong>{{ page_obj.end_index }}</strong> de
+        <strong>{{ page_obj.paginator.count }}</strong> registros
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="paginacion-controles" aria-label="Paginación">
+        {% if page_obj.has_previous %}
+            <a class="pagina-flecha" href="{{ previous_url }}" aria-label="Página anterior">‹</a>
+        {% else %}
+            <span class="pagina-flecha deshabilitada" aria-disabled="true">‹</span>
+        {% endif %}
+
+        {% for enlace in pagination_links %}
+            {% if enlace.is_ellipsis %}
+                <span class="pagina-puntos">{{ enlace.number }}</span>
+            {% elif enlace.is_current %}
+                <span class="pagina-numero activa" aria-current="page">{{ enlace.number }}</span>
+            {% else %}
+                <a class="pagina-numero" href="{{ enlace.url }}">{{ enlace.number }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a class="pagina-flecha" href="{{ next_url }}" aria-label="Página siguiente">›</a>
+        {% else %}
+            <span class="pagina-flecha deshabilitada" aria-disabled="true">›</span>
+        {% endif %}
+    </nav>
+    {% endif %}
+</div>
+{% endif %}
+
 {% endblock %}
