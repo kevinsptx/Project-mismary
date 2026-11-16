@@ -1,11 +1,23 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="language" content="es-CO">
     <title>{% block title %}MisMary{% endblock %}</title>
+
+    <!-- TEMA: se aplica ANTES de pintar la página para evitar el parpadeo -->
+    <script>
+        (function () {
+            try {
+                var guardado = localStorage.getItem('tema');
+                var tema = guardado || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', tema);
+            } catch (e) {}
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -316,6 +328,49 @@
             border-top: 1px dashed rgba(249, 246, 240, 0.2);
             flex-shrink: 0;
         }
+
+        /* ===== BOTÓN MODO CLARO / OSCURO (sol ⇄ luna) ===== */
+        .tema-btn {
+            width: 100%;
+            margin-bottom: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .tema-btn .nav-icono {
+            position: relative;
+        }
+        .tema-btn .nav-icono svg {
+            position: absolute;
+            inset: 0;
+            transition: transform 0.5s cubic-bezier(.5, 1.6, .4, .8), opacity 0.3s ease;
+        }
+        /* Modo claro: se ve el sol */
+        .tema-btn .icono-sol {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+        .tema-btn .icono-luna {
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.3);
+        }
+        /* Modo oscuro: el sol gira y se esconde, aparece la luna */
+        [data-theme="dark"] .tema-btn .icono-sol {
+            opacity: 0;
+            transform: rotate(90deg) scale(0.3);
+        }
+        [data-theme="dark"] .tema-btn .icono-luna {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Menú colapsado: el icono queda centrado igual que el del usuario */
+        .sidebar.colapsado .tema-btn .nav-texto {
+            display: none;
+        }
+
         .usuario-sidebar {
             display: flex;
             align-items: center;
@@ -674,6 +729,336 @@
             }
         }
         /* ================= FIN ESTILOS DEL ASISTENTE ================= */
+
+
+        /* =====================================================
+           MENÚ "LIQUID GLASS" · SOLO MODO OSCURO
+           En modo claro estas piezas están ocultas y el menú
+           queda exactamente como era antes.
+           ===================================================== */
+        .sidebar-vidrio,
+        .sidebar-sombra,
+        .sidebar-borde,
+        .sidebar-bola {
+            display: none;
+        }
+        .sidebar-scroll {
+            display: contents;
+        }
+
+        :root[data-theme="dark"] {
+            --margen-sidebar: 12px;
+        }
+        [data-theme="dark"] .sidebar {
+            background: transparent;
+            box-shadow: none;
+            border-radius: 0;
+            height: calc(100vh - var(--margen-sidebar) * 2);
+            height: calc(100dvh - var(--margen-sidebar) * 2);
+            overflow: visible;
+        }
+        [data-theme="dark"] .contenido-wrap {
+            margin-left: calc(var(--ancho-sidebar-colapsado) + var(--margen-sidebar) * 2);
+        }
+
+        /* Vidrio: su forma (con el hueco de la bola) la dibuja el JavaScript */
+        [data-theme="dark"] .sidebar-vidrio {
+            display: block;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: linear-gradient(160deg, rgba(196, 40, 52, 0.50), rgba(72, 8, 16, 0.66));
+            -webkit-backdrop-filter: blur(18px) saturate(1.6);
+            backdrop-filter: blur(18px) saturate(1.6);
+        }
+        [data-theme="dark"] .sidebar-sombra,
+        [data-theme="dark"] .sidebar-borde {
+            display: block;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            pointer-events: none;
+        }
+        [data-theme="dark"] .sidebar-sombra {
+            z-index: -1;
+        }
+        [data-theme="dark"] .sidebar-borde {
+            z-index: 1;
+        }
+
+        /* Contenido con scroll propio (sin barra visible) */
+        [data-theme="dark"] .sidebar-scroll {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        [data-theme="dark"] .sidebar-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        [data-theme="dark"] .sidebar-top {
+            min-height: 78px;
+        }
+
+        /* La bola: un solo círculo naranja */
+        [data-theme="dark"] .sidebar-bola {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 48px;
+            height: 48px;
+            z-index: 1;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(14px, -100px);
+            background: linear-gradient(150deg, #FF9255 0%, #FF6B35 55%, #E5521F 100%);
+            border: 1px solid rgba(255, 255, 255, 0.40);
+            box-shadow:
+                inset 0 2px 3px rgba(255, 255, 255, 0.55),
+                inset 0 -3px 6px rgba(120, 30, 10, 0.35),
+                0 6px 18px rgba(255, 107, 53, 0.55);
+        }
+        [data-theme="dark"] .sidebar-bola.oculta {
+            opacity: 0;
+        }
+
+        /* Los iconos quedan centrados sobre la bola */
+        [data-theme="dark"] .sidebar.colapsado .nav-texto {
+            display: none;
+        }
+        [data-theme="dark"] .nav-item.activo,
+        [data-theme="dark"] .nav-item.activo:hover {
+            background: transparent;
+            box-shadow: none;
+        }
+        /* =================== FIN MENÚ GLASS =================== */
+
+        /* =====================================================
+           MODO OSCURO · vino tinto + degradado naranja
+           Todo cuelga de [data-theme="dark"], así que el modo
+           claro queda exactamente igual que antes.
+           ===================================================== */
+        :root[data-theme="dark"] {
+            --texto: #F8EAE4;
+            --texto-suave: #DDB9AE;
+            --borde: rgba(255, 170, 140, 0.18);
+            --sombra: rgba(0, 0, 0, 0.45);
+            --superficie: #650E17;
+            --fondo: #2E0508;
+            color-scheme: dark;
+        }
+
+        /* Fondo general */
+        [data-theme="dark"] body {
+            background: linear-gradient(180deg, #3A060B 0%, #5E0B13 55%, #86160F 100%);
+            background-attachment: fixed;
+            color: var(--texto);
+        }
+        [data-theme="dark"] .contenido {
+            color: var(--texto);
+        }
+
+        /* Fondo decorativo */
+        [data-theme="dark"] .fondo-decor::before {
+            background-image: radial-gradient(circle closest-side at 50% 50%,
+                #FF9A2E 0 30%, #FF7A24 31% 46%, #D4501F 47% 60%, #A02F1E 61% 74%, transparent 75%);
+            background-size: 230px 230px;
+            opacity: 0.30;
+        }
+
+        [data-theme="dark"] .orbe-1,
+        [data-theme="dark"] .orbe-3,
+        [data-theme="dark"] .orbe-5 {
+            background: radial-gradient(circle closest-side at 50% 50%,
+                #FF9A2E 0 26%, #FF7A24 27% 42%, #D4501F 43% 58%, #A02F1E 59% 74%, #6E1520 75% 100%);
+        }
+        [data-theme="dark"] .orbe-1 { opacity: 0.45; }
+        [data-theme="dark"] .orbe-3 { opacity: 0.55; }
+        [data-theme="dark"] .orbe-5 { opacity: 0.35; }
+        [data-theme="dark"] .orbe-2 { background: var(--naranja); opacity: 0.28; }
+
+        /* Barra lateral */
+        [data-theme="dark"] .backdrop {
+            background: rgba(20, 4, 8, 0.6);
+        }
+
+        /* Títulos con degradado naranja */
+        [data-theme="dark"] .titulo h1 {
+            background: linear-gradient(90deg, #FF6B35, #FFB27A);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Tarjetas y contenedores */
+        [data-theme="dark"] .contenedor,
+        [data-theme="dark"] .contenido [class*="contenedor"],
+        [data-theme="dark"] .contenido [class*="tarjeta"],
+        [data-theme="dark"] .contenido [class*="card"],
+        [data-theme="dark"] .contenido [class*="panel"] {
+            background-color: rgba(104, 14, 22, 0.80);
+            color: var(--texto);
+            border-color: var(--borde);
+        }
+
+        [data-theme="dark"] .contenedor {
+            -webkit-backdrop-filter: blur(16px) saturate(1.3);
+            backdrop-filter: blur(16px) saturate(1.3);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 28px var(--sombra);
+        }
+
+        /* Mensajes del sistema */
+        :root[data-theme="dark"] .mensaje-sistema {
+            background: #650E17; color: #F8EAE4; border-color: var(--borde);
+        }
+        :root[data-theme="dark"] .mensaje-sistema.success {
+            background: #1F3B2A; color: #BFE8C8; border-color: #2E5A3E;
+        }
+        :root[data-theme="dark"] .mensaje-sistema.error {
+            background: #6B1620; color: #FFC9BE; border-color: #9A2F3A;
+        }
+        :root[data-theme="dark"] .mensaje-sistema.warning {
+            background: #5A4316; color: #FFE3A3; border-color: #7A5E24;
+        }
+
+        /* Textos generales */
+        [data-theme="dark"] .contenido h1,
+        [data-theme="dark"] .contenido h2,
+        [data-theme="dark"] .contenido h3,
+        [data-theme="dark"] .contenido h4,
+        [data-theme="dark"] .contenido label,
+        [data-theme="dark"] .contenido legend {
+            color: var(--texto);
+        }
+        [data-theme="dark"] .contenido .titulo h1 {
+            color: transparent;
+        }
+        [data-theme="dark"] .contenido a:not([class]) {
+            color: #FFB27A;
+        }
+        [data-theme="dark"] .contenido hr {
+            border-color: var(--borde);
+        }
+
+        /* ===== TABLAS: fondo y letra siempre legibles =====
+           Se fuerza el fondo de cada celda para que la letra clara
+           nunca quede sobre un fondo blanco heredado de la página. */
+        [data-theme="dark"] .contenido [class*="tabla"],
+        [data-theme="dark"] .contenido .table-responsive {
+            background-color: rgba(104, 14, 22, 0.80);
+            border-color: var(--borde);
+        }
+        [data-theme="dark"] .contenido table {
+            background: transparent !important;
+            color: var(--texto) !important;
+            border-color: var(--borde) !important;
+        }
+        [data-theme="dark"] .contenido thead,
+        [data-theme="dark"] .contenido tbody,
+        [data-theme="dark"] .contenido tfoot {
+            background: transparent !important;
+        }
+        [data-theme="dark"] .contenido th {
+            background: #9A1B26 !important;
+            color: #FFE2D2 !important;
+            border-color: var(--borde) !important;
+        }
+        [data-theme="dark"] .contenido td {
+            background: #650E17 !important;
+            color: var(--texto) !important;
+            border-color: var(--borde) !important;
+        }
+        [data-theme="dark"] .contenido tbody tr:nth-child(even) td {
+            background: #70111B !important;
+        }
+        [data-theme="dark"] .contenido tbody tr:hover td {
+            background: #831822 !important;
+        }
+        [data-theme="dark"] .contenido td strong,
+        [data-theme="dark"] .contenido td b,
+        [data-theme="dark"] .contenido td p,
+        [data-theme="dark"] .contenido td small,
+        [data-theme="dark"] .contenido td span:not([class]),
+        [data-theme="dark"] .contenido td a:not([class]) {
+            color: inherit;
+        }
+
+        /* Formularios */
+        [data-theme="dark"] .contenido input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+        [data-theme="dark"] .contenido select,
+        [data-theme="dark"] .contenido textarea {
+            background: #2E0508;
+            color: var(--texto);
+            border-color: var(--borde);
+        }
+        [data-theme="dark"] .contenido input::placeholder,
+        [data-theme="dark"] .contenido textarea::placeholder {
+            color: #B08F85;
+        }
+        [data-theme="dark"] .contenido input:focus,
+        [data-theme="dark"] .contenido select:focus,
+        [data-theme="dark"] .contenido textarea:focus {
+            border-color: var(--naranja);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.18);
+        }
+        [data-theme="dark"] .contenido option {
+            background: #2E0508;
+            color: var(--texto);
+        }
+
+        /* Naranjita (asistente) */
+        [data-theme="dark"] .asistente-personaje {
+            filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.5));
+        }
+        [data-theme="dark"] .asistente-invitacion {
+            background: #650E17; color: var(--texto); border-color: var(--borde);
+        }
+        [data-theme="dark"] .asistente-ventana {
+            background: #4E0A11; border-color: var(--borde); color: var(--texto);
+        }
+        [data-theme="dark"] .asistente-encabezado {
+            background: linear-gradient(90deg, #9A1B26, #B3262F);
+        }
+        [data-theme="dark"] .asistente-mensajes { background: #2E0508; }
+        [data-theme="dark"] .asistente-mensaje.bot { background: #82151F; color: #F8EAE4; }
+        [data-theme="dark"] .asistente-mensaje.usuario {
+            background: linear-gradient(135deg, #FF6B35, #E2552A);
+            color: #FFFFFF;
+        }
+        [data-theme="dark"] .asistente-sugerencias,
+        [data-theme="dark"] .asistente-formulario {
+            background: #4E0A11; border-top-color: var(--borde);
+        }
+        [data-theme="dark"] .asistente-sugerencia {
+            background: #650E17; border-color: var(--borde); color: var(--texto);
+        }
+        [data-theme="dark"] .asistente-sugerencia:hover { background: #9A1B26; }
+        [data-theme="dark"] .asistente-formulario input {
+            background: #2E0508; border-color: var(--borde); color: var(--texto);
+        }
+        /* =================== FIN MODO OSCURO =================== */
+
+        /* ===== Micrófono del asistente ===== */
+        .asistente-formulario button.mic-activo {
+            background: var(--terracota);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.35);
+        }
+        .asistente-formulario button.mic-comando {
+            background: var(--naranja);
+            animation: asistente-pulso 1s ease-in-out infinite;
+        }
+        @keyframes asistente-pulso {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.6); }
+            50%      { box-shadow: 0 0 0 11px rgba(255, 107, 53, 0); }
+        }
     </style>
 </head>
 
@@ -714,6 +1099,16 @@
                     autocomplete="off"
                     aria-label="Escribe tu pregunta">
 
+                <button type="button" id="asistente-microfono" aria-label="Activar escucha por voz" title="Activar escucha por voz">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="9" y="3" width="6" height="11" rx="3"/>
+                        <path d="M5.5 11 Q5.5 17.5 12 17.5 Q18.5 17.5 18.5 11"/>
+                        <path d="M12 17.8 L12 21"/>
+                        <path d="M9 21 L15 21"/>
+                    </svg>
+                </button>
+
                 <button type="submit" aria-label="Enviar mensaje">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
                          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -739,10 +1134,8 @@
             title="Abrir asistente virtual">
 
             <model-viewer
-                src="{% static 'model/kawaii_orange.glb' %}"
+                src="{% static 'model/naranjita_rig.glb' %}"
                 alt="Personaje 3D de MisMary"
-                auto-rotate
-                rotation-per-second="20deg"
                 interaction-prompt="none"
                 shadow-intensity="1"
                 exposure="1"
@@ -772,6 +1165,23 @@
     <div class="backdrop" id="backdrop"></div>
 
     <aside class="sidebar colapsado" id="sidebar">
+
+        <!-- Capas del modo oscuro (ocultas en modo claro) -->
+        <svg class="sidebar-sombra" aria-hidden="true">
+            <defs>
+                <filter id="filtroSombraMenu" x="-30%" y="-10%" width="160%" height="125%">
+                    <feGaussianBlur stdDeviation="14"/>
+                </filter>
+            </defs>
+            <path id="pathSombra" fill="rgba(0,0,0,0.45)" filter="url(#filtroSombraMenu)" transform="translate(0 12)"/>
+        </svg>
+        <div class="sidebar-vidrio" id="sidebarVidrio"></div>
+        <svg class="sidebar-borde" aria-hidden="true">
+            <path id="pathBorde" fill="none" stroke="rgba(255,200,170,0.38)" stroke-width="1.2"/>
+        </svg>
+        <span class="sidebar-bola" id="sidebarBola" aria-hidden="true"></span>
+
+        <div class="sidebar-scroll">
 
         <div class="sidebar-top">
             <div class="marca">
@@ -855,6 +1265,35 @@
 
         <div class="sidebar-bottom">
 
+            <!-- Botón de modo claro / oscuro: sol ⇄ luna -->
+            <button type="button"
+                    class="nav-item tema-btn"
+                    id="temaBtn"
+                    aria-label="Cambiar entre modo claro y modo oscuro"
+                    aria-pressed="false">
+                <span class="nav-icono">
+                    <!-- Sol (modo claro) -->
+                    <svg class="icono-sol" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12.1" cy="12" r="4.1"/>
+                        <path d="M12 2.6 L12.1 4.9"/>
+                        <path d="M12 19.2 L12.1 21.5"/>
+                        <path d="M2.5 12 L4.8 12.1"/>
+                        <path d="M19.3 11.9 L21.6 12"/>
+                        <path d="M5.3 5.2 L6.9 6.8"/>
+                        <path d="M17.2 17.3 L18.8 18.9"/>
+                        <path d="M5.2 18.8 L6.8 17.2"/>
+                        <path d="M17.3 6.7 L18.9 5.1"/>
+                    </svg>
+                    <!-- Luna (modo oscuro) -->
+                    <svg class="icono-luna" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20.4 14.5 Q17.2 16 13.9 14.6 Q10.2 12.9 9.9 8.8 Q9.8 6 11.4 3.7 Q7.4 4.5 5.1 8.2 Q2.9 12.3 5.1 16.4 Q7.5 20.6 12.4 20.8 Q18 20.7 20.4 14.5 Z"/>
+                        <path d="M17.6 3.6 L17.7 6.4"/>
+                        <path d="M16.2 5 L19 5.1"/>
+                    </svg>
+                </span>
+                <span class="nav-texto" id="temaTexto">Modo oscuro</span>
+            </button>
+
             <div class="usuario-sidebar">
                 <span class="nav-icono"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.4" r="3.6"/><path d="M4.6 20.6 Q5 14.6 12 14.6 Q19 14.6 19.4 20.6"/></svg></span>
                 <span class="nav-texto">
@@ -878,6 +1317,7 @@
                 </button>
             </form>
 
+        </div>
         </div>
     </aside>
 
@@ -955,6 +1395,167 @@
             }
         });
 
+
+        /* ===== BOLA DEL MENÚ (modo oscuro): hueco curvo que se desliza ===== */
+        const bola = document.getElementById('sidebarBola');
+        const vidrio = document.getElementById('sidebarVidrio');
+        const pathBorde = document.getElementById('pathBorde');
+        const pathSombra = document.getElementById('pathSombra');
+        const scrollMenu = sidebar.querySelector('.sidebar-scroll');
+        const itemsMenu = Array.from(sidebar.querySelectorAll('.sidebar-nav .nav-item'));
+        const indiceActivo = itemsMenu.findIndex(function (i) {
+            return i.classList.contains('activo');
+        });
+
+        const R_BARRA = 30;   /* esquinas de la barra */
+        const R_HUECO = 31;   /* radio del hueco (la bola mide 24 de radio) */
+        const R_LABIO = 12;   /* curvatura suave de los bordes del hueco */
+        const CX = 38;        /* centro horizontal de iconos y bola */
+
+        let yBola = -100;
+        let velocidad = 0;
+        let destino = -100;
+        let animacion = null;
+
+        function construirPath(W, H, y) {
+            const r = R_BARRA;
+            let d = 'M ' + r + ' 0 H ' + (W - r) +
+                ' A ' + r + ' ' + r + ' 0 0 1 ' + W + ' ' + r;
+
+            if (y !== null) {
+                const y1 = y - R_HUECO;
+                const y2 = y + R_HUECO;
+                d += ' V ' + (y1 - R_LABIO) +
+                    ' A ' + R_LABIO + ' ' + R_LABIO + ' 0 0 1 ' + (W - R_LABIO) + ' ' + y1 +
+                    ' H ' + CX +
+                    ' A ' + R_HUECO + ' ' + R_HUECO + ' 0 0 0 ' + CX + ' ' + y2 +
+                    ' H ' + (W - R_LABIO) +
+                    ' A ' + R_LABIO + ' ' + R_LABIO + ' 0 0 1 ' + W + ' ' + (y2 + R_LABIO);
+            }
+
+            d += ' V ' + (H - r) +
+                ' A ' + r + ' ' + r + ' 0 0 1 ' + (W - r) + ' ' + H +
+                ' H ' + r +
+                ' A ' + r + ' ' + r + ' 0 0 1 0 ' + (H - r) +
+                ' V ' + r +
+                ' A ' + r + ' ' + r + ' 0 0 1 ' + r + ' 0 Z';
+            return d;
+        }
+
+        function dibujar() {
+            const W = sidebar.offsetWidth;
+            const H = sidebar.offsetHeight;
+            const margen = R_HUECO + R_LABIO + R_BARRA / 2;
+            const visible = !bola.classList.contains('oculta') && yBola > margen && yBola < H - margen;
+            const d = construirPath(W, H, visible ? yBola : null);
+
+            vidrio.style.clipPath = "path('" + d + "')";
+            vidrio.style.webkitClipPath = "path('" + d + "')";
+            pathBorde.setAttribute('d', d);
+            pathSombra.setAttribute('d', d);
+
+            /* La bola se estira un poco al moverse, como una gota */
+            const estiramiento = Math.min(Math.abs(velocidad) * 0.025, 0.3);
+            bola.style.transform = 'translate(' + (CX - 24) + 'px,' + (yBola - 24) + 'px) scale(' +
+                (1 - estiramiento * 0.6) + ',' + (1 + estiramiento) + ')';
+        }
+
+        function paso() {
+            velocidad = (velocidad + (destino - yBola) * 0.08) * 0.75;
+            yBola += velocidad;
+            if (Math.abs(destino - yBola) < 0.2 && Math.abs(velocidad) < 0.2) {
+                yBola = destino;
+                velocidad = 0;
+                animacion = null;
+                dibujar();
+                return;
+            }
+            dibujar();
+            animacion = requestAnimationFrame(paso);
+        }
+
+        function irA(y, animar) {
+            destino = y;
+            if (!animar) {
+                if (animacion) cancelAnimationFrame(animacion);
+                animacion = null;
+                yBola = y;
+                velocidad = 0;
+                dibujar();
+                return;
+            }
+            if (!animacion) animacion = requestAnimationFrame(paso);
+        }
+
+        function yDelItem(indice) {
+            const r = itemsMenu[indice].getBoundingClientRect();
+            const s = sidebar.getBoundingClientRect();
+            return r.top - s.top + r.height / 2;
+        }
+
+        (function () {
+            let previo = -1;
+            try {
+                const guardado = sessionStorage.getItem('bolaIndice');
+                if (guardado !== null) previo = parseInt(guardado, 10);
+            } catch (e) {}
+            try { sessionStorage.setItem('bolaIndice', String(indiceActivo)); } catch (e) {}
+
+            if (indiceActivo < 0) {
+                bola.classList.add('oculta');
+                dibujar();
+                return;
+            }
+
+            if (previo >= 0 && previo !== indiceActivo && itemsMenu[previo]) {
+                /* Arranca donde estaba en la página anterior y se desliza hasta la nueva */
+                irA(yDelItem(previo), false);
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        irA(yDelItem(indiceActivo), true);
+                    });
+                });
+            } else {
+                irA(yDelItem(indiceActivo), false);
+            }
+        })();
+
+        function recalcularBola() {
+            if (indiceActivo >= 0) irA(yDelItem(indiceActivo), false);
+        }
+        window.addEventListener('resize', recalcularBola);
+        scrollMenu.addEventListener('scroll', recalcularBola);
+
+        /* Redibuja la forma mientras el menú se abre o se cierra */
+        if (window.ResizeObserver) {
+            new ResizeObserver(function () { dibujar(); }).observe(sidebar);
+        }
+
+        /* ===== MODO CLARO / OSCURO ===== */
+        const temaBtn = document.getElementById('temaBtn');
+        const temaTexto = document.getElementById('temaTexto');
+
+        function aplicarTema(tema) {
+            document.documentElement.setAttribute('data-theme', tema);
+            const oscuro = tema === 'dark';
+            temaTexto.textContent = oscuro ? 'Modo claro' : 'Modo oscuro';
+            temaBtn.setAttribute('aria-pressed', String(oscuro));
+            try { localStorage.setItem('tema', tema); } catch (e) {}
+        }
+
+        temaBtn.addEventListener('click', function () {
+            const actual = document.documentElement.getAttribute('data-theme');
+            aplicarTema(actual === 'dark' ? 'light' : 'dark');
+        });
+
+        /* Sincroniza el texto del botón con el tema ya aplicado al cargar */
+        (function () {
+            const actual = document.documentElement.getAttribute('data-theme') || 'light';
+            const oscuro = actual === 'dark';
+            temaTexto.textContent = oscuro ? 'Modo claro' : 'Modo oscuro';
+            temaBtn.setAttribute('aria-pressed', String(oscuro));
+        })();
+
         document.addEventListener('DOMContentLoaded', function () {
             function capitalizarNombre(texto) {
                 return texto
@@ -976,6 +1577,34 @@
                 campo.value = capitalizarNombre(campo.value);
             });
         });
+    </script>
+
+    <!-- Rutas que usa el control por voz (si un nombre no existe, queda vacío y no rompe la página) -->
+    {% url 'home' as r_home %}
+    {% url 'list_producto' as r_producto %}
+    {% url 'list_cliente' as r_cliente %}
+    {% url 'list_venta' as r_venta %}
+    {% url 'list_pedido' as r_pedido %}
+    {% url 'list_proveedor' as r_proveedor %}
+    {% url 'lista_reembolsos' as r_reembolso %}
+    {% url 'reportes' as r_reporte %}
+    {% url 'list_grupos' as r_grupo %}
+    {% url 'register_producto' as n_producto %}
+    {% url 'register_cliente' as n_cliente %}
+    {% url 'register_venta' as n_venta %}
+    {% url 'register_pedido' as n_pedido %}
+    {% url 'register_proveedor' as n_proveedor %}
+    {% url 'solicitar_reembolso' as n_reembolso %}
+    <script>
+        window.RUTAS_VOZ = {
+            home: "{{ r_home }}", producto: "{{ r_producto }}", cliente: "{{ r_cliente }}",
+            venta: "{{ r_venta }}", pedido: "{{ r_pedido }}", proveedor: "{{ r_proveedor }}",
+            reembolso: "{{ r_reembolso }}", reporte: "{{ r_reporte }}", grupo: "{{ r_grupo }}",
+            registrar: {
+                producto: "{{ n_producto }}", cliente: "{{ n_cliente }}", venta: "{{ n_venta }}",
+                pedido: "{{ n_pedido }}", proveedor: "{{ n_proveedor }}", reembolso: "{{ n_reembolso }}"
+            }
+        };
     </script>
 
     <!-- FUNCIONAMIENTO DEL ASISTENTE MISMARY (archivo externo) -->

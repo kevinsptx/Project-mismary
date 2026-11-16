@@ -302,6 +302,93 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
     .t-ventas { min-height: 260px; }
     .t-reportes { min-height: 260px; }
 }
+
+/* =====================================================
+   MODO OSCURO del menú principal
+   Cada tarjeta conserva su color de identidad, pero en
+   versión vino translúcida, con la letra clara.
+   El modo claro no cambia.
+   ===================================================== */
+[data-theme="dark"] .bento-wrap {
+    color: var(--texto);
+}
+
+[data-theme="dark"] .tile {
+    box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
+}
+[data-theme="dark"] a.tile:hover {
+    box-shadow: 0 20px 34px -10px rgba(0, 0, 0, 0.65);
+}
+[data-theme="dark"] a.t-pedidos:hover {
+    box-shadow: none;
+}
+
+/* Títulos y subtítulos de las tarjetas: siempre claros */
+[data-theme="dark"] .tile h3,
+[data-theme="dark"] .tile small,
+[data-theme="dark"] .tile .t-num,
+[data-theme="dark"] .tile .t-sub {
+    color: var(--texto);
+}
+
+/* Ventas, Clientes y Por cobrar: cristal rojo */
+[data-theme="dark"] .t-ventas,
+[data-theme="dark"] .t-clientes,
+[data-theme="dark"] .t-cobrar {
+    background: rgba(104, 14, 22, 0.78);
+    border-color: rgba(255, 170, 140, 0.22);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+[data-theme="dark"] .t-ventas .blob {
+    background: #FF9A2E;
+    opacity: 0.22;
+}
+
+/* Catálogo: mostaza tenue */
+[data-theme="dark"] .t-catalogo {
+    background: rgba(227, 169, 31, 0.20);
+    border-color: rgba(235, 208, 138, 0.35);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+
+/* Reembolsos: coral tenue */
+[data-theme="dark"] .t-reembolsos {
+    background: rgba(255, 120, 100, 0.18);
+    border-color: rgba(245, 183, 171, 0.35);
+    color: var(--texto);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+
+/* Proveedores: naranja tenue */
+[data-theme="dark"] .t-proveedores {
+    background: rgba(255, 107, 53, 0.18);
+    border-color: rgba(255, 201, 174, 0.35);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+
+/* Gastos hormiga: arena tenue */
+[data-theme="dark"] .t-gastos {
+    background: rgba(232, 223, 200, 0.14);
+    border-color: rgba(232, 223, 200, 0.28);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+
+/* Íconos que antes eran oscuros sobre fondo claro */
+[data-theme="dark"] .t-clientes .t-icono,
+[data-theme="dark"] .t-catalogo .t-icono,
+[data-theme="dark"] .t-gastos .t-icono {
+    color: #FFB27A;
+}
+
+/* El saludo conserva su degradado naranja; solo se suaviza el borde del logo */
+[data-theme="dark"] .logo-hero {
+    border-color: rgba(255, 255, 255, 0.9);
+}
 </style>
 
 <div class="bento-wrap">

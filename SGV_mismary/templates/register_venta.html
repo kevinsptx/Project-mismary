@@ -24,28 +24,23 @@ Registrar Venta | MisMary
 
         --rojo-fondo:    #FBE9E7;
 
+        /* Colores de TEXTO que cambian en modo oscuro (en modo claro valen lo mismo que antes) */
+        --acento-texto:     var(--terracota);
+        --texto-secundario: #6C5243;
+
         --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
         --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
-    }
-
-    body {
-        background-color: var(--marfil-bg);
-        color: var(--cafe-tostado);
-        font-family: 'Fredoka', 'Quicksand', -apple-system, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding-bottom: 60px;
     }
 
     .wrap-mismary {
         max-width: 720px;
         margin: 0 auto;
-        padding: 30px 20px;
+        padding: 30px 20px 90px;
     }
 
     .encabezado { margin-bottom: 25px; }
     .encabezado h1 { margin: 0; font-size: 26px; font-weight: 700; color: var(--cafe-tostado); }
-    .encabezado p { margin: 4px 0 0 0; font-size: 14px; color: var(--terracota); }
+    .encabezado p { margin: 4px 0 0 0; font-size: 14px; color: var(--acento-texto); }
 
     .mensaje-exito, .mensaje-error {
         padding: 14px 20px;
@@ -96,7 +91,7 @@ Registrar Venta | MisMary
     .fila-producto select:focus,
     .fila-producto input:focus {
         outline: none;
-        border-color: var(--terracota);
+        border-color: var(--acento-texto);
         box-shadow: var(--sombra-suave);
     }
 
@@ -107,6 +102,7 @@ Registrar Venta | MisMary
         padding-left: 10px;
         padding-right: 10px;
         -moz-appearance: textfield;
+        appearance: textfield;
     }
 
     .fila-producto .inp-cantidad::-webkit-outer-spin-button,
@@ -119,6 +115,7 @@ Registrar Venta | MisMary
         font-size: 13px;
         font-weight: 700;
         margin: 0 0 10px 0;
+        color: var(--cafe-tostado);
     }
 
     .fila-producto {
@@ -132,7 +129,7 @@ Registrar Venta | MisMary
     .fila-producto .subtotal {
         font-size: 14px;
         font-weight: 700;
-        color: var(--terracota);
+        color: var(--acento-texto);
         text-align: right;
     }
 
@@ -142,7 +139,7 @@ Registrar Venta | MisMary
         border-radius: 50%;
         border: 1px solid var(--arena);
         background: var(--arena-suave);
-        color: var(--terracota);
+        color: var(--acento-texto);
         font-size: 16px;
         cursor: pointer;
         font-family: inherit;
@@ -166,10 +163,10 @@ Registrar Venta | MisMary
         margin-bottom: 14px;
         font-size: 14px;
         font-weight: 600;
-        color: #6C5243;
+        color: var(--texto-secundario);
     }
 
-    .falta strong { font-size: 20px; font-weight: 700; color: var(--terracota); }
+    .falta strong { font-size: 20px; font-weight: 700; color: var(--acento-texto); }
 
     .acciones-form { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 
@@ -201,8 +198,8 @@ Registrar Venta | MisMary
 
     .btn-secundario:hover {
         background: var(--blanco);
-        border-color: var(--terracota);
-        color: var(--terracota);
+        border-color: var(--acento-texto);
+        color: var(--acento-texto);
     }
 
     @media (max-width: 600px) {
@@ -214,6 +211,34 @@ Registrar Venta | MisMary
         }
         .fila-producto .subtotal { grid-column: 1 / 3; text-align: left; }
     }
+
+    /* =====================================================
+       MODO OSCURO de esta pantalla
+       Solo cambia los colores; el modo claro queda igual.
+       ===================================================== */
+    :root[data-theme="dark"] {
+        --cafe-tostado:     #F8EAE4;
+        --arena:            rgba(255, 170, 140, 0.22);
+        --arena-suave:      rgba(255, 255, 255, 0.07);
+        --blanco:           rgba(104, 14, 22, 0.80);
+        --verde:            #BFE8C8;
+        --verde-fondo:      #1F3B2A;
+        --rojo-fondo:       #6B1620;
+        --acento-texto:     #FFB27A;
+        --texto-secundario: #E3C3B8;
+        --sombra-suave:     0 10px 25px -5px rgba(0, 0, 0, 0.45);
+        --sombra-hover:     0 18px 32px -8px rgba(0, 0, 0, 0.55);
+    }
+
+    [data-theme="dark"] .formulario {
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+    }
+
+    [data-theme="dark"] .mensaje-exito { border-color: #2E5A3E; }
+    [data-theme="dark"] .mensaje-error { border-color: #9A2F3A; color: #FFC9BE; }
+
+    [data-theme="dark"] .btn-secundario:hover { background: rgba(255, 255, 255, 0.12); }
 
 </style>
 
