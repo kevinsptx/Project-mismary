@@ -276,6 +276,149 @@
             flex: 1 1 100%;
         }
     }
+
+    /* ==========================================
+   MODO OSCURO - DETALLE CLIENTE
+   Integración con el fondo de base.html
+   ========================================== */
+
+[data-theme="dark"] body {
+    background-color: transparent !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .detalle-cliente {
+    color: #EBD2C9 !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #EBD2C9 !important;
+}
+
+/* Tarjeta principal */
+[data-theme="dark"] .tarjeta {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Icono y nombre del cliente */
+[data-theme="dark"] .icono {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .cliente h2 {
+    color: #FFF0E8 !important;
+}
+
+/* Datos del cliente */
+[data-theme="dark"] .dato {
+    background: rgba(46, 5, 8, 0.75) !important;
+    border: 1px solid rgba(255, 170, 140, 0.16) !important;
+}
+
+[data-theme="dark"] .dato strong {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .dato span {
+    color: #F8EAE4 !important;
+}
+
+/* Historial de compras */
+[data-theme="dark"] .pendientes {
+    background: rgba(46, 5, 8, 0.65) !important;
+    border: 1px dashed rgba(255, 170, 140, 0.30) !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .btn-historial {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-historial:hover {
+    background: #E85A26 !important;
+    color: #FFFFFF !important;
+}
+
+/* Botones principales */
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):not(.btn-eliminar) {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):not(.btn-eliminar):hover {
+    background: #E85A26 !important;
+}
+
+/* Botón volver y cancelar */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
+
+/* Botón eliminar */
+[data-theme="dark"] .btn-eliminar {
+    background: transparent !important;
+    color: #FF9255 !important;
+    border: 1px solid #FF9255 !important;
+}
+
+[data-theme="dark"] .btn-eliminar:hover {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+    border-color: #B32635 !important;
+}
+
+/* Fondo del modal */
+[data-theme="dark"] .modal-fondo {
+    background: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Contenido del modal */
+[data-theme="dark"] .modal-contenido {
+    background: #4A0D14 !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 170, 140, 0.25) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme="dark"] .modal-icono {
+    background: rgba(255, 107, 53, 0.15) !important;
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .modal-contenido h3 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .modal-contenido p {
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .modal-contenido p strong {
+    color: #FFF0E8 !important;
+}
+
+/* Aviso de deuda */
+[data-theme="dark"] .modal-aviso {
+    background: rgba(46, 5, 8, 0.85) !important;
+    color: #FFB17F !important;
+}
 </style>
 
 <div class="detalle-cliente">

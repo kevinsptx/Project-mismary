@@ -362,6 +362,112 @@ Grupos | MisMary
         }
     }
 
+
+/* ==========================================
+   MODO OSCURO - GRUPOS Y ROLES
+   Integración con el fondo de base.html
+   ========================================== */
+
+/* Fondo general transparente */
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #DDB9AE !important;
+}
+
+/* Buscador */
+[data-theme="dark"] .buscador input[type="text"] {
+    background: #2E0508 !important;
+    color: #F8EAE4 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+    box-shadow: none;
+}
+
+[data-theme="dark"] .buscador input::placeholder {
+    color: #C49B91 !important;
+}
+
+/* Barra de resultados */
+[data-theme="dark"] .resultados-barra h2 {
+    color: #F8EAE4 !important;
+}
+
+/* Contador y etiquetas */
+[data-theme="dark"] .chip-mismary {
+    background: rgba(255, 107, 53, 0.12) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+/* Tarjetas individuales de grupos */
+[data-theme="dark"] .grupo-tarjeta {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20);
+}
+
+[data-theme="dark"] .grupo-tarjeta:hover {
+    background: rgba(120, 18, 29, 0.90) !important;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.30);
+}
+
+[data-theme="dark"] .grupo-nombre {
+    color: #FFE2D2 !important;
+}
+
+/* Mensaje cuando no hay grupos */
+[data-theme="dark"] .sin-grupos {
+    background: rgba(104, 14, 22, 0.65) !important;
+    color: #F8EAE4 !important;
+    border-color: rgba(255, 170, 140, 0.25) !important;
+}
+
+/* Modal de confirmación */
+[data-theme="dark"] .modal-contenido {
+    background: #650E17 !important;
+    color: #F8EAE4 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+[data-theme="dark"] .modal-contenido h3,
+[data-theme="dark"] .modal-contenido p {
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .modal-icono {
+    background: rgba(255, 107, 53, 0.15) !important;
+}
+
+/* Botones secundarios */
+[data-theme="dark"] .btn-secundario,
+[data-theme="dark"] .btn-outline,
+[data-theme="dark"] .btn-eliminar {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.30) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover,
+[data-theme="dark"] .btn-outline:hover,
+[data-theme="dark"] .btn-eliminar:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+
 </style>
 
 

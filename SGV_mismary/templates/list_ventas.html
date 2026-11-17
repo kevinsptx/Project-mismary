@@ -399,6 +399,236 @@ Ventas | MisMary
     .enc-titulo:hover .stk-lista { transform: rotate(3deg) scale(1.06); }
 
     @media (max-width: 520px) { .stk-lista { display: none; } }
+
+
+/* ==========================================
+   MODO OSCURO - VENTAS
+   Integración con el fondo de base.html
+   ========================================== */
+
+/* Fondo general integrado con base.html */
+[data-theme="dark"] body {
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #DDB9AE !important;
+}
+
+/* Buscador */
+[data-theme="dark"] .buscador input[type="text"] {
+    background: #2E0508 !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 170, 140, 0.22) !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] .buscador input::placeholder {
+    color: #C49B91 !important;
+}
+
+/* Resultados */
+[data-theme="dark"] .resultados-barra h2 {
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .chip-mismary {
+    background: rgba(255, 107, 53, 0.12) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+/* Tabla */
+[data-theme="dark"] .tabla-caja {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20) !important;
+}
+
+[data-theme="dark"] .tabla-ventas thead th {
+    background: #8F1B27 !important;
+    color: #FFF0E8 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.20) !important;
+}
+
+[data-theme="dark"] .tabla-ventas tbody td {
+    background: transparent !important;
+    color: #EBD2C9 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.12) !important;
+}
+
+/* ==========================================
+   CORREGIR HOVER BLANCO EN LAS FILAS
+   ========================================== */
+
+/* Filas normales */
+[data-theme="dark"] .tabla-ventas tbody tr:hover,
+[data-theme="dark"] .tabla-ventas tbody tr:hover td {
+    background: rgba(255, 107, 53, 0.09) !important;
+    background-color: rgba(255, 107, 53, 0.09) !important;
+    color: #EBD2C9 !important;
+}
+
+/* Mantener el color del nombre y precio */
+[data-theme="dark"] .tabla-ventas tbody tr:hover .nombre-venta,
+[data-theme="dark"] .tabla-ventas tbody tr:hover .precio {
+    color: #FFE2D2 !important;
+}
+
+/* Mantener los botones */
+[data-theme="dark"] .tabla-ventas tbody tr:hover .btn-ver {
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .tabla-ventas tbody tr:hover .btn-cancelar {
+    color: #FFE2D2 !important;
+}
+
+/* ==========================================
+   FILAS REEMBOLSADAS
+   Conservar su fondo rojizo especial
+   ========================================== */
+
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada:hover,
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada:hover td {
+    background: rgba(179, 38, 30, 0.22) !important;
+    background-color: rgba(179, 38, 30, 0.22) !important;
+    color: #FFBDB7 !important;
+}
+
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada:hover .nombre-venta,
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada:hover .precio {
+    color: #FFBDB7 !important;
+}
+
+[data-theme="dark"] .nombre-venta {
+    color: #FFE2D2 !important;
+}
+
+[data-theme="dark"] .precio {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .chip-tabla {
+    background: rgba(255, 107, 53, 0.13) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.20) !important;
+}
+
+/* Ventas reembolsadas: conservar su diferenciación */
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada td {
+    background: rgba(179, 38, 30, 0.13) !important;
+    color: #FFBDB7 !important;
+}
+
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada .nombre-venta,
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada .precio {
+    color: #FFBDB7 !important;
+}
+
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada td:first-child {
+    box-shadow: inset 4px 0 0 #E57373 !important;
+}
+
+[data-theme="dark"] .tabla-ventas tbody tr.fila-reembolsada .chip-tabla {
+    background: rgba(179, 38, 30, 0.20) !important;
+    border-color: rgba(255, 140, 130, 0.30) !important;
+    color: #FFBDB7 !important;
+}
+
+/* Aviso de reembolso parcial */
+[data-theme="dark"] .marca-parcial {
+    color: #FFAB91 !important;
+}
+
+/* Botones */
+[data-theme="dark"] .btn-secundario,
+[data-theme="dark"] .btn-cancelar {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover,
+[data-theme="dark"] .btn-cancelar:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+[data-theme="dark"] .btn-ver {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+/* Estado reembolsada */
+[data-theme="dark"] .estado-cancelada {
+    background: rgba(179, 38, 30, 0.20) !important;
+    color: #FFBDB7 !important;
+    border-color: rgba(255, 140, 130, 0.30) !important;
+}
+
+/* Sin ventas */
+[data-theme="dark"] .sin-ventas {
+    color: #EBD2C9 !important;
+}
+
+/* Mensajes */
+[data-theme="dark"] .mensaje-exito {
+    background: rgba(46, 125, 50, 0.18) !important;
+    color: #B9E8BC !important;
+    border-color: rgba(129, 199, 132, 0.30) !important;
+}
+
+/* Paginación */
+[data-theme="dark"] .paginacion-mismary {
+    background: rgba(104, 14, 22, 0.80) !important;
+    color: #EBD2C9 !important;
+    border-color: rgba(255, 170, 140, 0.18) !important;
+}
+
+[data-theme="dark"] .paginacion-info strong {
+    color: #FFE2D2 !important;
+}
+
+[data-theme="dark"] .pagina-numero,
+[data-theme="dark"] .pagina-flecha {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+[data-theme="dark"] .pagina-numero:hover,
+[data-theme="dark"] .pagina-flecha:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+[data-theme="dark"] .pagina-numero.activa {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+    border-color: #B32635 !important;
+}
+
+[data-theme="dark"] .pagina-puntos {
+    color: #FF9255 !important;
+}
+
 </style>
 
 <div class="wrap-mismary">

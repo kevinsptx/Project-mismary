@@ -351,6 +351,196 @@ Pedidos | MisMary
             width: 100%;
         }
     }
+
+/* ==========================================
+   MODO OSCURO - PEDIDOS
+   Integración con el fondo de base.html
+   ========================================== */
+
+/* Evitar fondos propios que generen cuadrados */
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Evitar que el fondo claro del body interfiera */
+[data-theme="dark"] body {
+    background-color: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #DDB9AE !important;
+}
+
+/* Título del historial */
+[data-theme="dark"] .resultados-barra h2 {
+    color: #F8EAE4 !important;
+}
+
+/* Contador de pedidos */
+[data-theme="dark"] .chip-mismary {
+    background: rgba(255, 107, 53, 0.12) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+/* Tabla */
+[data-theme="dark"] .tabla-caja {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Encabezados de la tabla */
+[data-theme="dark"] .tabla-pedidos thead th {
+    background: #8F1B27 !important;
+    color: #FFF0E8 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.20) !important;
+}
+
+/* Celdas */
+[data-theme="dark"] .tabla-pedidos tbody td {
+    background: transparent !important;
+    color: #EBD2C9 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.12) !important;
+}
+
+/* ==========================================
+   CORREGIR HOVER BLANCO EN LAS FILAS
+   ========================================== */
+
+[data-theme="dark"] .tabla-pedidos tbody tr:hover,
+[data-theme="dark"] .tabla-pedidos tbody tr:hover td {
+    background: rgba(255, 107, 53, 0.09) !important;
+    background-color: rgba(255, 107, 53, 0.09) !important;
+    color: #EBD2C9 !important;
+}
+
+/* Mantener el color del proveedor */
+[data-theme="dark"] .tabla-pedidos tbody tr:hover .nombre-proveedor {
+    color: #FFE2D2 !important;
+}
+
+/* Mantener el color del costo */
+[data-theme="dark"] .tabla-pedidos tbody tr:hover .costo-total {
+    color: #FF9255 !important;
+}
+
+/* Conservar los colores de los estados */
+[data-theme="dark"] .tabla-pedidos tbody tr:hover .estado-pendiente {
+    background: rgba(255, 193, 7, 0.16) !important;
+    color: #FFE08A !important;
+}
+
+[data-theme="dark"] .tabla-pedidos tbody tr:hover .estado-recibido {
+    background: rgba(46, 125, 50, 0.20) !important;
+    color: #A8E6AD !important;
+}
+
+[data-theme="dark"] .tabla-pedidos tbody tr:hover .estado-cancelado {
+    background: rgba(179, 38, 30, 0.20) !important;
+    color: #FFBDB7 !important;
+}
+
+/* Mantener el botón de detalle */
+[data-theme="dark"] .tabla-pedidos tbody tr:hover .btn-detalle {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+/* Nombre del proveedor */
+[data-theme="dark"] .nombre-proveedor {
+    color: #FFE2D2 !important;
+}
+
+/* Costo total */
+[data-theme="dark"] .costo-total {
+    color: #FF9255 !important;
+}
+
+/* Estados */
+[data-theme="dark"] .estado-pendiente {
+    background: rgba(255, 193, 7, 0.16) !important;
+    color: #FFE08A !important;
+}
+
+[data-theme="dark"] .estado-recibido {
+    background: rgba(46, 125, 50, 0.20) !important;
+    color: #A8E6AD !important;
+}
+
+[data-theme="dark"] .estado-cancelado {
+    background: rgba(179, 38, 30, 0.20) !important;
+    color: #FFBDB7 !important;
+}
+
+/* Cuando no hay pedidos */
+[data-theme="dark"] .sin-pedidos {
+    color: #EBD2C9 !important;
+}
+
+/* Botón de detalle */
+[data-theme="dark"] .btn-detalle {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-detalle:hover {
+    background: #E85A26 !important;
+}
+
+/* Mensajes */
+[data-theme="dark"] .mensaje-exito {
+    background: rgba(46, 125, 50, 0.18) !important;
+    color: #B9E8BC !important;
+    border-color: rgba(129, 199, 132, 0.30) !important;
+}
+
+/* Paginación */
+[data-theme="dark"] .paginacion-mismary {
+    background: rgba(104, 14, 22, 0.80) !important;
+    color: #EBD2C9 !important;
+    border-color: rgba(255, 170, 140, 0.18) !important;
+}
+
+[data-theme="dark"] .paginacion-info strong {
+    color: #FFE2D2 !important;
+}
+
+[data-theme="dark"] .pagina-numero,
+[data-theme="dark"] .pagina-flecha {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+[data-theme="dark"] .pagina-numero:hover,
+[data-theme="dark"] .pagina-flecha:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+[data-theme="dark"] .pagina-numero.activa {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+    border-color: #B32635 !important;
+}
+
+[data-theme="dark"] .pagina-puntos {
+    color: #FF9255 !important;
+}
+
+
 </style>
 
 <div class="wrap-mismary">

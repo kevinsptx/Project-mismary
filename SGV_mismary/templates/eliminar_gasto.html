@@ -15,6 +15,68 @@
         font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
     .caja-eliminar button { background: #9E3B27; color: #FFFFFF; }
     .caja-eliminar a { background: #F5EFE3; color: #4A2C1B; border: 1px solid #E8DFC8; }
+    /* ==========================================
+   MODO OSCURO - ELIMINAR GASTO
+   ========================================== */
+
+[data-theme="dark"] .caja-eliminar {
+    background: rgba(74, 13, 20, 0.85);
+    border-color: rgba(255, 190, 170, 0.15);
+    color: #F8EAE4;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Título */
+[data-theme="dark"] .caja-eliminar h1 {
+    color: #FF9255;
+}
+
+/* Texto */
+[data-theme="dark"] .caja-eliminar > p {
+    color: #EBD2C9;
+}
+
+/* Información del gasto */
+[data-theme="dark"] .caja-eliminar .datos {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 190, 170, 0.12);
+    color: #F0DED7;
+}
+
+[data-theme="dark"] .caja-eliminar .datos strong {
+    color: #FFAA7A;
+}
+
+/* Botón eliminar */
+[data-theme="dark"] .caja-eliminar button {
+    background: #A52A35;
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .caja-eliminar button:hover {
+    background: #811D29;
+}
+
+/* Botón volver */
+[data-theme="dark"] .caja-eliminar a {
+    background: rgba(255, 255, 255, 0.07);
+    color: #F8EAE4;
+    border-color: rgba(255, 190, 170, 0.20);
+}
+
+[data-theme="dark"] .caja-eliminar a:hover {
+    background: rgba(255, 107, 53, 0.14);
+    border-color: #FF9255;
+    color: #FFB17F;
+}
+
+/* Adaptación móvil */
+@media (max-width: 600px) {
+    [data-theme="dark"] .caja-eliminar {
+        margin: 25px 15px;
+        padding: 24px 18px;
+    }
+}
 </style>
 
 <div class="caja-eliminar">

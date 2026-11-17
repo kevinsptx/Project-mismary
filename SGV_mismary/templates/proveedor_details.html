@@ -149,6 +149,206 @@
         .pv-acciones { margin-left: 0; width: 100%; }
         .pv-total .valor { font-size: 36px; }
     }
+
+/* ==========================================
+   MODO OSCURO - DETALLE PROVEEDOR
+   ========================================== */
+
+/* Contenedor */
+[data-theme="dark"] .pv-wrap {
+    color: #F8EAE4;
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .pv-head h1 {
+    color: #FF9255;
+}
+
+[data-theme="dark"] .pv-head p {
+    color: #EBD2C9;
+    opacity: 0.85;
+}
+
+/* Botones */
+[data-theme="dark"] .pv-btn:not(.principal):not(.peligro) {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 190, 170, 0.2);
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .pv-btn:not(.principal):not(.peligro):hover {
+    background: rgba(255, 107, 53, 0.15);
+    border-color: #FF9255;
+    color: #FF9255;
+}
+
+[data-theme="dark"] .pv-btn.principal {
+    background: #FF6B35;
+    border-color: #FF6B35;
+}
+
+[data-theme="dark"] .pv-btn.principal:hover {
+    background: #E85A26;
+}
+
+[data-theme="dark"] .pv-btn.peligro {
+    background: rgba(179, 38, 30, 0.18);
+    border-color: rgba(255, 120, 110, 0.35);
+    color: #FFAAA2;
+}
+
+[data-theme="dark"] .pv-btn.peligro:hover {
+    background: #9E3B27;
+    color: #FFFFFF;
+}
+
+/* Mensajes */
+[data-theme="dark"] .pv-msg {
+    background: rgba(30, 123, 58, 0.18);
+    color: #A9E5B8;
+    border-color: rgba(169, 229, 184, 0.25);
+}
+
+[data-theme="dark"] .pv-msg.error {
+    background: rgba(179, 38, 30, 0.18);
+    color: #FFB4AA;
+    border-color: rgba(255, 120, 110, 0.3);
+}
+
+/* Total comprado */
+[data-theme="dark"] .pv-total {
+    background: linear-gradient(135deg, #A83B24, #702018);
+    box-shadow: 0 14px 28px -12px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .pv-total .chip {
+    background: rgba(255, 255, 255, 0.16);
+    color: #FFFFFF;
+}
+
+/* Datos de contacto */
+[data-theme="dark"] .pv-dato {
+    background: rgba(74, 13, 20, 0.80);
+    border-color: rgba(255, 190, 170, 0.15);
+    box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .pv-dato span {
+    color: #D9BDB4;
+    opacity: 0.85;
+}
+
+[data-theme="dark"] .pv-dato strong {
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .pv-dato a {
+    color: #FF9255;
+}
+
+[data-theme="dark"] .pv-dato a:hover {
+    color: #FFB17F;
+}
+
+[data-theme="dark"] .pv-dato .vacio {
+    color: #BFA6A0;
+}
+
+/* Resumen por estado */
+[data-theme="dark"] .pv-estado.recibidos {
+    background: rgba(30, 123, 58, 0.18);
+    color: #A9E5B8;
+    border-color: rgba(169, 229, 184, 0.2);
+}
+
+[data-theme="dark"] .pv-estado.pendientes {
+    background: rgba(154, 106, 0, 0.2);
+    color: #FFD782;
+    border-color: rgba(242, 219, 156, 0.2);
+}
+
+[data-theme="dark"] .pv-estado.cancelados {
+    background: rgba(255, 255, 255, 0.07);
+    color: #D9C9BD;
+    border-color: rgba(255, 190, 170, 0.15);
+}
+
+/* Título e historial */
+[data-theme="dark"] .pv-titulo h2 {
+    color: #FF9255;
+}
+
+[data-theme="dark"] .pv-titulo .chip {
+    background: rgba(255, 107, 53, 0.12);
+    border-color: rgba(255, 145, 85, 0.25);
+    color: #FFB17F;
+}
+
+/* Tabla */
+[data-theme="dark"] .pv-tabla {
+    background: rgba(74, 13, 20, 0.80);
+    border-color: rgba(255, 190, 170, 0.15);
+    box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .pv-tabla th {
+    background: #721522;
+    color: #FFF0E8;
+    opacity: 1;
+}
+
+[data-theme="dark"] .pv-tabla td {
+    color: #F0DED7;
+    border-top-color: rgba(255, 190, 170, 0.12);
+}
+
+[data-theme="dark"] .pv-tabla tbody tr:hover {
+    background: rgba(255, 107, 53, 0.09);
+}
+
+[data-theme="dark"] .pv-tabla .id {
+    color: #FFB17F;
+}
+
+/* Estados de pedidos */
+[data-theme="dark"] .pv-chip-estado.recibido {
+    background: rgba(30, 123, 58, 0.2);
+    color: #A9E5B8;
+    border-color: rgba(169, 229, 184, 0.2);
+}
+
+[data-theme="dark"] .pv-chip-estado.pendiente {
+    background: rgba(154, 106, 0, 0.2);
+    color: #FFD782;
+    border-color: rgba(242, 219, 156, 0.2);
+}
+
+[data-theme="dark"] .pv-chip-estado.cancelado {
+    background: rgba(255, 255, 255, 0.08);
+    color: #D9C9BD;
+    border-color: rgba(255, 190, 170, 0.15);
+}
+
+/* Botón ver pedido */
+[data-theme="dark"] .pv-ver {
+    background: rgba(255, 107, 53, 0.14);
+    border-color: rgba(255, 145, 85, 0.3);
+    color: #FFAA7A;
+}
+
+[data-theme="dark"] .pv-ver:hover {
+    background: #FF6B35;
+    border-color: #FF6B35;
+    color: #FFFFFF;
+}
+
+/* Sin pedidos */
+[data-theme="dark"] .pv-vacio p {
+    color: #EBD2C9;
+    opacity: 0.85;
+}
+
 </style>
 
 <div class="pv-wrap">

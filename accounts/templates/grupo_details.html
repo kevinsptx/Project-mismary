@@ -1,3 +1,4 @@
+
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -8,19 +9,18 @@ Permisos del Grupo | MisMary
 
 <style>
 
-    /* ===== PALETA Y BASE (igual que el home) ===== */
+    /* ===== PALETA Y BASE ===== */
 
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
     }
 
     body {
@@ -61,7 +61,7 @@ Permisos del Grupo | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
@@ -110,6 +110,23 @@ Permisos del Grupo | MisMary
         flex-wrap: wrap;
     }
 
+    /* ===== INFORMACIÓN ===== */
+
+    .info-permisos {
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 22px;
+        color: var(--cafe-tostado);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .info-permisos strong {
+        color: var(--terracota);
+    }
+
     /* ===== BLOQUES DE PERMISOS ===== */
 
     .permiso-modelo {
@@ -126,6 +143,7 @@ Permisos del Grupo | MisMary
         font-size: 17px;
         font-weight: 700;
         color: var(--terracota);
+        text-transform: capitalize;
     }
 
     .permisos-lista {
@@ -138,7 +156,7 @@ Permisos del Grupo | MisMary
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 8px 16px;
+        padding: 9px 15px;
         background: var(--arena-suave);
         border: 1px solid var(--arena);
         border-radius: 999px;
@@ -160,6 +178,20 @@ Permisos del Grupo | MisMary
         margin: 0;
         accent-color: var(--naranja);
         cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .permiso-descripcion {
+        display: block;
+        font-size: 11px;
+        font-weight: 400;
+        opacity: 0.75;
+        margin-top: 2px;
+    }
+
+    .permiso-texto {
+        display: flex;
+        flex-direction: column;
     }
 
     /* ===== SIN PERMISOS ===== */
@@ -193,6 +225,81 @@ Permisos del Grupo | MisMary
         .botones .btn-mismary {
             width: 100%;
         }
+
+        .permiso-checkbox {
+            width: 100%;
+            border-radius: 14px;
+        }
+    }
+
+    /* ==========================================
+       MODO OSCURO
+       ========================================== */
+
+    [data-theme="dark"] .wrap-mismary {
+        background: transparent !important;
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .encabezado h1 {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .encabezado p {
+        color: #DDB9AE !important;
+    }
+
+    [data-theme="dark"] .info-permisos {
+        background: rgba(255, 107, 53, 0.10) !important;
+        border-color: rgba(255, 170, 140, 0.20) !important;
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .info-permisos strong {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .permiso-modelo {
+        background: rgba(104, 14, 22, 0.80) !important;
+        border-color: rgba(255, 170, 140, 0.18) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20) !important;
+    }
+
+    [data-theme="dark"] .permiso-modelo h3 {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .permiso-checkbox {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border-color: rgba(255, 170, 140, 0.20) !important;
+        color: #FFE2D2 !important;
+    }
+
+    [data-theme="dark"] .permiso-checkbox:hover {
+        background: rgba(255, 107, 53, 0.13) !important;
+        border-color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .permiso-descripcion {
+        color: #DDB9AE !important;
+    }
+
+    [data-theme="dark"] .sin-permisos {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-color: rgba(255, 170, 140, 0.20) !important;
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .btn-secundario {
+        background: rgba(255, 255, 255, 0.07) !important;
+        color: #FFE2D2 !important;
+        border-color: rgba(255, 170, 140, 0.25) !important;
+    }
+
+    [data-theme="dark"] .btn-secundario:hover {
+        background: #9A1B26 !important;
+        color: #FFFFFF !important;
+        border-color: #FF9255 !important;
     }
 
 </style>
@@ -201,10 +308,11 @@ Permisos del Grupo | MisMary
 <div class="wrap-mismary">
 
     <!-- ENCABEZADO -->
+
     <div class="encabezado">
         <div>
             <h1>Permisos: {{ grupo.name }} 💛</h1>
-            <p>Selecciona los permisos que tendrá este grupo dentro del sistema</p>
+            <p>Selecciona las acciones que podrá realizar este grupo dentro del sistema.</p>
         </div>
 
         <a href="{% url 'list_grupos' %}" class="btn-mismary btn-secundario">
@@ -212,7 +320,21 @@ Permisos del Grupo | MisMary
         </a>
     </div>
 
-    <!-- FORMULARIO DE PERMISOS -->
+    <!-- EXPLICACIÓN -->
+
+    <div class="info-permisos">
+        <strong>¿Cómo funcionan los permisos?</strong><br>
+        Marca las casillas para autorizar las acciones que podrá realizar este grupo.
+        Puedes seleccionar una o varias opciones según las responsabilidades que tendrá.
+        <br><br>
+        <strong>Registrar:</strong> permite agregar información nueva.<br>
+        <strong>Consultar:</strong> permite visualizar la información.<br>
+        <strong>Editar:</strong> permite modificar información existente.<br>
+        <strong>Eliminar:</strong> permite borrar registros del sistema.
+    </div>
+
+    <!-- FORMULARIO -->
+
     <form method="POST">
         {% csrf_token %}
 
@@ -222,9 +344,42 @@ Permisos del Grupo | MisMary
 
             <section class="permiso-modelo">
 
-                <h3>{{ bloque.grouper|title }}</h3>
+                <!-- NOMBRE DEL MÓDULO -->
+
+                <h3>
+                    {% if bloque.grouper == "user" %}
+                        Usuarios
+                    {% elif bloque.grouper == "group" %}
+                        Grupos y roles
+                    {% elif bloque.grouper == "producto" %}
+                        Productos
+                    {% elif bloque.grouper == "cliente" %}
+                        Clientes
+                    {% elif bloque.grouper == "venta" %}
+                        Ventas
+                    {% elif bloque.grouper == "proveedor" %}
+                        Proveedores
+                    {% elif bloque.grouper == "pedido" %}
+                        Pedidos
+                    {% elif bloque.grouper == "abono" %}
+                        Abonos
+                    {% elif bloque.grouper == "pago" %}
+                        Pagos
+                    {% elif bloque.grouper == "reembolso" %}
+                        Reembolsos
+                    {% elif bloque.grouper == "categoria" %}
+                        Categorías
+                    {% elif bloque.grouper == "devolucion" %}
+                        Devoluciones
+                    {% elif bloque.grouper == "perfil" %}
+                        Perfiles
+                    {% else %}
+                        {{ bloque.grouper|title }}
+                    {% endif %}
+                </h3>
 
                 <div class="permisos-lista">
+
                     {% for permiso in bloque.list %}
 
                         <label class="permiso-checkbox">
@@ -236,11 +391,45 @@ Permisos del Grupo | MisMary
                                 {% if permiso.id in permisos_asignados %}checked{% endif %}
                             >
 
-                            {{ permiso.name }}
+                            <span class="permiso-texto">
+
+                                {% if "add_" in permiso.codename %}
+                                    Registrar
+                                    <span class="permiso-descripcion">
+                                        Agregar información nueva
+                                    </span>
+
+                                {% elif "change_" in permiso.codename %}
+                                    Editar
+                                    <span class="permiso-descripcion">
+                                        Modificar información existente
+                                    </span>
+
+                                {% elif "delete_" in permiso.codename %}
+                                    Eliminar
+                                    <span class="permiso-descripcion">
+                                        Borrar registros
+                                    </span>
+
+                                {% elif "view_" in permiso.codename %}
+                                    Consultar
+                                    <span class="permiso-descripcion">
+                                        Visualizar información
+                                    </span>
+
+                                {% else %}
+                                    {{ permiso.name }}
+                                    <span class="permiso-descripcion">
+                                        Permiso especial del sistema
+                                    </span>
+                                {% endif %}
+
+                            </span>
 
                         </label>
 
                     {% endfor %}
+
                 </div>
 
             </section>
@@ -248,14 +437,16 @@ Permisos del Grupo | MisMary
         {% empty %}
 
             <div class="sin-permisos">
-                No se encontraron permisos de la aplicación de negocio.
-                Verifica INSTALLED_APPS y ejecuta las migraciones.
+                No se encontraron permisos disponibles.
+                Verifica que las aplicaciones estén registradas y que las migraciones se hayan ejecutado correctamente.
             </div>
 
         {% endfor %}
 
         <!-- BOTONES -->
+
         <div class="botones">
+
             <button type="submit" class="btn-mismary">
                 Guardar permisos
             </button>
@@ -263,6 +454,7 @@ Permisos del Grupo | MisMary
             <a href="{% url 'list_grupos' %}" class="btn-mismary btn-secundario">
                 Cancelar
             </a>
+
         </div>
 
     </form>

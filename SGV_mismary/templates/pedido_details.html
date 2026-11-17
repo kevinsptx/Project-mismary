@@ -333,6 +333,206 @@ Detalle del Pedido | MisMary
         background: #FF6B35; color: #FFFFFF; font: inherit; font-weight: 600;
     }
     .aviso-caja button:hover { background: #E85A26; }
+
+    /* ==========================================
+   MODO OSCURO - DETALLE DEL PEDIDO
+   Integración con el fondo de base.html
+   ========================================== */
+
+[data-theme="dark"] body {
+    background-color: transparent !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #EBD2C9 !important;
+}
+
+/* Mensajes */
+[data-theme="dark"] .mensaje-exito {
+    background: rgba(46, 125, 50, 0.18) !important;
+    border: 1px solid rgba(129, 199, 132, 0.30) !important;
+    color: #A5D6A7 !important;
+}
+
+[data-theme="dark"] .mensaje-error {
+    background: rgba(179, 38, 53, 0.20) !important;
+    border: 1px solid rgba(255, 120, 110, 0.30) !important;
+    color: #FFB5A8 !important;
+}
+
+/* Tarjeta principal */
+[data-theme="dark"] .tarjeta {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Encabezado del proveedor */
+[data-theme="dark"] .icono {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .proveedor-header h2 {
+    color: #FFF0E8 !important;
+}
+
+/* Datos del pedido */
+[data-theme="dark"] .dato {
+    background: rgba(46, 5, 8, 0.75) !important;
+    border: 1px solid rgba(255, 170, 140, 0.15) !important;
+}
+
+[data-theme="dark"] .dato strong {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .dato span {
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .dato .costo-resaltado {
+    color: #FF9255 !important;
+}
+
+/* Título de productos solicitados */
+[data-theme="dark"] .tarjeta > strong {
+    color: #FFF0E8 !important;
+}
+
+/* Tabla */
+[data-theme="dark"] .tabla-caja {
+    background: rgba(46, 5, 8, 0.65) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+}
+
+[data-theme="dark"] .tabla-mismary thead th {
+    background: #721522 !important;
+    color: #FFF0E8 !important;
+    border-bottom: 1px solid rgba(255, 170, 140, 0.20) !important;
+}
+
+[data-theme="dark"] .tabla-mismary tbody td {
+    color: #F8EAE4 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.12) !important;
+}
+
+[data-theme="dark"] .tabla-mismary tbody td strong {
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .tabla-mismary tbody tr:hover td {
+    background: rgba(255, 107, 53, 0.09) !important;
+}
+
+[data-theme="dark"] .tabla-mismary tbody td[style] {
+    color: #EBD2C9 !important;
+}
+
+/* Caja para actualizar estado */
+[data-theme="dark"] .caja-estado {
+    background: rgba(46, 5, 8, 0.65) !important;
+    border: 1px dashed rgba(255, 170, 140, 0.30) !important;
+}
+
+[data-theme="dark"] .caja-estado label {
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .caja-estado select {
+    background: #2E0508 !important;
+    border: 1px solid rgba(255, 170, 140, 0.25) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .caja-estado select option {
+    background: #2E0508 !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .caja-estado select:focus {
+    border-color: #FF9255 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15) !important;
+}
+
+/* Botón principal */
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):not(.btn-eliminar) {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):not(.btn-eliminar):hover {
+    background: #E85A26 !important;
+}
+
+/* Botón volver */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
+
+/* Botón eliminar */
+[data-theme="dark"] .btn-eliminar {
+    background: rgba(179, 38, 53, 0.18) !important;
+    color: #FFB5A8 !important;
+    border: 1px solid rgba(255, 120, 110, 0.45) !important;
+}
+
+[data-theme="dark"] .btn-eliminar:hover {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+}
+
+/* Ventanita de aviso */
+[data-theme="dark"] .aviso-fondo {
+    background: rgba(0, 0, 0, 0.75) !important;
+}
+
+[data-theme="dark"] .aviso-caja {
+    background: #4A0D14 !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 170, 140, 0.22) !important;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme="dark"] .aviso-caja svg {
+    stroke: #FF9255 !important;
+}
+
+[data-theme="dark"] .aviso-caja h3 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .aviso-caja p {
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .aviso-caja button {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .aviso-caja button:hover {
+    background: #E85A26 !important;
+}
 </style>
 
 <div class="wrap-mismary">

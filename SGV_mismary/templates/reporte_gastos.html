@@ -33,14 +33,6 @@ Costos | MisMary
             <span class="valor">$ {{ gastos.total_pendientes|floatformat:"0g" }}</span>
         </div>
 
-        <div class="stat stat-aparte">
-            <span class="etiqueta">Por cobrar a clientes</span>
-            <span class="valor">$ {{ por_cobrar|floatformat:"0g" }}</span>
-            <span class="nota">
-                <a class="link-fila no-imprimir" href="{% url 'reporte_clientes_deuda' %}">Ver clientes</a>
-            </span>
-        </div>
-
     </section>
 
 {% endblock %}

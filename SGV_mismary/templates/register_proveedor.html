@@ -160,6 +160,86 @@ Registrar proveedor | MisMary
         border-color: var(--terracota);
         color: var(--terracota);
     }
+    /* ==========================================
+   MODO OSCURO - REGISTRAR PROVEEDOR
+   ========================================== */
+
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+    color: #F8EAE4;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #EBD2C9;
+}
+
+/* Tarjeta del formulario */
+[data-theme="dark"] .tarjeta-form {
+    background: rgba(74, 13, 20, 0.82);
+    border-color: rgba(255, 190, 170, 0.15);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+}
+
+/* Campos */
+[data-theme="dark"] .campo label {
+    color: #F0DED7;
+}
+
+[data-theme="dark"] .campo input {
+    background: #2E0508;
+    border-color: rgba(255, 190, 170, 0.20);
+    color: #FFF0E8;
+}
+
+[data-theme="dark"] .campo input::placeholder {
+    color: #BFA6A0;
+}
+
+[data-theme="dark"] .campo input:focus {
+    outline: none;
+    border-color: #FF9255;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.13);
+}
+
+/* Errores */
+[data-theme="dark"] .error-campo {
+    color: #FFAAAA;
+}
+
+[data-theme="dark"] .mensaje-error {
+    background: rgba(183, 50, 50, 0.15);
+    border-color: rgba(255, 120, 120, 0.25);
+    color: #FFAAAA;
+}
+
+/* Botón guardar */
+[data-theme="dark"] .btn-mismary:not(.btn-secundario) {
+    background: #FF6B35;
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):hover {
+    background: #E85A26;
+    color: #FFFFFF;
+}
+
+/* Botón cancelar */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.07);
+    color: #F8EAE4;
+    border-color: rgba(255, 190, 170, 0.20);
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.13);
+    border-color: #FF9255;
+    color: #FFB17F;
+}
 
 </style>
 

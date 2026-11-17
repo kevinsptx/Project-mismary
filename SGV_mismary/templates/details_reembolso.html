@@ -147,6 +147,190 @@
     @media print {
         .rb-acciones, .rb-form { display: none; }
     }
+
+
+/* ==========================================
+   MODO OSCURO - DETALLE REEMBOLSO
+   ========================================== */
+
+/* Contenedor */
+[data-theme="dark"] .rb-wrap {
+    color: #F8EAE4;
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .rb-head h1 {
+    color: #FF9255;
+}
+
+[data-theme="dark"] .rb-head p {
+    color: #EBD2C9;
+}
+
+/* Estados */
+[data-theme="dark"] .rb-estado.devuelto {
+    background: rgba(30, 123, 58, 0.20);
+    color: #A9E5B8;
+    border-color: rgba(169, 229, 184, 0.25);
+}
+
+[data-theme="dark"] .rb-estado.noaplica {
+    background: rgba(255, 255, 255, 0.08);
+    color: #D9C9BD;
+    border-color: rgba(255, 190, 170, 0.15);
+}
+
+[data-theme="dark"] .rb-estado.solicitado {
+    background: rgba(154, 106, 0, 0.20);
+    color: #FFD782;
+    border-color: rgba(242, 219, 156, 0.22);
+}
+
+/* Tarjeta del monto */
+[data-theme="dark"] .rb-monto {
+    background: linear-gradient(135deg, #8F2630, #57121B);
+    box-shadow: 0 14px 28px -12px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .rb-monto .metodo {
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+}
+
+/* Datos */
+[data-theme="dark"] .rb-dato {
+    background: rgba(74, 13, 20, 0.80);
+    border-color: rgba(255, 190, 170, 0.15);
+    box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .rb-dato span {
+    color: #D9BDB4;
+    opacity: 0.9;
+}
+
+[data-theme="dark"] .rb-dato strong {
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .rb-dato small {
+    color: #D9BDB4;
+}
+
+[data-theme="dark"] .rb-dato a {
+    color: #FF9255;
+}
+
+[data-theme="dark"] .rb-dato a:hover {
+    color: #FFB17F;
+}
+
+/* Tabla de productos */
+[data-theme="dark"] .rb-productos {
+    background: rgba(74, 13, 20, 0.80);
+    border-color: rgba(255, 190, 170, 0.15);
+    box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .rb-productos h3 {
+    color: #FF9255;
+}
+
+[data-theme="dark"] .rb-productos th {
+    background: #721522;
+    color: #FFF0E8;
+    opacity: 1;
+}
+
+[data-theme="dark"] .rb-productos td {
+    color: #F0DED7;
+    border-top-color: rgba(255, 190, 170, 0.12);
+}
+
+[data-theme="dark"] .rb-productos tbody tr:hover {
+    background: rgba(255, 107, 53, 0.08);
+}
+
+[data-theme="dark"] .rb-productos tfoot td {
+    background: rgba(255, 107, 53, 0.10);
+    color: #FFB17F;
+}
+
+/* Aviso */
+[data-theme="dark"] .rb-aviso {
+    background: rgba(154, 106, 0, 0.18);
+    border-color: rgba(242, 219, 156, 0.25);
+    color: #FFD782;
+}
+
+/* Formulario y selector */
+[data-theme="dark"] .rb-form {
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .rb-form label {
+    color: #FFB17F;
+}
+
+[data-theme="dark"] .rb-form select {
+    background: #2E0508;
+    border-color: rgba(255, 190, 170, 0.22);
+    color: #F8EAE4;
+    color-scheme: dark;
+}
+
+[data-theme="dark"] .rb-form select option {
+    background: #2E0508;
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .rb-form select:focus {
+    outline: none;
+    border-color: #FF9255;
+}
+
+/* Botones */
+[data-theme="dark"] .rb-btn.principal {
+    background: #FF6B35;
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .rb-btn.principal:hover {
+    background: #E85A26;
+}
+
+[data-theme="dark"] .rb-btn.suave {
+    background: rgba(255, 255, 255, 0.08);
+    color: #F8EAE4;
+    border: 1px solid rgba(255, 190, 170, 0.22);
+}
+
+[data-theme="dark"] .rb-btn.suave:hover {
+    background: rgba(255, 107, 53, 0.15);
+    color: #FF9255;
+}
+
+/* Mensajes */
+[data-theme="dark"] .rb-mensaje {
+    background: rgba(30, 123, 58, 0.18);
+    color: #A9E5B8;
+    border-color: rgba(169, 229, 184, 0.25);
+}
+
+/* Impresión: conservar presentación clara */
+@media print {
+    [data-theme="dark"] .rb-wrap {
+        color: #4A2C1B;
+    }
+
+    [data-theme="dark"] .rb-dato,
+    [data-theme="dark"] .rb-productos {
+        background: #FFFFFF;
+        color: #4A2C1B;
+    }
+}
+
 </style>
 
 <div class="rb-wrap">

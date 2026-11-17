@@ -1,3 +1,4 @@
+
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -8,21 +9,21 @@ Registrar Cliente | MisMary
 
 <style>
 
-    /* ===== PALETA Y BASE (igual que el home) ===== */
+    /* ===== PALETA Y BASE ===== */
 
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
 
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --cafe-medio:    #8A5A3C;
-        --sombra-caja:   0 18px 36px -8px rgba(74, 44, 27, 0.28), 0 4px 10px rgba(74, 44, 27, 0.10);
+        --sombra-suave: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
+        --cafe-medio: #8A5A3C;
+        --sombra-caja: 0 18px 36px -8px rgba(74, 44, 27, 0.28), 0 4px 10px rgba(74, 44, 27, 0.10);
     }
 
     body {
@@ -63,7 +64,7 @@ Registrar Cliente | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
@@ -187,15 +188,100 @@ Registrar Cliente | MisMary
         }
     }
 
+    /* ==========================================
+       MODO OSCURO - REGISTRAR CLIENTE
+       Integración con el fondo de base.html
+       ========================================== */
+
+    [data-theme="dark"] .wrap-mismary {
+        background: transparent !important;
+        color: #EBD2C9 !important;
+    }
+
+    /* Encabezado */
+
+    [data-theme="dark"] .encabezado h1 {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .encabezado p {
+        color: #DDB9AE !important;
+    }
+
+    /* Tarjeta del formulario */
+
+    [data-theme="dark"] .formulario {
+        background: rgba(104, 14, 22, 0.80) !important;
+        border: 1px solid rgba(255, 170, 140, 0.22) !important;
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22) !important;
+    }
+
+    /* Etiquetas */
+
+    [data-theme="dark"] .campo label {
+        color: #FFE2D2 !important;
+    }
+
+    /* Campos de entrada */
+
+    [data-theme="dark"] .campo input {
+        background: #2E0508 !important;
+        color: #F8EAE4 !important;
+        border: 1px solid rgba(255, 170, 140, 0.25) !important;
+        box-shadow: none !important;
+    }
+
+    [data-theme="dark"] .campo input::placeholder {
+        color: #C49B91 !important;
+    }
+
+    [data-theme="dark"] .campo input:focus {
+        border-color: #FF9255 !important;
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15) !important;
+    }
+
+    /* Errores */
+
+    [data-theme="dark"] .error-campo {
+        color: #FFBDB7 !important;
+    }
+
+    /* Botón principal */
+
+    [data-theme="dark"] .btn-mismary:not(.btn-secundario) {
+        background: #FF6B35 !important;
+        color: #FFFFFF !important;
+    }
+
+    [data-theme="dark"] .btn-mismary:not(.btn-secundario):hover {
+        background: #E85A26 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Botón secundario */
+
+    [data-theme="dark"] .btn-secundario {
+        background: rgba(255, 255, 255, 0.07) !important;
+        color: #FFE2D2 !important;
+        border: 1px solid rgba(255, 170, 140, 0.25) !important;
+    }
+
+    [data-theme="dark"] .btn-secundario:hover {
+        background: #9A1B26 !important;
+        color: #FFFFFF !important;
+        border-color: #FF9255 !important;
+    }
+
 </style>
 
 
 <div class="wrap-mismary">
 
     <!-- ENCABEZADO -->
+
     <div class="encabezado">
         <div>
-            <h1>Registrar cliente 💛</h1>
+            <h1>Registrar cliente</h1>
             <p>Agrega un nuevo cliente al sistema</p>
         </div>
 
@@ -205,10 +291,12 @@ Registrar Cliente | MisMary
     </div>
 
     <!-- FORMULARIO -->
+
     <form method="POST" class="formulario">
         {% csrf_token %}
 
         <!-- NOMBRE -->
+
         <div class="campo">
             <label for="nombre">Nombre</label>
 
@@ -232,6 +320,7 @@ Registrar Cliente | MisMary
         </div>
 
         <!-- TELÉFONO -->
+
         <div class="campo">
             <label for="telefono">Teléfono</label>
 
@@ -254,6 +343,7 @@ Registrar Cliente | MisMary
         </div>
 
         <!-- DIRECCIÓN -->
+
         <div class="campo">
             <label for="direccion">Dirección</label>
 
@@ -276,6 +366,7 @@ Registrar Cliente | MisMary
         </div>
 
         <!-- BOTONES -->
+
         <div class="botones">
             <button type="submit" class="btn-mismary">
                 Registrar cliente
@@ -290,24 +381,27 @@ Registrar Cliente | MisMary
 
 </div>
 
+
 <!-- CONVERSIÓN AUTOMÁTICA DEL NOMBRE -->
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const campoNombre = document.getElementById('nombre');
 
-        campoNombre.addEventListener('input', function () {
-            const inicio = this.selectionStart;
-            const fin = this.selectionEnd;
+        if (campoNombre) {
+            campoNombre.addEventListener('input', function () {
+                const inicio = this.selectionStart;
+                const fin = this.selectionEnd;
 
-            this.value = this.value
-                .toLocaleLowerCase('es')
-                .replace(/(^|\s)\S/gu, function (letra) {
-                    return letra.toLocaleUpperCase('es');
-                });
+                this.value = this.value
+                    .toLocaleLowerCase('es')
+                    .replace(/(^|\s)\S/gu, function (letra) {
+                        return letra.toLocaleUpperCase('es');
+                    });
 
-            this.setSelectionRange(inicio, fin);
-        });
+                this.setSelectionRange(inicio, fin);
+            });
+        }
     });
 </script>
 

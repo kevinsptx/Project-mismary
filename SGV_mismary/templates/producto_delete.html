@@ -187,7 +187,80 @@ Eliminar Producto | MisMary
             width: 100%;
         }
     }
+/* ==========================================
+   MODO OSCURO - ELIMINAR PRODUCTO
+   Integración con el fondo de base.html
+   ========================================== */
 
+[data-theme="dark"] body {
+    background-color: transparent !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #EBD2C9 !important;
+}
+
+/* Tarjeta de confirmación */
+[data-theme="dark"] .confirmacion {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.22) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Icono de alerta */
+[data-theme="dark"] .icono-alerta {
+    background: rgba(255, 107, 53, 0.15) !important;
+    color: #FF9255 !important;
+}
+
+/* Textos */
+[data-theme="dark"] .confirmacion h2 {
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .producto-chip {
+    background: rgba(46, 5, 8, 0.85) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+    color: #FFB17F !important;
+}
+
+[data-theme="dark"] .aviso {
+    color: #EBD2C9 !important;
+}
+
+/* Botón eliminar */
+[data-theme="dark"] .btn-eliminar {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+    border-color: transparent !important;
+}
+
+[data-theme="dark"] .btn-eliminar:hover {
+    background: #8F1B27 !important;
+}
+
+/* Botón cancelar */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
 </style>
 
 

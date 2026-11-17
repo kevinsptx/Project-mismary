@@ -313,6 +313,205 @@
             width: 100%;
         }
     }
+
+/* =====================================================
+   REEMBOLSOS · ADAPTACIÓN AL MODO OSCURO DE MISMARY
+   ===================================================== */
+
+[data-theme="dark"] .reembolsos-contenedor {
+    color: #F8EAE4;
+}
+
+/* Encabezado */
+[data-theme="dark"] .reembolsos-encabezado h1 {
+    background: linear-gradient(90deg, #FF6B35, #FFB27A);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+[data-theme="dark"] .reembolsos-encabezado p {
+    color: #DDB9AE;
+}
+
+/* Buscador */
+[data-theme="dark"] .buscador-reembolsos input {
+    background: #2E0508;
+    color: #F8EAE4;
+    border: 1px solid rgba(255, 170, 140, 0.25);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .buscador-reembolsos input::placeholder {
+    color: #BFA098;
+}
+
+[data-theme="dark"] .buscador-reembolsos input:focus {
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.16);
+}
+
+[data-theme="dark"] .btn-buscar {
+    background: linear-gradient(135deg, #FF9255, #E5522A);
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .btn-buscar:hover {
+    background: #C43B32;
+}
+
+[data-theme="dark"] .btn-limpiar {
+    background: #650E17;
+    border-color: rgba(255, 170, 140, 0.22);
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .btn-limpiar:hover {
+    background: #831822;
+    border-color: #FF6B35;
+    color: #FFB27A;
+}
+
+/* Mensajes */
+[data-theme="dark"] .mensaje-reembolso {
+    background: #650E17;
+    color: #F8EAE4;
+    border: 1px solid rgba(255, 170, 140, 0.2);
+}
+
+/* Resultados */
+[data-theme="dark"] .resultados-barra h2 {
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .chip-mismary {
+    background: rgba(255, 107, 53, 0.13);
+    color: #FFB27A;
+    border-color: rgba(255, 170, 140, 0.25);
+}
+
+/* Contenedor de la tabla */
+[data-theme="dark"] .reembolsos-caja {
+    background: rgba(104, 14, 22, 0.85);
+    border: 1px solid rgba(255, 170, 140, 0.2);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Encabezados de tabla */
+[data-theme="dark"] .reembolsos-contenedor .tabla-reembolsos th {
+    background: #9A1B26 !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.2) !important;
+}
+
+/* Celdas */
+[data-theme="dark"] .reembolsos-contenedor .tabla-reembolsos td {
+    background: #650E17 !important;
+    color: #F8EAE4 !important;
+    border-color: rgba(255, 170, 140, 0.15) !important;
+}
+
+[data-theme="dark"] .reembolsos-contenedor .tabla-reembolsos tbody tr:nth-child(even) td {
+    background: #70111B !important;
+}
+
+[data-theme="dark"] .reembolsos-contenedor .tabla-reembolsos tbody tr:hover td {
+    background: #831822 !important;
+}
+
+/* Montos */
+[data-theme="dark"] .precio-reembolso {
+    color: #FFB27A !important;
+}
+
+/* Estado */
+[data-theme="dark"] .estado-reembolso {
+    background: rgba(255, 107, 53, 0.12);
+    color: #FFD2B8;
+    border: 1px solid rgba(255, 170, 140, 0.25);
+}
+
+/* Botón de detalles */
+[data-theme="dark"] .boton-reembolso {
+    background: linear-gradient(135deg, #FF9255, #E5522A);
+    color: #FFFFFF;
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .boton-reembolso:hover {
+    background: #C43B32;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
+}
+
+/* Sin resultados */
+[data-theme="dark"] .sin-resultados {
+    color: #DDB9AE !important;
+}
+
+/* Paginación */
+[data-theme="dark"] .paginacion-mismary {
+    background: rgba(104, 14, 22, 0.85);
+    border-color: rgba(255, 170, 140, 0.2);
+    color: #DDB9AE;
+}
+
+[data-theme="dark"] .paginacion-info strong {
+    color: #FFB27A;
+}
+
+[data-theme="dark"] .pagina-numero,
+[data-theme="dark"] .pagina-flecha {
+    background: #650E17;
+    border-color: rgba(255, 170, 140, 0.25);
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .pagina-numero:hover,
+[data-theme="dark"] .pagina-flecha:hover {
+    background: #FF6B35;
+    border-color: #FF6B35;
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .pagina-numero.activa {
+    background: linear-gradient(135deg, #FF9255, #E5522A);
+    border-color: #FF6B35;
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .pagina-puntos {
+    color: #FFB27A;
+}
+
+[data-theme="dark"] .pagina-flecha.deshabilitada {
+    opacity: 0.35;
+}
+
+/* Transiciones suaves */
+.reembolsos-caja,
+.paginacion-mismary,
+.buscador-reembolsos input,
+.btn-limpiar,
+.chip-mismary {
+    transition: background 0.25s ease,
+                border-color 0.25s ease,
+                color 0.25s ease;
+}
+
+/* =================================================
+   MODO OSCURO: INTEGRAR REEMBOLSOS CON EL FONDO BASE
+   ================================================= */
+
+[data-theme="dark"] .reembolsos-contenedor {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
 </style>
 
 <div class="reembolsos-contenedor">

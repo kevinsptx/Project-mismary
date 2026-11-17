@@ -265,6 +265,207 @@
         .paginacion-mismary { justify-content: center; text-align: center; }
         .paginacion-info { width: 100%; }
     }
+
+    /* ==========================================
+   MODO OSCURO - ABONOS
+   Mismo estilo de la tabla de PEDIDOS
+   ========================================== */
+
+/* Contenedor principal */
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Evitar fondos propios del body */
+[data-theme="dark"] body {
+    background-color: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado-abonos h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado-abonos p {
+    color: #DDB9AE !important;
+}
+
+/* Sticker */
+[data-theme="dark"] .stk-lista {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+}
+
+/* Botón volver */
+[data-theme="dark"] .btn-mismary {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border: 1px solid rgba(255, 170, 140, 0.22) !important;
+}
+
+[data-theme="dark"] .btn-mismary:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+/* ==========================================
+   TABLA DE ABONOS
+   ========================================== */
+
+/* Caja de la tabla */
+[data-theme="dark"] .tabla-caja {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Tabla */
+[data-theme="dark"] .tabla-caja table {
+    background: transparent !important;
+    border-collapse: collapse !important;
+}
+
+/* Encabezados uniformes */
+[data-theme="dark"] .tabla-caja thead th {
+    background: #8F1B27 !important;
+    background-color: #8F1B27 !important;
+    color: #FFF0E8 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.20) !important;
+}
+
+/* Todas las filas transparentes */
+[data-theme="dark"] .tabla-caja tbody tr,
+[data-theme="dark"] .tabla-caja tbody tr td {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Celdas */
+[data-theme="dark"] .tabla-caja tbody td {
+    color: #EBD2C9 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.12) !important;
+}
+
+/* Evitar color diferente en la primera fila */
+[data-theme="dark"] .tabla-caja tbody tr:first-child,
+[data-theme="dark"] .tabla-caja tbody tr:first-child td {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Última fila */
+[data-theme="dark"] .tabla-caja tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Nombre del cliente */
+[data-theme="dark"] .tabla-caja tbody td strong {
+    color: #FFE2D2 !important;
+}
+
+/* Monto abonado */
+[data-theme="dark"] .monto-abono {
+    color: #A8E6AD !important;
+    font-weight: 700;
+}
+
+/* Hover uniforme */
+[data-theme="dark"] .tabla-caja tbody tr:hover,
+[data-theme="dark"] .tabla-caja tbody tr:hover td {
+    background: rgba(255, 107, 53, 0.09) !important;
+    background-color: rgba(255, 107, 53, 0.09) !important;
+    color: #EBD2C9 !important;
+}
+
+/* Mantener el color del monto al pasar el cursor */
+[data-theme="dark"] .tabla-caja tbody tr:hover .monto-abono {
+    color: #A8E6AD !important;
+}
+
+/* ==========================================
+   BOTÓN ABONAR Y ETIQUETA PAGADO
+   ========================================== */
+
+/* Botón abonar */
+[data-theme="dark"] .btn-abonar {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #FF6B35 !important;
+}
+
+[data-theme="dark"] .btn-abonar:hover {
+    background: #E85A26 !important;
+    border-color: #E85A26 !important;
+    color: #FFFFFF !important;
+}
+
+/* Etiqueta pagado */
+[data-theme="dark"] .etiqueta-pagado {
+    background: rgba(46, 125, 50, 0.20) !important;
+    color: #A8E6AD !important;
+    border: 1px solid rgba(129, 199, 132, 0.20) !important;
+}
+
+/* Mensaje cuando no hay abonos */
+[data-theme="dark"] .mensaje-vacio {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    color: #EBD2C9 !important;
+}
+
+/* ==========================================
+   PAGINACIÓN - MODO OSCURO
+   ========================================== */
+
+[data-theme="dark"] .paginacion-mismary {
+    background: rgba(104, 14, 22, 0.80) !important;
+    color: #EBD2C9 !important;
+    border-color: rgba(255, 170, 140, 0.18) !important;
+}
+
+[data-theme="dark"] .paginacion-info strong {
+    color: #FFE2D2 !important;
+}
+
+[data-theme="dark"] .pagina-numero,
+[data-theme="dark"] .pagina-flecha {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+[data-theme="dark"] .pagina-numero:hover,
+[data-theme="dark"] .pagina-flecha:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+[data-theme="dark"] .pagina-numero.activa {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+    border-color: #B32635 !important;
+}
+
+[data-theme="dark"] .pagina-puntos {
+    color: #FF9255 !important;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+    [data-theme="dark"] .encabezado-abonos {
+        align-items: flex-start;
+    }
+
+    [data-theme="dark"] .tabla-caja {
+        border-radius: 14px;
+    }
+}
 </style>
 
 

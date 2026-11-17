@@ -282,6 +282,253 @@
         .rf-grid { grid-template-columns: 1fr; }
         .rf-grid .rf-dato:last-child { grid-column: span 1; }
     }
+    /* ==========================================
+   MODO OSCURO - REEMBOLSAR VENTA
+   Integración con el fondo de base.html
+   ========================================== */
+
+[data-theme="dark"] .rf-wrap {
+    color: #EBD2C9 !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .rf-head h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .rf-head p {
+    color: #EBD2C9 !important;
+    opacity: 0.85;
+}
+
+[data-theme="dark"] .rf-head img {
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+}
+
+/* Botón volver */
+[data-theme="dark"] .rf-volver {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 190, 170, 0.25) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .rf-volver:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
+
+/* Mensajes */
+[data-theme="dark"] .rf-msg {
+    background: rgba(179, 38, 53, 0.20) !important;
+    color: #FFB5A8 !important;
+    border-color: rgba(255, 120, 110, 0.30) !important;
+}
+
+/* Datos de la venta */
+[data-theme="dark"] .rf-dato {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+[data-theme="dark"] .rf-dato span {
+    color: #FFB17F !important;
+    opacity: 0.9;
+}
+
+[data-theme="dark"] .rf-dato strong {
+    color: #FFF0E8 !important;
+}
+
+/* Aviso de reembolso anterior */
+[data-theme="dark"] .rf-previo {
+    background: rgba(143, 91, 15, 0.20) !important;
+    border: 1px solid rgba(255, 190, 90, 0.25) !important;
+    color: #F8D99B !important;
+}
+
+/* Secciones */
+[data-theme="dark"] .rf-seccion {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+[data-theme="dark"] .rf-seccion h2 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .rf-seccion .sub {
+    color: #EBD2C9 !important;
+    opacity: 0.85;
+}
+
+/* Botón reembolsar todo */
+[data-theme="dark"] .rf-todos {
+    background: rgba(46, 5, 8, 0.80) !important;
+    border-color: rgba(255, 170, 140, 0.20) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .rf-todos input {
+    accent-color: #FF6B35;
+}
+
+/* Filas de productos */
+[data-theme="dark"] .rf-fila {
+    background: rgba(46, 5, 8, 0.65) !important;
+    border: 1.5px solid rgba(255, 170, 140, 0.16) !important;
+}
+
+[data-theme="dark"] .rf-fila.marcada {
+    background: rgba(255, 107, 53, 0.12) !important;
+    border-color: rgba(255, 146, 85, 0.55) !important;
+}
+
+[data-theme="dark"] .rf-fila.apagada {
+    background: rgba(30, 5, 8, 0.45) !important;
+    border-color: rgba(255, 170, 140, 0.08) !important;
+    opacity: 0.5;
+}
+
+[data-theme="dark"] .rf-fila input[type="checkbox"] {
+    accent-color: #FF6B35;
+}
+
+[data-theme="dark"] .rf-nombre strong {
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .rf-nombre small {
+    color: #EBD2C9 !important;
+    opacity: 0.8;
+}
+
+/* Etiquetas de productos */
+[data-theme="dark"] .rf-tag {
+    background: rgba(255, 107, 53, 0.16) !important;
+    color: #FFB17F !important;
+}
+
+/* Contador de cantidades */
+[data-theme="dark"] .rf-cant button {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 190, 170, 0.25) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .rf-cant button:hover:not(:disabled) {
+    background: #FF6B35 !important;
+    border-color: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .rf-cant button:disabled {
+    opacity: 0.3;
+}
+
+[data-theme="dark"] .rf-cant input[type="number"] {
+    background: #2E0508 !important;
+    border-color: rgba(255, 170, 140, 0.25) !important;
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .rf-cant input[type="number"]:disabled {
+    background: #3A1013 !important;
+    color: #C9A9A0 !important;
+}
+
+[data-theme="dark"] .rf-cant .de {
+    color: #EBD2C9 !important;
+}
+
+/* Subtotales */
+[data-theme="dark"] .rf-subtotal {
+    color: #FFB17F !important;
+}
+
+[data-theme="dark"] .rf-fila.apagada .rf-subtotal {
+    color: #C9A9A0 !important;
+}
+
+/* Tarjeta del dinero a devolver */
+[data-theme="dark"] .rf-monto {
+    background: linear-gradient(135deg, #721522, #A52B36) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 14px 28px -12px rgba(0, 0, 0, 0.45) !important;
+}
+
+[data-theme="dark"] .rf-monto::after {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .rf-monto small,
+[data-theme="dark"] .rf-monto .nota {
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .rf-monto .valor {
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .rf-resumen div {
+    background: rgba(30, 5, 8, 0.30) !important;
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .rf-resumen b {
+    color: #FFD0B5 !important;
+}
+
+/* Métodos de devolución */
+[data-theme="dark"] .rf-metodos span {
+    background: rgba(46, 5, 8, 0.75) !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .rf-metodos label:hover span {
+    border-color: #FF9255 !important;
+}
+
+[data-theme="dark"] .rf-metodos input:checked + span {
+    background: #FF6B35 !important;
+    border-color: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .rf-metodos input:focus-visible + span {
+    outline-color: rgba(255, 146, 85, 0.45) !important;
+}
+
+/* Botón principal */
+[data-theme="dark"] .rf-btn.principal {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 10px 20px -10px rgba(255, 107, 53, 0.55) !important;
+}
+
+[data-theme="dark"] .rf-btn.principal:hover:not(:disabled) {
+    background: #E85A26 !important;
+}
+
+[data-theme="dark"] .rf-btn.principal:disabled {
+    opacity: 0.4;
+}
+
+/* Botón cancelar */
+[data-theme="dark"] .rf-btn.suave {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+}
+
+[data-theme="dark"] .rf-btn.suave:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
 </style>
 
 <div class="rf-wrap">

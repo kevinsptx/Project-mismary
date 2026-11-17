@@ -336,6 +336,189 @@ Proveedores | MisMary
     .enc-titulo:hover .stk-lista { transform: rotate(3deg) scale(1.06); }
 
     @media (max-width: 520px) { .stk-lista { display: none; } }
+
+
+/* ==========================================
+   MODO OSCURO - PROVEEDORES
+   Integración con el fondo de base.html
+   ========================================== */
+
+/* Contenedor principal transparente */
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #DDB9AE !important;
+}
+
+/* Buscador */
+[data-theme="dark"] .buscador input[type="text"] {
+    background: #2E0508 !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 170, 140, 0.22) !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] .buscador input[type="text"]::placeholder {
+    color: #C49B91 !important;
+}
+
+/* Resultados */
+[data-theme="dark"] .resultados-barra h2 {
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .chip-mismary {
+    background: rgba(255, 107, 53, 0.12) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+/* Tabla: conserva su propia tarjeta */
+[data-theme="dark"] .tabla-caja {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Encabezados de la tabla */
+[data-theme="dark"] .tabla-proveedores thead th {
+    background: #8F1B27 !important;
+    color: #FFF0E8 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.20) !important;
+}
+
+/* Celdas */
+[data-theme="dark"] .tabla-proveedores tbody td {
+    background: transparent !important;
+    color: #EBD2C9 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.12) !important;
+}
+
+/* Hover de filas en modo oscuro */
+[data-theme="dark"] .tabla-proveedores tbody tr:hover,
+[data-theme="dark"] .tabla-proveedores tbody tr:hover td {
+    background: rgba(255, 107, 53, 0.09) !important;
+    background-color: rgba(255, 107, 53, 0.09) !important;
+    color: #EBD2C9 !important;
+}
+
+/* Nombre del proveedor */
+[data-theme="dark"] .tabla-proveedores tbody tr:hover .nombre-proveedor {
+    color: #FFE2D2 !important;
+}
+
+/* Etiquetas de pedidos */
+[data-theme="dark"] .tabla-proveedores tbody tr:hover .chip-tabla {
+    background: rgba(255, 107, 53, 0.13) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.20) !important;
+}
+
+/* Botón ver información */
+[data-theme="dark"] .tabla-proveedores tbody tr:hover .btn-ver {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+    border-color: #FF6B35 !important;
+}
+
+/* Botón editar */
+[data-theme="dark"] .tabla-proveedores tbody tr:hover .btn-editar {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+/* Nombre del proveedor */
+[data-theme="dark"] .nombre-proveedor {
+    color: #FFE2D2 !important;
+}
+
+/* Etiquetas dentro de la tabla */
+[data-theme="dark"] .chip-tabla {
+    background: rgba(255, 107, 53, 0.13) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.20) !important;
+}
+
+/* Mensaje sin proveedores */
+[data-theme="dark"] .sin-proveedores {
+    color: #EBD2C9 !important;
+}
+
+/* Botones secundarios */
+[data-theme="dark"] .btn-secundario,
+[data-theme="dark"] .btn-editar {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border: 1px solid rgba(255, 170, 140, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover,
+[data-theme="dark"] .btn-editar:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+/* Paginación */
+[data-theme="dark"] .paginacion-mismary {
+    background: rgba(104, 14, 22, 0.80) !important;
+    color: #EBD2C9 !important;
+    border-color: rgba(255, 170, 140, 0.18) !important;
+}
+
+[data-theme="dark"] .paginacion-info strong {
+    color: #FFE2D2 !important;
+}
+
+[data-theme="dark"] .pagina-numero,
+[data-theme="dark"] .pagina-flecha {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #FFE2D2 !important;
+    border-color: rgba(255, 170, 140, 0.22) !important;
+}
+
+[data-theme="dark"] .pagina-numero:hover,
+[data-theme="dark"] .pagina-flecha:hover {
+    background: #9A1B26 !important;
+    color: #FFFFFF !important;
+    border-color: #FF9255 !important;
+}
+
+[data-theme="dark"] .pagina-numero.activa {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+    border-color: #B32635 !important;
+}
+
+[data-theme="dark"] .pagina-puntos {
+    color: #FF9255 !important;
+}
+
+/* Mensajes de éxito y error */
+[data-theme="dark"] .mensaje-exito {
+    background: rgba(46, 125, 50, 0.18) !important;
+    color: #B9E8BC !important;
+    border-color: rgba(129, 199, 132, 0.30) !important;
+}
+
+[data-theme="dark"] .mensaje-error {
+    background: rgba(179, 38, 30, 0.18) !important;
+    color: #FFBDB7 !important;
+    border-color: rgba(255, 140, 130, 0.30) !important;
+}
+
 </style>
 
 

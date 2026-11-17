@@ -1371,11 +1371,11 @@ def reporte_balance(request):
 
     return render(request, 'reporte_balance.html', contexto)
 
-
 @login_required
 @requiere_permisos('view_venta', 'view_abono')
 def consultar_por_fecha(request):
     """Muestra las ventas y abonos entre dos fechas."""
+
     fecha_inicio = parsear_fecha(request.GET.get('fecha_inicio'))
     fecha_fin = parsear_fecha(request.GET.get('fecha_fin'))
 
@@ -1383,15 +1383,25 @@ def consultar_por_fecha(request):
     abonos = None
 
     if fecha_inicio and fecha_fin:
-        ventas = Venta.objects.filter(
+        ventas_queryset = Venta.objects.filter(
             fecha__gte=fecha_inicio,
             fecha__lte=fecha_fin
-        ).select_related('cliente')
+        ).select_related('cliente').order_by('-fecha')
 
-        abonos = Abono.objects.filter(
+        abonos_queryset = Abono.objects.filter(
             fecha__date__gte=fecha_inicio,
             fecha__date__lte=fecha_fin
-        ).select_related('deuda__cliente')
+        ).select_related('deuda__cliente').order_by('-fecha')
+
+        # Paginación independiente para las ventas
+        paginator_ventas = Paginator(ventas_queryset, 10)
+        pagina_ventas = request.GET.get('pagina_ventas', 1)
+        ventas = paginator_ventas.get_page(pagina_ventas)
+
+        # Paginación independiente para los abonos
+        paginator_abonos = Paginator(abonos_queryset, 10)
+        pagina_abonos = request.GET.get('pagina_abonos', 1)
+        abonos = paginator_abonos.get_page(pagina_abonos)
 
     return render(request, 'consultar_por_fecha.html', {
         'fecha_inicio': request.GET.get('fecha_inicio'),
@@ -1399,7 +1409,6 @@ def consultar_por_fecha(request):
         'ventas': ventas,
         'abonos': abonos,
     })
-
 
 @login_required
 @requiere_permisos('view_pago', 'view_abono', 'view_gasto', 'view_cliente', 'view_deuda')

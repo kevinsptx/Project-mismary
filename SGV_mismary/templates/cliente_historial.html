@@ -1,3 +1,4 @@
+
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -7,26 +8,19 @@ Historial Cliente | MisMary
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que productos y ventas) ===== */
-
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
-
-        --verde:         #2E7D32;
-        --verde-fondo:   #E8F5E9;
-
-        --rojo-fondo:    #FBE9E7;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --verde: #2E7D32;
+        --verde-fondo: #E8F5E9;
+        --rojo-fondo: #FBE9E7;
+        --sombra-suave: 0 10px 25px -5px rgba(74,44,27,0.07);
     }
 
     body {
@@ -44,8 +38,11 @@ Historial Cliente | MisMary
         padding: 30px 20px;
     }
 
-    /* ===== ENCABEZADO ===== */
+    .wrap-mismary * {
+        box-sizing: border-box;
+    }
 
+    /* ENCABEZADO */
     .encabezado {
         display: flex;
         align-items: center;
@@ -63,7 +60,7 @@ Historial Cliente | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
@@ -74,8 +71,7 @@ Historial Cliente | MisMary
         flex-wrap: wrap;
     }
 
-    /* ===== BOTONES ===== */
-
+    /* BOTONES */
     .btn-mismary {
         display: inline-flex;
         align-items: center;
@@ -110,8 +106,7 @@ Historial Cliente | MisMary
         color: var(--terracota);
     }
 
-    /* ===== CHIP DE CLIENTE ===== */
-
+    /* INFORMACIÓN DEL CLIENTE */
     .info-cliente {
         display: inline-block;
         margin-top: 10px;
@@ -124,8 +119,7 @@ Historial Cliente | MisMary
         color: var(--cafe-tostado);
     }
 
-    /* ===== SALDO ===== */
-
+    /* SALDO */
     .saldo-card {
         display: flex;
         align-items: center;
@@ -172,8 +166,43 @@ Historial Cliente | MisMary
         color: var(--terracota);
     }
 
-    /* ===== SECCIONES ===== */
+    /* PESTAÑAS */
+    .pestanas-historial {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+    }
 
+    .pestana {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 11px 18px;
+        border-radius: 999px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        color: var(--cafe-tostado);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .pestana:hover {
+        background: var(--blanco);
+        border-color: var(--terracota);
+        color: var(--terracota);
+    }
+
+    .pestana.activa {
+        background: var(--naranja);
+        border-color: var(--naranja);
+        color: white;
+    }
+
+    /* SECCIONES */
     .resultados-barra {
         display: flex;
         align-items: center;
@@ -204,8 +233,7 @@ Historial Cliente | MisMary
         margin-bottom: 30px;
     }
 
-    /* ===== TABLA ===== */
-
+    /* TABLA */
     .tabla-caja {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -285,8 +313,250 @@ Historial Cliente | MisMary
         color: #6C5243;
     }
 
-    /* ===== RESPONSIVO ===== */
+    /* PAGINACIÓN */
+    .paginacion-mismary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 20px;
+        padding: 14px 18px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+    }
 
+    .paginacion-info {
+        color: #6C5243;
+        font-size: 13px;
+    }
+
+    .paginacion-controles {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .pagina-numero,
+    .pagina-flecha {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 35px;
+        height: 35px;
+        padding: 0 10px;
+        border-radius: 10px;
+        border: 1px solid var(--arena);
+        background: var(--blanco);
+        color: var(--cafe-tostado);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .pagina-numero:hover,
+    .pagina-flecha:hover:not(:disabled) {
+        background: var(--naranja);
+        color: white;
+        border-color: var(--naranja);
+    }
+
+    .pagina-numero.activa {
+        background: var(--terracota);
+        color: white;
+        border-color: var(--terracota);
+        pointer-events: none;
+    }
+
+    .pagina-flecha:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    /* MODO OSCURO */
+    [data-theme="dark"] body {
+        background-color: transparent !important;
+    }
+
+    [data-theme="dark"] .wrap-mismary {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    [data-theme="dark"] .encabezado h1,
+    [data-theme="dark"] .resultados-barra h2 {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .encabezado p {
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .info-cliente {
+        background: rgba(255,255,255,0.08) !important;
+        border-color: rgba(255,190,170,0.20) !important;
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .saldo-card {
+        background: rgba(104,14,22,0.80) !important;
+        border: 1px solid rgba(255,170,140,0.18) !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.20) !important;
+    }
+
+    [data-theme="dark"] .saldo-label {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .saldo-valor {
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .saldo-al-dia {
+        background: rgba(46,125,50,0.20) !important;
+        color: #A5D6A7 !important;
+    }
+
+    [data-theme="dark"] .saldo-debe {
+        background: rgba(255,107,53,0.14) !important;
+        color: #FFB184 !important;
+    }
+
+    [data-theme="dark"] .btn-mismary {
+        background: #FF6B35 !important;
+        color: #FFFFFF !important;
+    }
+
+    [data-theme="dark"] .btn-mismary:hover {
+        background: #E85A26 !important;
+    }
+
+    [data-theme="dark"] .btn-secundario {
+        background: rgba(255,255,255,0.08) !important;
+        color: #F8EAE4 !important;
+        border: 1px solid rgba(255,190,170,0.20) !important;
+    }
+
+    [data-theme="dark"] .btn-secundario:hover {
+        background: rgba(143,27,39,0.65) !important;
+        border-color: #FF9255 !important;
+        color: white !important;
+    }
+
+    [data-theme="dark"] .pestana {
+        background: rgba(255,255,255,0.07) !important;
+        border: 1px solid rgba(255,190,170,0.18) !important;
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .pestana:hover {
+        background: rgba(143,27,39,0.65) !important;
+        border-color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .pestana.activa {
+        background: #FF6B35 !important;
+        border-color: #FF6B35 !important;
+        color: white !important;
+    }
+
+    [data-theme="dark"] .chip-mismary {
+        background: rgba(255,255,255,0.08) !important;
+        border-color: rgba(255,190,170,0.18) !important;
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .tabla-caja {
+        background: rgba(104,14,22,0.80) !important;
+        border: 1px solid rgba(255,170,140,0.18) !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.20) !important;
+    }
+
+    [data-theme="dark"] .tabla-historial {
+        background: transparent !important;
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .tabla-historial thead th {
+        background: #8F1B27 !important;
+        color: #FFF0E8 !important;
+        border-bottom: 1px solid rgba(255,190,170,0.20) !important;
+    }
+
+    [data-theme="dark"] .tabla-historial tbody tr,
+    [data-theme="dark"] .tabla-historial tbody tr td,
+    [data-theme="dark"] .tabla-historial tbody tr:first-child,
+    [data-theme="dark"] .tabla-historial tbody tr:first-child td {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    [data-theme="dark"] .tabla-historial tbody td {
+        color: #EBD2C9 !important;
+        border-bottom: 1px solid rgba(255,190,170,0.12) !important;
+    }
+
+    [data-theme="dark"] .tabla-historial tbody tr:hover,
+    [data-theme="dark"] .tabla-historial tbody tr:hover td {
+        background: rgba(255,107,53,0.09) !important;
+        background-color: rgba(255,107,53,0.09) !important;
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .precio {
+        color: #FFB184 !important;
+    }
+
+    [data-theme="dark"] .btn-ver {
+        background: #FF6B35 !important;
+        color: white !important;
+    }
+
+    [data-theme="dark"] .btn-ver:hover {
+        background: #E85A26 !important;
+    }
+
+    [data-theme="dark"] .sin-registros {
+        color: #EBD2C9 !important;
+    }
+
+    /* PAGINACIÓN OSCURA */
+    [data-theme="dark"] .paginacion-mismary {
+        background: rgba(104,14,22,0.80) !important;
+        border: 1px solid rgba(255,170,140,0.18) !important;
+    }
+
+    [data-theme="dark"] .paginacion-info {
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .pagina-numero,
+    [data-theme="dark"] .pagina-flecha {
+        background: rgba(255,255,255,0.07) !important;
+        color: #F8EAE4 !important;
+        border: 1px solid rgba(255,190,170,0.18) !important;
+    }
+
+    [data-theme="dark"] .pagina-numero:hover,
+    [data-theme="dark"] .pagina-flecha:hover:not(:disabled) {
+        background: #FF6B35 !important;
+        color: white !important;
+        border-color: #FF6B35 !important;
+    }
+
+    [data-theme="dark"] .pagina-numero.activa {
+        background: #B32635 !important;
+        color: white !important;
+        border-color: #B32635 !important;
+    }
+
+    /* RESPONSIVE */
     @media (max-width: 700px) {
         .encabezado {
             flex-direction: column;
@@ -301,10 +571,17 @@ Historial Cliente | MisMary
         .tabla-historial tbody td {
             padding: 12px 14px;
         }
+
+        .paginacion-mismary {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .paginacion-controles {
+            width: 100%;
+        }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
@@ -313,7 +590,9 @@ Historial Cliente | MisMary
         <div>
             <h1>Historial de {{ cliente.nombre }} 🧾</h1>
             <p>Consulta las compras y pagos realizados por este cliente</p>
-            <span class="info-cliente">Teléfono: {{ cliente.telefono }}</span>
+            <span class="info-cliente">
+                Teléfono: {{ cliente.telefono }}
+            </span>
         </div>
 
         <div class="acciones">
@@ -332,21 +611,32 @@ Historial Cliente | MisMary
     </div>
 
     <!-- PESTAÑAS -->
-    <nav style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;">
-        <a href="?ver=ventas" class="btn-mismary {% if ver != 'ventas' %}btn-secundario{% endif %}">🛒 Ventas ({{ ventas|length }})</a>
-        <a href="?ver=abonos" class="btn-mismary {% if ver != 'abonos' %}btn-secundario{% endif %}">💵 Abonos ({{ abonos|length }})</a>
+    <nav class="pestanas-historial">
+        <a href="?ver=ventas"
+           class="pestana {% if ver == 'ventas' or not ver %}activa{% endif %}">
+            🛒 Ventas ({{ ventas|length }})
+        </a>
+
+        <a href="?ver=abonos"
+           class="pestana {% if ver == 'abonos' %}activa{% endif %}">
+            💵 Abonos ({{ abonos|length }})
+        </a>
     </nav>
 
-    {% if ver == 'ventas' %}
+    {% if ver == 'ventas' or not ver %}
+
     <!-- VENTAS -->
     <div class="seccion">
+
         <div class="resultados-barra">
             <h2>Ventas</h2>
-            <span class="chip-mismary">{{ ventas|length }} venta{{ ventas|length|pluralize }}</span>
+            <span class="chip-mismary">
+                {{ ventas|length }} venta{{ ventas|length|pluralize }}
+            </span>
         </div>
 
         <div class="tabla-caja">
-            <table class="tabla-historial">
+            <table class="tabla-historial" id="tablaVentas">
 
                 <thead>
                     <tr>
@@ -356,18 +646,23 @@ Historial Cliente | MisMary
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="cuerpoVentas">
                     {% for venta in ventas %}
                         <tr>
                             <td>{{ venta.fecha|date:"d/m/Y" }}</td>
-                            <td class="col-numero precio">${{ venta.valor_total }}</td>
+
+                            <td class="col-numero precio">
+                                ${{ venta.valor_total }}
+                            </td>
+
                             <td class="col-acciones">
-                                <a href="{% url 'details_venta' venta.id %}" class="btn-tabla btn-ver">Ver venta</a>
+                                <a href="{% url 'details_venta' venta.id %}"
+                                   class="btn-tabla btn-ver">
+                                    Ver venta
+                                </a>
                             </td>
                         </tr>
-
                     {% empty %}
-
                         <tr>
                             <td colspan="3" class="sin-registros">
                                 Este cliente no tiene ventas registradas.
@@ -378,20 +673,41 @@ Historial Cliente | MisMary
 
             </table>
         </div>
+
+        <div class="paginacion-mismary" id="paginacionVentas">
+            <div class="paginacion-info" id="infoVentas"></div>
+
+            <div class="paginacion-controles">
+                <button type="button" class="pagina-flecha" id="anteriorVentas">
+                    ‹
+                </button>
+
+                <div class="paginacion-controles" id="numerosVentas"></div>
+
+                <button type="button" class="pagina-flecha" id="siguienteVentas">
+                    ›
+                </button>
+            </div>
+        </div>
+
     </div>
 
     {% endif %}
 
     {% if ver == 'abonos' %}
+
     <!-- ABONOS -->
     <div class="seccion">
+
         <div class="resultados-barra">
             <h2>Abonos realizados</h2>
-            <span class="chip-mismary">{{ abonos|length }} abono{{ abonos|length|pluralize }}</span>
+            <span class="chip-mismary">
+                {{ abonos|length }} abono{{ abonos|length|pluralize }}
+            </span>
         </div>
 
         <div class="tabla-caja">
-            <table class="tabla-historial">
+            <table class="tabla-historial" id="tablaAbonos">
 
                 <thead>
                     <tr>
@@ -400,15 +716,16 @@ Historial Cliente | MisMary
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="cuerpoAbonos">
                     {% for abono in abonos %}
                         <tr>
                             <td>{{ abono.fecha|date:"d/m/Y" }}</td>
-                            <td class="col-numero precio">${{ abono.valor }}</td>
+
+                            <td class="col-numero precio">
+                                ${{ abono.valor }}
+                            </td>
                         </tr>
-
                     {% empty %}
-
                         <tr>
                             <td colspan="2" class="sin-registros">
                                 Este cliente no ha realizado abonos.
@@ -419,9 +736,137 @@ Historial Cliente | MisMary
 
             </table>
         </div>
+
+        <div class="paginacion-mismary" id="paginacionAbonos">
+            <div class="paginacion-info" id="infoAbonos"></div>
+
+            <div class="paginacion-controles">
+                <button type="button" class="pagina-flecha" id="anteriorAbonos">
+                    ‹
+                </button>
+
+                <div class="paginacion-controles" id="numerosAbonos"></div>
+
+                <button type="button" class="pagina-flecha" id="siguienteAbonos">
+                    ›
+                </button>
+            </div>
+        </div>
+
     </div>
+
     {% endif %}
 
 </div>
+
+<!-- JAVASCRIPT DE PAGINACIÓN -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    function configurarPaginacion(config) {
+
+        const cuerpo = document.getElementById(config.cuerpo);
+
+        if (!cuerpo) return;
+
+        const filas = Array.from(cuerpo.querySelectorAll("tr"))
+            .filter(fila => !fila.querySelector(".sin-registros"));
+
+        const contenedor = document.getElementById(config.contenedor);
+
+        if (!filas.length) {
+            contenedor.style.display = "none";
+            return;
+        }
+
+        const porPagina = 10;
+        let paginaActual = 1;
+
+        const totalPaginas = Math.ceil(filas.length / porPagina);
+
+        const info = document.getElementById(config.info);
+        const anterior = document.getElementById(config.anterior);
+        const siguiente = document.getElementById(config.siguiente);
+        const numeros = document.getElementById(config.numeros);
+
+        if (totalPaginas <= 1) {
+            contenedor.style.display = "none";
+        }
+
+        function mostrarPagina(pagina) {
+
+            paginaActual = pagina;
+
+            const inicio = (paginaActual - 1) * porPagina;
+            const fin = inicio + porPagina;
+
+            filas.forEach(function (fila, indice) {
+                fila.style.display =
+                    indice >= inicio && indice < fin ? "" : "none";
+            });
+
+            info.textContent =
+                `Mostrando ${inicio + 1} - ${Math.min(fin, filas.length)} de ${filas.length} registros`;
+
+            anterior.disabled = paginaActual === 1;
+            siguiente.disabled = paginaActual === totalPaginas;
+
+            numeros.innerHTML = "";
+
+            for (let i = 1; i <= totalPaginas; i++) {
+
+                const boton = document.createElement("button");
+
+                boton.type = "button";
+                boton.textContent = i;
+                boton.className = "pagina-numero";
+
+                if (i === paginaActual) {
+                    boton.classList.add("activa");
+                }
+
+                boton.addEventListener("click", function () {
+                    mostrarPagina(i);
+                });
+
+                numeros.appendChild(boton);
+            }
+        }
+
+        anterior.addEventListener("click", function () {
+            if (paginaActual > 1) {
+                mostrarPagina(paginaActual - 1);
+            }
+        });
+
+        siguiente.addEventListener("click", function () {
+            if (paginaActual < totalPaginas) {
+                mostrarPagina(paginaActual + 1);
+            }
+        });
+
+        mostrarPagina(1);
+    }
+
+    configurarPaginacion({
+        cuerpo: "cuerpoVentas",
+        contenedor: "paginacionVentas",
+        info: "infoVentas",
+        anterior: "anteriorVentas",
+        siguiente: "siguienteVentas",
+        numeros: "numerosVentas"
+    });
+
+    configurarPaginacion({
+        cuerpo: "cuerpoAbonos",
+        contenedor: "paginacionAbonos",
+        info: "infoAbonos",
+        anterior: "anteriorAbonos",
+        siguiente: "siguienteAbonos",
+        numeros: "numerosAbonos"
+    });
+
+});
+</script>
 
 {% endblock %}

@@ -171,6 +171,48 @@ Reportes | MisMary
             flex: 1 1 100%;
         }
     }
+    /* ==========================================
+   MODO OSCURO: INTEGRACIÓN CON EL FONDO BASE
+   ========================================== */
+
+/* El contenedor general no debe crear otro bloque */
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* La sección que agrupa las tarjetas también debe ser transparente */
+[data-theme="dark"] .tarjetas {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Las tarjetas individuales conservan su apariencia */
+[data-theme="dark"] .tarjeta {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    color: #F8EAE4 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .tarjeta h3 {
+    color: #FFE2D2 !important;
+}
+
+[data-theme="dark"] .tarjeta p {
+    color: #DDB9AE !important;
+}
+
+[data-theme="dark"] .tarjeta-icono {
+    background: rgba(255, 107, 53, 0.12);
+    border-color: rgba(255, 170, 140, 0.18);
+}
 
 </style>
 

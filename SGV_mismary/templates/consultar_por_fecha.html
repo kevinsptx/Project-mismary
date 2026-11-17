@@ -1,15 +1,17 @@
+```html
 {% extends 'layout/base.html' %}
 {% load humanize %}
 
-{% block title %} Consultar por Fecha | MisMary {% endblock %}
+{% block title %}Consultar por Fecha | MisMary{% endblock %}
 
 {% block content %}
+
 <style>
-    .wrap-mismary { 
-        max-width: 1040px; 
-        margin: 0 auto; 
-        padding: 30px 20px; 
-        font-family: 'Fredoka', 'Quicksand', sans-serif; 
+    .wrap-mismary {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 30px 20px;
+        font-family: 'Fredoka', 'Quicksand', sans-serif;
     }
 
     .encabezado-fecha {
@@ -29,7 +31,7 @@
     }
 
     .encabezado-fecha p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: #9E3B27;
     }
@@ -47,7 +49,7 @@
         font-size: 13px;
         font-weight: 600;
         border: 1px solid #E8DFC8;
-        transition: background 0.2s ease, border-color 0.2s ease;
+        transition: 0.2s ease;
     }
 
     .btn-mismary:hover {
@@ -56,20 +58,20 @@
         color: #9E3B27;
     }
 
-    .filtro-box { 
-        background: #FFFFFF; 
-        border: 1px solid #E8DFC8; 
-        border-radius: 20px; 
-        padding: 20px; 
-        margin-bottom: 25px; 
+    .filtro-box {
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 25px;
         box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
     }
 
-    .filtro-fechas { 
-        display: grid; 
-        grid-template-columns: 1fr 1fr auto; 
-        gap: 15px; 
-        align-items: end; 
+    .filtro-fechas {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 15px;
+        align-items: end;
     }
 
     .campo-fecha label {
@@ -80,59 +82,59 @@
         color: #4A2C1B;
     }
 
-    .campo-fecha input { 
-        width: 100%; 
-        padding: 10px 14px; 
-        border: 1px solid #E8DFC8; 
-        border-radius: 12px; 
-        box-sizing: border-box; 
+    .campo-fecha input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #E8DFC8;
+        border-radius: 12px;
+        box-sizing: border-box;
         font-family: inherit;
         color: #4A2C1B;
     }
 
-    .btn-buscar { 
-        background: #FF6B35; 
-        color: #FFF; 
-        border: none; 
-        padding: 12px 22px; 
-        border-radius: 999px; 
-        font-weight: 700; 
+    .btn-buscar {
+        background: #FF6B35;
+        color: #FFF;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 999px;
+        font-weight: 700;
         font-family: inherit;
-        cursor: pointer; 
-        transition: background 0.2s ease;
+        cursor: pointer;
+        transition: 0.2s ease;
     }
 
-    .btn-buscar:hover { 
-        background: #9E3B27; 
+    .btn-buscar:hover {
+        background: #9E3B27;
     }
 
-    .tabla-caja { 
-        background: #FFFFFF; 
-        border: 1px solid #E8DFC8; 
-        border-radius: 20px; 
-        overflow-x: auto; 
-        margin-bottom: 25px; 
+    .tabla-caja {
+        background: #FFFFFF;
+        border: 1px solid #E8DFC8;
+        border-radius: 20px;
+        overflow-x: auto;
+        margin-bottom: 25px;
         box-shadow: 0 10px 25px -5px rgba(74, 44, 27, 0.07);
     }
 
-    table { 
-        width: 100%; 
-        border-collapse: collapse; 
+    table {
+        width: 100%;
+        border-collapse: collapse;
     }
 
-    th { 
-        background: #F5EFE3; 
-        color: #4A2C1B; 
-        padding: 14px 20px; 
-        text-align: left; 
+    th {
+        background: #F5EFE3;
+        color: #4A2C1B;
+        padding: 14px 20px;
+        text-align: left;
         font-size: 13px;
         font-weight: 700;
     }
 
-    td { 
-        padding: 14px 20px; 
-        border-bottom: 1px solid #F5EFE3; 
-        color: #4A2C1B; 
+    td {
+        padding: 14px 20px;
+        border-bottom: 1px solid #F5EFE3;
+        color: #4A2C1B;
         font-size: 14px;
     }
 
@@ -140,25 +142,248 @@
         border-bottom: none;
     }
 
-    h2 {
+    .wrap-mismary h2 {
         color: #4A2C1B;
         font-size: 18px;
-        margin: 20px 0 12px 0;
+        margin: 20px 0 12px;
+    }
+
+    /* PAGINACIÓN */
+    .paginacion {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 15px 18px;
+        border-top: 1px solid #F5EFE3;
+    }
+
+    .paginacion-info {
+        font-size: 13px;
+        color: #6C5243;
+    }
+
+    .paginacion-botones {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .pagina-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 35px;
+        height: 35px;
+        padding: 0 11px;
+        border-radius: 9px;
+        background: #F5EFE3;
+        color: #4A2C1B;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid #E8DFC8;
+        transition: 0.2s ease;
+    }
+
+    .pagina-link:hover {
+        background: #FF6B35;
+        color: #FFFFFF;
+        border-color: #FF6B35;
+    }
+
+    .pagina-link.activa {
+        background: #9E3B27;
+        color: #FFFFFF;
+        border-color: #9E3B27;
+    }
+
+    .pagina-link.deshabilitada {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .sin-resultados {
+        padding: 18px;
+        color: #6C5243;
+        margin: 0;
+    }
+
+    /* MODO OSCURO */
+    [data-theme="dark"] .wrap-mismary {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    [data-theme="dark"] body {
+        background-color: transparent !important;
+    }
+
+    [data-theme="dark"] .encabezado-fecha h1,
+    [data-theme="dark"] .wrap-mismary h2 {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .encabezado-fecha p {
+        color: #DDB9AE !important;
+    }
+
+    [data-theme="dark"] .btn-mismary {
+        background: rgba(255, 255, 255, 0.07) !important;
+        color: #FFE2D2 !important;
+        border: 1px solid rgba(255, 170, 140, 0.22) !important;
+    }
+
+    [data-theme="dark"] .btn-mismary:hover {
+        background: #9A1B26 !important;
+        color: #FFFFFF !important;
+        border-color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .filtro-box,
+    [data-theme="dark"] .tabla-caja {
+        background: rgba(104, 14, 22, 0.80) !important;
+        border: 1px solid rgba(255, 170, 140, 0.18) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20) !important;
+    }
+
+    [data-theme="dark"] .campo-fecha label {
+        color: #FFE2D2 !important;
+    }
+
+    [data-theme="dark"] .campo-fecha input {
+        background: #2E0508 !important;
+        color: #F8EAE4 !important;
+        border: 1px solid rgba(255, 170, 140, 0.25) !important;
+        color-scheme: dark;
+    }
+
+    [data-theme="dark"] .campo-fecha input:focus {
+        outline: none !important;
+        border-color: #FF9255 !important;
+        box-shadow: 0 0 0 3px rgba(255, 146, 85, 0.13) !important;
+    }
+
+    [data-theme="dark"] .btn-buscar {
+        background: #FF6B35 !important;
+        color: #FFFFFF !important;
+    }
+
+    [data-theme="dark"] .btn-buscar:hover {
+        background: #E85A26 !important;
+    }
+
+    [data-theme="dark"] .tabla-caja table {
+        background: transparent !important;
+    }
+
+    [data-theme="dark"] .tabla-caja thead th {
+        background: #8F1B27 !important;
+        color: #FFF0E8 !important;
+        border-bottom: 1px solid rgba(255, 190, 170, 0.20) !important;
+    }
+
+    [data-theme="dark"] .tabla-caja tbody tr,
+    [data-theme="dark"] .tabla-caja tbody td {
+        background: transparent !important;
+    }
+
+    [data-theme="dark"] .tabla-caja tbody td {
+        color: #EBD2C9 !important;
+        border-bottom: 1px solid rgba(255, 190, 170, 0.12) !important;
+    }
+
+    [data-theme="dark"] .tabla-caja tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    [data-theme="dark"] .tabla-caja tbody td strong {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .tabla-caja tbody tr:hover td {
+        background: rgba(255, 107, 53, 0.09) !important;
+    }
+
+    [data-theme="dark"] .sin-resultados {
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .paginacion {
+        border-top: 1px solid rgba(255, 190, 170, 0.12);
+    }
+
+    [data-theme="dark"] .paginacion-info {
+        color: #DDB9AE !important;
+    }
+
+    [data-theme="dark"] .pagina-link {
+        background: rgba(255, 255, 255, 0.07);
+        color: #FFE2D2;
+        border: 1px solid rgba(255, 170, 140, 0.20);
+    }
+
+    [data-theme="dark"] .pagina-link:hover {
+        background: #FF6B35;
+        color: #FFFFFF;
+        border-color: #FF6B35;
+    }
+
+    [data-theme="dark"] .pagina-link.activa {
+        background: #B32635;
+        color: #FFFFFF;
+        border-color: #FF9255;
     }
 
     @media (max-width: 650px) {
         .filtro-fechas {
             grid-template-columns: 1fr;
         }
+
+        .encabezado-fecha {
+            align-items: flex-start;
+        }
+
+        .encabezado-fecha h1 {
+            font-size: 22px;
+        }
+
+        .btn-mismary {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .tabla-caja {
+            border-radius: 14px;
+        }
+
+        .tabla-caja th,
+        .tabla-caja td {
+            padding: 12px;
+            white-space: nowrap;
+        }
+
+        .paginacion {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 </style>
 
 <div class="wrap-mismary">
+
     <div class="encabezado-fecha">
         <div>
             <h1>📅 Consultar Movimientos por Fecha</h1>
             <p>Selecciona un rango de fechas para ver ventas y abonos</p>
         </div>
+
         <a href="{% url 'list_venta' %}" class="btn-mismary">
             ← Volver a ventas
         </a>
@@ -167,71 +392,192 @@
     <div class="filtro-box">
         <form method="GET" action="{% url 'consultar_por_fecha' %}">
             <div class="filtro-fechas">
+
                 <div class="campo-fecha">
                     <label>Fecha inicial</label>
-                    <input type="date" name="fecha_inicio" value="{{ fecha_inicio|default:'' }}" required>
+                    <input type="date" name="fecha_inicio"
+                           value="{{ fecha_inicio|default:'' }}" required>
                 </div>
+
                 <div class="campo-fecha">
                     <label>Fecha final</label>
-                    <input type="date" name="fecha_fin" value="{{ fecha_fin|default:'' }}" required>
+                    <input type="date" name="fecha_fin"
+                           value="{{ fecha_fin|default:'' }}" required>
                 </div>
-                <button type="submit" class="btn-buscar">🔎 Consultar</button>
+
+                <button type="submit" class="btn-buscar">
+                    🔎 Consultar
+                </button>
+
             </div>
         </form>
     </div>
 
     {% if fecha_inicio and fecha_fin %}
+
+        <!-- VENTAS -->
         <h2>🛒 Ventas Encontradas</h2>
+
         <div class="tabla-caja">
+
             {% if ventas %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Fecha</th>
-                        <th>Total Venta</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for venta in ventas %}
-                    <tr>
-                        <td>{{ venta.cliente.nombre }}</td>
-                        <td>{{ venta.fecha }}</td>
-                        <td><strong>$ {{ venta.valor_total|floatformat:0|intcomma }}</strong></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total Venta</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for venta in ventas %}
+                            <tr>
+                                <td>{{ venta.cliente.nombre }}</td>
+                                <td>{{ venta.fecha }}</td>
+                                <td>
+                                    <strong>
+                                        $ {{ venta.valor_total|floatformat:0|intcomma }}
+                                    </strong>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if ventas.has_other_pages %}
+                    <div class="paginacion">
+
+                        <span class="paginacion-info">
+                            Página {{ ventas.number }} de {{ ventas.paginator.num_pages }}
+                        </span>
+
+                        <div class="paginacion-botones">
+
+                            {% if ventas.has_previous %}
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas=1&pagina_abonos={{ abonos.number|default:1 }}">
+                                    «
+                                </a>
+
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas={{ ventas.previous_page_number }}&pagina_abonos={{ abonos.number|default:1 }}">
+                                    Anterior
+                                </a>
+                            {% endif %}
+
+                            <span class="pagina-link activa">
+                                {{ ventas.number }}
+                            </span>
+
+                            {% if ventas.has_next %}
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas={{ ventas.next_page_number }}&pagina_abonos={{ abonos.number|default:1 }}">
+                                    Siguiente
+                                </a>
+
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas={{ ventas.paginator.num_pages }}&pagina_abonos={{ abonos.number|default:1 }}">
+                                    »
+                                </a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                {% endif %}
+
             {% else %}
-            <p style="padding: 18px; color: #6C5243; margin: 0;">No se encontraron ventas en este rango de fechas.</p>
+                <p class="sin-resultados">
+                    No se encontraron ventas en este rango de fechas.
+                </p>
             {% endif %}
+
         </div>
 
+        <!-- ABONOS -->
         <h2>💵 Abonos Encontrados</h2>
+
         <div class="tabla-caja">
+
             {% if abonos %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Fecha</th>
-                        <th>Monto Abonado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for abono in abonos %}
-                    <tr>
-                        <td>{{ abono.deuda.cliente.nombre }}</td>
-                        <td>{{ abono.fecha }}</td>
-                        <td><strong>$ {{ abono.valor|floatformat:0|intcomma }}</strong></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Monto Abonado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for abono in abonos %}
+                            <tr>
+                                <td>{{ abono.deuda.cliente.nombre }}</td>
+                                <td>{{ abono.fecha }}</td>
+                                <td>
+                                    <strong>
+                                        $ {{ abono.valor|floatformat:0|intcomma }}
+                                    </strong>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if abonos.has_other_pages %}
+                    <div class="paginacion">
+
+                        <span class="paginacion-info">
+                            Página {{ abonos.number }} de {{ abonos.paginator.num_pages }}
+                        </span>
+
+                        <div class="paginacion-botones">
+
+                            {% if abonos.has_previous %}
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas={{ ventas.number|default:1 }}&pagina_abonos=1">
+                                    «
+                                </a>
+
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas={{ ventas.number|default:1 }}&pagina_abonos={{ abonos.previous_page_number }}">
+                                    Anterior
+                                </a>
+                            {% endif %}
+
+                            <span class="pagina-link activa">
+                                {{ abonos.number }}
+                            </span>
+
+                            {% if abonos.has_next %}
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas={{ ventas.number|default:1 }}&pagina_abonos={{ abonos.next_page_number }}">
+                                    Siguiente
+                                </a>
+
+                                <a class="pagina-link"
+                                   href="?fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&pagina_ventas={{ ventas.number|default:1 }}&pagina_abonos={{ abonos.paginator.num_pages }}">
+                                    »
+                                </a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                {% endif %}
+
             {% else %}
-            <p style="padding: 18px; color: #6C5243; margin: 0;">No se encontraron abonos en este rango de fechas.</p>
+                <p class="sin-resultados">
+                    No se encontraron abonos en este rango de fechas.
+                </p>
             {% endif %}
+
         </div>
+
     {% endif %}
+
 </div>
+
 {% endblock %}
+```

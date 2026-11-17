@@ -355,6 +355,214 @@ Detalle de Venta | MisMary
             flex-direction: column;
         }
     }
+
+    /* ==========================================
+   MODO OSCURO - DETALLE DE VENTA
+   Integración con el fondo de base.html
+   ========================================== */
+
+[data-theme="dark"] body {
+    background-color: transparent !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #EBD2C9 !important;
+}
+
+/* Tarjeta principal */
+[data-theme="dark"] .tarjeta {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Título de la venta */
+[data-theme="dark"] .icono {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .venta-titulo h2 {
+    color: #FFF0E8 !important;
+}
+
+/* Datos generales */
+[data-theme="dark"] .dato {
+    background: rgba(46, 5, 8, 0.75) !important;
+    border: 1px solid rgba(255, 170, 140, 0.15) !important;
+}
+
+[data-theme="dark"] .dato strong {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .dato span {
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .dato .precio {
+    color: #FF9255 !important;
+}
+
+/* Título de productos */
+[data-theme="dark"] .productos-venta h3 {
+    color: #FFF0E8 !important;
+}
+
+/* Tabla de productos */
+[data-theme="dark"] .tabla-productos-contenedor {
+    background: rgba(46, 5, 8, 0.65) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+}
+
+[data-theme="dark"] .tabla-productos th {
+    background: #721522 !important;
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .tabla-productos td {
+    color: #F8EAE4 !important;
+    border-bottom: 1px solid rgba(255, 190, 170, 0.12) !important;
+}
+
+[data-theme="dark"] .tabla-productos td strong {
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .tabla-productos tr:hover td {
+    background: rgba(255, 107, 53, 0.09) !important;
+}
+
+/* Texto de reembolso de productos */
+[data-theme="dark"] .tabla-productos small {
+    color: #FFB5A8 !important;
+}
+
+/* Mensaje sin productos */
+[data-theme="dark"] .mensaje-sin-productos {
+    background: rgba(46, 5, 8, 0.70) !important;
+    color: #EBD2C9 !important;
+}
+
+/* Total de la venta */
+[data-theme="dark"] .total-venta {
+    background: rgba(46, 5, 8, 0.75) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+}
+
+[data-theme="dark"] .total-venta strong {
+    color: #FFF0E8 !important;
+}
+
+[data-theme="dark"] .total-venta span {
+    color: #FF9255 !important;
+}
+
+/* Información de reembolsos */
+[data-theme="dark"] .productos-venta > div[style*="background:#FBE9E7"] {
+    background: rgba(179, 38, 53, 0.18) !important;
+    border: 1px solid rgba(255, 120, 110, 0.30) !important;
+    color: #FFB5A8 !important;
+}
+
+[data-theme="dark"] .productos-venta > div[style*="background:#FBE9E7"] a {
+    color: #FF9255 !important;
+}
+
+/* Estado de la venta */
+[data-theme="dark"] .seccion-estado {
+    background: rgba(46, 5, 8, 0.65) !important;
+    border: 1px dashed rgba(255, 170, 140, 0.30) !important;
+}
+
+[data-theme="dark"] .badge-pendiente {
+    background: rgba(179, 38, 53, 0.25) !important;
+    color: #FFB5A8 !important;
+}
+
+[data-theme="dark"] .badge-pagado {
+    background: rgba(46, 125, 50, 0.22) !important;
+    color: #A5D6A7 !important;
+}
+
+[data-theme="dark"] .info-saldo {
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .info-saldo strong {
+    color: #FF9255 !important;
+}
+
+/* Mensajes */
+[data-theme="dark"] .mensaje-exito {
+    background: rgba(46, 125, 50, 0.18) !important;
+    border: 1px solid rgba(129, 199, 132, 0.30) !important;
+    color: #A5D6A7 !important;
+}
+
+[data-theme="dark"] .mensaje-error {
+    background: rgba(179, 38, 53, 0.20) !important;
+    border: 1px solid rgba(255, 120, 110, 0.30) !important;
+    color: #FFB5A8 !important;
+}
+
+/* Botones */
+[data-theme="dark"] .btn-mismary {
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):not(.btn-abono):not(.btn-eliminar) {
+    background: #FF6B35 !important;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):not(.btn-abono):not(.btn-eliminar):hover {
+    background: #E85A26 !important;
+}
+
+/* Volver */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
+
+/* Registrar abono */
+[data-theme="dark"] .btn-abono {
+    background: #2E7D32 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-abono:hover {
+    background: #1B5E20 !important;
+}
+
+/* Eliminar */
+[data-theme="dark"] .btn-eliminar {
+    background: rgba(179, 38, 53, 0.18) !important;
+    color: #FFB5A8 !important;
+    border: 1px solid rgba(255, 120, 110, 0.45) !important;
+}
+
+[data-theme="dark"] .btn-eliminar:hover {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+}
 </style>
 
 <div class="wrap-mismary">

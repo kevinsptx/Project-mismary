@@ -290,6 +290,160 @@ Registrar Pedido | MisMary
         }
     }
 
+
+/* ==========================================
+   MODO OSCURO - REGISTRAR PEDIDO
+   Integración con el fondo de base.html
+   ========================================== */
+
+[data-theme="dark"] body {
+    background-color: transparent !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #EBD2C9 !important;
+}
+
+/* Tarjeta */
+[data-theme="dark"] .tarjeta {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Etiquetas */
+[data-theme="dark"] label {
+    color: #FFF0E8 !important;
+}
+
+/* Campos y selectores */
+[data-theme="dark"] input,
+[data-theme="dark"] select {
+    background: #2E0508 !important;
+    border: 1px solid rgba(255, 170, 140, 0.25) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] input::placeholder {
+    color: #C9A9A0 !important;
+    opacity: 1;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus {
+    border-color: #FF9255 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15) !important;
+}
+
+[data-theme="dark"] select option {
+    background: #2E0508 !important;
+    color: #F8EAE4 !important;
+}
+
+/* Enlace nuevo proveedor */
+[data-theme="dark"] .enlace-nuevo {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .enlace-nuevo:hover {
+    color: #FFB17F !important;
+}
+
+/* Aviso sin proveedores */
+[data-theme="dark"] .aviso-sin-proveedores {
+    background: rgba(46, 5, 8, 0.75) !important;
+    border: 1px dashed rgba(255, 170, 140, 0.35) !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .aviso-sin-proveedores a {
+    color: #FF9255 !important;
+}
+
+/* Encabezados de productos */
+[data-theme="dark"] .fila-encabezado {
+    color: #FF9255 !important;
+}
+
+/* Contenedor de productos */
+[data-theme="dark"] .filas-productos {
+    background: rgba(46, 5, 8, 0.65) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+}
+
+/* Filas de productos, incluidas las agregadas con JavaScript */
+[data-theme="dark"] .fila-item {
+    background: rgba(104, 14, 22, 0.45) !important;
+    border: 1px solid rgba(255, 170, 140, 0.12) !important;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+/* Botón quitar producto */
+[data-theme="dark"] .btn-quitar {
+    background: rgba(179, 38, 53, 0.20) !important;
+    color: #FFB5A8 !important;
+    border: 1px solid rgba(255, 120, 110, 0.40) !important;
+}
+
+[data-theme="dark"] .btn-quitar:hover {
+    background: #B32635 !important;
+    color: #FFFFFF !important;
+}
+
+/* Botón agregar producto */
+[data-theme="dark"] .btn-agregar {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .btn-agregar:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
+
+/* Botón guardar */
+[data-theme="dark"] .btn-mismary:not(.btn-secundario) {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):hover {
+    background: #E85A26 !important;
+}
+
+/* Botón volver */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
+
+/* Botón guardar deshabilitado */
+[data-theme="dark"] .btn-mismary:disabled {
+    background: #75423A !important;
+    color: #D8BDB4 !important;
+    opacity: 0.6 !important;
+}
 </style>
 
 

@@ -190,6 +190,125 @@ Actualizar Producto | MisMary
             flex: 1 1 100%;
         }
     }
+    /* ==========================================
+   MODO OSCURO - ACTUALIZAR PRODUCTO
+   Integración con el fondo de base.html
+   ========================================== */
+
+/* Fondo general */
+[data-theme="dark"] body {
+    background-color: transparent !important;
+    color: #EBD2C9 !important;
+}
+
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #D8B8AA !important;
+}
+
+/* Formulario */
+[data-theme="dark"] .formulario {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.18) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Etiquetas */
+[data-theme="dark"] .campo label {
+    color: #F8EAE4 !important;
+}
+
+/* Inputs y select */
+[data-theme="dark"] .campo input,
+[data-theme="dark"] .campo select,
+[data-theme="dark"] .campo textarea {
+    background: #2E0508 !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.22) !important;
+    color-scheme: dark;
+}
+
+[data-theme="dark"] .campo input:focus,
+[data-theme="dark"] .campo select:focus,
+[data-theme="dark"] .campo textarea:focus {
+    border-color: #FF6B35 !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15) !important;
+    outline: none !important;
+}
+
+[data-theme="dark"] .campo input::placeholder {
+    color: #B99A90 !important;
+}
+
+/* Textos de ayuda */
+[data-theme="dark"] .ayuda {
+    color: #C9AAA0 !important;
+}
+
+/* Errores de campos */
+[data-theme="dark"] .error-campo {
+    color: #FF9B8F !important;
+}
+
+/* Mensaje de éxito */
+[data-theme="dark"] .mensaje-exito {
+    background: rgba(46, 125, 50, 0.18) !important;
+    border: 1px solid rgba(129, 199, 132, 0.35) !important;
+    color: #B9E8BD !important;
+}
+
+/* Mensaje de error */
+[data-theme="dark"] .mensaje-error {
+    background: rgba(183, 28, 28, 0.20) !important;
+    border: 1px solid rgba(255, 120, 120, 0.30) !important;
+    color: #FFB8AE !important;
+}
+
+/* Botón principal */
+[data-theme="dark"] .btn-mismary:not(.btn-secundario) {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):hover {
+    background: #E85A26 !important;
+}
+
+/* Botón secundario */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.22) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(143, 27, 39, 0.45) !important;
+    border-color: #FF9255 !important;
+    color: #FFB18B !important;
+}
+
+/* Transiciones */
+[data-theme="dark"] .formulario,
+[data-theme="dark"] .campo input,
+[data-theme="dark"] .campo select,
+[data-theme="dark"] .btn-mismary {
+    transition: all 0.2s ease;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    [data-theme="dark"] .formulario {
+        padding: 22px 18px;
+    }
+}
 </style>
 
 <div class="wrap-mismary">

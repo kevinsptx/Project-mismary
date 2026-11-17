@@ -182,7 +182,95 @@ Actualizar Cliente | MisMary
             flex: 1 1 100%;
         }
     }
+/* ==========================================
+   MODO OSCURO - ACTUALIZAR CLIENTE
+   Integración con el fondo de base.html
+   ========================================== */
 
+[data-theme="dark"] body {
+    background-color: transparent !important;
+    color: #EBD2C9 !important;
+}
+
+/* Contenedor */
+[data-theme="dark"] .wrap-mismary {
+    background: transparent !important;
+}
+
+/* Encabezado */
+[data-theme="dark"] .encabezado h1 {
+    color: #FF9255 !important;
+}
+
+[data-theme="dark"] .encabezado p {
+    color: #EBD2C9 !important;
+}
+
+/* Formulario */
+[data-theme="dark"] .formulario {
+    background: rgba(104, 14, 22, 0.80) !important;
+    border: 1px solid rgba(255, 170, 140, 0.20) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Etiquetas */
+[data-theme="dark"] .campo label {
+    color: #FFF0E8 !important;
+}
+
+/* Campos de texto */
+[data-theme="dark"] .campo input {
+    background: #2E0508 !important;
+    border: 1px solid rgba(255, 170, 140, 0.25) !important;
+    color: #F8EAE4 !important;
+}
+
+[data-theme="dark"] .campo input::placeholder {
+    color: #C9A9A0 !important;
+}
+
+[data-theme="dark"] .campo input:focus {
+    border-color: #FF9255 !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15) !important;
+    outline: none !important;
+}
+
+/* Mensaje de éxito */
+[data-theme="dark"] .mensaje-exito {
+    background: rgba(46, 125, 50, 0.18) !important;
+    border: 1px solid rgba(129, 199, 132, 0.30) !important;
+    color: #A5D6A7 !important;
+}
+
+/* Mensaje de error */
+[data-theme="dark"] .mensaje-error {
+    background: rgba(179, 38, 53, 0.20) !important;
+    border: 1px solid rgba(255, 120, 110, 0.30) !important;
+    color: #FFB5A8 !important;
+}
+
+/* Botón actualizar */
+[data-theme="dark"] .btn-mismary:not(.btn-secundario) {
+    background: #FF6B35 !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .btn-mismary:not(.btn-secundario):hover {
+    background: #E85A26 !important;
+}
+
+/* Botón volver */
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8EAE4 !important;
+    border: 1px solid rgba(255, 190, 170, 0.25) !important;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+    border-color: #FF9255 !important;
+    color: #FFB17F !important;
+}
 </style>
 
 

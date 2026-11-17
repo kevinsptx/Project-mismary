@@ -542,6 +542,60 @@
     .enc-titulo:hover .stk-lista { transform: rotate(3deg) scale(1.06); }
 
     @media (max-width: 520px) { .stk-lista { display: none; } }
+/* ==========================================
+   MODO OSCURO - FILTRO DE REPORTES
+   ========================================== */
+
+[data-theme="dark"] .filtro {
+    background: rgba(74, 13, 20, 0.88);
+    border: 1px solid rgba(255, 190, 170, 0.18);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="dark"] .filtro label {
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .filtro input[type="date"] {
+    background: #2E0508;
+    color: #F8EAE4;
+    border: 1px solid rgba(255, 190, 170, 0.20);
+    color-scheme: dark;
+}
+
+[data-theme="dark"] .filtro input[type="date"]:focus {
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+}
+
+[data-theme="dark"] .atajos {
+    color: #D9BDB4;
+    border-top-color: rgba(255, 190, 170, 0.18);
+}
+
+[data-theme="dark"] .atajo {
+    background: rgba(255, 190, 170, 0.08);
+    border-color: rgba(255, 190, 170, 0.18);
+    color: #F8EAE4;
+}
+
+[data-theme="dark"] .atajo:hover {
+    background: rgba(255, 107, 53, 0.15);
+    border-color: #FF6B35;
+    color: #FFB17F;
+}
+
+[data-theme="dark"] .btn-secundario {
+    background: rgba(255, 190, 170, 0.08);
+    color: #F8EAE4;
+    border-color: rgba(255, 190, 170, 0.20);
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+    background: rgba(255, 107, 53, 0.15);
+    border-color: #FF6B35;
+    color: #FFB17F;
+}
 </style>
 
 

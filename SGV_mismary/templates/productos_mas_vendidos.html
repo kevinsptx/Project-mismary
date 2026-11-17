@@ -1,3 +1,4 @@
+
 {% extends 'layout/base.html' %}
 
 {% block title %}
@@ -7,21 +8,16 @@ Productos Más Vendidos | MisMary
 {% block content %}
 
 <style>
-
-    /* ===== PALETA Y BASE (igual que el home) ===== */
-
     :root {
-        --cafe-tostado:  #4A2C1B;
-        --terracota:     #9E3B27;
-        --naranja:       #FF6B35;
+        --cafe-tostado: #4A2C1B;
+        --terracota: #9E3B27;
+        --naranja: #FF6B35;
         --naranja-hover: #E85A26;
-        --arena:         #E8DFC8;
-        --arena-suave:   #F5EFE3;
-        --marfil-bg:     #FCFAF7;
-        --blanco:        #FFFFFF;
-
-        --sombra-suave:  0 10px 25px -5px rgba(74, 44, 27, 0.07);
-        --sombra-hover:  0 18px 32px -8px rgba(74, 44, 27, 0.12);
+        --arena: #E8DFC8;
+        --arena-suave: #F5EFE3;
+        --marfil-bg: #FCFAF7;
+        --blanco: #FFFFFF;
+        --sombra-suave: 0 10px 25px -5px rgba(74,44,27,0.07);
     }
 
     body {
@@ -43,8 +39,7 @@ Productos Más Vendidos | MisMary
         box-sizing: border-box;
     }
 
-    /* ===== ENCABEZADO ===== */
-
+    /* ENCABEZADO */
     .encabezado {
         display: flex;
         align-items: center;
@@ -62,20 +57,19 @@ Productos Más Vendidos | MisMary
     }
 
     .encabezado p {
-        margin: 4px 0 0 0;
+        margin: 4px 0 0;
         font-size: 14px;
         color: var(--terracota);
     }
 
-    /* ===== BOTONES ===== */
-
+    /* BOTONES */
     .btn-mismary {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 6px;
         background: var(--naranja);
-        color: #FFF;
+        color: white;
         text-decoration: none;
         padding: 10px 18px;
         border-radius: 999px;
@@ -103,8 +97,7 @@ Productos Más Vendidos | MisMary
         color: var(--terracota);
     }
 
-    /* ===== PANELES ===== */
-
+    /* PANELES */
     .panel {
         background: var(--blanco);
         border: 1px solid var(--arena);
@@ -115,21 +108,20 @@ Productos Más Vendidos | MisMary
     }
 
     .panel h2 {
-        margin: 0 0 6px 0;
+        margin: 0 0 6px;
         font-size: 20px;
         font-weight: 700;
         color: var(--cafe-tostado);
     }
 
     .panel-desc {
-        margin: 0 0 20px 0;
+        margin: 0 0 20px;
         font-size: 14px;
         color: #6C5243;
         line-height: 1.4;
     }
 
-    /* ===== FORMULARIO DE FECHAS ===== */
-
+    /* FILTRO DE FECHAS */
     .campos-fecha {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -159,7 +151,7 @@ Productos Más Vendidos | MisMary
     .campo-fecha input:focus {
         outline: none;
         border-color: var(--terracota);
-        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+        box-shadow: 0 0 0 3px rgba(255,107,53,0.12);
     }
 
     .acciones-form {
@@ -168,8 +160,7 @@ Productos Más Vendidos | MisMary
         margin-top: 20px;
     }
 
-    /* ===== TABLA ===== */
-
+    /* TABLA */
     .tabla-caja {
         border: 1px solid var(--arena);
         border-radius: 20px;
@@ -253,8 +244,7 @@ Productos Más Vendidos | MisMary
         text-align: center;
     }
 
-    /* ===== SIN RESULTADOS ===== */
-
+    /* SIN RESULTADOS */
     .sin-resultados {
         padding: 36px 20px;
         text-align: center;
@@ -273,8 +263,242 @@ Productos Más Vendidos | MisMary
         margin-bottom: 6px;
     }
 
-    /* ===== RESPONSIVO ===== */
+    /* PAGINACIÓN */
+    .paginacion-mismary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 22px;
+        padding: 14px 18px;
+        background: var(--arena-suave);
+        border: 1px solid var(--arena);
+        border-radius: 16px;
+    }
 
+    .paginacion-info {
+        color: #6C5243;
+        font-size: 13px;
+    }
+
+    .paginacion-controles {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .pagina-numero,
+    .pagina-flecha {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 35px;
+        height: 35px;
+        padding: 0 10px;
+        border-radius: 10px;
+        border: 1px solid var(--arena);
+        background: var(--blanco);
+        color: var(--cafe-tostado);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .pagina-numero:hover,
+    .pagina-flecha:hover:not(:disabled) {
+        background: var(--naranja);
+        color: white;
+        border-color: var(--naranja);
+    }
+
+    .pagina-numero.activa {
+        background: var(--terracota);
+        color: white;
+        border-color: var(--terracota);
+        pointer-events: none;
+    }
+
+    .pagina-flecha:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    .pagina-puntos {
+        color: #6C5243;
+        padding: 0 4px;
+    }
+
+    /* =====================================
+       MODO OSCURO
+       ===================================== */
+
+    [data-theme="dark"] body {
+        background-color: transparent !important;
+    }
+
+    [data-theme="dark"] .wrap-mismary {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    [data-theme="dark"] .encabezado h1,
+    [data-theme="dark"] .panel h2 {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .encabezado p,
+    [data-theme="dark"] .panel-desc {
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .btn-mismary {
+        background: #FF6B35 !important;
+        color: white !important;
+    }
+
+    [data-theme="dark"] .btn-mismary:hover {
+        background: #E85A26 !important;
+    }
+
+    [data-theme="dark"] .btn-secundario {
+        background: rgba(255,255,255,0.08) !important;
+        color: #F8EAE4 !important;
+        border: 1px solid rgba(255,190,170,0.20) !important;
+    }
+
+    [data-theme="dark"] .btn-secundario:hover {
+        background: rgba(143,27,39,0.65) !important;
+        color: white !important;
+        border-color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .panel {
+        background: rgba(104,14,22,0.80) !important;
+        border: 1px solid rgba(255,170,140,0.18) !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.20) !important;
+    }
+
+    [data-theme="dark"] .campo-fecha label {
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .campo-fecha input {
+        background: #2E0508 !important;
+        color: #F8EAE4 !important;
+        border: 1px solid rgba(255,190,170,0.22) !important;
+        color-scheme: dark;
+    }
+
+    [data-theme="dark"] .campo-fecha input:focus {
+        border-color: #FF9255 !important;
+        box-shadow: 0 0 0 3px rgba(255,107,53,0.15) !important;
+    }
+
+    [data-theme="dark"] .tabla-caja {
+        background: rgba(104,14,22,0.80) !important;
+        border: 1px solid rgba(255,170,140,0.18) !important;
+    }
+
+    [data-theme="dark"] .tabla-vendidos {
+        background: transparent !important;
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .tabla-vendidos thead th {
+        background: #8F1B27 !important;
+        color: #FFF0E8 !important;
+        border-bottom: 1px solid rgba(255,190,170,0.20) !important;
+    }
+
+    [data-theme="dark"] .tabla-vendidos tbody tr,
+    [data-theme="dark"] .tabla-vendidos tbody tr td,
+    [data-theme="dark"] .tabla-vendidos tbody tr:first-child,
+    [data-theme="dark"] .tabla-vendidos tbody tr:first-child td {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    [data-theme="dark"] .tabla-vendidos tbody td {
+        color: #EBD2C9 !important;
+        border-bottom: 1px solid rgba(255,190,170,0.12) !important;
+    }
+
+    [data-theme="dark"] .tabla-vendidos tbody tr:hover,
+    [data-theme="dark"] .tabla-vendidos tbody tr:hover td {
+        background: rgba(255,107,53,0.09) !important;
+        background-color: rgba(255,107,53,0.09) !important;
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .nombre-producto {
+        color: #F8EAE4 !important;
+    }
+
+    [data-theme="dark"] .puesto {
+        background: rgba(255,255,255,0.09) !important;
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .puesto-top {
+        background: transparent !important;
+    }
+
+    [data-theme="dark"] .chip-cantidad {
+        background: rgba(255,107,53,0.13) !important;
+        border: 1px solid rgba(255,145,85,0.25) !important;
+        color: #FFB184 !important;
+    }
+
+    [data-theme="dark"] .sin-resultados {
+        background: rgba(46,5,8,0.65) !important;
+        border: 1px dashed rgba(255,170,140,0.25) !important;
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .sin-resultados strong {
+        color: #FF9255 !important;
+    }
+
+    [data-theme="dark"] .paginacion-mismary {
+        background: rgba(104,14,22,0.80) !important;
+        border: 1px solid rgba(255,170,140,0.18) !important;
+    }
+
+    [data-theme="dark"] .paginacion-info {
+        color: #EBD2C9 !important;
+    }
+
+    [data-theme="dark"] .pagina-numero,
+    [data-theme="dark"] .pagina-flecha {
+        background: rgba(255,255,255,0.07) !important;
+        color: #F8EAE4 !important;
+        border: 1px solid rgba(255,190,170,0.18) !important;
+    }
+
+    [data-theme="dark"] .pagina-numero:hover,
+    [data-theme="dark"] .pagina-flecha:hover:not(:disabled) {
+        background: #FF6B35 !important;
+        color: white !important;
+        border-color: #FF6B35 !important;
+    }
+
+    [data-theme="dark"] .pagina-numero.activa {
+        background: #B32635 !important;
+        color: white !important;
+        border-color: #B32635 !important;
+    }
+
+    [data-theme="dark"] .pagina-puntos {
+        color: #EBD2C9 !important;
+    }
+
+    /* RESPONSIVE */
     @media (max-width: 700px) {
         .encabezado {
             flex-direction: column;
@@ -298,10 +522,17 @@ Productos Más Vendidos | MisMary
         .tabla-vendidos tbody td {
             padding: 12px 14px;
         }
+
+        .paginacion-mismary {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .paginacion-controles {
+            width: 100%;
+        }
     }
-
 </style>
-
 
 <div class="wrap-mismary">
 
@@ -320,7 +551,9 @@ Productos Más Vendidos | MisMary
     <!-- CONSULTA POR FECHAS -->
     <section class="panel">
         <h2>Consultar por fechas</h2>
-        <p class="panel-desc">Selecciona un rango de fechas para consultar las ventas registradas.</p>
+        <p class="panel-desc">
+            Selecciona un rango de fechas para consultar las ventas registradas.
+        </p>
 
         <form method="GET">
             <div class="campos-fecha">
@@ -346,7 +579,9 @@ Productos Más Vendidos | MisMary
             </div>
 
             <div class="acciones-form">
-                <button type="submit" class="btn-mismary">Consultar ventas</button>
+                <button type="submit" class="btn-mismary">
+                    Consultar ventas
+                </button>
             </div>
         </form>
     </section>
@@ -354,12 +589,14 @@ Productos Más Vendidos | MisMary
     <!-- RESULTADOS -->
     <section class="panel">
         <h2>Resultados de ventas</h2>
-        <p class="panel-desc">Listado de productos y la cantidad total vendida.</p>
+        <p class="panel-desc">
+            Listado de productos y la cantidad total vendida.
+        </p>
 
         {% if productos_vendidos %}
-            <div class="tabla-caja">
-                <table class="tabla-vendidos">
 
+            <div class="tabla-caja">
+                <table class="tabla-vendidos" id="tablaVendidos">
                     <thead>
                         <tr>
                             <th class="col-puesto">Puesto</th>
@@ -368,7 +605,7 @@ Productos Más Vendidos | MisMary
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="cuerpoVendidos">
                         {% for producto in productos_vendidos %}
                             <tr>
                                 <td class="col-puesto">
@@ -383,31 +620,185 @@ Productos Más Vendidos | MisMary
                                     {% endif %}
                                 </td>
 
-                                <td class="nombre-producto">{{ producto.producto__nombre }}</td>
+                                <td class="nombre-producto">
+                                    {{ producto.producto__nombre }}
+                                </td>
 
                                 <td class="col-cantidad">
-                                    <span class="chip-cantidad">{{ producto.total_vendido }}</span>
+                                    <span class="chip-cantidad">
+                                        {{ producto.total_vendido }}
+                                    </span>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
-
                 </table>
             </div>
+
+            <!-- PAGINACIÓN -->
+            <div class="paginacion-mismary" id="paginacionVendidos">
+
+                <div class="paginacion-info" id="infoVendidos"></div>
+
+                <div class="paginacion-controles">
+                    <button
+                        type="button"
+                        class="pagina-flecha"
+                        id="anteriorVendidos"
+                        aria-label="Página anterior"
+                    >
+                        ‹
+                    </button>
+
+                    <div id="numerosVendidos" class="paginacion-controles"></div>
+
+                    <button
+                        type="button"
+                        class="pagina-flecha"
+                        id="siguienteVendidos"
+                        aria-label="Página siguiente"
+                    >
+                        ›
+                    </button>
+                </div>
+
+            </div>
+
         {% else %}
+
             <div class="sin-resultados">
                 {% if fecha_inicio or fecha_fin %}
                     <strong>No se encontraron ventas</strong>
-                    No hay productos vendidos durante el período seleccionado. Prueba con otras fechas.
+                    No hay productos vendidos durante el período seleccionado.
+                    Prueba con otras fechas.
                 {% else %}
                     <strong>Aún no hay resultados para mostrar</strong>
                     Selecciona una fecha inicial y una fecha final, y pulsa
                     “Consultar ventas” para revisar los productos más vendidos.
                 {% endif %}
             </div>
+
         {% endif %}
     </section>
 
 </div>
+
+<!-- JAVASCRIPT DE PAGINACIÓN -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const tabla = document.getElementById("tablaVendidos");
+
+    if (!tabla) {
+        return;
+    }
+
+    const filas = Array.from(
+        document.querySelectorAll("#cuerpoVendidos tr")
+    );
+
+    const porPagina = 10;
+    let paginaActual = 1;
+
+    const totalPaginas = Math.ceil(filas.length / porPagina);
+
+    const info = document.getElementById("infoVendidos");
+    const anterior = document.getElementById("anteriorVendidos");
+    const siguiente = document.getElementById("siguienteVendidos");
+    const numeros = document.getElementById("numerosVendidos");
+
+    const paginacion = document.getElementById("paginacionVendidos");
+
+    if (filas.length <= porPagina) {
+        paginacion.style.display = "none";
+    }
+
+    function mostrarPagina(pagina) {
+
+        paginaActual = pagina;
+
+        const inicio = (paginaActual - 1) * porPagina;
+        const fin = inicio + porPagina;
+
+        filas.forEach(function (fila, indice) {
+
+            fila.style.display =
+                indice >= inicio && indice < fin ? "" : "none";
+
+        });
+
+        // Actualizar los puestos del ranking
+        filas.forEach(function (fila, indice) {
+
+            const puesto = fila.querySelector(".puesto");
+
+            if (!puesto) return;
+
+            if (indice === 0) {
+                puesto.textContent = "🥇";
+                puesto.classList.add("puesto-top");
+            } else if (indice === 1) {
+                puesto.textContent = "🥈";
+                puesto.classList.add("puesto-top");
+            } else if (indice === 2) {
+                puesto.textContent = "🥉";
+                puesto.classList.add("puesto-top");
+            } else {
+                puesto.textContent = indice + 1;
+                puesto.classList.remove("puesto-top");
+            }
+
+        });
+
+        info.textContent =
+            `Mostrando ${inicio + 1} - ${Math.min(fin, filas.length)} de ${filas.length} productos`;
+
+        anterior.disabled = paginaActual === 1;
+        siguiente.disabled = paginaActual === totalPaginas;
+
+        numeros.innerHTML = "";
+
+        for (let i = 1; i <= totalPaginas; i++) {
+
+            const boton = document.createElement("button");
+
+            boton.type = "button";
+            boton.textContent = i;
+            boton.className = "pagina-numero";
+
+            if (i === paginaActual) {
+                boton.classList.add("activa");
+            }
+
+            boton.addEventListener("click", function () {
+                mostrarPagina(i);
+            });
+
+            numeros.appendChild(boton);
+        }
+    }
+
+    anterior.addEventListener("click", function () {
+
+        if (paginaActual > 1) {
+            mostrarPagina(paginaActual - 1);
+        }
+
+    });
+
+    siguiente.addEventListener("click", function () {
+
+        if (paginaActual < totalPaginas) {
+            mostrarPagina(paginaActual + 1);
+        }
+
+    });
+
+    if (filas.length > 0) {
+        mostrarPagina(1);
+    }
+
+});
+</script>
 
 {% endblock %}
