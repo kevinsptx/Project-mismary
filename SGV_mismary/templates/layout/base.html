@@ -1059,6 +1059,199 @@
             0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.6); }
             50%      { box-shadow: 0 0 0 11px rgba(255, 107, 53, 0); }
         }
+
+        /* =====================================================
+           MÚSICA AMBIENTAL · botón flotante discreto
+           Todos los colores salen de variables (--m-*): el modo
+           oscuro solo las cambia, no repite reglas.
+           ===================================================== */
+        .musica-control {
+            --m-fondo: #F5EFE3;
+            --m-borde: #E8DFC8;
+            --m-icono: #4A2C1B;
+            --m-hover: rgba(158, 59, 39, 0.10);
+            --m-activo-fondo: #9E3B27;
+            --m-activo-icono: #F5EFE3;
+            --m-pista: #E8DFC8;
+            --m-relleno: #9E3B27;
+            --m-pulgar: #FF6B35;
+            --m-pulgar-borde: #FFFFFF;
+            --m-sombra: 0 8px 22px -8px rgba(74, 44, 27, 0.40);
+            position: fixed;
+            top: 14px;
+            right: 18px;
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            border: 1px solid var(--m-borde);
+            border-radius: 999px;
+            background: var(--m-fondo);
+            box-shadow: var(--m-sombra);
+            font-family: 'Quicksand', sans-serif;
+        }
+        .musica-control[hidden] {
+            display: none;
+        }
+
+        /* Panel del volumen: aparece al pasar el mouse, al enfocar o al tocar */
+        .musica-volumen {
+            display: flex;
+            align-items: center;
+            max-width: 0;
+            margin: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-width 0.28s ease, margin 0.28s ease, opacity 0.2s ease;
+        }
+        .musica-control:hover .musica-volumen,
+        .musica-control:focus-within .musica-volumen,
+        .musica-control.abierto .musica-volumen {
+            max-width: 150px;
+            margin: 0 8px 0 10px;
+            opacity: 1;
+        }
+
+        .musica-boton {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--m-icono);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+        }
+        .musica-boton svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .musica-boton:hover {
+            background: var(--m-hover);
+        }
+        .musica-boton:active {
+            transform: scale(0.9);
+        }
+        .musica-boton:focus-visible {
+            outline: 3px solid var(--naranja);
+            outline-offset: 2px;
+        }
+        /* La rayita sobre la nota indica que está apagada */
+        .musica-boton .m-tachon {
+            transition: opacity 0.2s ease;
+        }
+        .musica-control.sonando .m-tachon {
+            opacity: 0;
+        }
+        .musica-control.sonando .musica-boton {
+            background: var(--m-activo-fondo);
+            color: var(--m-activo-icono);
+            animation: musica-pulso 3s ease-in-out infinite;
+        }
+        /* Si el navegador bloqueó el reinicio, invita a tocar */
+        .musica-control.esperando .musica-boton {
+            animation: musica-pulso 1.6s ease-in-out infinite;
+        }
+        @keyframes musica-pulso {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+            50%      { box-shadow: 0 0 0 7px rgba(255, 107, 53, 0.20); }
+        }
+
+        /* Control de volumen */
+        .musica-volumen input[type="range"] {
+            --vol: 30%;
+            width: 92px;
+            height: 18px;
+            margin: 0;
+            background: transparent;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .musica-volumen input[type="range"]:focus {
+            outline: none;
+        }
+        .musica-volumen input[type="range"]:focus-visible {
+            outline: 2px solid var(--naranja);
+            outline-offset: 3px;
+            border-radius: 999px;
+        }
+        .musica-volumen input[type="range"]::-webkit-slider-runnable-track {
+            height: 5px;
+            border-radius: 999px;
+            background: linear-gradient(to right, var(--m-relleno) 0, var(--m-relleno) var(--vol), var(--m-pista) var(--vol), var(--m-pista) 100%);
+        }
+        .musica-volumen input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            margin-top: -5px;
+            border: 2px solid var(--m-pulgar-borde);
+            border-radius: 50%;
+            background: var(--m-pulgar);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.30);
+        }
+        .musica-volumen input[type="range"]::-moz-range-track {
+            height: 5px;
+            border-radius: 999px;
+            background: var(--m-pista);
+        }
+        .musica-volumen input[type="range"]::-moz-range-progress {
+            height: 5px;
+            border-radius: 999px;
+            background: var(--m-relleno);
+        }
+        .musica-volumen input[type="range"]::-moz-range-thumb {
+            width: 11px;
+            height: 11px;
+            border: 2px solid var(--m-pulgar-borde);
+            border-radius: 50%;
+            background: var(--m-pulgar);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.30);
+        }
+
+        /* Modo oscuro: cristal vino con acentos cálidos */
+        [data-theme="dark"] .musica-control {
+            --m-fondo: rgba(104, 14, 22, 0.72);
+            --m-borde: rgba(255, 170, 140, 0.30);
+            --m-icono: #FFB27A;
+            --m-hover: rgba(255, 178, 122, 0.16);
+            --m-activo-fondo: linear-gradient(150deg, #FF9255 0%, #FF6B35 55%, #E5521F 100%);
+            --m-activo-icono: #FFFFFF;
+            --m-pista: rgba(255, 255, 255, 0.20);
+            --m-relleno: #FF6B35;
+            --m-pulgar: #FFB27A;
+            --m-pulgar-borde: #3A060B;
+            --m-sombra: 0 10px 26px -8px rgba(0, 0, 0, 0.60);
+            -webkit-backdrop-filter: blur(14px) saturate(1.4);
+            backdrop-filter: blur(14px) saturate(1.4);
+        }
+
+        @media (max-width: 600px) {
+            .musica-control {
+                top: 10px;
+                right: 10px;
+            }
+            .musica-boton {
+                width: 32px;
+                height: 32px;
+                flex-basis: 32px;
+            }
+            .musica-volumen input[type="range"] {
+                width: 80px;
+            }
+        }
+        /* =================== FIN MÚSICA AMBIENTAL =================== */
     </style>
 </head>
 
@@ -1153,6 +1346,25 @@
     </script>
 
     <!-- FIN DEL ASISTENTE VIRTUAL -->
+
+    <!-- MÚSICA AMBIENTAL: archivo en static/audio/fondo.mp3 -->
+    <audio id="musica-fondo" src="{% static 'audio/fondo.mp3' %}" loop preload="metadata"></audio>
+
+    <div class="musica-control" id="musica-control" role="group" aria-label="Música ambiental">
+        <div class="musica-volumen">
+            <input type="range" id="musica-volumen" min="0" max="100" step="1" value="30"
+                   aria-label="Volumen de la música">
+        </div>
+        <button type="button" class="musica-boton" id="musica-boton"
+                aria-pressed="false" aria-label="Activar música ambiental" title="Activar música ambiental">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 17.6 L9.2 5.4 L19.1 3.6 L18.9 15.8"/>
+                <circle cx="6.6" cy="17.9" r="2.5"/>
+                <circle cx="16.5" cy="16.1" r="2.5"/>
+                <path class="m-tachon" d="M3.6 3.8 L20.4 20.2"/>
+            </svg>
+        </button>
+    </div>
 
     <div class="fondo-decor" aria-hidden="true">
         <span class="orbe orbe-1"></span>
@@ -1577,6 +1789,234 @@
                 campo.value = capitalizarNombre(campo.value);
             });
         });
+    </script>
+
+    <!-- MÚSICA AMBIENTAL: encender, pausar, volumen y recuerdo de lo elegido -->
+    <script>
+        (function () {
+            const audio = document.getElementById('musica-fondo');
+            const control = document.getElementById('musica-control');
+            const boton = document.getElementById('musica-boton');
+            const rango = document.getElementById('musica-volumen');
+            if (!audio || !control || !boton || !rango) return;
+
+            /* true: si la persona la dejó encendida, intenta seguir al cambiar de página
+                     (si el navegador lo bloquea, espera su primer clic, toque o tecla).
+               false: nunca lo intenta solo; siempre espera esa primera interacción. */
+            const REANUDAR_AL_CAMBIAR_DE_PAGINA = true;
+            const VOLUMEN_INICIAL = 30;     /* 0 a 100: suave por defecto */
+
+            const CLAVE_ESTADO = 'mismary_musica';            /* 'on' | 'off' */
+            const CLAVE_VOLUMEN = 'mismary_musica_volumen';   /* 0 a 100 */
+            const CLAVE_TIEMPO = 'mismary_musica_tiempo';     /* segundos por donde iba */
+
+            function leer(clave) {
+                try { return localStorage.getItem(clave); } catch (e) { return null; }
+            }
+            function guardar(clave, valor) {
+                try { localStorage.setItem(clave, String(valor)); } catch (e) {}
+            }
+
+            let volumen = parseInt(leer(CLAVE_VOLUMEN), 10);
+            if (isNaN(volumen) || volumen < 0 || volumen > 100) volumen = VOLUMEN_INICIAL;
+
+            let rampa_id = null;
+            let pausando = false;
+            let esperandoGesto = false;
+            let temporizadorPanel = null;
+
+            rango.value = volumen;
+            rango.style.setProperty('--vol', volumen + '%');
+            rango.setAttribute('aria-valuetext', volumen + ' por ciento');
+            audio.volume = volumen / 100;
+
+            function sonando() {
+                return !audio.paused && !pausando;
+            }
+
+            function pintar() {
+                const encendida = sonando();
+                control.classList.toggle('sonando', encendida);
+                boton.setAttribute('aria-pressed', String(encendida));
+                const texto = encendida
+                    ? 'Pausar música ambiental'
+                    : (esperandoGesto ? 'Toca para reanudar la música' : 'Activar música ambiental');
+                boton.setAttribute('aria-label', texto);
+                boton.title = texto;
+            }
+
+            /* ----- Subida y bajada suave del volumen ----- */
+            function detenerRampa() {
+                if (rampa_id) {
+                    clearInterval(rampa_id);
+                    rampa_id = null;
+                }
+            }
+
+            function rampa(hasta, milisegundos, alTerminar) {
+                detenerRampa();
+                const desde = audio.volume;
+                const pasos = Math.max(1, Math.round(milisegundos / 40));
+                let i = 0;
+                rampa_id = setInterval(function () {
+                    i++;
+                    audio.volume = Math.min(1, Math.max(0, desde + (hasta - desde) * (i / pasos)));
+                    if (i >= pasos) {
+                        detenerRampa();
+                        if (alTerminar) alTerminar();
+                    }
+                }, 40);
+            }
+
+            /* ----- Reproducir y pausar ----- */
+            function reproducir(esReanudacion) {
+                detenerRampa();
+                pausando = false;
+                audio.volume = 0;
+                const promesa = audio.play();
+                pintar();
+
+                const alEmpezar = function () {
+                    guardar(CLAVE_ESTADO, 'on');
+                    quitarEspera();
+                    pintar();
+                    rampa(volumen / 100, 1400);
+                };
+
+                if (promesa && typeof promesa.then === 'function') {
+                    promesa.then(alEmpezar).catch(function (error) {
+                        pintar();
+                        if (error && error.name === 'AbortError') return;
+                        /* El navegador no deja sonar todavía: se espera a una interacción */
+                        if (esReanudacion) esperarGesto();
+                    });
+                } else {
+                    alEmpezar();
+                }
+            }
+
+            function pausar() {
+                guardar(CLAVE_ESTADO, 'off');
+                pausando = true;
+                pintar();
+                rampa(0, 450, function () {
+                    audio.pause();
+                    pausando = false;
+                    pintar();
+                });
+            }
+
+            /* ----- Si el navegador bloquea el reinicio, espera la primera interacción ----- */
+            const EVENTOS_GESTO = ['pointerdown', 'keydown', 'touchstart'];
+
+            function alGesto(evento) {
+                if (control.contains(evento.target)) return;   /* el botón se encarga solo */
+                quitarEspera();
+                reproducir(true);
+            }
+
+            function esperarGesto() {
+                if (esperandoGesto) return;
+                esperandoGesto = true;
+                control.classList.add('esperando');
+                EVENTOS_GESTO.forEach(function (nombre) {
+                    document.addEventListener(nombre, alGesto, true);
+                });
+                pintar();
+            }
+
+            function quitarEspera() {
+                if (!esperandoGesto) return;
+                esperandoGesto = false;
+                control.classList.remove('esperando');
+                EVENTOS_GESTO.forEach(function (nombre) {
+                    document.removeEventListener(nombre, alGesto, true);
+                });
+            }
+
+            /* ----- Panel del volumen en pantallas táctiles ----- */
+            function mantenerPanelAbierto() {
+                control.classList.add('abierto');
+                clearTimeout(temporizadorPanel);
+                temporizadorPanel = setTimeout(function () {
+                    control.classList.remove('abierto');
+                }, 3500);
+            }
+
+            boton.addEventListener('click', function () {
+                mantenerPanelAbierto();
+                if (sonando()) {
+                    pausar();
+                } else {
+                    reproducir(false);
+                }
+            });
+
+            rango.addEventListener('input', function () {
+                volumen = parseInt(rango.value, 10) || 0;
+                rango.style.setProperty('--vol', volumen + '%');
+                rango.setAttribute('aria-valuetext', volumen + ' por ciento');
+                guardar(CLAVE_VOLUMEN, volumen);
+                if (sonando()) {
+                    detenerRampa();
+                    audio.volume = volumen / 100;
+                } else if (!pausando) {
+                    audio.volume = volumen / 100;
+                }
+                mantenerPanelAbierto();
+            });
+
+            control.addEventListener('touchstart', mantenerPanelAbierto, { passive: true });
+
+            /* ----- Seguir por donde iba al cambiar de página ----- */
+            const tiempoGuardado = parseFloat(leer(CLAVE_TIEMPO));
+            let restaurado = !(tiempoGuardado > 0);
+            let ultimoGuardado = 0;
+
+            function restaurarTiempo() {
+                if (restaurado) return;
+                if (isFinite(audio.duration) && tiempoGuardado < audio.duration - 1) {
+                    try { audio.currentTime = tiempoGuardado; } catch (e) {}
+                }
+            }
+
+            function guardarTiempo(forzar) {
+                if (!restaurado) return;
+                const ahora = Date.now();
+                if (!forzar && ahora - ultimoGuardado < 3000) return;
+                ultimoGuardado = ahora;
+                if (audio.currentTime > 0) guardar(CLAVE_TIEMPO, audio.currentTime.toFixed(1));
+            }
+
+            audio.addEventListener('loadedmetadata', restaurarTiempo);
+            audio.addEventListener('canplaythrough', function () {
+                restaurarTiempo();
+                restaurado = true;
+            });
+            audio.addEventListener('timeupdate', function () { guardarTiempo(false); });
+            audio.addEventListener('pause', function () { guardarTiempo(true); });
+            window.addEventListener('pagehide', function () { guardarTiempo(true); });
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'hidden') guardarTiempo(true);
+            });
+            if (audio.readyState >= 1) restaurarTiempo();
+
+            /* ----- Si falta el archivo, el botón se esconde en vez de quedar roto ----- */
+            audio.addEventListener('error', function () {
+                console.warn('MisMary: no se pudo cargar static/audio/fondo.mp3');
+                control.hidden = true;
+            });
+
+            /* ----- Arranque ----- */
+            pintar();
+            if (leer(CLAVE_ESTADO) === 'on') {
+                if (REANUDAR_AL_CAMBIAR_DE_PAGINA) {
+                    reproducir(true);
+                } else {
+                    esperarGesto();
+                }
+            }
+        })();
     </script>
 
     <!-- Rutas que usa el control por voz (si un nombre no existe, queda vacío y no rompe la página) -->
