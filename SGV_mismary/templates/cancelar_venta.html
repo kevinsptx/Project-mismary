@@ -171,20 +171,24 @@
         font-size: 18px; line-height: 1;
         cursor: pointer;
     }
-    .rf-cant button:hover:not(:disabled) { background: #FF6B35; border-color: #FF6B35; color: #FFFFFF; }
-    .rf-cant button:disabled { opacity: 0.35; cursor: not-allowed; }
-    .rf-cant input[type=number] {
-        width: 52px;
-        padding: 6px 4px;
-        text-align: center;
-        font: inherit;
-        font-weight: 600;
-        color: #4A2C1B;
-        border: 1px solid #E8DFC8;
-        border-radius: 10px;
-        background: #FFFFFF;
-        -moz-appearance: textfield;
-    }
+.rf-cant input[type=number] {
+    width: 52px;
+    padding: 6px 4px;
+    text-align: center;
+    font: inherit;
+    font-weight: 600;
+    color: #4A2C1B;
+    border: 1px solid #E8DFC8;
+    border-radius: 10px;
+    background: #FFFFFF;
+    appearance: textfield;
+}
+
+.rf-cant input[type=number]::-webkit-outer-spin-button,
+.rf-cant input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
     .rf-cant input[type=number]::-webkit-outer-spin-button,
     .rf-cant input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .rf-cant input[type=number]:disabled { background: #F5EFE3; opacity: 0.6; }

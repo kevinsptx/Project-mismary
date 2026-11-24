@@ -1,395 +1,11 @@
 {% extends 'layout/base.html' %}
 {% load static %}
-{% load humanize %}
 
 {% block title %}Menú Principal | MisMary{% endblock %}
 
 {% block content %}
 
-<style>
-.bento-wrap {
-    max-width: 1060px;
-    margin: 0 auto;
-    padding: 10px 0 40px;
-    color: #4A2C1B;
-    font-family: 'Fredoka', 'Quicksand', sans-serif;
-}
-
-/* ===== CUADRÍCULA BENTO: 4 columnas, filas de 150px ===== */
-.bento {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 150px;
-    gap: 16px;
-}
-
-.tile {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px 22px;
-    border-radius: 26px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    border: 1px solid transparent;
-    box-shadow: 0 10px 25px -8px rgba(74, 44, 27, 0.12);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-a.tile:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 34px -10px rgba(74, 44, 27, 0.22);
-}
-
-a.tile:active { transform: scale(0.98); }
-
-.tile h3 { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.15; }
-.tile small { display: block; margin-top: 3px; font-size: 13px; opacity: 0.8; }
-
-.tile svg {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2.2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.t-icono { display: inline-flex; flex-shrink: 0; }
-
-.t-num { font-size: 34px; font-weight: 700; line-height: 1; }
-.t-num-xl { font-size: 46px; }
-.t-sub { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-
-.t-flecha {
-    position: absolute; top: 16px; right: 16px;
-    width: 34px; height: 34px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.55); font-size: 16px; font-weight: 700;
-}
-
-/* ===== TARJETAS (cada una: tamaño, color e ícono distintos) ===== */
-
-/* Saludo: ancha y naranja */
-.t-hero {
-    grid-column: span 2;
-    background: linear-gradient(135deg, #FF6B35, #E85A26);
-    color: #FFFFFF;
-    justify-content: center;
-}
-.t-hero::after {
-    content: ""; position: absolute; right: -40px; top: -50px;
-    width: 190px; height: 190px; border-radius: 50%;
-    background: rgba(255,255,255,0.14);
-}
-.t-hero::before {
-    content: ""; position: absolute; right: 70px; bottom: -60px;
-    width: 120px; height: 120px; border-radius: 50%;
-    background: rgba(74,44,27,0.14);
-}
-.t-hero h1 { margin: 0; font-size: 30px; font-weight: 700; position: relative; z-index: 1; }
-.t-hero p { margin: 6px 0 0; opacity: 0.92; position: relative; z-index: 1; }
-.t-hero .fecha {
-    display: inline-block; margin-top: 12px; padding: 4px 14px; border-radius: 999px;
-    background: rgba(255,255,255,0.22); font-size: 13px; font-weight: 600;
-    position: relative; z-index: 1; align-self: flex-start;
-}
-
-/* Ventas: GRANDE (2x2), crema, ícono enorme */
-.t-ventas {
-    grid-column: span 2; grid-row: span 2;
-    background: #F5EFE3; border-color: #E8DFC8;
-}
-.t-ventas .blob {
-    position: absolute; right: -30px; bottom: -40px;
-    width: 250px; height: 250px; border-radius: 50%; background: #E3A91F; opacity: 0.30;
-}
-.t-ventas .t-icono { width: 128px; height: 128px; color: #FF6B35; position: absolute; right: 30px; bottom: 26px; }
-.t-ventas .t-icono svg { width: 128px; height: 128px; stroke-width: 1.9; }
-.t-ventas h3 { font-size: 28px; }
-.t-ventas .boton {
-    align-self: flex-start; padding: 10px 20px; border-radius: 999px;
-    background: #FF6B35; color: #fff; font-weight: 600; font-size: 14px; position: relative; z-index: 1;
-}
-
-/* Pedidos: el sticker (pedido_home.png) va SIN tarjeta detrás.
-   Es un poquito más ancho que la celda para que se vea grande. */
-.t-pedidos {
-    padding: 0;
-    border: 0;
-    background: none;
-    box-shadow: none;
-    overflow: visible;
-}
-.t-pedidos .img-pedidos {
-    position: absolute;
-    left: -6%;
-    top: 50%;
-    width: 112%;
-    height: auto;
-    transform: translateY(-50%);
-    filter: drop-shadow(0 6px 8px rgba(74, 44, 27, 0.25));
-    pointer-events: none;
-}
-a.t-pedidos:hover { box-shadow: none; }
-/* Etiqueta encima del sticker: "Pendientes (número)".
-   Para moverla: left = más a la izquierda cuanto menor; bottom = más abajo cuanto menor. */
-.t-pedidos .chip-pedidos {
-    position: absolute;
-    left: 22px;
-    bottom: 22px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 4px 5px 4px 11px;
-    border-radius: 999px;
-    background: #FF6B35;
-    color: #FFFFFF;
-    font-size: 12px;
-    font-weight: 700;
-    box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.5);
-}
-.t-pedidos .chip-pedidos b {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 24px;
-    height: 24px;
-    padding: 0 6px;
-    border-radius: 999px;
-    background: #FFFFFF;
-    color: #E85A26;
-    font-size: 14px;
-}
-
-/* Clientes: pequeña, blanca */
-.t-clientes { background: #FFFFFF; border-color: #E8DFC8; }
-.t-clientes .t-icono { width: 56px; height: 56px; color: #9E3B27; }
-.t-clientes .t-icono svg { width: 56px; height: 56px; }
-
-/* Catálogo: ancha, mostaza suave */
-.t-catalogo {
-    grid-column: span 2; background: #F6E3B0; border-color: #EBD08A;
-    flex-direction: row; align-items: center; gap: 20px;
-}
-.t-catalogo .t-icono { width: 86px; height: 86px; color: #4A2C1B; }
-.t-catalogo .t-icono svg { width: 86px; height: 86px; stroke-width: 1.9; }
-
-/* Reportes: ALTA (1x2). La imagen ocupa TODA la altura y va centrada;
-   a los lados queda el mismo rojo de la imagen, así que no hay espacios blancos. */
-.t-reportes {
-    grid-row: span 2;
-    padding: 0;
-    border: 0;
-    background: #A03722 url("{% static 'reportes_tarjeta.jpg' %}") center / auto 100% no-repeat;
-}
-
-/* Reembolsos: pequeña, rosada */
-.t-reembolsos { background: #FBE9E7; border-color: #F5B7AB; color: #9E3B27; }
-.t-reembolsos .t-icono { width: 40px; height: 40px; }
-.t-reembolsos .t-icono svg { width: 40px; height: 40px; }
-
-/* Proveedores: pequeña, durazno */
-.t-proveedores { background: #FFE3D6; border-color: #FFC9AE; }
-.t-proveedores .t-icono { width: 62px; height: 62px; color: #E85A26; }
-.t-proveedores .t-icono svg { width: 62px; height: 62px; }
-
-/* Por cobrar: número grande, blanca */
-.t-cobrar { background: #FFFFFF; border-color: #E8DFC8; }
-.t-cobrar .t-icono { width: 34px; height: 34px; color: #E3A91F; }
-.t-cobrar .t-icono svg { width: 34px; height: 34px; }
-.t-cobrar .t-num { font-size: 28px; }
-
-/* Gastos hormiga: pequeña, arena */
-.t-gastos { background: #E8DFC8; }
-.t-gastos .t-icono { width: 50px; height: 50px; color: #4A2C1B; }
-.t-gastos .t-icono svg { width: 50px; height: 50px; }
-
-/* Grupos (solo superusuario): franja LARGA de 4 columnas.
-   La imagen (grupos_home.jpeg) trae el mismo café de la franja y sus extremos
-   se difuminan, así que se ve como una sola pieza. El ícono va a la izquierda. */
-.t-grupos {
-    grid-column: span 4;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    border: 0;
-    background: #281205;
-    color: #FF6B35;
-}
-.t-grupos::after {
-    content: ""; position: absolute; right: -60px; top: -80px;
-    width: 220px; height: 220px; border-radius: 50%;
-    background: rgba(255, 107, 53, 0.10);
-}
-.t-grupos .img-grupos {
-    position: relative;
-    z-index: 1;
-    display: block;
-    height: 154px;
-    width: auto;
-    max-width: 100%;
-    margin-top: -4px;
-}
-.t-grupos .icono-grupos {
-    position: absolute;
-    left: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 64px;
-    height: 64px;
-    z-index: 1;
-}
-.t-grupos .icono-grupos svg {
-    width: 64px; height: 64px;
-    stroke: #FF6B35; stroke-width: 2.1; fill: none;
-    stroke-linecap: round; stroke-linejoin: round;
-}
-
-/* ===== STICKERS (ilustraciones recortadas) ===== */
-.stk {
-    position: absolute;
-    pointer-events: none;
-    filter: drop-shadow(0 6px 8px rgba(74, 44, 27, 0.25));
-    transition: transform 0.25s ease;
-}
-a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
-
-/* tarjetas pequeñas: texto abajo, sticker arriba/derecha */
-.t-clientes, .t-reembolsos, .t-proveedores, .t-cobrar, .t-gastos {
-    justify-content: flex-end;
-}
-
-/* logo en el saludo */
-.logo-hero {
-    position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
-    width: 118px; height: 118px; border-radius: 50%; object-fit: cover;
-    border: 5px solid #FFFFFF; box-shadow: 0 10px 22px -6px rgba(74,44,27,0.45);
-    z-index: 2;
-}
-.t-hero h1, .t-hero p { max-width: calc(100% - 150px); }
-
-.stk-ventas     { right: 26px; bottom: 16px; height: 270px; z-index: 0; }
-.stk-clientes   { right: 6px; top: 8px; width: 126px; }
-.stk-catalogo   { position: static; height: 128px; flex-shrink: 0; margin-left: -4px; }
-.stk-reportes   { position: static; width: 128px; align-self: center; margin: 4px 0; }
-.stk-reembolsos { right: 12px; top: 10px; height: 76px; }
-.stk-proveedores{ right: 8px; top: 16px; width: 122px; }
-.stk-cobrar     { right: 14px; top: 14px; height: 70px; transform: rotate(-8deg); }
-.stk-gastos     { right: 4px; top: 8px; height: 104px; }
-.t-gastos h3    { max-width: 115px; }
-
-@media (max-width: 520px) {
-    .stk-ventas { height: 210px; }
-    .logo-hero { width: 90px; height: 90px; }
-    .t-hero h1, .t-hero p { max-width: calc(100% - 110px); }
-}
-
-/* ===== PANTALLAS MEDIANAS Y PEQUEÑAS ===== */
-@media (max-width: 900px) {
-    .bento { grid-template-columns: repeat(2, 1fr); }
-    .t-hero, .t-catalogo, .t-grupos { grid-column: span 2; }
-    .t-grupos .icono-grupos { display: none; }
-    .t-grupos .img-grupos { height: auto; width: 100%; margin-top: 0; }
-    .t-ventas { grid-column: span 2; grid-row: span 2; }
-    .t-reportes { grid-row: span 2; }
-}
-@media (max-width: 520px) {
-    .bento { grid-template-columns: 1fr; grid-auto-rows: minmax(130px, auto); }
-    .t-hero, .t-ventas, .t-catalogo, .t-grupos, .t-reportes { grid-column: span 1; grid-row: span 1; }
-    .t-ventas { min-height: 260px; }
-    .t-reportes { min-height: 260px; }
-}
-
-/* =====================================================
-   MODO OSCURO del menú principal
-   Cada tarjeta conserva su color de identidad, pero en
-   versión vino translúcida, con la letra clara.
-   El modo claro no cambia.
-   ===================================================== */
-[data-theme="dark"] .bento-wrap {
-    color: var(--texto);
-}
-
-[data-theme="dark"] .tile {
-    box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
-}
-[data-theme="dark"] a.tile:hover {
-    box-shadow: 0 20px 34px -10px rgba(0, 0, 0, 0.65);
-}
-[data-theme="dark"] a.t-pedidos:hover {
-    box-shadow: none;
-}
-
-/* Títulos y subtítulos de las tarjetas: siempre claros */
-[data-theme="dark"] .tile h3,
-[data-theme="dark"] .tile small,
-[data-theme="dark"] .tile .t-num,
-[data-theme="dark"] .tile .t-sub {
-    color: var(--texto);
-}
-
-/* Ventas, Clientes y Por cobrar: cristal rojo */
-[data-theme="dark"] .t-ventas,
-[data-theme="dark"] .t-clientes,
-[data-theme="dark"] .t-cobrar {
-    background: rgba(104, 14, 22, 0.78);
-    border-color: rgba(255, 170, 140, 0.22);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-}
-[data-theme="dark"] .t-ventas .blob {
-    background: #FF9A2E;
-    opacity: 0.22;
-}
-
-/* Catálogo: mostaza tenue */
-[data-theme="dark"] .t-catalogo {
-    background: rgba(227, 169, 31, 0.20);
-    border-color: rgba(235, 208, 138, 0.35);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-}
-
-/* Reembolsos: coral tenue */
-[data-theme="dark"] .t-reembolsos {
-    background: rgba(255, 120, 100, 0.18);
-    border-color: rgba(245, 183, 171, 0.35);
-    color: var(--texto);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-}
-
-/* Proveedores: naranja tenue */
-[data-theme="dark"] .t-proveedores {
-    background: rgba(255, 107, 53, 0.18);
-    border-color: rgba(255, 201, 174, 0.35);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-}
-
-/* Gastos hormiga: arena tenue */
-[data-theme="dark"] .t-gastos {
-    background: rgba(232, 223, 200, 0.14);
-    border-color: rgba(232, 223, 200, 0.28);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-}
-
-/* Íconos que antes eran oscuros sobre fondo claro */
-[data-theme="dark"] .t-clientes .t-icono,
-[data-theme="dark"] .t-catalogo .t-icono,
-[data-theme="dark"] .t-gastos .t-icono {
-    color: #FFB27A;
-}
-
-/* El saludo conserva su degradado naranja; solo se suaviza el borde del logo */
-[data-theme="dark"] .logo-hero {
-    border-color: rgba(255, 255, 255, 0.9);
-}
-</style>
+<style>.bento-wrap{max-width:1060px;margin:0 auto;padding:10px 0 40px;color:#4A2C1B;font-family:'Fredoka','Quicksand',sans-serif}.bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:150px;gap:16px}.tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:20px 22px;border-radius:26px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid transparent;box-shadow:0 10px 25px -8px rgba(74,44,27,.12);transition:transform .2s ease,box-shadow .2s ease}a.tile:hover{transform:translateY(-4px);box-shadow:0 20px 34px -10px rgba(74,44,27,.22)}a.tile:active{transform:scale(.98)}.tile h3{margin:0;font-size:20px;font-weight:600;line-height:1.15}.tile small{display:block;margin-top:3px;font-size:13px;opacity:.8}.tile svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.t-icono{display:inline-flex;flex-shrink:0}.t-num{font-size:34px;font-weight:700;line-height:1}.t-num-xl{font-size:46px}.t-sub{font-size:13px;opacity:.85;margin-top:4px}.t-flecha{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.55);font-size:16px;font-weight:700}.t-hero{grid-column:span 2;background:linear-gradient(135deg,#FF6B35,#E85A26);color:#FFFFFF;justify-content:center}.t-hero::after{content:"";position:absolute;right:-40px;top:-50px;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.14)}.t-hero::before{content:"";position:absolute;right:70px;bottom:-60px;width:120px;height:120px;border-radius:50%;background:rgba(74,44,27,.14)}.t-hero h1{margin:0;font-size:30px;font-weight:700;position:relative;z-index:1}.t-hero p{margin:6px 0 0;opacity:.92;position:relative;z-index:1}.t-hero .fecha{display:inline-block;margin-top:12px;padding:4px 14px;border-radius:999px;background:rgba(255,255,255,.22);font-size:13px;font-weight:600;position:relative;z-index:1;align-self:flex-start}.t-ventas{grid-column:span 2;grid-row:span 2;background:#F5EFE3;border-color:#E8DFC8}.t-ventas .blob{position:absolute;right:-30px;bottom:-40px;width:250px;height:250px;border-radius:50%;background:#E3A91F;opacity:.30}.t-ventas .t-icono{width:128px;height:128px;color:#FF6B35;position:absolute;right:30px;bottom:26px}.t-ventas .t-icono svg{width:128px;height:128px;stroke-width:1.9}.t-ventas h3{font-size:28px}.t-ventas .boton{align-self:flex-start;padding:10px 20px;border-radius:999px;background:#FF6B35;color:#fff;font-weight:600;font-size:14px;position:relative;z-index:1}.t-pedidos{padding:0;border:0;background:none;box-shadow:none;overflow:visible}.t-pedidos .img-pedidos{position:absolute;left:-6%;top:50%;width:112%;height:auto;transform:translateY(-50%);filter:drop-shadow(0 6px 8px rgba(74,44,27,.25));pointer-events:none}a.t-pedidos:hover{box-shadow:none}.t-pedidos .chip-pedidos{position:absolute;left:22px;bottom:22px;display:flex;align-items:center;gap:7px;padding:4px 5px 4px 11px;border-radius:999px;background:#FF6B35;color:#FFFFFF;font-size:12px;font-weight:700;box-shadow:0 6px 14px -4px rgba(0,0,0,.5)}.t-pedidos .chip-pedidos b{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:#FFFFFF;color:#E85A26;font-size:14px}.t-clientes{background:#FFFFFF;border-color:#E8DFC8}.t-clientes .t-icono{width:56px;height:56px;color:#9E3B27}.t-clientes .t-icono svg{width:56px;height:56px}.t-catalogo{grid-column:span 2;background:#F6E3B0;border-color:#EBD08A;flex-direction:row;align-items:center;gap:20px}.t-catalogo .t-icono{width:86px;height:86px;color:#4A2C1B}.t-catalogo .t-icono svg{width:86px;height:86px;stroke-width:1.9}.t-reportes{grid-row:span 2;padding:0;border:0;background:#A03722 url("{% static 'reportes_tarjeta.jpg' %}") center/auto 100% no-repeat}.t-reembolsos{background:#FBE9E7;border-color:#F5B7AB;color:#9E3B27}.t-reembolsos .t-icono{width:40px;height:40px}.t-reembolsos .t-icono svg{width:40px;height:40px}.t-proveedores{background:#FFE3D6;border-color:#FFC9AE}.t-proveedores .t-icono{width:62px;height:62px;color:#E85A26}.t-proveedores .t-icono svg{width:62px;height:62px}.t-cobrar{background:#FFFFFF;border-color:#E8DFC8}.t-cobrar .t-icono{width:34px;height:34px;color:#E3A91F}.t-cobrar .t-icono svg{width:34px;height:34px}.t-cobrar .t-num{font-size:28px}.t-gastos{background:#E8DFC8}.t-gastos .t-icono{width:50px;height:50px;color:#4A2C1B}.t-gastos .t-icono svg{width:50px;height:50px}.t-grupos{grid-column:span 4;flex-direction:row;justify-content:center;align-items:center;padding:0;border:0;background:#281205;color:#FF6B35}.t-grupos::after{content:"";position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;background:rgba(255,107,53,.10)}.t-grupos .img-grupos{position:relative;z-index:1;display:block;height:154px;width:auto;max-width:100%;margin-top:-4px}.t-grupos .icono-grupos{position:absolute;left:40px;top:50%;transform:translateY(-50%);width:64px;height:64px;z-index:1}.t-grupos .icono-grupos svg{width:64px;height:64px;stroke:#FF6B35;stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}.stk{position:absolute;pointer-events:none;filter:drop-shadow(0 6px 8px rgba(74,44,27,.25));transition:transform .25s ease}a.tile:hover .stk{transform:rotate(-4deg) scale(1.06)}.t-clientes,.t-reembolsos,.t-proveedores,.t-cobrar,.t-gastos{justify-content:flex-end}.logo-hero{position:absolute;right:26px;top:50%;transform:translateY(-50%);width:118px;height:118px;border-radius:50%;object-fit:cover;border:5px solid #FFFFFF;box-shadow:0 10px 22px -6px rgba(74,44,27,.45);z-index:2}.t-hero h1,.t-hero p{max-width:calc(100% - 150px)}.stk-ventas{right:26px;bottom:16px;height:270px;z-index:0}.stk-clientes{right:6px;top:8px;width:126px}.stk-catalogo{position:static;height:128px;flex-shrink:0;margin-left:-4px}.stk-reportes{position:static;width:128px;align-self:center;margin:4px 0}.stk-reembolsos{right:12px;top:10px;height:76px}.stk-proveedores{right:8px;top:16px;width:122px}.stk-cobrar{right:14px;top:14px;height:70px;transform:rotate(-8deg)}.stk-gastos{right:4px;top:8px;height:104px}.t-gastos h3{max-width:115px}@media (max-width:520px){.stk-ventas{height:210px}.logo-hero{width:90px;height:90px}.t-hero h1,.t-hero p{max-width:calc(100% - 110px)}}@media (max-width:900px){.bento{grid-template-columns:repeat(2,1fr)}.t-hero,.t-catalogo,.t-grupos{grid-column:span 2}.t-grupos .icono-grupos{display:none}.t-grupos .img-grupos{height:auto;width:100%;margin-top:0}.t-ventas{grid-column:span 2;grid-row:span 2}.t-reportes{grid-row:span 2}}@media (max-width:520px){.bento{grid-template-columns:1fr;grid-auto-rows:minmax(130px,auto)}.t-hero,.t-ventas,.t-catalogo,.t-grupos,.t-reportes{grid-column:span 1;grid-row:span 1}.t-ventas{min-height:260px}.t-reportes{min-height:260px}}[data-theme="dark"] .bento-wrap{color:var(--texto)}[data-theme="dark"] .tile{box-shadow:0 10px 25px -8px rgba(0,0,0,.5)}[data-theme="dark"] a.tile:hover{box-shadow:0 20px 34px -10px rgba(0,0,0,.65)}[data-theme="dark"] a.t-pedidos:hover{box-shadow:none}[data-theme="dark"] .tile h3,[data-theme="dark"] .tile small,[data-theme="dark"] .tile .t-num,[data-theme="dark"] .tile .t-sub{color:var(--texto)}[data-theme="dark"] .t-ventas,[data-theme="dark"] .t-clientes,[data-theme="dark"] .t-cobrar{background:rgba(104,14,22,.78);border-color:rgba(255,170,140,.22);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}[data-theme="dark"] .t-ventas .blob{background:#FF9A2E;opacity:.22}[data-theme="dark"] .t-catalogo{background:rgba(227,169,31,.20);border-color:rgba(235,208,138,.35);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}[data-theme="dark"] .t-reembolsos{background:rgba(255,120,100,.18);border-color:rgba(245,183,171,.35);color:var(--texto);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}[data-theme="dark"] .t-proveedores{background:rgba(255,107,53,.18);border-color:rgba(255,201,174,.35);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}[data-theme="dark"] .t-gastos{background:rgba(232,223,200,.14);border-color:rgba(232,223,200,.28);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}[data-theme="dark"] .t-clientes .t-icono,[data-theme="dark"] .t-catalogo .t-icono,[data-theme="dark"] .t-gastos .t-icono{color:#FFB27A}[data-theme="dark"] .logo-hero{border-color:rgba(255,255,255,.9)}</style>
 
 <div class="bento-wrap">
 <div class="bento">
@@ -411,20 +27,13 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         </div>
         <img class="stk stk-ventas" src="{% static 'stk_comprador.png' %}" alt="" loading="lazy">
         <div style="position:relative;z-index:1;">
-            {% if stats.ventas_hoy is not None %}
-                <div class="t-num t-num-xl">$ {{ stats.ventas_hoy_total|floatformat:0|intcomma }}</div>
-                <div class="t-sub">{{ stats.ventas_hoy }} venta{{ stats.ventas_hoy|pluralize }} hoy</div>
-            {% endif %}
             <span class="boton" style="display:inline-block;margin-top:12px;">Ir a ventas →</span>
         </div>
     </a>
 
-    <!-- PEDIDOS: el sticker es la tarjeta; encima va "Pendientes" y el número -->
+    <!-- PEDIDOS: el sticker es la tarjeta -->
     <a href="{% url 'list_pedido' %}" class="tile t-pedidos" aria-label="Ir a Pedidos">
         <img class="img-pedidos" src="{% static 'pedido_home.png' %}" alt="">
-        {% if stats.pedidos_pendientes is not None %}
-            <span class="chip-pedidos">Pendientes <b>{{ stats.pedidos_pendientes }}</b></span>
-        {% endif %}
     </a>
 
     <!-- CLIENTES -->
@@ -432,7 +41,7 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         <img class="stk stk-clientes" src="{% static 'stk_clientes.png' %}" alt="" loading="lazy">
         <div>
             <h3>Clientes</h3>
-            <small>{% if stats.clientes is not None %}{{ stats.clientes }} registrado{{ stats.clientes|pluralize }}{% else %}Directorio y contacto{% endif %}</small>
+            <small>Directorio y contacto</small>
         </div>
     </a>
 
@@ -441,11 +50,7 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         <img class="stk stk-catalogo" src="{% static 'stk_tendero.png' %}" alt="" loading="lazy">
         <div>
             <h3>Catálogo</h3>
-            <small>
-                {% if stats.productos is not None %}
-                    {{ stats.productos }} producto{{ stats.productos|pluralize }}{% if stats.sin_stock %} · {{ stats.sin_stock }} sin stock{% endif %}
-                {% else %}Productos disponibles{% endif %}
-            </small>
+            <small>Productos disponibles</small>
         </div>
     </a>
 
@@ -459,7 +64,7 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         <img class="stk stk-reembolsos" src="{% static 'stk_reembolso.png' %}" alt="" loading="lazy">
         <div>
             <h3>Reembolsos</h3>
-            <small>{% if stats.reembolsos_mes is not None %}{{ stats.reembolsos_mes }} este mes{% else %}Devoluciones{% endif %}</small>
+            <small>Devoluciones</small>
         </div>
     </a>
 
@@ -468,7 +73,7 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         <img class="stk stk-proveedores" src="{% static 'stk_camion.png' %}" alt="" loading="lazy">
         <div>
             <h3>Proveedores</h3>
-            <small>{% if stats.proveedores is not None %}{{ stats.proveedores }} registrado{{ stats.proveedores|pluralize }}{% else %}Quién te surte{% endif %}</small>
+            <small>Quién te surte</small>
         </div>
     </a>
 
@@ -476,10 +81,8 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
     <a href="{% url 'reporte_clientes_deuda' %}" class="tile t-cobrar">
         <img class="stk stk-cobrar" src="{% static 'stk_billete.png' %}" alt="" loading="lazy">
         <div>
-            {% if stats.por_cobrar is not None %}
-                <div class="t-num">$ {{ stats.por_cobrar|floatformat:0|intcomma }}</div>
-            {% endif %}
-            <small>Por cobrar a clientes</small>
+            <h3>Por cobrar</h3>
+            <small>Deudas de clientes</small>
         </div>
     </a>
 
@@ -488,7 +91,7 @@ a.tile:hover .stk { transform: rotate(-4deg) scale(1.06); }
         <img class="stk stk-gastos" src="{% static 'stk_hormiga.png' %}" alt="" loading="lazy">
         <div>
             <h3>Gastos hormiga</h3>
-            <small>{% if stats.gastos_mes is not None %}$ {{ stats.gastos_mes|floatformat:0|intcomma }} este mes{% else %}Gastos pequeños{% endif %}</small>
+            <small>Gastos pequeños</small>
         </div>
     </a>
 
